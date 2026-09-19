@@ -67,6 +67,7 @@ Pantallas implementadas (carpeta `public/`, servidas por el mismo servidor Expre
 - `clientes.html` — registro y listado de clientes (socios del gimnasio)
 - `renovar.html` — renovación rápida de membresías buscando al cliente por su cédula (HU04)
 - `biometria.html` — registro de huella de un cliente en modo simulador (HU05)
+- `acceso.html` — punto de portería simulado: valida el ingreso por huella y muestra el historial (HU06)
 
 Criterio cumplido: interfaz sencilla que permite al Empleado registrar y consultar
 clientes sin necesidad de herramientas externas (Postman/curl), con feedback visual
@@ -189,3 +190,41 @@ Reglas de negocio:
 
 `POST /api/biometria/registrar` recibe `{ "cliente_id": 5, "identificadorSimulado": "dedo_juan_01" }`.
 `POST /api/biometria/identificar` recibe `{ "identificadorSimulado": "dedo_juan_01" }` y devuelve los datos del cliente.
+
+## Épica 3, Sprint 2 — Validación automática de acceso (HU06)
+
+Se implementó el patrón State para representar los distintos estados de
+una membresía frente al acceso físico (activa, vencida, cancelada, sin
+registro). El servicio `accesoFisico.service.js` actúa como Facade,
+coordinando identificación biométrica + validación de membresía +
+registro de auditoría en una sola operación.
+
+Todo intento de acceso (permitido o denegado) queda registrado en
+`registros_acceso` para trazabilidad.
+
+Estructura del patrón State (`src/estadosAcceso/`):
+- `estadoAcceso.interface.js` — contrato con `evaluar(membresia)`.
+- `estadoActivo.js`, `estadoVencido.js`, `estadoCancelado.js`, `estadoSinMembresia.js` — un estado por clase.
+- `estadoAcceso.factory.js` — `obtenerEstado(membresia)` elige el estado según la membresía más reciente del cliente.
+
+Reglas de decisión:
+- Se permite el ingreso solo si la membresía más reciente está `activa` y su `fecha_fin` es hoy o posterior.
+- Una membresía que figura `activa` pero cuya `fecha_fin` ya pasó se deniega como vencida.
+- Si `fecha_fin` falta o no es una fecha válida, se deniega.
+- "Hoy" es la fecha local del servidor.
+- Un cliente que renovó con la membresía vigente sigue con acceso: la anterior queda `cancelada` y la nueva `activa` empieza al día siguiente del vencimiento.
+
+## Endpoints de Control de Acceso
+
+| Método | Ruta | Roles permitidos |
+|---|---|---|
+| POST | /api/acceso-fisico/validar | Admin, Empleado |
+| GET | /api/acceso-fisico/historial | Admin, Empleado |
+
+`POST /api/acceso-fisico/validar` recibe `{ "identificadorSimulado": "dedo_mario" }` y devuelve
+`{ "cliente": { "id", "nombre", "cedula" }, "permitido": true|false, "motivo": "..." }`.
+Un acceso denegado por la membresía responde `200` con `permitido: false`; la lectura debe mirar ese campo.
+Una huella que no corresponde a ningún cliente responde `404` y también queda registrada en la auditoría.
+
+`GET /api/acceso-fisico/historial` devuelve los 50 eventos más recientes, del más nuevo al más antiguo,
+con `nombre_cliente` (`null` si la huella no se reconoció).
