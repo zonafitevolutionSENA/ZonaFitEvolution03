@@ -2,6 +2,7 @@ const membresiaRepository = require('../repositories/membresia.repository');
 const clienteRepository = require('../repositories/cliente.repository');
 const planRepository = require('../repositories/plan.repository');
 const ErrorDominio = require('../utils/errores');
+const { fechaATexto, hoyISO } = require('../utils/fechas');
 
 const ESTADOS = ['activa', 'vencida', 'cancelada'];
 
@@ -17,20 +18,6 @@ function calcularFechaFin(fechaInicio, duracionDias) {
   const fecha = new Date(fechaInicio);
   fecha.setUTCDate(fecha.getUTCDate() + duracionDias);
   return fecha.toISOString().split('T')[0];
-}
-
-// Convierte a 'AAAA-MM-DD'. mysql2 entrega las columnas DATE como Date a medianoche
-// LOCAL, así que se leen con los métodos locales (toISOString en UTC movería el día).
-function fechaATexto(fecha) {
-  if (typeof fecha === 'string') return fecha.slice(0, 10);
-  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-  const dia = String(fecha.getDate()).padStart(2, '0');
-  return `${fecha.getFullYear()}-${mes}-${dia}`;
-}
-
-// "Hoy" según la fecha local del servidor (no la de UTC, que de noche ya es mañana)
-function hoyISO() {
-  return fechaATexto(new Date());
 }
 
 async function crearMembresia({ plan_id, fecha_inicio, cliente_id }) {

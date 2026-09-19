@@ -79,3 +79,12 @@ CREATE TABLE IF NOT EXISTS plantillas_biometricas (
   fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
+
+CREATE TABLE IF NOT EXISTS registros_acceso (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT NULL,
+  resultado ENUM('permitido', 'denegado') NOT NULL,
+  motivo VARCHAR(100) NOT NULL,
+  fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
