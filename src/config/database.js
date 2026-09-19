@@ -8,7 +8,10 @@ const pool = mysql.createPool({
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'zonafitevolution',
   waitForConnections: true,
-  connectionLimit: 10
+  connectionLimit: 10,
+  // Las columnas DATE (fecha_inicio, fecha_fin) se entregan como 'AAAA-MM-DD'. Como objeto Date
+  // viajarían a medianoche local y el JSON las mostraría desplazadas según la zona horaria.
+  dateStrings: ['DATE']
 });
 
 module.exports = pool;
