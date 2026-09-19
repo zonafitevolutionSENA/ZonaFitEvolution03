@@ -3,6 +3,12 @@ const biometriaRepository = require('../repositories/biometria.repository');
 const clienteRepository = require('../repositories/cliente.repository');
 const ErrorDominio = require('../utils/errores');
 
+function validarClienteId(cliente_id) {
+  if (!/^\d+$/.test(String(cliente_id)) || Number(cliente_id) <= 0) {
+    throw new ErrorDominio('El identificador del cliente no es válido');
+  }
+}
+
 function validarCaptura(identificadorSimulado) {
   if (typeof identificadorSimulado !== 'string' || !identificadorSimulado.trim()) {
     throw new ErrorDominio('La captura del sensor es obligatoria y debe ser un texto');
@@ -26,6 +32,7 @@ async function registrarHuella({ cliente_id, identificadorSimulado }) {
     throw new ErrorDominio('El cliente y la captura del sensor son obligatorios');
   }
 
+  validarClienteId(cliente_id);
   validarCaptura(identificadorSimulado);
 
   const cliente = await clienteRepository.obtenerPorId(cliente_id);
@@ -81,6 +88,8 @@ async function identificarPorHuella({ identificadorSimulado } = {}) {
 }
 
 async function eliminarHuella(cliente_id) {
+  validarClienteId(cliente_id);
+
   const eliminado = await biometriaRepository.eliminarPorClienteId(cliente_id);
   if (!eliminado) {
     throw new ErrorDominio('Este cliente no tiene huella registrada', 404);
