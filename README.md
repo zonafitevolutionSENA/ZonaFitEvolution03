@@ -16,6 +16,7 @@ API REST para la gestión de un gimnasio: personal, clientes (socios) y membres�
 3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD` y `JWT_SECRET`.
 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
 5. Iniciar el servidor: `npm start` (por defecto en `http://localhost:3000`).
+6. Abrir el frontend en `http://localhost:3000/login.html`.
 
 ## Corrección de modelo — Épica 1
 
@@ -57,3 +58,23 @@ Reglas: la cédula es obligatoria, solo numérica (6 a 15 dígitos) y única (40
 ## Códigos de respuesta
 
 `400` datos inválidos · `401` sin token o token inválido · `403` rol sin permiso · `404` no encontrado · `409` duplicado.
+
+## Frontend — HU12
+
+Pantallas implementadas (carpeta `public/`, servidas por el mismo servidor Express):
+- `login.html` — autenticación de Admin/Empleado
+- `panel.html` — panel principal con acceso a módulos según sesión activa
+- `clientes.html` — registro y listado de clientes (socios del gimnasio)
+
+Criterio cumplido: interfaz sencilla que permite al Empleado registrar y consultar
+clientes sin necesidad de herramientas externas (Postman/curl), con feedback visual
+de éxito, error y expiración de sesión.
+
+Notas de funcionamiento:
+- La sesión se guarda en `localStorage` (`token` y `usuario`). Las páginas protegidas
+  incluyen `js/auth-guard.js` y redirigen a `login.html` si no hay sesión.
+- Si la API responde 401 (token vencido), se avisa al usuario y se cierra la sesión.
+- El formulario valida la cédula (solo números, 6 a 15 dígitos) antes de llamar a la API.
+- Los datos de clientes se escapan antes de mostrarse en la tabla para evitar inyección de HTML.
+- `js/login.js` y `js/clientes.js` apuntan a `http://localhost:3000/api`; si cambias `PORT`
+  en `.env`, actualiza la constante `API_URL` en ambos archivos.
