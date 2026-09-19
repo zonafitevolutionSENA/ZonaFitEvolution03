@@ -78,3 +78,42 @@ Notas de funcionamiento:
 - Los datos de clientes se escapan antes de mostrarse en la tabla para evitar inyección de HTML.
 - `js/login.js` y `js/clientes.js` apuntan a `http://localhost:3000/api`; si cambias `PORT`
   en `.env`, actualiza la constante `API_URL` en ambos archivos.
+
+## Épica 2, Sprint 1 — Catálogo de Planes
+
+Se separó la lógica de "plan" (catálogo reutilizable) de "membresía" (instancia
+asignada a un cliente). Antes, la duración y el precio estaban hardcodeados en
+el código; ahora se gestionan desde la tabla `planes`.
+
+Las membresías ya no guardan `tipo` ni `precio`: referencian un plan (`plan_id`) y la
+fecha de fin se calcula con la duración de ese plan.
+
+## Endpoints de Plan
+
+| Método | Ruta | Roles permitidos |
+|---|---|---|
+| POST | /api/planes | Solo Admin |
+| GET | /api/planes | Admin, Empleado |
+| GET | /api/planes/:id | Admin, Empleado |
+| PUT | /api/planes/:id | Solo Admin |
+| PATCH | /api/planes/:id/desactivar | Solo Admin |
+| DELETE | /api/planes/:id | Solo Admin |
+
+`GET /api/planes?activos=true` devuelve solo los planes disponibles para nuevas asignaciones.
+
+## Crear una membresía
+
+`POST /api/membresias` (Admin, Empleado) con el cuerpo:
+
+```json
+{ "plan_id": 3, "fecha_inicio": "2026-09-18", "cliente_id": 1 }
+```
+
+La `fecha_fin` la calcula el servidor (`fecha_inicio` + `duracion_dias` del plan). Solo se pueden
+asignar planes activos y un cliente no puede tener dos membresías activas a la vez.
+
+## Regla de negocio (CU-03)
+No se puede eliminar un plan que tenga membresías activas asociadas.
+En su lugar, se recomienda desactivarlo (`PATCH /:id/desactivar`), lo que
+lo oculta de nuevas asignaciones sin afectar el historial. Los planes con
+membresías históricas (vencidas o canceladas) tampoco se pueden eliminar.

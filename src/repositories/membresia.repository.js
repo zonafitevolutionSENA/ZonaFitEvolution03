@@ -1,10 +1,10 @@
 const pool = require('../config/database');
 const Membresia = require('../models/membresia.model');
 
-async function crear({ tipo, precio, fecha_inicio, fecha_fin, cliente_id }) {
+async function crear({ plan_id, fecha_inicio, fecha_fin, cliente_id }) {
   const [resultado] = await pool.query(
-    'INSERT INTO membresias (tipo, precio, fecha_inicio, fecha_fin, cliente_id) VALUES (?, ?, ?, ?, ?)',
-    [tipo, precio, fecha_inicio, fecha_fin, cliente_id]
+    'INSERT INTO membresias (plan_id, fecha_inicio, fecha_fin, cliente_id) VALUES (?, ?, ?, ?)',
+    [plan_id, fecha_inicio, fecha_fin, cliente_id]
   );
   return resultado.insertId;
 }
@@ -31,9 +31,11 @@ async function obtenerActivaPorCliente(cliente_id) {
 
 async function obtenerConCliente(id) {
   const [filas] = await pool.query(
-    `SELECT m.*, c.nombre AS nombre_cliente, c.cedula, c.correo AS correo_cliente
+    `SELECT m.*, c.nombre AS nombre_cliente, c.cedula, c.correo AS correo_cliente,
+            p.nombre AS nombre_plan, p.precio AS precio_plan
      FROM membresias m
      JOIN clientes c ON m.cliente_id = c.id
+     JOIN planes p ON m.plan_id = p.id
      WHERE m.id = ?`,
     [id]
   );
