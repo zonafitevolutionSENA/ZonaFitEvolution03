@@ -65,6 +65,7 @@ Pantallas implementadas (carpeta `public/`, servidas por el mismo servidor Expre
 - `login.html` — autenticación de Admin/Empleado
 - `panel.html` — panel principal con acceso a módulos según sesión activa
 - `clientes.html` — registro y listado de clientes (socios del gimnasio)
+- `renovar.html` — renovación rápida de membresías buscando al cliente por su cédula (HU04)
 
 Criterio cumplido: interfaz sencilla que permite al Empleado registrar y consultar
 clientes sin necesidad de herramientas externas (Postman/curl), con feedback visual
@@ -117,3 +118,35 @@ No se puede eliminar un plan que tenga membresías activas asociadas.
 En su lugar, se recomienda desactivarlo (`PATCH /:id/desactivar`), lo que
 lo oculta de nuevas asignaciones sin afectar el historial. Los planes con
 membresías históricas (vencidas o canceladas) tampoco se pueden eliminar.
+
+## Épica 2, Sprint 2 — Renovación rápida (HU04)
+
+Dado que el gimnasio no utiliza tarjetas físicas (solo huella/identificación
+por cédula), la renovación de membresía se realiza ubicando al cliente por
+su número de cédula, sin necesidad de volver a capturar sus datos personales.
+
+## Endpoints de renovación
+
+| Método | Ruta | Roles permitidos |
+|---|---|---|
+| GET | /api/membresias/buscar/:cedula | Admin, Empleado |
+| POST | /api/membresias/renovar | Admin, Empleado |
+
+`GET /api/membresias/buscar/:cedula` devuelve los datos del cliente y su membresía más reciente
+(estado, `fecha_fin` y plan; los campos de membresía vienen en `null` si nunca tuvo una).
+`POST /api/membresias/renovar` recibe `{ "cedula": "...", "plan_id": 3 }` y se puede renovar con
+un plan distinto al anterior.
+
+## Regla de negocio
+Si el cliente aún tiene una membresía activa vigente, la renovación se
+encadena a partir del día siguiente a su vencimiento (no se pierden días
+ya pagados). Si está vencida o es la primera membresía, inicia el mismo
+día de la renovación.
+
+Detalles de la implementación:
+- Una membresía que figura como `activa` pero cuya `fecha_fin` ya pasó se considera vencida:
+  se marca como `vencida` y la nueva empieza hoy. Si vence hoy, todavía se considera vigente.
+- Al encadenar, la membresía anterior pasa a `cancelada` para que el cliente tenga una sola
+  membresía activa. El cambio de estado y la creación de la nueva se hacen en una sola
+  transacción, y dos renovaciones simultáneas del mismo cliente no pueden dejar dos activas.
+- Las columnas de fecha (`fecha_inicio`, `fecha_fin`) llegan en la API como texto `AAAA-MM-DD`.
