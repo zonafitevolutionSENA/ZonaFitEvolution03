@@ -40,3 +40,25 @@ CREATE TABLE IF NOT EXISTS membresias (
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
+
+-- Épica 2, Sprint 1: catálogo de planes
+CREATE TABLE IF NOT EXISTS planes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL UNIQUE,
+  duracion_dias INT NOT NULL,
+  precio DECIMAL(10,2) NOT NULL,
+  activo BOOLEAN NOT NULL DEFAULT TRUE,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- INSERT IGNORE: el script se puede volver a ejecutar sin fallar por nombres duplicados
+INSERT IGNORE INTO planes (nombre, duracion_dias, precio) VALUES
+  ('diario', 1, 8000),
+  ('quincenal', 15, 60000),
+  ('mensual', 30, 50000),
+  ('trimestral', 90, 130000);
+
+-- Ajustar membresias para referenciar el plan
+ALTER TABLE membresias
+  ADD COLUMN plan_id INT NULL AFTER cliente_id,
+  ADD CONSTRAINT fk_membresia_plan FOREIGN KEY (plan_id) REFERENCES planes(id);
