@@ -39,11 +39,27 @@ async function eliminar(id) {
   return resultado.affectedRows > 0;
 }
 
+async function obtenerPorCedulaConMembresia(cedula) {
+  const [filas] = await pool.query(
+    `SELECT c.*, m.id AS membresia_id, m.estado, m.fecha_fin, p.nombre AS nombre_plan
+     FROM clientes c
+     LEFT JOIN membresias m ON m.cliente_id = c.id
+     LEFT JOIN planes p ON m.plan_id = p.id
+     WHERE c.cedula = ?
+     ORDER BY m.fecha_fin DESC
+     LIMIT 1`,
+    [cedula]
+  );
+  if (filas.length === 0) return null;
+  return filas[0];
+}
+
 module.exports = {
   crear,
   obtenerTodos,
   obtenerPorId,
   obtenerPorCedula,
   actualizar,
-  eliminar
+  eliminar,
+  obtenerPorCedulaConMembresia
 };
