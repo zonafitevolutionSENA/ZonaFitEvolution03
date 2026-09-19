@@ -43,6 +43,20 @@ async function obtenerConCliente(id) {
   return filas[0];
 }
 
+async function obtenerUltimaPorCliente(cliente_id) {
+  const [filas] = await pool.query(
+    `SELECT m.*, p.nombre AS nombre_plan, p.duracion_dias
+     FROM membresias m
+     JOIN planes p ON m.plan_id = p.id
+     WHERE m.cliente_id = ?
+     ORDER BY m.fecha_fin DESC
+     LIMIT 1`,
+    [cliente_id]
+  );
+  if (filas.length === 0) return null;
+  return filas[0];
+}
+
 async function actualizarEstado(id, estado) {
   const [resultado] = await pool.query(
     'UPDATE membresias SET estado = ? WHERE id = ?',
@@ -62,6 +76,7 @@ module.exports = {
   obtenerPorId,
   obtenerActivaPorCliente,
   obtenerConCliente,
+  obtenerUltimaPorCliente,
   actualizarEstado,
   eliminar
 };
