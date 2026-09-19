@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro Biométrico — Zona Fit Evolution</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header style="background: var(--color-primario); color: white; padding: 16px; display: flex; justify-content: space-between;">
+    <h2>Registro Biométrico</h2>
+    <a href="panel.html" style="color: var(--color-acento);">← Volver al panel</a>
+  </header>
+
+  <main style="padding: 24px; max-width: 500px;">
+    <div id="avisoSimulador" style="background: #fff3cd; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-size: 13px;">
+      Modo simulador: no hay lector físico conectado todavía. Esta pantalla
+      simula la captura del sensor para efectos de desarrollo y pruebas.
+    </div>
+
+    <div style="background: white; padding: 20px; border-radius: 8px;">
+      <h3>Registrar huella de cliente</h3>
+      <p class="mensaje-error" id="mensajeError"></p>
+      <label for="cedulaCliente">Cédula del cliente</label>
+      <input type="text" id="cedulaCliente" placeholder="Cédula" autocomplete="off" autofocus>
+      <button id="btnBuscarCliente">Buscar cliente</button>
+
+      <div id="datosCliente" style="display:none; margin-top: 16px;">
+        <p id="nombreClienteBiometria" style="font-weight: bold;"></p>
+        <label for="identificadorSimulado">Simular lectura del sensor</label>
+        <input type="text" id="identificadorSimulado" placeholder="Ej: dedo_juan_01" autocomplete="off">
+        <button id="btnRegistrarHuella">Registrar huella</button>
+      </div>
+    </div>
+
+    <p id="mensajeExito" style="color: #27ae60; display: none; margin-top: 16px;"></p>
+  </main>
+
+  <script src="js/auth-guard.js"></script>
+  <script src="js/biometria.js"></script>
+</body>
+</html>

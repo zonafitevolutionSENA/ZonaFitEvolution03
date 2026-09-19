@@ -66,6 +66,7 @@ Pantallas implementadas (carpeta `public/`, servidas por el mismo servidor Expre
 - `panel.html` — panel principal con acceso a módulos según sesión activa
 - `clientes.html` — registro y listado de clientes (socios del gimnasio)
 - `renovar.html` — renovación rápida de membresías buscando al cliente por su cédula (HU04)
+- `biometria.html` — registro de huella de un cliente en modo simulador (HU05)
 
 Criterio cumplido: interfaz sencilla que permite al Empleado registrar y consultar
 clientes sin necesidad de herramientas externas (Postman/curl), con feedback visual
@@ -150,3 +151,41 @@ Detalles de la implementación:
   membresía activa. El cambio de estado y la creación de la nueva se hacen en una sola
   transacción, y dos renovaciones simultáneas del mismo cliente no pueden dejar dos activas.
 - Las columnas de fecha (`fecha_inicio`, `fecha_fin`) llegan en la API como texto `AAAA-MM-DD`.
+
+## Épica 3, Sprint 1 — Registro biométrico (HU05)
+
+Se implementó el patrón Adapter para desacoplar la lógica de negocio del
+hardware físico. Actualmente el sistema opera en modo simulador
+(`TIPO_LECTOR=simulador` en `.env`); cuando se adquiera el lector físico,
+solo se debe crear un nuevo adaptador que implemente `LectorBiometrico`
+y cambiar esa variable de entorno — sin tocar servicios, controladores
+ni rutas existentes.
+
+Cumplimiento de la restricción de privacidad: el sistema nunca almacena
+imágenes de huellas, solo un hash irreversible (`template_hash`).
+
+Estructura de la capa de hardware (`src/hardware/`):
+- `lectorBiometrico.interface.js` — contrato con `capturar()` y `comparar(templateA, templateB)`.
+- `simuladorLector.adapter.js` — simulador: genera un SHA-256 a partir de un identificador de prueba y la sal.
+- `lector.factory.js` — `obtenerLector()` elige el adaptador según `TIPO_LECTOR`.
+
+Variables de entorno de esta épica:
+- `TIPO_LECTOR`: tipo de lector a usar (`simulador` por defecto).
+- `BIOMETRIA_SALT`: obligatoria para generar los templates. No debe cambiarse cuando ya hay huellas
+  registradas, porque los templates guardados dejarían de coincidir.
+
+Reglas de negocio:
+- Un cliente tiene como máximo una huella, y una misma huella no puede registrarse en dos clientes.
+- Las respuestas de la API nunca incluyen el `template_hash`.
+- Para volver a registrar la huella de un cliente, primero debe eliminarse la anterior (solo Admin).
+
+## Endpoints de Biometría
+
+| Método | Ruta | Roles permitidos |
+|---|---|---|
+| POST | /api/biometria/registrar | Admin, Empleado |
+| POST | /api/biometria/identificar | Admin, Empleado |
+| DELETE | /api/biometria/:cliente_id | Solo Admin |
+
+`POST /api/biometria/registrar` recibe `{ "cliente_id": 5, "identificadorSimulado": "dedo_juan_01" }`.
+`POST /api/biometria/identificar` recibe `{ "identificadorSimulado": "dedo_juan_01" }` y devuelve los datos del cliente.
