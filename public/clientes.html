@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clientes — Zona Fit Evolution</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header style="background: var(--color-primario); color: white; padding: 16px; display: flex; justify-content: space-between;">
+    <h2>Gestión de Clientes</h2>
+    <a href="panel.html" style="color: var(--color-acento);">← Volver al panel</a>
+  </header>
+
+  <main style="padding: 24px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin-bottom: 24px;">
+      <h3>Registrar nuevo cliente</h3>
+      <p class="mensaje-error" id="mensajeError"></p>
+      <form id="formCliente">
+        <input type="text" id="nombre" placeholder="Nombre completo" required>
+        <input type="text" id="cedula" placeholder="Cédula" required>
+        <input type="email" id="correo" placeholder="Correo (opcional)">
+        <input type="tel" id="telefono" placeholder="Teléfono (opcional)">
+        <button type="submit">Registrar cliente</button>
+      </form>
+    </div>
+
+    <div id="listaClientes"></div>
+  </main>
+
+  <script src="js/auth-guard.js"></script>
+  <script src="js/clientes.js"></script>
+</body>
+</html>
