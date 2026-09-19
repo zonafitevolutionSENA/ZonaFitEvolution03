@@ -1,8 +1,7 @@
 class Membresia {
-  constructor({ id, tipo, precio, fecha_inicio, fecha_fin, estado, cliente_id, fecha_creacion }) {
+  constructor({ id, plan_id, fecha_inicio, fecha_fin, estado, cliente_id, fecha_creacion }) {
     this.id = id;
-    this.tipo = tipo;
-    this.precio = precio;
+    this.plan_id = plan_id;
     this.fecha_inicio = fecha_inicio;
     this.fecha_fin = fecha_fin;
     this.estado = estado;

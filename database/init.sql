@@ -62,3 +62,12 @@ INSERT IGNORE INTO planes (nombre, duracion_dias, precio) VALUES
 ALTER TABLE membresias
   ADD COLUMN plan_id INT NULL AFTER cliente_id,
   ADD CONSTRAINT fk_membresia_plan FOREIGN KEY (plan_id) REFERENCES planes(id);
+
+-- Migración (Épica 2, Sprint 1, Día 5): el plan pasa a ser la única fuente de tipo y precio.
+-- Al ejecutar este script completo, membresias se recrea vacía, así que el ALTER siempre aplica.
+-- Para una base de datos ya existente, ejecutar solo este ALTER (una sola vez) y solo si
+-- no hay membresías con plan_id NULL:
+ALTER TABLE membresias
+  DROP COLUMN tipo,
+  DROP COLUMN precio,
+  MODIFY COLUMN plan_id INT NOT NULL;
