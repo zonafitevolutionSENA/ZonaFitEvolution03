@@ -7,6 +7,7 @@ const membresiaRoutes = require('./membresia.routes');
 const authRoutes = require('./auth.routes');
 const planRoutes = require('./plan.routes');
 const biometriaRoutes = require('./biometria.routes');
+const accesoFisicoRoutes = require('./accesoFisico.routes');
 
 router.use('/usuarios', usuarioRoutes);
 router.use('/clientes', clienteRoutes);
@@ -15,5 +16,6 @@ router.use('/membresias', membresiaRoutes);
 router.use('/auth', authRoutes);
 router.use('/planes', planRoutes);
 router.use('/biometria', biometriaRoutes);
+router.use('/acceso-fisico', accesoFisicoRoutes);
 
 module.exports = router;
