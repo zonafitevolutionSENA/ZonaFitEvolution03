@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Renovar Membresía — Zona Fit Evolution</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header style="background: var(--color-primario); color: white; padding: 16px; display: flex; justify-content: space-between;">
+    <h2>Renovar Membresía</h2>
+    <a href="panel.html" style="color: var(--color-acento);">← Volver al panel</a>
+  </header>
+
+  <main style="padding: 24px; max-width: 500px;">
+    <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <label for="cedulaBusqueda">Cédula del cliente</label>
+      <input type="text" id="cedulaBusqueda" placeholder="Ingresa la cédula" autocomplete="off" autofocus>
+      <button id="btnBuscar" style="margin-top: 8px;">Buscar cliente</button>
+      <p class="mensaje-error" id="mensajeBusqueda"></p>
+    </div>
+
+    <div id="infoCliente" style="display: none; background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+      <h3 id="nombreClienteInfo"></h3>
+      <p id="estadoMembresia"></p>
+      <p id="fechaVencimiento"></p>
+
+      <label for="selectPlan">Plan a renovar</label>
+      <select id="selectPlan" style="width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 4px;"></select>
+      <button id="btnRenovar" style="margin-top: 12px;">Confirmar renovación</button>
+    </div>
+
+    <p id="mensajeExitoRenovacion" style="color: #27ae60; display: none;"></p>
+  </main>
+
+  <script src="js/auth-guard.js"></script>
+  <script src="js/renovar.js"></script>
+</body>
+</html>
