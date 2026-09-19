@@ -9,6 +9,52 @@ async function crear({ plan_id, fecha_inicio, fecha_fin, cliente_id }) {
   return resultado.insertId;
 }
 
+// Crea una membresía y, en la misma transacción, cambia el estado de la anterior (si la hay).
+// Si algo falla, no se cambia nada. Devuelve null si la anterior ya no estaba activa
+// (otra renovación se adelantó), para que el servicio pueda avisar sin dejar datos a medias.
+async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin, cliente_id, anterior }) {
+  const conexion = await pool.getConnection();
+  try {
+    await conexion.beginTransaction();
+
+    // Bloquea al cliente: dos renovaciones simultáneas del mismo cliente se procesan una tras otra
+    await conexion.query('SELECT id FROM clientes WHERE id = ? FOR UPDATE', [cliente_id]);
+
+    if (anterior) {
+      const [resultadoAnterior] = await conexion.query(
+        "UPDATE membresias SET estado = ? WHERE id = ? AND estado = 'activa'",
+        [anterior.estado, anterior.id]
+      );
+      if (resultadoAnterior.affectedRows === 0) {
+        await conexion.rollback();
+        return null;
+      }
+    } else {
+      const [activas] = await conexion.query(
+        "SELECT COUNT(*) AS total FROM membresias WHERE cliente_id = ? AND estado = 'activa'",
+        [cliente_id]
+      );
+      if (activas[0].total > 0) {
+        await conexion.rollback();
+        return null;
+      }
+    }
+
+    const [resultado] = await conexion.query(
+      'INSERT INTO membresias (plan_id, fecha_inicio, fecha_fin, cliente_id) VALUES (?, ?, ?, ?)',
+      [plan_id, fecha_inicio, fecha_fin, cliente_id]
+    );
+
+    await conexion.commit();
+    return resultado.insertId;
+  } catch (error) {
+    await conexion.rollback();
+    throw error;
+  } finally {
+    conexion.release();
+  }
+}
+
 async function obtenerTodas() {
   const [filas] = await pool.query('SELECT * FROM membresias');
   return filas.map(fila => new Membresia(fila));
@@ -72,6 +118,7 @@ async function eliminar(id) {
 
 module.exports = {
   crear,
+  crearReemplazando,
   obtenerTodas,
   obtenerPorId,
   obtenerActivaPorCliente,
