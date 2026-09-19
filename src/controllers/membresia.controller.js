@@ -45,4 +45,22 @@ async function eliminar(req, res, next) {
   }
 }
 
-module.exports = { crear, listar, obtenerPorId, actualizarEstado, eliminar };
+async function buscarPorCedula(req, res, next) {
+  try {
+    const info = await membresiaService.buscarClienteParaRenovar(req.params.cedula);
+    res.status(200).json(info);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function renovar(req, res, next) {
+  try {
+    const membresia = await membresiaService.renovarMembresia(req.body);
+    res.status(201).json(membresia);
+  } catch (error) {
+    next(error);
+  }
+}
+
+module.exports = { crear, listar, obtenerPorId, actualizarEstado, eliminar, buscarPorCedula, renovar };
