@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Principal — Zona Fit Evolution</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <header style="background: var(--color-primario); color: white; padding: 16px; display: flex; justify-content: space-between;">
+    <h2>Zona Fit Evolution</h2>
+    <div>
+      <span id="nombreUsuario"></span>
+      <button onclick="cerrarSesion()" style="width: auto; margin-left: 12px;">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main style="padding: 24px;">
+    <h3>Bienvenido/a</h3>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+      <a href="clientes.html" style="text-decoration: none;">
+        <div style="background: white; padding: 20px; border-radius: 8px; width: 200px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          Gestión de Clientes
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <script src="js/auth-guard.js"></script>
+  <script>
+    const usuario = verificarSesion();
+    if (usuario) {
+      document.getElementById('nombreUsuario').textContent = usuario.nombre;
+    }
+  </script>
+</body>
+</html>
