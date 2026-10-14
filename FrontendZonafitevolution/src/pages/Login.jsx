@@ -10,15 +10,45 @@ function Login({ onLoginExitoso }) {
   async function manejarEnvio(e) {
     e.preventDefault();
     setError("");
+
+    // 1. Sanitización: Eliminar espacios en blanco sobrantes
+    const correoLimpio = correo.trim();
+    const contrasenaLimpias = contrasena.trim();
+
+    // 2. Validación estricta contra campos vacíos o formados solo por espacios
+    if (!correoLimpio || !contrasenaLimpias) {
+      setError("Por favor, completa todos los campos correctamente.");
+      return;
+    }
+
+    // Validación básica de formato de correo en el cliente
+    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!regexCorreo.test(correoLimpio)) {
+      setError("El formato del correo electrónico no es válido.");
+      return;
+    }
+
     setCargando(true);
 
     try {
-      const { token, usuario } = await iniciarSesion(correo, contrasena);
+      const { token, usuario } = await iniciarSesion(
+        correoLimpio,
+        contrasenaLimpias,
+      );
+
+      // Nota de seguridad: 'localStorage' es vulnerable a ataques XSS.
+      // Si es posible, se recomienda almacenar los tokens en cookies seguras (HttpOnly, Secure, SameSite).
       localStorage.setItem("token", token);
       localStorage.setItem("usuario", JSON.stringify(usuario));
+
       onLoginExitoso(usuario);
     } catch (err) {
-      setError(err.message);
+      // 3. Manejo de errores seguro: Usamos 'err' para depuración interna sin mostrar detalles sensibles
+      console.error("Error al iniciar sesión:", err);
+
+      setError(
+        "Credenciales incorrectas o error en el servidor. Inténtalo de nuevo.",
+      );
     } finally {
       setCargando(false);
     }
@@ -36,6 +66,7 @@ function Login({ onLoginExitoso }) {
           type="email"
           value={correo}
           onChange={(e) => setCorreo(e.target.value)}
+          maxLength={100} // Previene ataques de denegación de servicio por entradas masivas
           required
         />
 
@@ -45,6 +76,7 @@ function Login({ onLoginExitoso }) {
           type="password"
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
+          maxLength={128} // Límite estándar para evitar hashes muy largos o DoS
           required
         />
 
