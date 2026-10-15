@@ -1,0 +1,77 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+/* ===== PALETA DE COLORES (cámbialos aquí y cambia toda la app) ===== */
+:root {
+  --negro: #0d0d0d;
+  --negro-claro: #1a1a1a;
+  --gris-borde: #2e2e2e;
+  --gris-texto: #a8a8a8;
+  --amarillo: #ffd600;
+  --amarillo-hover: #ffe44d;
+  --blanco: #ffffff;
+  --rojo: #ff4d4d;
+  --radio: 10px;
+}
+
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== BASE ===== */
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--negro);
+  color: var(--blanco);
+  line-height: 1.5;
+}
+
+/* ===== BOTÓN GLOBAL ===== */
+button {
+  margin-top: 0.8rem;
+  padding: 0.85rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--amarillo);
+  color: var(--negro);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.1s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--amarillo-hover);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== SCROLLBAR (opcional, combina con el tema) ===== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--negro);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gris-borde);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--amarillo);
+}

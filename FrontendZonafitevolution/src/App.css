@@ -1,0 +1,104 @@
+/* ===== LOGIN ===== */
+.login-fondo {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background: radial-gradient(circle at top, #1f1b00 0%, var(--negro) 55%);
+}
+
+.login-caja {
+  width: 100%;
+  max-width: 400px;
+  background: var(--negro-claro);
+  border: 1px solid var(--gris-borde);
+  border-top: 4px solid var(--amarillo);
+  border-radius: var(--radio);
+  padding: 2.2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 10px 40px rgba(255, 214, 0, 0.08);
+}
+
+.login-caja h1 {
+  color: var(--amarillo);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.login-caja p {
+  color: var(--gris-texto);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.login-caja label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.4rem;
+}
+
+.login-caja input {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--gris-borde);
+  border-radius: 8px;
+  background: var(--negro);
+  color: var(--blanco);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.login-caja input:focus {
+  outline: none;
+  border-color: var(--amarillo);
+  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2);
+}
+
+/* ===== MENSAJE DE ERROR ===== */
+.mensaje-error {
+  background: rgba(255, 77, 77, 0.1);
+  border-left: 4px solid var(--rojo);
+  color: #ff9a9a !important;
+  padding: 0.65rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin: 0.6rem 0 0 !important;
+}
+
+/* ===== PANTALLA DE BIENVENIDA ===== */
+.bienvenida {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+.bienvenida h1 {
+  color: var(--amarillo);
+  font-size: 2rem;
+}
+
+.bienvenida p {
+  color: var(--gris-texto);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .login-caja {
+    padding: 1.6rem 1.2rem;
+  }
+
+  .bienvenida h1 {
+    font-size: 1.5rem;
+  }
+}
