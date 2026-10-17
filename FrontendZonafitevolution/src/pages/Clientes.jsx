@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import FormularioCliente from "../components/FormularioCliente";
+import { actualizarCliente, crearCliente, listarClientes } from "../services/clienteService";
+import { cambiarEstadoMembresia, listarMembresias } from "../services/membresiaService";
 import {
-  actualizarCliente,
-  crearCliente,
-  eliminarCliente,
-  listarClientes,
-} from "../services/clienteService";
-import { ROL_ADMIN } from "../utils/permisos";
+  ETIQUETAS_ESTADO,
+  accionesPermitidas,
+  diaDe,
+  membresiaActual,
+} from "../utils/estadoMembresia";
 import { normalizarTexto } from "../utils/validacionesCliente";
 
 const MAX_BUSQUEDA = 50;
@@ -22,9 +23,22 @@ function textoFecha(valor) {
   return Number.isNaN(fecha.getTime()) ? "—" : formatoFecha.format(fecha);
 }
 
-// Clientes: lista, búsqueda, registro, edición y eliminación (esta última solo para el Admin)
-function Clientes({ usuario, iniciarEnRegistro = false }) {
+// Carga clientes y membresías a la vez; si fallan las membresías, la lista de clientes igual se muestra
+async function cargarDatos() {
+  const [clientes, membresias] = await Promise.allSettled([listarClientes(), listarMembresias()]);
+  if (clientes.status === "rejected") throw clientes.reason;
+  return {
+    clientes: clientes.value,
+    membresias: membresias.status === "fulfilled" ? membresias.value : [],
+    errorMembresias: membresias.status === "rejected" ? membresias.reason.message : "",
+  };
+}
+
+// Clientes: lista, búsqueda, registro, edición y cambio del estado de la membresía.
+// Los clientes no se eliminan: lo que cambia es el estado de su membresía.
+function Clientes({ iniciarEnRegistro = false }) {
   const [clientes, setClientes] = useState([]);
+  const [membresias, setMembresias] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [aviso, setAviso] = useState("");
@@ -32,35 +46,32 @@ function Clientes({ usuario, iniciarEnRegistro = false }) {
   const [recarga, setRecarga] = useState(0);
   // null = solo lista · "nuevo" = formulario de registro · objeto = cliente que se edita
   const [formulario, setFormulario] = useState(iniciarEnRegistro ? "nuevo" : null);
-  const [eliminandoId, setEliminandoId] = useState(null);
+  const [cambiandoId, setCambiandoId] = useState(null);
 
-  const esAdmin = usuario.rol_id === ROL_ADMIN;
+  const aplicar = useCallback((datos) => {
+    setClientes(datos.clientes);
+    setMembresias(datos.membresias);
+    setError(datos.errorMembresias ? `No se pudo consultar las membresías: ${datos.errorMembresias}` : "");
+  }, []);
 
   const cargar = useCallback(() => {
     setCargando(true);
-    return listarClientes()
-      .then((lista) => {
-        setClientes(lista);
-        setError("");
-      })
+    return cargarDatos()
+      .then(aplicar)
       .catch((err) => setError(err.message))
       .finally(() => setCargando(false));
-  }, []);
+  }, [aplicar]);
 
   useEffect(() => {
     let vigente = true;
-    listarClientes()
-      .then((lista) => {
-        if (!vigente) return;
-        setClientes(lista);
-        setError("");
-      })
+    cargarDatos()
+      .then((datos) => vigente && aplicar(datos))
       .catch((err) => vigente && setError(err.message))
       .finally(() => vigente && setCargando(false));
     return () => {
       vigente = false;
     };
-  }, [recarga]);
+  }, [recarga, aplicar]);
 
   function actualizarLista() {
     // Evita consultas duplicadas por doble clic
@@ -80,6 +91,15 @@ function Clientes({ usuario, iniciarEnRegistro = false }) {
       [c.nombre, c.cedula, c.correo, c.telefono].some((v) => String(v ?? "").toLowerCase().includes(termino)),
     );
   }, [clientes, busqueda]);
+
+  const membresiasPorCliente = useMemo(() => {
+    const mapa = new Map();
+    for (const m of membresias) {
+      if (!mapa.has(m.cliente_id)) mapa.set(m.cliente_id, []);
+      mapa.get(m.cliente_id).push(m);
+    }
+    return mapa;
+  }, [membresias]);
 
   const cedulasExistentes = useMemo(() => clientes.map((c) => String(c.cedula)), [clientes]);
 
@@ -105,28 +125,26 @@ function Clientes({ usuario, iniciarEnRegistro = false }) {
     await cargar();
   }
 
-  async function eliminar(cliente) {
-    // Solo el Admin elimina (el backend también lo exige) y no se permite más de una eliminación a la vez
-    if (!esAdmin || eliminandoId !== null) return;
-    if (!window.confirm(`¿Eliminar al cliente "${cliente.nombre}" (cédula ${cliente.cedula})? Esta acción no se puede deshacer.`)) {
-      return;
-    }
+  async function cambiarEstado(cliente, membresia, accion) {
+    // Un cambio a la vez: evita envíos duplicados por doble clic
+    if (cambiandoId !== null) return;
+    if (!window.confirm(`¿${accion.etiqueta} de "${cliente.nombre}"?`)) return;
 
-    setEliminandoId(cliente.id);
+    setCambiandoId(membresia.id);
     setError("");
     setAviso("");
     try {
-      await eliminarCliente(cliente.id);
-      setAviso(`Cliente "${cliente.nombre}" eliminado correctamente.`);
+      await cambiarEstadoMembresia(membresia.id, accion.estado);
       await cargar();
+      setAviso(`La membresía de "${cliente.nombre}" ahora está ${ETIQUETAS_ESTADO[accion.estado].toLowerCase()}.`);
     } catch (err) {
       setError(err.message);
     } finally {
-      setEliminandoId(null);
+      setCambiandoId(null);
     }
   }
 
-  const ocupado = cargando || eliminandoId !== null;
+  const ocupado = cargando || cambiandoId !== null;
 
   return (
     <section>
@@ -192,29 +210,45 @@ function Clientes({ usuario, iniciarEnRegistro = false }) {
                     <th>Correo</th>
                     <th>Teléfono</th>
                     <th>Registro</th>
+                    <th>Membresía</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {visibles.map((c) => (
-                    <tr key={c.id}>
-                      <td>{c.nombre}</td>
-                      <td>{c.cedula}</td>
-                      <td>{c.correo || "—"}</td>
-                      <td>{c.telefono || "—"}</td>
-                      <td>{textoFecha(c.fecha_registro)}</td>
-                      <td>
-                        <button type="button" onClick={() => abrirEdicion(c)} disabled={ocupado}>
-                          Editar
-                        </button>
-                        {esAdmin && (
-                          <button type="button" onClick={() => eliminar(c)} disabled={ocupado}>
-                            {eliminandoId === c.id ? "Eliminando..." : "Eliminar"}
+                  {visibles.map((c) => {
+                    const delCliente = membresiasPorCliente.get(c.id) ?? [];
+                    const membresia = membresiaActual(delCliente);
+                    const acciones = accionesPermitidas(membresia, delCliente);
+                    return (
+                      <tr key={c.id}>
+                        <td>{c.nombre}</td>
+                        <td>{c.cedula}</td>
+                        <td>{c.correo || "—"}</td>
+                        <td>{c.telefono || "—"}</td>
+                        <td>{textoFecha(c.fecha_registro)}</td>
+                        <td>
+                          {membresia
+                            ? `${ETIQUETAS_ESTADO[membresia.estado]}${diaDe(membresia.fecha_fin) ? ` · vence ${diaDe(membresia.fecha_fin)}` : ""}`
+                            : "Sin membresía"}
+                        </td>
+                        <td>
+                          <button type="button" onClick={() => abrirEdicion(c)} disabled={ocupado}>
+                            Editar
                           </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
+                          {acciones.map((a) => (
+                            <button
+                              key={a.estado}
+                              type="button"
+                              onClick={() => cambiarEstado(c, membresia, a)}
+                              disabled={ocupado}
+                            >
+                              {cambiandoId === membresia.id ? "Guardando..." : a.etiqueta}
+                            </button>
+                          ))}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </>

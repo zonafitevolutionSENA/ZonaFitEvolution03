@@ -306,7 +306,7 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Rutas con React Router, menú lateral y barra superior                          | Pendiente    |
 | Rutas protegidas y menú según el rol                                           | Pendiente    |
 | Inicio (dashboard): acciones rápidas, actividad reciente y notificaciones      | Implementado |
-| Clientes: lista, búsqueda, registro, edición y eliminación (solo Admin)        | Implementado |
+| Clientes: lista, búsqueda, registro, edición y estado de la membresía          | Implementado |
 | Otras pantallas (planes, membresías, biometría, acceso, usuarios)              | Pendiente    |
 
 Tras iniciar sesión, la aplicación muestra una pantalla de bienvenida con el nombre y el rol del usuario.
@@ -331,7 +331,7 @@ src/
 │   ├── Encabezado.jsx          barra superior con notificaciones y usuario
 │   └── FormularioCliente.jsx   formulario de registro y edición de clientes
 ├── pages/
-│   ├── Clientes.jsx            lista, búsqueda, registro, edición y eliminación
+│   ├── Clientes.jsx            lista, búsqueda, registro, edición y estado de membresía
 │   ├── Inicio.jsx              dashboard: acciones rápidas y actividad reciente
 │   ├── Login.jsx               formulario de inicio de sesión
 │   └── SeccionPendiente.jsx    aviso de las secciones aún no construidas
@@ -339,8 +339,10 @@ src/
 │   ├── api.js                  función base para llamar a la API
 │   ├── authService.js          llamadas de autenticación
 │   ├── clienteService.js       llamadas de clientes (/clientes)
+│   ├── membresiaService.js     llamadas de membresías (/membresias)
 │   └── dashboardService.js     datos del dashboard (accesos y membresías por vencer)
 ├── utils/
+│   ├── estadoMembresia.js      reglas de estado de la membresía de un cliente
 │   ├── permisos.js             secciones del menú y qué rol puede verlas
 │   └── validacionesCliente.js  validaciones del formulario de clientes
 ├── App.jsx                     estado de sesión y pantalla a mostrar
@@ -362,7 +364,18 @@ Se validan en el navegador antes de llamar a la API (el backend sigue siendo la 
 | Correo   | Opcional; si se escribe, debe tener formato válido (máximo 100 caracteres) |
 | Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
 
-Los botones se bloquean mientras se guarda, y el botón "Eliminar" solo aparece al Admin y pide confirmación.
+Los botones se bloquean mientras se guarda.
+
+## Clientes y estado de la membresía
+
+Los clientes **no se eliminan**: lo que se gestiona es el estado de su membresía (`PATCH /api/membresias/:id/estado`), disponible para Admin y Empleado y siempre con confirmación.
+
+| Estado actual                       | Cambio que ofrece la pantalla |
+| ----------------------------------- | ----------------------------- |
+| Activa y vigente                    | Cancelar membresía            |
+| Activa con fecha de fin ya pasada   | Marcar como vencida           |
+| Cancelada, vigente y sin otra activa | Reactivar membresía           |
+| Vencida o sin membresía             | Ninguno (se renueva o asigna desde Membresías) |
 
 ## Autenticación y sesión
 
