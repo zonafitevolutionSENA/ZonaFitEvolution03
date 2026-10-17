@@ -7,8 +7,8 @@ import Historial from "./pages/Historial";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
 import Membresias from "./pages/Membresias";
+import Personal from "./pages/Personal";
 import Planes from "./pages/Planes";
-import SeccionPendiente from "./pages/SeccionPendiente";
 import { obtenerPorVencer } from "./services/dashboardService";
 import { SECCIONES, seccionPermitida } from "./utils/permisos";
 import "./App.css";
@@ -97,14 +97,31 @@ function App() {
     return <Login onLoginExitoso={setUsuario} />;
   }
 
-  const seccion = SECCIONES.find((s) => s.id === vista);
-  const titulo = seccion ? seccion.etiqueta : "";
+  // Pantalla de la sección activa; cualquier valor desconocido vuelve al Inicio
+  function pantalla() {
+    switch (vista) {
+      case "clientes":
+        return <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} />;
+      case "membresias":
+        return <Membresias iniciarEnRenovar={accionInicial === "renovar-membresia"} />;
+      case "planes":
+        return <Planes usuario={usuario} />;
+      case "acceso":
+        return <Acceso />;
+      case "historial":
+        return <Historial />;
+      case "personal":
+        return <Personal usuario={usuario} />;
+      default:
+        return <Inicio usuario={usuario} alNavegar={navegar} />;
+    }
+  }
 
   return (
     <div>
       <BarraLateral
         rolId={usuario.rol_id}
-        activa={seccion ? vista : "inicio"}
+        activa={vista}
         alNavegar={navegar}
         alCerrarSesion={cerrarSesion}
       />
@@ -116,21 +133,7 @@ function App() {
           alReintentar={() => setRecargaNotificaciones((r) => r + 1)}
         />
         <main>
-          {vista === "inicio" ? (
-            <Inicio usuario={usuario} alNavegar={navegar} />
-          ) : vista === "clientes" ? (
-            <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} />
-          ) : vista === "membresias" ? (
-            <Membresias iniciarEnRenovar={accionInicial === "renovar-membresia"} />
-          ) : vista === "historial" ? (
-            <Historial />
-          ) : vista === "acceso" ? (
-            <Acceso />
-          ) : vista === "planes" ? (
-            <Planes usuario={usuario} />
-          ) : (
-            <SeccionPendiente titulo={titulo} alVolver={() => setVista("inicio")} />
-          )}
+          {pantalla()}
         </main>
       </div>
     </div>
