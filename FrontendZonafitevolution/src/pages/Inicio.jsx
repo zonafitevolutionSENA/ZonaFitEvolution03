@@ -12,13 +12,29 @@ const formatoHora = new Intl.DateTimeFormat("es-CO", {
 });
 
 const ACCIONES_RAPIDAS = [
-  { id: "registrar-cliente", titulo: "Registrar cliente", detalle: "Añade un nuevo cliente al sistema" },
-  { id: "renovar-membresia", titulo: "Asignar o renovar membresía", detalle: "Gestiona los planes de tus clientes" },
-  { id: "validar-acceso", titulo: "Validar acceso", detalle: "Comprueba el acceso de un miembro" },
+  {
+    id: "registrar-cliente",
+    titulo: "Registrar cliente",
+    detalle: "Añade un nuevo cliente al sistema",
+  },
+  {
+    id: "renovar-membresia",
+    titulo: "Asignar o renovar membresía",
+    detalle: "Gestiona los planes de tus clientes",
+  },
+  {
+    id: "validar-acceso",
+    titulo: "Validar acceso",
+    detalle: "Comprueba el acceso de un miembro",
+  },
 ];
 
 function primerNombre(nombre) {
-  return String(nombre ?? "").trim().split(/\s+/)[0] || "";
+  return (
+    String(nombre ?? "")
+      .trim()
+      .split(/\s+/)[0] || ""
+  );
 }
 
 function Inicio({ usuario, alNavegar }) {
@@ -68,17 +84,25 @@ function Inicio({ usuario, alNavegar }) {
       </ul>
 
       <h3>Actividad reciente</h3>
-      <button type="button" onClick={() => alNavegar("historial")}>Ver historial</button>
+      <button type="button" onClick={() => alNavegar("historial")}>
+        Ver historial
+      </button>
       <button type="button" onClick={actualizar} disabled={cargando}>
         {cargando ? "Actualizando..." : "Actualizar"}
       </button>
 
       {error && (
-        <p className="mensaje-error" role="alert">{error}</p>
+        <p className="mensaje-error" role="alert">
+          {error}
+        </p>
       )}
 
-      {!error && cargando && actividad.length === 0 && <p>Cargando actividad...</p>}
-      {!error && !cargando && actividad.length === 0 && <p>Aún no hay accesos registrados.</p>}
+      {!error && cargando && actividad.length === 0 && (
+        <p>Cargando actividad...</p>
+      )}
+      {!error && !cargando && actividad.length === 0 && (
+        <p>Aún no hay accesos registrados.</p>
+      )}
 
       {actividad.length > 0 && (
         <table>
