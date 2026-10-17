@@ -308,7 +308,8 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Inicio (dashboard): acciones rápidas, actividad reciente y notificaciones      | Implementado |
 | Clientes: lista, búsqueda, registro, edición y estado de la membresía          | Implementado |
 | Planes: catálogo para todos; el Admin crea, edita, activa y desactiva          | Implementado |
-| Otras pantallas (membresías, biometría, acceso, usuarios)                      | Pendiente    |
+| Membresías: listado, asignación y renovación rápida por cédula                 | Implementado |
+| Otras pantallas (biometría, acceso, usuarios)                                  | Pendiente    |
 
 Tras iniciar sesión, la aplicación muestra una pantalla de bienvenida con el nombre y el rol del usuario.
 
@@ -331,11 +332,14 @@ src/
 │   ├── Campo.jsx               campo de formulario con su mensaje de error
 │   ├── Encabezado.jsx          barra superior con notificaciones y usuario
 │   ├── FormularioCliente.jsx   formulario de registro y edición de clientes
-│   └── FormularioPlan.jsx      formulario para crear y editar planes
+│   ├── FormularioMembresia.jsx formulario para asignar una membresía
+│   ├── FormularioPlan.jsx      formulario para crear y editar planes
+│   └── RenovarMembresia.jsx    búsqueda por cédula y renovación rápida
 ├── pages/
 │   ├── Clientes.jsx            lista, búsqueda, registro, edición y estado de membresía
 │   ├── Inicio.jsx              dashboard: acciones rápidas y actividad reciente
 │   ├── Login.jsx               formulario de inicio de sesión
+│   ├── Membresias.jsx          listado, asignación y renovación de membresías
 │   ├── Planes.jsx              catálogo de planes y su gestión (Admin)
 │   └── SeccionPendiente.jsx    aviso de las secciones aún no construidas
 ├── services/
@@ -349,6 +353,7 @@ src/
 │   ├── estadoMembresia.js      reglas de estado de la membresía de un cliente
 │   ├── permisos.js             secciones del menú y qué rol puede verlas
 │   ├── validacionesCliente.js  validaciones del formulario de clientes
+│   ├── validacionesMembresia.js validaciones de asignar y renovar membresías
 │   └── validacionesPlan.js     validaciones del formulario de planes
 ├── App.jsx                     estado de sesión y pantalla a mostrar
 ├── App.css                     estilos de las pantallas (login, bienvenida)
@@ -370,6 +375,22 @@ Se validan en el navegador antes de llamar a la API (el backend sigue siendo la 
 | Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
 
 Los botones se bloquean mientras se guarda.
+
+## Membresías
+
+La pantalla lista las membresías (con filtro por estado y búsqueda por cliente, cédula o plan) y ofrece dos acciones, disponibles para Admin y Empleado:
+
+- **Asignar membresía** (`POST /api/membresias`): se elige cliente, plan activo y fecha de inicio. La pantalla calcula y muestra la fecha de vencimiento estimada.
+- **Renovar por cédula** (`GET /api/membresias/buscar/:cedula` y `POST /api/membresias/renovar`): se busca al cliente, se muestra su membresía actual y se elige el plan. Si la actual sigue vigente, la nueva empieza al día siguiente de su vencimiento; si no, hoy. La acción rápida "Asignar o renovar membresía" del Inicio abre esta opción.
+
+| Campo / regla       | Validación                                                                          |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| Cliente             | Obligatorio y existente; no puede tener ya una membresía activa y vigente           |
+| Plan                | Obligatorio, existente y activo                                                     |
+| Fecha de inicio     | Obligatoria, fecha real, entre 30 días atrás y un año adelante                      |
+| Cédula (renovación) | Obligatoria, solo dígitos (6 a 15)                                                  |
+
+Al abrir Membresías (igual que Clientes) las membresías activas con fecha de fin pasada se pasan solas a `vencida`.
 
 ## Planes
 
@@ -444,7 +465,6 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 
 - React Router: rutas con URL propia, menú lateral y barra superior.
 - Rutas protegidas y menú según el rol (Admin y Empleado).
-- Membresías: asignación y renovación rápida por cédula.
 - Biometría: registro de huella simulada.
 - Control de acceso: validación por huella simulada e historial.
 - Usuarios: gestión (solo Admin).
