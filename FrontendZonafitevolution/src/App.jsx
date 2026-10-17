@@ -4,6 +4,7 @@ import Encabezado from "./components/Encabezado";
 import Clientes from "./pages/Clientes";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
+import Membresias from "./pages/Membresias";
 import Planes from "./pages/Planes";
 import SeccionPendiente from "./pages/SeccionPendiente";
 import { obtenerPorVencer } from "./services/dashboardService";
@@ -35,18 +36,20 @@ function leerUsuarioGuardado() {
   return null;
 }
 
-// "registrar-cliente" es una acción rápida: abre Clientes con el formulario de registro
-const ACCION_REGISTRAR_CLIENTE = "registrar-cliente";
+// Acciones rápidas del Inicio: abren una sección con su formulario ya abierto
+const ACCIONES_RAPIDAS = {
+  "registrar-cliente": "clientes",
+  "renovar-membresia": "membresias",
+};
 
 const TITULOS_PENDIENTES = {
-  "renovar-membresia": "Asignar o renovar membresía",
   "validar-acceso": "Validar acceso",
 };
 
 function App() {
   const [usuario, setUsuario] = useState(leerUsuarioGuardado);
   const [vista, setVista] = useState("inicio");
-  const [abrirRegistro, setAbrirRegistro] = useState(false);
+  const [accionInicial, setAccionInicial] = useState(null);
   const [porVencer, setPorVencer] = useState(null);
   const [errorNotificaciones, setErrorNotificaciones] = useState("");
   const [recargaNotificaciones, setRecargaNotificaciones] = useState(0);
@@ -72,23 +75,24 @@ function App() {
     limpiarSesion();
     setUsuario(null);
     setVista("inicio");
-    setAbrirRegistro(false);
+    setAccionInicial(null);
     setPorVencer(null);
   }, []);
 
   // Una vista solo se abre si existe y el rol puede verla (ej. "Personal" es solo del administrador)
   function navegar(destino) {
-    if (destino === ACCION_REGISTRAR_CLIENTE) {
-      if (!seccionPermitida(usuario.rol_id, "clientes")) return;
-      setAbrirRegistro(true);
-      setVista("clientes");
+    if (Object.hasOwn(ACCIONES_RAPIDAS, destino)) {
+      const destinoSeccion = ACCIONES_RAPIDAS[destino];
+      if (!seccionPermitida(usuario.rol_id, destinoSeccion)) return;
+      setAccionInicial(destino);
+      setVista(destinoSeccion);
       return;
     }
     const esSeccion = SECCIONES.some((s) => s.id === destino);
     const esAccion = Object.hasOwn(TITULOS_PENDIENTES, destino);
     if (!esSeccion && !esAccion) return;
     if (esSeccion && !seccionPermitida(usuario.rol_id, destino)) return;
-    setAbrirRegistro(false);
+    setAccionInicial(null);
     setVista(destino);
   }
 
@@ -118,7 +122,9 @@ function App() {
           {vista === "inicio" ? (
             <Inicio usuario={usuario} alNavegar={navegar} />
           ) : vista === "clientes" ? (
-            <Clientes iniciarEnRegistro={abrirRegistro} />
+            <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} />
+          ) : vista === "membresias" ? (
+            <Membresias iniciarEnRenovar={accionInicial === "renovar-membresia"} />
           ) : vista === "planes" ? (
             <Planes usuario={usuario} />
           ) : (
