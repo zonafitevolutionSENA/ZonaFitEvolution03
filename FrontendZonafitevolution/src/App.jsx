@@ -117,7 +117,7 @@ function App() {
           {vista === "inicio" ? (
             <Inicio usuario={usuario} alNavegar={navegar} />
           ) : vista === "clientes" ? (
-            <Clientes usuario={usuario} iniciarEnRegistro={abrirRegistro} />
+            <Clientes iniciarEnRegistro={abrirRegistro} />
           ) : (
             <SeccionPendiente titulo={titulo} alVolver={() => setVista("inicio")} />
           )}
