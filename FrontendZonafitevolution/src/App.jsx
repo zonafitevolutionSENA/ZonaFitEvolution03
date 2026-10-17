@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import BarraLateral from "./components/BarraLateral";
 import Encabezado from "./components/Encabezado";
+import Acceso from "./pages/Acceso";
 import Clientes from "./pages/Clientes";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
@@ -40,10 +41,7 @@ function leerUsuarioGuardado() {
 const ACCIONES_RAPIDAS = {
   "registrar-cliente": "clientes",
   "renovar-membresia": "membresias",
-};
-
-const TITULOS_PENDIENTES = {
-  "validar-acceso": "Validar acceso",
+  "validar-acceso": "acceso",
 };
 
 function App() {
@@ -88,10 +86,8 @@ function App() {
       setVista(destinoSeccion);
       return;
     }
-    const esSeccion = SECCIONES.some((s) => s.id === destino);
-    const esAccion = Object.hasOwn(TITULOS_PENDIENTES, destino);
-    if (!esSeccion && !esAccion) return;
-    if (esSeccion && !seccionPermitida(usuario.rol_id, destino)) return;
+    if (!SECCIONES.some((s) => s.id === destino)) return;
+    if (!seccionPermitida(usuario.rol_id, destino)) return;
     setAccionInicial(null);
     setVista(destino);
   }
@@ -101,7 +97,7 @@ function App() {
   }
 
   const seccion = SECCIONES.find((s) => s.id === vista);
-  const titulo = seccion ? seccion.etiqueta : TITULOS_PENDIENTES[vista];
+  const titulo = seccion ? seccion.etiqueta : "";
 
   return (
     <div>
@@ -125,6 +121,8 @@ function App() {
             <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} />
           ) : vista === "membresias" ? (
             <Membresias iniciarEnRenovar={accionInicial === "renovar-membresia"} />
+          ) : vista === "acceso" ? (
+            <Acceso />
           ) : vista === "planes" ? (
             <Planes usuario={usuario} />
           ) : (
