@@ -1,4 +1,4 @@
-import { peticion } from "./api";
+import { listarHistorial } from "./accesoService";
 import { listarClientes } from "./clienteService";
 import { listarMembresias } from "./membresiaService";
 import { listarPlanes } from "./planService";
@@ -18,29 +18,17 @@ function sumarDias(fechaISO, dias) {
 const dia = (fecha) => String(fecha).slice(0, 10);
 const FECHA_VALIDA = /^\d{4}-\d{2}-\d{2}/;
 
-// El servidor debe responder con listas; si no, se corta con un mensaje claro en vez de romper la pantalla
-function exigirLista(datos, nombre) {
-  if (!Array.isArray(datos)) {
-    throw new Error(`Respuesta inesperada del servidor al consultar ${nombre}.`);
-  }
-  return datos.filter((fila) => fila && typeof fila === "object");
-}
-
 // Últimos movimientos de acceso para la tarjeta "Actividad reciente"
 export async function obtenerActividadReciente(limite = 5) {
-  const accesos = exigirLista(await peticion("/acceso-fisico/historial"), "el historial de acceso");
+  const accesos = await listarHistorial();
 
-  return accesos
-    .filter((a) => a.resultado === "permitido" || a.resultado === "denegado")
-    .filter((a) => !Number.isNaN(new Date(a.fecha_hora).getTime()))
-    .slice(0, limite)
-    .map((a) => ({
-      id: a.id,
-      cliente: typeof a.nombre_cliente === "string" && a.nombre_cliente.trim() ? a.nombre_cliente : "Huella no reconocida",
-      fechaHora: new Date(a.fecha_hora),
-      permitido: a.resultado === "permitido",
-      tipo: a.resultado === "permitido" ? "Entrada" : String(a.motivo ?? "Acceso denegado"),
-    }));
+  return accesos.slice(0, limite).map((a) => ({
+    id: a.id,
+    cliente: a.cliente,
+    fechaHora: a.fechaHora,
+    permitido: a.permitido,
+    tipo: a.permitido ? "Entrada" : a.motivo || "Acceso denegado",
+  }));
 }
 
 // Membresías activas que vencen en los próximos 7 días (campana de notificaciones)

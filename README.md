@@ -310,7 +310,8 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Planes: catálogo para todos; el Admin crea, edita, activa y desactiva          | Implementado |
 | Membresías: listado, asignación y renovación rápida por cédula                 | Implementado |
 | Control de acceso: validar con huella simulada y registrar la huella           | Implementado |
-| Otras pantallas (historial, usuarios)                                          | Pendiente    |
+| Historial de accesos con filtros por resultado, texto y fechas                 | Implementado |
+| Otras pantallas (usuarios)                                                     | Pendiente    |
 
 Tras iniciar sesión, la aplicación muestra una pantalla de bienvenida con el nombre y el rol del usuario.
 
@@ -341,13 +342,14 @@ src/
 ├── pages/
 │   ├── Acceso.jsx               validar acceso y registrar huellas
 │   ├── Clientes.jsx             lista, búsqueda, registro, edición y estado de membresía
+│   ├── Historial.jsx            historial de accesos con filtros
 │   ├── Inicio.jsx               dashboard: acciones rápidas y actividad reciente
 │   ├── Login.jsx                formulario de inicio de sesión
 │   ├── Membresias.jsx           listado, asignación y renovación de membresías
 │   ├── Planes.jsx               catálogo de planes y su gestión (Admin)
 │   └── SeccionPendiente.jsx     aviso de las secciones aún no construidas
 ├── services/
-│   ├── accesoService.js         validación de acceso (/acceso-fisico)
+│   ├── accesoService.js         validación e historial de acceso (/acceso-fisico)
 │   ├── api.js                   función base para llamar a la API
 │   ├── authService.js           llamadas de autenticación
 │   ├── biometriaService.js      registro de huellas (/biometria)
@@ -357,6 +359,7 @@ src/
 │   └── planService.js           llamadas de planes (/planes)
 ├── utils/
 │   ├── estadoMembresia.js       reglas de estado de la membresía de un cliente
+│   ├── filtrosHistorial.js      validación de fechas y filtros del historial
 │   ├── permisos.js              secciones del menú y qué rol puede verlas
 │   ├── validacionesAcceso.js    validaciones de la huella simulada
 │   ├── validacionesCliente.js   validaciones del formulario de clientes
@@ -382,6 +385,18 @@ Se validan en el navegador antes de llamar a la API (el backend sigue siendo la 
 | Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
 
 Los botones se bloquean mientras se guarda.
+
+## Historial de accesos
+
+Muestra los 50 eventos más recientes de `GET /api/acceso-fisico/historial` (cliente, fecha y hora, resultado y motivo; "Huella no reconocida" si no hubo cliente). Los filtros se aplican sobre esos eventos ya cargados y no llaman otra vez a la API:
+
+| Filtro    | Validación                                                                         |
+| --------- | ---------------------------------------------------------------------------------- |
+| Resultado | Solo Todos, Acceso permitido o Acceso denegado                                     |
+| Buscar    | Texto de hasta 50 caracteres, sobre cliente y motivo                               |
+| Desde / Hasta | Opcionales; fechas reales, no futuras, y «Desde» no puede ser posterior a «Hasta» |
+
+El botón "Ver historial" del Inicio abre esta pantalla, y la tarjeta "Actividad reciente" usa el mismo servicio (`listarHistorial`).
 
 ## Control de acceso
 
@@ -484,7 +499,6 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 
 - React Router: rutas con URL propia, menú lateral y barra superior.
 - Rutas protegidas y menú según el rol (Admin y Empleado).
-- Historial de accesos (`GET /api/acceso-fisico/historial`).
 - Usuarios: gestión (solo Admin).
 - Manejo automático de token vencido: ante una respuesta `401`, cerrar la sesión y avisar al usuario.
 - Los módulos de pagos y reportes aún no tienen endpoints en el backend.
