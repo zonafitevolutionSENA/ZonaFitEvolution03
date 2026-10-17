@@ -4,8 +4,10 @@ import {
   hayErroresMembresia,
   limitesFechaInicio,
   validarAsignacion,
+  validarClienteMembresia,
 } from "../utils/validacionesMembresia";
 import { hoyLocal } from "../utils/estadoMembresia";
+import BuscadorCliente from "./BuscadorCliente";
 
 const SIN_ERRORES = { cliente: "", plan: "", fecha: "" };
 
@@ -22,10 +24,6 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
     () => planes.filter((p) => p.activo).sort((a, b) => Number(a.duracion_dias) - Number(b.duracion_dias)),
     [planes],
   );
-  const clientesOrdenados = useMemo(
-    () => [...clientes].sort((a, b) => String(a.nombre).localeCompare(String(b.nombre), "es")),
-    [clientes],
-  );
   const { min, max } = limitesFechaInicio();
   const plan = planesActivos.find((p) => String(p.id) === valores.plan);
   const fin = fechaFinEstimada(valores.fecha, plan);
@@ -34,6 +32,13 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
   function cambiar(campo, valor) {
     setValores((v) => ({ ...v, [campo]: valor }));
     if (errores[campo]) setErrores((e) => ({ ...e, [campo]: "" }));
+    if (errorGeneral) setErrorGeneral("");
+  }
+
+  // Al elegir un cliente se avisa de inmediato si ya tiene una membresía activa
+  function elegirCliente(id) {
+    setValores((v) => ({ ...v, cliente: id }));
+    setErrores((e) => ({ ...e, cliente: id ? validarClienteMembresia(id, clientes, membresias) : "" }));
     if (errorGeneral) setErrorGeneral("");
   }
 
@@ -71,23 +76,15 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
     <form onSubmit={enviar} noValidate aria-label="Asignar membresía">
       <h3>Asignar membresía</h3>
 
-      <div>
-        <label htmlFor="cliente-membresia">Cliente *</label>
-        <select
-          id="cliente-membresia"
-          value={valores.cliente}
-          onChange={(e) => cambiar("cliente", e.target.value)}
-          onBlur={() => validarAlSalir("cliente")}
-          aria-invalid={errores.cliente ? "true" : undefined}
-          disabled={guardando}
-        >
-          <option value="">Selecciona un cliente</option>
-          {clientesOrdenados.map((c) => (
-            <option key={c.id} value={c.id}>{c.nombre} — {c.cedula}</option>
-          ))}
-        </select>
-        {errores.cliente && <p className="mensaje-error" role="alert">{errores.cliente}</p>}
-      </div>
+      <BuscadorCliente
+        id="cliente-membresia"
+        etiqueta="Cliente *"
+        clientes={clientes}
+        valor={valores.cliente}
+        alCambiar={elegirCliente}
+        error={errores.cliente}
+        disabled={guardando}
+      />
 
       <div>
         <label htmlFor="plan-membresia">Plan *</label>
