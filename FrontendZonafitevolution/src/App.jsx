@@ -4,6 +4,7 @@ import Encabezado from "./components/Encabezado";
 import Clientes from "./pages/Clientes";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
+import Planes from "./pages/Planes";
 import SeccionPendiente from "./pages/SeccionPendiente";
 import { obtenerPorVencer } from "./services/dashboardService";
 import { SECCIONES, seccionPermitida } from "./utils/permisos";
@@ -118,6 +119,8 @@ function App() {
             <Inicio usuario={usuario} alNavegar={navegar} />
           ) : vista === "clientes" ? (
             <Clientes iniciarEnRegistro={abrirRegistro} />
+          ) : vista === "planes" ? (
+            <Planes usuario={usuario} />
           ) : (
             <SeccionPendiente titulo={titulo} alVolver={() => setVista("inicio")} />
           )}
