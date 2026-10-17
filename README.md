@@ -305,7 +305,9 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Tema visual negro y amarillo, responsive                                       | Implementado |
 | Rutas con React Router, menú lateral y barra superior                          | Pendiente    |
 | Rutas protegidas y menú según el rol                                           | Pendiente    |
-| Pantallas de datos (clientes, planes, membresías, biometría, acceso, usuarios) | Pendiente    |
+| Inicio (dashboard): acciones rápidas, actividad reciente y notificaciones      | Implementado |
+| Clientes: lista, búsqueda, registro, edición y eliminación (solo Admin)        | Implementado |
+| Otras pantallas (planes, membresías, biometría, acceso, usuarios)              | Pendiente    |
 
 Tras iniciar sesión, la aplicación muestra una pantalla de bienvenida con el nombre y el rol del usuario.
 
@@ -323,16 +325,44 @@ Solo las variables que empiezan con `VITE_` quedan disponibles en el navegador, 
 
 ```
 src/
+├── components/
+│   ├── BarraLateral.jsx        menú lateral según el rol
+│   ├── Campo.jsx               campo de formulario con su mensaje de error
+│   ├── Encabezado.jsx          barra superior con notificaciones y usuario
+│   └── FormularioCliente.jsx   formulario de registro y edición de clientes
 ├── pages/
-│   └── Login.jsx           formulario de inicio de sesión
+│   ├── Clientes.jsx            lista, búsqueda, registro, edición y eliminación
+│   ├── Inicio.jsx              dashboard: acciones rápidas y actividad reciente
+│   ├── Login.jsx               formulario de inicio de sesión
+│   └── SeccionPendiente.jsx    aviso de las secciones aún no construidas
 ├── services/
-│   ├── api.js              función base para llamar a la API
-│   └── authService.js      llamadas de autenticación
-├── App.jsx                 estado de sesión y pantalla a mostrar
-├── App.css                 estilos de las pantallas (login, bienvenida)
-├── index.css               estilos globales y paleta de colores
-└── main.jsx                punto de entrada (monta React)
+│   ├── api.js                  función base para llamar a la API
+│   ├── authService.js          llamadas de autenticación
+│   ├── clienteService.js       llamadas de clientes (/clientes)
+│   └── dashboardService.js     datos del dashboard (accesos y membresías por vencer)
+├── utils/
+│   ├── permisos.js             secciones del menú y qué rol puede verlas
+│   └── validacionesCliente.js  validaciones del formulario de clientes
+├── App.jsx                     estado de sesión y pantalla a mostrar
+├── App.css                     estilos de las pantallas (login, bienvenida)
+├── index.css                   estilos globales y paleta de colores
+└── main.jsx                    punto de entrada (monta React)
 ```
+
+`utils/` guarda funciones puras sin interfaz (permisos y validaciones); `components/` guarda piezas reutilizables que no son una pantalla completa.
+
+## Validaciones del formulario de clientes
+
+Se validan en el navegador antes de llamar a la API (el backend sigue siendo la validación definitiva):
+
+| Campo    | Regla                                                                      |
+| -------- | -------------------------------------------------------------------------- |
+| Nombre   | Obligatorio, de 3 a 100 caracteres; solo letras, espacios, `'`, `.` y `-`  |
+| Cédula   | Obligatoria, solo dígitos (6 a 15) y no repetida; no se puede editar       |
+| Correo   | Opcional; si se escribe, debe tener formato válido (máximo 100 caracteres) |
+| Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
+
+Los botones se bloquean mientras se guarda, y el botón "Eliminar" solo aparece al Admin y pide confirmación.
 
 ## Autenticación y sesión
 
@@ -384,7 +414,6 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 
 - React Router: rutas con URL propia, menú lateral y barra superior.
 - Rutas protegidas y menú según el rol (Admin y Empleado).
-- Clientes: lista (`GET /api/clientes`), registro, edición y eliminación.
 - Planes: catálogo y gestión (solo Admin).
 - Membresías: asignación y renovación rápida por cédula.
 - Biometría: registro de huella simulada.
