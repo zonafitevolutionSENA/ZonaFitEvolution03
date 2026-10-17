@@ -33,15 +33,11 @@ export async function crearCliente(datos) {
 }
 
 // PUT /api/clientes/:id  { nombre, correo, telefono } (la cédula no se modifica)
+// Los clientes no se eliminan: se gestiona el estado de su membresía (membresiaService)
 export async function actualizarCliente(id, { nombre, correo, telefono }) {
   const cliente = await peticion(`/clientes/${exigirId(id)}`, {
     method: "PUT",
     body: JSON.stringify({ nombre, correo, telefono }),
   });
   return exigirCliente(cliente);
-}
-
-// DELETE /api/clientes/:id (solo Admin)
-export function eliminarCliente(id) {
-  return peticion(`/clientes/${exigirId(id)}`, { method: "DELETE" });
 }
