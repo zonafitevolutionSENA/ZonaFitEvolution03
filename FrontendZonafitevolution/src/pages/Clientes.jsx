@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import FormularioCliente from "../components/FormularioCliente";
 import { actualizarCliente, crearCliente, listarClientes } from "../services/clienteService";
-import { cambiarEstadoMembresia, listarMembresias, marcarVencidas } from "../services/membresiaService";
+import { cambiarEstadoMembresia, listarMembresiasAlDia } from "../services/membresiaService";
 import {
   ETIQUETAS_ESTADO,
   accionesPermitidas,
@@ -26,33 +26,23 @@ function textoFecha(valor) {
 // Carga clientes y membresías a la vez; si fallan las membresías, la lista de clientes igual se muestra.
 // Las membresías activas con la fecha de fin vencida se pasan automáticamente a "vencida".
 async function cargarDatos() {
-  const [clientes, membresias] = await Promise.allSettled([listarClientes(), listarMembresias()]);
+  const [clientes, alDia] = await Promise.allSettled([listarClientes(), listarMembresiasAlDia()]);
   if (clientes.status === "rejected") throw clientes.reason;
-  if (membresias.status === "rejected") {
+  if (alDia.status === "rejected") {
     return {
       clientes: clientes.value,
       membresias: [],
-      errorMembresias: `No se pudo consultar las membresías: ${membresias.reason.message}`,
+      errorMembresias: `No se pudo consultar las membresías: ${alDia.reason.message}`,
       vencidas: 0,
     };
   }
 
-  let lista = membresias.value;
-  let errorMembresias = "";
-  let vencidas = 0;
-  const { actualizadas, fallidas } = await marcarVencidas(lista);
-  if (actualizadas > 0) {
-    vencidas = actualizadas;
-    try {
-      lista = await listarMembresias();
-    } catch (err) {
-      errorMembresias = err.message;
-    }
-  }
+  const { membresias, vencidas, fallidas, errorRecarga } = alDia.value;
+  let errorMembresias = errorRecarga;
   if (fallidas > 0) {
     errorMembresias = `No se pudo marcar como vencidas ${fallidas} membresía(s). Inténtalo de nuevo más tarde.`;
   }
-  return { clientes: clientes.value, membresias: lista, errorMembresias, vencidas };
+  return { clientes: clientes.value, membresias, errorMembresias, vencidas };
 }
 
 // Clientes: lista, búsqueda, registro, edición y cambio del estado de la membresía.
