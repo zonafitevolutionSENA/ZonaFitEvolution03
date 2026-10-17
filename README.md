@@ -307,7 +307,8 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Rutas protegidas y menú según el rol                                           | Pendiente    |
 | Inicio (dashboard): acciones rápidas, actividad reciente y notificaciones      | Implementado |
 | Clientes: lista, búsqueda, registro, edición y estado de la membresía          | Implementado |
-| Otras pantallas (planes, membresías, biometría, acceso, usuarios)              | Pendiente    |
+| Planes: catálogo para todos; el Admin crea, edita, activa y desactiva          | Implementado |
+| Otras pantallas (membresías, biometría, acceso, usuarios)                      | Pendiente    |
 
 Tras iniciar sesión, la aplicación muestra una pantalla de bienvenida con el nombre y el rol del usuario.
 
@@ -329,22 +330,26 @@ src/
 │   ├── BarraLateral.jsx        menú lateral según el rol
 │   ├── Campo.jsx               campo de formulario con su mensaje de error
 │   ├── Encabezado.jsx          barra superior con notificaciones y usuario
-│   └── FormularioCliente.jsx   formulario de registro y edición de clientes
+│   ├── FormularioCliente.jsx   formulario de registro y edición de clientes
+│   └── FormularioPlan.jsx      formulario para crear y editar planes
 ├── pages/
 │   ├── Clientes.jsx            lista, búsqueda, registro, edición y estado de membresía
 │   ├── Inicio.jsx              dashboard: acciones rápidas y actividad reciente
 │   ├── Login.jsx               formulario de inicio de sesión
+│   ├── Planes.jsx              catálogo de planes y su gestión (Admin)
 │   └── SeccionPendiente.jsx    aviso de las secciones aún no construidas
 ├── services/
 │   ├── api.js                  función base para llamar a la API
 │   ├── authService.js          llamadas de autenticación
 │   ├── clienteService.js       llamadas de clientes (/clientes)
 │   ├── membresiaService.js     llamadas de membresías (/membresias)
+│   ├── planService.js          llamadas de planes (/planes)
 │   └── dashboardService.js     datos del dashboard (accesos y membresías por vencer)
 ├── utils/
 │   ├── estadoMembresia.js      reglas de estado de la membresía de un cliente
 │   ├── permisos.js             secciones del menú y qué rol puede verlas
-│   └── validacionesCliente.js  validaciones del formulario de clientes
+│   ├── validacionesCliente.js  validaciones del formulario de clientes
+│   └── validacionesPlan.js     validaciones del formulario de planes
 ├── App.jsx                     estado de sesión y pantalla a mostrar
 ├── App.css                     estilos de las pantallas (login, bienvenida)
 ├── index.css                   estilos globales y paleta de colores
@@ -365,6 +370,16 @@ Se validan en el navegador antes de llamar a la API (el backend sigue siendo la 
 | Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
 
 Los botones se bloquean mientras se guarda.
+
+## Planes
+
+Todos los roles ven el catálogo (con filtro Todos / Activos / Inactivos). Solo el **Admin** ve los botones de gestión: crear (`POST /api/planes`), editar (`PUT /api/planes/:id`), desactivar (`PATCH /api/planes/:id/desactivar`) y activar (`PUT /api/planes/:id` con `{ "activo": true }`). Los planes **no se eliminan** desde la pantalla: se desactivan, para no afectar el historial de membresías.
+
+| Campo    | Regla                                                                                 |
+| -------- | ------------------------------------------------------------------------------------- |
+| Nombre   | Obligatorio, de 2 a 50 caracteres (letras, números, espacios, `.` y `-`); no repetido |
+| Duración | Obligatoria, número entero de 1 a 3650 días                                           |
+| Precio   | Obligatorio, mayor a 0 y hasta 50.000.000, máximo 2 decimales, sin puntos de miles    |
 
 ## Clientes y estado de la membresía
 
@@ -429,7 +444,6 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 
 - React Router: rutas con URL propia, menú lateral y barra superior.
 - Rutas protegidas y menú según el rol (Admin y Empleado).
-- Planes: catálogo y gestión (solo Admin).
 - Membresías: asignación y renovación rápida por cédula.
 - Biometría: registro de huella simulada.
 - Control de acceso: validación por huella simulada e historial.

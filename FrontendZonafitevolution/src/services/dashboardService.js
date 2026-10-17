@@ -1,6 +1,7 @@
 import { peticion } from "./api";
 import { listarClientes } from "./clienteService";
 import { listarMembresias } from "./membresiaService";
+import { listarPlanes } from "./planService";
 
 function aTexto(fecha) {
   const mes = String(fecha.getMonth() + 1).padStart(2, "0");
@@ -47,11 +48,11 @@ export async function obtenerPorVencer() {
   const [rawClientes, rawMembresias, rawPlanes] = await Promise.all([
     listarClientes(),
     listarMembresias(),
-    peticion("/planes"),
+    listarPlanes(),
   ]);
 
   const clientes = rawClientes;
-  const planes = exigirLista(rawPlanes, "los planes");
+  const planes = rawPlanes;
   // Se descartan membresías con fechas inválidas para no falsear los resultados
   const membresias = rawMembresias.filter((m) =>
     FECHA_VALIDA.test(String(m.fecha_fin)),
