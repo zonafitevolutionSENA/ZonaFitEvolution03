@@ -3,6 +3,7 @@ import BarraLateral from "./components/BarraLateral";
 import Encabezado from "./components/Encabezado";
 import Acceso from "./pages/Acceso";
 import Clientes from "./pages/Clientes";
+import Historial from "./pages/Historial";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
 import Membresias from "./pages/Membresias";
@@ -121,6 +122,8 @@ function App() {
             <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} />
           ) : vista === "membresias" ? (
             <Membresias iniciarEnRenovar={accionInicial === "renovar-membresia"} />
+          ) : vista === "historial" ? (
+            <Historial />
           ) : vista === "acceso" ? (
             <Acceso />
           ) : vista === "planes" ? (
