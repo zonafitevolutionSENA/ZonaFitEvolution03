@@ -1,6 +1,11 @@
-import { useState } from "react";
-import Dashboard from "./pages/Dashboard";
+import { useCallback, useEffect, useState } from "react";
+import BarraLateral from "./components/BarraLateral";
+import Encabezado from "./components/Encabezado";
+import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
+import SeccionPendiente from "./pages/SeccionPendiente";
+import { obtenerPorVencer } from "./services/dashboardService";
+import { SECCIONES, seccionPermitida } from "./utils/permisos";
 import "./App.css";
 
 function limpiarSesion() {
@@ -28,30 +33,83 @@ function leerUsuarioGuardado() {
   return null;
 }
 
+const TITULOS_PENDIENTES = {
+  "registrar-cliente": "Registrar cliente",
+  "renovar-membresia": "Asignar o renovar membresía",
+  "validar-acceso": "Validar acceso",
+};
+
 function App() {
   const [usuario, setUsuario] = useState(leerUsuarioGuardado);
+  const [vista, setVista] = useState("inicio");
+  const [porVencer, setPorVencer] = useState(null);
+  const [errorNotificaciones, setErrorNotificaciones] = useState("");
+  const [recargaNotificaciones, setRecargaNotificaciones] = useState(0);
 
-  function cerrarSesion() {
+  // Notificaciones (campana): se cargan una vez iniciada la sesión
+  useEffect(() => {
+    if (!usuario) return undefined;
+    let vigente = true;
+    obtenerPorVencer()
+      .then((lista) => {
+        if (!vigente) return;
+        setPorVencer(lista);
+        setErrorNotificaciones("");
+      })
+      .catch((err) => vigente && setErrorNotificaciones(err.message));
+    return () => {
+      vigente = false;
+    };
+  }, [usuario, recargaNotificaciones]);
+
+  const cerrarSesion = useCallback(() => {
     if (!window.confirm("¿Seguro que deseas cerrar sesión?")) return;
     limpiarSesion();
     setUsuario(null);
+    setVista("inicio");
+    setPorVencer(null);
+  }, []);
+
+  // Una vista solo se abre si existe y el rol puede verla (ej. "Personal" es solo del administrador)
+  function navegar(destino) {
+    const esSeccion = SECCIONES.some((s) => s.id === destino);
+    const esAccion = Object.hasOwn(TITULOS_PENDIENTES, destino);
+    if (!esSeccion && !esAccion) return;
+    if (esSeccion && !seccionPermitida(usuario.rol_id, destino)) return;
+    setVista(destino);
   }
 
   if (!usuario) {
     return <Login onLoginExitoso={setUsuario} />;
   }
 
+  const seccion = SECCIONES.find((s) => s.id === vista);
+  const titulo = seccion ? seccion.etiqueta : TITULOS_PENDIENTES[vista];
+
   return (
-    <main>
-      <header>
-        <h1>Zona Fit Evolution</h1>
-        <p>
-          {usuario.nombre} · {usuario.rol_id === 1 ? "Administrador" : "Empleado"}
-        </p>
-        <button onClick={cerrarSesion}>Cerrar sesión</button>
-      </header>
-      <Dashboard />
-    </main>
+    <div>
+      <BarraLateral
+        rolId={usuario.rol_id}
+        activa={seccion ? vista : "inicio"}
+        alNavegar={navegar}
+        alCerrarSesion={cerrarSesion}
+      />
+      <div>
+        <Encabezado
+          usuario={usuario}
+          porVencer={porVencer}
+          errorNotificaciones={errorNotificaciones}
+          alReintentar={() => setRecargaNotificaciones((r) => r + 1)}
+        />
+        <main>
+          {vista === "inicio" ? (
+            <Inicio usuario={usuario} alNavegar={navegar} />
+          ) : (
+            <SeccionPendiente titulo={titulo} alVolver={() => setVista("inicio")} />
+          )}
+        </main>
+      </div>
+    </div>
   );
 }
 
