@@ -312,6 +312,7 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Control de acceso: validar con huella simulada y registrar la huella           | Implementado |
 | Historial de accesos con filtros por resultado, texto y fechas                 | Implementado |
 | Personal: lista, creación y eliminación de usuarios (solo Admin)               | Implementado |
+| Registro financiero: resumen de pagos de cada cliente (solo Admin)             | Implementado |
 
 Tras iniciar sesión, la aplicación muestra el Inicio (con el nombre y el rol del usuario) y un menú lateral para pasar entre las pantallas; la navegación es por estado y las rutas con React Router siguen pendientes.
 
@@ -340,10 +341,12 @@ src/
 │   ├── FormularioUsuario.jsx    formulario para crear usuarios del personal
 │   ├── RegistrarHuella.jsx      registro de la huella simulada de un cliente
 │   ├── RenovarMembresia.jsx     búsqueda por cédula y renovación rápida
+│   ├── TablaPagos.jsx           tabla de pagos por cliente con su detalle
 │   └── ValidarAcceso.jsx        validación de acceso con huella simulada
 ├── pages/
 │   ├── Acceso.jsx               validar acceso y registrar huellas
 │   ├── Clientes.jsx             lista, búsqueda, registro, edición y estado de membresía
+│   ├── Finanzas.jsx             registro financiero: resumen de pagos por cliente (solo Admin)
 │   ├── Historial.jsx            historial de accesos con filtros
 │   ├── Inicio.jsx               dashboard: acciones rápidas y actividad reciente
 │   ├── Login.jsx                formulario de inicio de sesión
@@ -357,6 +360,7 @@ src/
 │   ├── biometriaService.js      registro de huellas (/biometria)
 │   ├── clienteService.js        llamadas de clientes (/clientes)
 │   ├── dashboardService.js      datos del dashboard (accesos y membresías por vencer)
+│   ├── finanzasService.js       datos del registro financiero (clientes, membresías y planes)
 │   ├── membresiaService.js      llamadas de membresías (/membresias)
 │   ├── planService.js           llamadas de planes (/planes)
 │   └── usuarioService.js        llamadas de usuarios (/usuarios)
@@ -364,6 +368,7 @@ src/
 │   ├── busquedaClientes.js      búsqueda de clientes por nombre o cédula (sin tildes)
 │   ├── estadoMembresia.js       reglas de estado de la membresía de un cliente
 │   ├── filtrosHistorial.js      validación de fechas y filtros del historial
+│   ├── finanzas.js              cálculo de pagos, totales, filtros y orden del registro financiero
 │   ├── permisos.js              secciones del menú y qué rol puede verlas
 │   ├── validacionesAcceso.js    validaciones de la huella simulada
 │   ├── validacionesCliente.js   validaciones del formulario de clientes
@@ -404,6 +409,27 @@ Solo el **Admin** ve esta sección (el menú la oculta al Empleado y la pantalla
 | Rol        | Obligatorio: Administrador (1) o Empleado (2)                                                   |
 
 Salvaguardas del frontend: no se puede eliminar la propia cuenta ni al último administrador.
+
+## Registro financiero
+
+Solo el **Admin** ve esta sección: el menú la oculta al Empleado, `App.jsx` no abre una vista que el rol no pueda ver y la pantalla ni siquiera consulta datos si el rol no es Admin. Es una pantalla de **solo lectura**: no crea ni modifica nada.
+
+El backend todavía no tiene un módulo de pagos, así que el resumen se calcula con los endpoints que ya existen (`GET /api/clientes`, `GET /api/membresias` y `GET /api/planes`):
+
+- Cada **membresía cuenta como un pago** por el **precio actual de su plan** (la membresía no guarda el precio que se pagó, así que si un plan cambia de precio el resumen cambia con él).
+- La **fecha del pago** es la de registro de la membresía (`fecha_creacion`); si no viene, el día de inicio.
+- Si el plan de una membresía ya no existe o no tiene un precio válido, el pago se cuenta pero no se suma al total, y la pantalla lo avisa.
+- No se marcan membresías como vencidas desde esta pantalla (eso lo hace Clientes/Membresías al cargar), por lo que el estado se muestra tal como está guardado.
+
+Qué muestra: totales generales (total recaudado, pagos registrados, clientes con pagos) y una tabla con un resumen por cliente (pagos, total pagado, último pago) que se puede abrir para ver el detalle de cada pago (fecha, plan, monto, estado y vigencia).
+
+| Filtro                 | Validación                                                                                     |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| Buscar cliente         | Nombre o cédula, máximo 50 caracteres, sin tildes ni mayúsculas; se quitan caracteres de control |
+| Estado de la membresía | Solo los valores definidos (todas, activa, vencida, cancelada)                                 |
+| Desde / Hasta          | Fechas reales y no futuras; «Hasta» no puede ser anterior a «Desde» (si el rango es inválido, no se aplica) |
+| Ordenar por            | Solo los valores definidos (mayor total, más pagos, pago más reciente, nombre)                 |
+| Solo clientes con pagos | Activado por defecto                                                                          |
 
 ## Historial de accesos
 
@@ -529,7 +555,7 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 - React Router: rutas con URL propia, menú lateral y barra superior.
 - Rutas protegidas y menú según el rol (Admin y Empleado).
 - Manejo automático de token vencido: ante una respuesta `401`, cerrar la sesión y avisar al usuario.
-- Los módulos de pagos y reportes aún no tienen endpoints en el backend.
+- Pagos reales: el registro financiero estima los pagos con el precio del plan. Falta un módulo de pagos en el backend (monto realmente pagado, método y fecha) para que sea exacto; los reportes tampoco tienen endpoints.
 
 ---
 
