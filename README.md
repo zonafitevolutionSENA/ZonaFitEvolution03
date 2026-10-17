@@ -331,6 +331,7 @@ Solo las variables que empiezan con `VITE_` quedan disponibles en el navegador, 
 src/
 ├── components/
 │   ├── BarraLateral.jsx         menú lateral según el rol
+│   ├── BuscadorCliente.jsx      elegir un cliente escribiendo su nombre o cédula
 │   ├── Campo.jsx                campo de formulario con su mensaje de error
 │   ├── Encabezado.jsx           barra superior con notificaciones y usuario
 │   ├── FormularioCliente.jsx    formulario de registro y edición de clientes
@@ -360,6 +361,7 @@ src/
 │   ├── planService.js           llamadas de planes (/planes)
 │   └── usuarioService.js        llamadas de usuarios (/usuarios)
 ├── utils/
+│   ├── busquedaClientes.js      búsqueda de clientes por nombre o cédula (sin tildes)
 │   ├── estadoMembresia.js       reglas de estado de la membresía de un cliente
 │   ├── filtrosHistorial.js      validación de fechas y filtros del historial
 │   ├── permisos.js              secciones del menú y qué rol puede verlas
@@ -420,7 +422,7 @@ El botón "Ver historial" del Inicio abre esta pantalla, y la tarjeta "Actividad
 La pantalla tiene dos formularios (Admin y Empleado):
 
 - **Validar acceso** (`POST /api/acceso-fisico/validar`): se escribe la huella simulada y se muestra "Acceso permitido" o "Acceso denegado" con el cliente y el motivo. Una huella que no corresponde a ningún cliente (respuesta `404`) se muestra como acceso denegado, sin cliente. La acción rápida "Validar acceso" del Inicio abre esta pantalla.
-- **Registrar huella** (`POST /api/biometria/registrar`): se elige el cliente y se escribe su huella simulada. Cada cliente tiene una sola huella y no puede repetirse entre clientes (el servidor responde `409` y la pantalla muestra el mensaje).
+- **Registrar huella** (`POST /api/biometria/registrar`): se busca el cliente por nombre o cédula y se escribe su huella simulada. Cada cliente tiene una sola huella y no puede repetirse entre clientes (el servidor responde `409` y la pantalla muestra el mensaje).
 
 | Campo   | Validación                                                                                   |
 | ------- | -------------------------------------------------------------------------------------------- |
@@ -431,7 +433,7 @@ La pantalla tiene dos formularios (Admin y Empleado):
 
 La pantalla lista las membresías (con filtro por estado y búsqueda por cliente, cédula o plan) y ofrece dos acciones, disponibles para Admin y Empleado:
 
-- **Asignar membresía** (`POST /api/membresias`): se elige cliente, plan activo y fecha de inicio. La pantalla calcula y muestra la fecha de vencimiento estimada.
+- **Asignar membresía** (`POST /api/membresias`): se busca el cliente por nombre o cédula, se elige un plan activo y la fecha de inicio. La pantalla calcula y muestra la fecha de vencimiento estimada y avisa al elegir un cliente que ya tiene una membresía activa.
 - **Renovar por cédula** (`GET /api/membresias/buscar/:cedula` y `POST /api/membresias/renovar`): se busca al cliente, se muestra su membresía actual y se elige el plan. Si la actual sigue vigente, la nueva empieza al día siguiente de su vencimiento; si no, hoy. La acción rápida "Asignar o renovar membresía" del Inicio abre esta opción.
 
 | Campo / regla       | Validación                                                                          |
@@ -475,6 +477,15 @@ Los clientes **no se eliminan**: lo que se gestiona es el estado de su membresí
 5. Al cerrar sesión se borran ambas claves y se vuelve al formulario de login.
 
 El rol llega en `usuario.rol_id`: `1` = Administrador, `2` = Empleado (los mismos valores del backend).
+
+## Selección de clientes (buscador)
+
+Con cientos de clientes una lista desplegable es incómoda, así que los formularios que piden un cliente (**Asignar membresía** y **Registrar huella**) usan el componente `BuscadorCliente`:
+
+- Se escribe el nombre o la cédula (mínimo 2 caracteres, máximo 50; se ignoran mayúsculas y tildes, y cada palabra escrita debe coincidir).
+- Se muestran como máximo 8 coincidencias; si hay más, la pantalla indica cuántas son y pide escribir más para acotar.
+- Se elige con un clic, o con Enter cuando solo queda una coincidencia (Enter nunca envía el formulario). "Cambiar cliente" vuelve al buscador.
+- El componente no llama a la API: recibe la lista de clientes que ya cargó la pantalla. Las listas de planes y los filtros siguen siendo desplegables porque tienen pocas opciones.
 
 ## Capa de servicios
 
