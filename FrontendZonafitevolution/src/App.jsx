@@ -3,6 +3,7 @@ import BarraLateral from "./components/BarraLateral";
 import Encabezado from "./components/Encabezado";
 import Acceso from "./pages/Acceso";
 import Clientes from "./pages/Clientes";
+import Finanzas from "./pages/Finanzas";
 import Historial from "./pages/Historial";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
@@ -99,6 +100,8 @@ function App() {
 
   // Pantalla de la sección activa; cualquier valor desconocido vuelve al Inicio
   function pantalla() {
+    // Defensa extra: aunque la vista cambie por otro medio, el rol debe poder verla
+    if (!seccionPermitida(usuario.rol_id, vista)) return <Inicio usuario={usuario} alNavegar={navegar} />;
     switch (vista) {
       case "clientes":
         return <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} />;
@@ -110,6 +113,8 @@ function App() {
         return <Acceso />;
       case "historial":
         return <Historial />;
+      case "finanzas":
+        return <Finanzas usuario={usuario} />;
       case "personal":
         return <Personal usuario={usuario} />;
       default:
