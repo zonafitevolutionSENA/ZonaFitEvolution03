@@ -311,7 +311,7 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Membresías: listado, asignación y renovación rápida por cédula                 | Implementado |
 | Control de acceso: validar con huella simulada y registrar la huella           | Implementado |
 | Historial de accesos con filtros por resultado, texto y fechas                 | Implementado |
-| Otras pantallas (usuarios)                                                     | Pendiente    |
+| Personal: lista, creación y eliminación de usuarios (solo Admin)               | Implementado |
 
 Tras iniciar sesión, la aplicación muestra una pantalla de bienvenida con el nombre y el rol del usuario.
 
@@ -336,6 +336,7 @@ src/
 │   ├── FormularioCliente.jsx    formulario de registro y edición de clientes
 │   ├── FormularioMembresia.jsx  formulario para asignar una membresía
 │   ├── FormularioPlan.jsx       formulario para crear y editar planes
+│   ├── FormularioUsuario.jsx    formulario para crear usuarios del personal
 │   ├── RegistrarHuella.jsx      registro de la huella simulada de un cliente
 │   ├── RenovarMembresia.jsx     búsqueda por cédula y renovación rápida
 │   └── ValidarAcceso.jsx        validación de acceso con huella simulada
@@ -346,8 +347,8 @@ src/
 │   ├── Inicio.jsx               dashboard: acciones rápidas y actividad reciente
 │   ├── Login.jsx                formulario de inicio de sesión
 │   ├── Membresias.jsx           listado, asignación y renovación de membresías
-│   ├── Planes.jsx               catálogo de planes y su gestión (Admin)
-│   └── SeccionPendiente.jsx     aviso de las secciones aún no construidas
+│   ├── Personal.jsx             gestión de usuarios del sistema (solo Admin)
+│   └── Planes.jsx               catálogo de planes y su gestión (Admin)
 ├── services/
 │   ├── accesoService.js         validación e historial de acceso (/acceso-fisico)
 │   ├── api.js                   función base para llamar a la API
@@ -356,7 +357,8 @@ src/
 │   ├── clienteService.js        llamadas de clientes (/clientes)
 │   ├── dashboardService.js      datos del dashboard (accesos y membresías por vencer)
 │   ├── membresiaService.js      llamadas de membresías (/membresias)
-│   └── planService.js           llamadas de planes (/planes)
+│   ├── planService.js           llamadas de planes (/planes)
+│   └── usuarioService.js        llamadas de usuarios (/usuarios)
 ├── utils/
 │   ├── estadoMembresia.js       reglas de estado de la membresía de un cliente
 │   ├── filtrosHistorial.js      validación de fechas y filtros del historial
@@ -364,7 +366,8 @@ src/
 │   ├── validacionesAcceso.js    validaciones de la huella simulada
 │   ├── validacionesCliente.js   validaciones del formulario de clientes
 │   ├── validacionesMembresia.js validaciones de asignar y renovar membresías
-│   └── validacionesPlan.js      validaciones del formulario de planes
+│   ├── validacionesPlan.js      validaciones del formulario de planes
+│   └── validacionesUsuario.js   validaciones del formulario de personal
 ├── App.jsx                      estado de sesión y pantalla a mostrar
 ├── App.css                      estilos de las pantallas (login, bienvenida)
 ├── index.css                    estilos globales y paleta de colores
@@ -385,6 +388,20 @@ Se validan en el navegador antes de llamar a la API (el backend sigue siendo la 
 | Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
 
 Los botones se bloquean mientras se guarda.
+
+## Personal
+
+Solo el **Admin** ve esta sección (el menú la oculta al Empleado y la pantalla se niega a cargar si el rol no es Admin). Lista los usuarios (`GET /api/usuarios`), permite crear (`POST /api/usuarios`) y eliminar (`DELETE /api/usuarios/:id`, con confirmación). El backend no ofrece edición ni desactivación de usuarios.
+
+| Campo      | Validación                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| Nombre     | Obligatorio, de 3 a 100 caracteres; letras, espacios, `'`, `.` y `-`                            |
+| Correo     | Obligatorio, formato válido, máximo 100 caracteres y no repetido                                |
+| Contraseña | De 8 a 72 bytes, con letras y números y sin espacios; nunca se recorta; se vuelve a pedir si hay error |
+| Confirmar  | Debe ser igual a la contraseña                                                                  |
+| Rol        | Obligatorio: Administrador (1) o Empleado (2)                                                   |
+
+Salvaguardas del frontend: no se puede eliminar la propia cuenta ni al último administrador.
 
 ## Historial de accesos
 
@@ -499,7 +516,6 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 
 - React Router: rutas con URL propia, menú lateral y barra superior.
 - Rutas protegidas y menú según el rol (Admin y Empleado).
-- Usuarios: gestión (solo Admin).
 - Manejo automático de token vencido: ante una respuesta `401`, cerrar la sesión y avisar al usuario.
 - Los módulos de pagos y reportes aún no tienen endpoints en el backend.
 
