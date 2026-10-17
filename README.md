@@ -370,6 +370,8 @@ Los botones se bloquean mientras se guarda.
 
 Los clientes **no se eliminan**: lo que se gestiona es el estado de su membresía (`PATCH /api/membresias/:id/estado`), disponible para Admin y Empleado y siempre con confirmación.
 
+**Vencimiento automático:** al abrir o actualizar Clientes, toda membresía `activa` cuya fecha de fin ya pasó se cambia sola a `vencida` (una membresía que vence hoy sigue activa hasta que termine el día). Si el servidor rechaza el cambio, se avisa y queda el botón manual "Marcar como vencida".
+
 | Estado actual                       | Cambio que ofrece la pantalla |
 | ----------------------------------- | ----------------------------- |
 | Activa y vigente                    | Cancelar membresía            |

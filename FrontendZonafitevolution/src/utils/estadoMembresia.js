@@ -24,6 +24,14 @@ export function hoyLocal() {
   return `${ahora.getFullYear()}-${mes}-${dia}`;
 }
 
+// Membresías activas cuya fecha de fin ya pasó (vencen al terminar el día de su fecha de fin)
+export function membresiasVencidas(membresias, hoy = hoyLocal()) {
+  return membresias.filter((m) => {
+    const fin = diaDe(m.fecha_fin);
+    return m.estado === "activa" && fin !== "" && fin < hoy;
+  });
+}
+
 // Membresía que representa al cliente: la activa si existe; si no, la de fecha de fin más reciente
 export function membresiaActual(membresiasDelCliente) {
   const validas = membresiasDelCliente.filter((m) => ESTADOS.includes(m.estado));
