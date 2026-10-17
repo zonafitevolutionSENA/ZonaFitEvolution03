@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { LIMITES_HUELLA, validarClienteHuella, validarIdentificador } from "../utils/validacionesAcceso";
+import BuscadorCliente from "./BuscadorCliente";
 import Campo from "./Campo";
 
 // Formulario para registrar la huella simulada de un cliente. No llama a la API: usa `alRegistrar`.
@@ -11,14 +12,15 @@ function RegistrarHuella({ clientes, alRegistrar }) {
   const [aviso, setAviso] = useState("");
   const [guardando, setGuardando] = useState(false);
 
-  const ordenados = useMemo(
-    () => [...clientes].sort((a, b) => String(a.nombre).localeCompare(String(b.nombre), "es")),
-    [clientes],
-  );
-
   function limpiarMensajes() {
     setErrorGeneral("");
     setAviso("");
+  }
+
+  function elegirCliente(id) {
+    setCliente(id);
+    setErrores((x) => ({ ...x, cliente: id ? validarClienteHuella(id, clientes) : "" }));
+    limpiarMensajes();
   }
 
   async function enviar(evento) {
@@ -56,22 +58,15 @@ function RegistrarHuella({ clientes, alRegistrar }) {
     <form onSubmit={enviar} noValidate aria-label="Registrar huella">
       <h2>Registrar huella</h2>
 
-      <div>
-        <label htmlFor="cliente-huella">Cliente *</label>
-        <select
-          id="cliente-huella"
-          value={cliente}
-          onChange={(e) => { setCliente(e.target.value); setErrores((x) => ({ ...x, cliente: "" })); limpiarMensajes(); }}
-          aria-invalid={errores.cliente ? "true" : undefined}
-          disabled={guardando}
-        >
-          <option value="">Selecciona un cliente</option>
-          {ordenados.map((c) => (
-            <option key={c.id} value={c.id}>{c.nombre} — {c.cedula}</option>
-          ))}
-        </select>
-        {errores.cliente && <p className="mensaje-error" role="alert">{errores.cliente}</p>}
-      </div>
+      <BuscadorCliente
+        id="cliente-huella"
+        etiqueta="Cliente *"
+        clientes={clientes}
+        valor={cliente}
+        alCambiar={elegirCliente}
+        error={errores.cliente}
+        disabled={guardando}
+      />
 
       <Campo
         id="huella-registrar"
