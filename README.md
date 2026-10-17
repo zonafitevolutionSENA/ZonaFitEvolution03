@@ -309,7 +309,8 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Clientes: lista, búsqueda, registro, edición y estado de la membresía          | Implementado |
 | Planes: catálogo para todos; el Admin crea, edita, activa y desactiva          | Implementado |
 | Membresías: listado, asignación y renovación rápida por cédula                 | Implementado |
-| Otras pantallas (biometría, acceso, usuarios)                                  | Pendiente    |
+| Control de acceso: validar con huella simulada y registrar la huella           | Implementado |
+| Otras pantallas (historial, usuarios)                                          | Pendiente    |
 
 Tras iniciar sesión, la aplicación muestra una pantalla de bienvenida con el nombre y el rol del usuario.
 
@@ -328,37 +329,43 @@ Solo las variables que empiezan con `VITE_` quedan disponibles en el navegador, 
 ```
 src/
 ├── components/
-│   ├── BarraLateral.jsx        menú lateral según el rol
-│   ├── Campo.jsx               campo de formulario con su mensaje de error
-│   ├── Encabezado.jsx          barra superior con notificaciones y usuario
-│   ├── FormularioCliente.jsx   formulario de registro y edición de clientes
-│   ├── FormularioMembresia.jsx formulario para asignar una membresía
-│   ├── FormularioPlan.jsx      formulario para crear y editar planes
-│   └── RenovarMembresia.jsx    búsqueda por cédula y renovación rápida
+│   ├── BarraLateral.jsx         menú lateral según el rol
+│   ├── Campo.jsx                campo de formulario con su mensaje de error
+│   ├── Encabezado.jsx           barra superior con notificaciones y usuario
+│   ├── FormularioCliente.jsx    formulario de registro y edición de clientes
+│   ├── FormularioMembresia.jsx  formulario para asignar una membresía
+│   ├── FormularioPlan.jsx       formulario para crear y editar planes
+│   ├── RegistrarHuella.jsx      registro de la huella simulada de un cliente
+│   ├── RenovarMembresia.jsx     búsqueda por cédula y renovación rápida
+│   └── ValidarAcceso.jsx        validación de acceso con huella simulada
 ├── pages/
-│   ├── Clientes.jsx            lista, búsqueda, registro, edición y estado de membresía
-│   ├── Inicio.jsx              dashboard: acciones rápidas y actividad reciente
-│   ├── Login.jsx               formulario de inicio de sesión
-│   ├── Membresias.jsx          listado, asignación y renovación de membresías
-│   ├── Planes.jsx              catálogo de planes y su gestión (Admin)
-│   └── SeccionPendiente.jsx    aviso de las secciones aún no construidas
+│   ├── Acceso.jsx               validar acceso y registrar huellas
+│   ├── Clientes.jsx             lista, búsqueda, registro, edición y estado de membresía
+│   ├── Inicio.jsx               dashboard: acciones rápidas y actividad reciente
+│   ├── Login.jsx                formulario de inicio de sesión
+│   ├── Membresias.jsx           listado, asignación y renovación de membresías
+│   ├── Planes.jsx               catálogo de planes y su gestión (Admin)
+│   └── SeccionPendiente.jsx     aviso de las secciones aún no construidas
 ├── services/
-│   ├── api.js                  función base para llamar a la API
-│   ├── authService.js          llamadas de autenticación
-│   ├── clienteService.js       llamadas de clientes (/clientes)
-│   ├── membresiaService.js     llamadas de membresías (/membresias)
-│   ├── planService.js          llamadas de planes (/planes)
-│   └── dashboardService.js     datos del dashboard (accesos y membresías por vencer)
+│   ├── accesoService.js         validación de acceso (/acceso-fisico)
+│   ├── api.js                   función base para llamar a la API
+│   ├── authService.js           llamadas de autenticación
+│   ├── biometriaService.js      registro de huellas (/biometria)
+│   ├── clienteService.js        llamadas de clientes (/clientes)
+│   ├── dashboardService.js      datos del dashboard (accesos y membresías por vencer)
+│   ├── membresiaService.js      llamadas de membresías (/membresias)
+│   └── planService.js           llamadas de planes (/planes)
 ├── utils/
-│   ├── estadoMembresia.js      reglas de estado de la membresía de un cliente
-│   ├── permisos.js             secciones del menú y qué rol puede verlas
-│   ├── validacionesCliente.js  validaciones del formulario de clientes
+│   ├── estadoMembresia.js       reglas de estado de la membresía de un cliente
+│   ├── permisos.js              secciones del menú y qué rol puede verlas
+│   ├── validacionesAcceso.js    validaciones de la huella simulada
+│   ├── validacionesCliente.js   validaciones del formulario de clientes
 │   ├── validacionesMembresia.js validaciones de asignar y renovar membresías
-│   └── validacionesPlan.js     validaciones del formulario de planes
-├── App.jsx                     estado de sesión y pantalla a mostrar
-├── App.css                     estilos de las pantallas (login, bienvenida)
-├── index.css                   estilos globales y paleta de colores
-└── main.jsx                    punto de entrada (monta React)
+│   └── validacionesPlan.js      validaciones del formulario de planes
+├── App.jsx                      estado de sesión y pantalla a mostrar
+├── App.css                      estilos de las pantallas (login, bienvenida)
+├── index.css                    estilos globales y paleta de colores
+└── main.jsx                     punto de entrada (monta React)
 ```
 
 `utils/` guarda funciones puras sin interfaz (permisos y validaciones); `components/` guarda piezas reutilizables que no son una pantalla completa.
@@ -375,6 +382,18 @@ Se validan en el navegador antes de llamar a la API (el backend sigue siendo la 
 | Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
 
 Los botones se bloquean mientras se guarda.
+
+## Control de acceso
+
+La pantalla tiene dos formularios (Admin y Empleado):
+
+- **Validar acceso** (`POST /api/acceso-fisico/validar`): se escribe la huella simulada y se muestra "Acceso permitido" o "Acceso denegado" con el cliente y el motivo. Una huella que no corresponde a ningún cliente (respuesta `404`) se muestra como acceso denegado, sin cliente. La acción rápida "Validar acceso" del Inicio abre esta pantalla.
+- **Registrar huella** (`POST /api/biometria/registrar`): se elige el cliente y se escribe su huella simulada. Cada cliente tiene una sola huella y no puede repetirse entre clientes (el servidor responde `409` y la pantalla muestra el mensaje).
+
+| Campo   | Validación                                                                                   |
+| ------- | -------------------------------------------------------------------------------------------- |
+| Huella  | Obligatoria, de 3 a 50 caracteres: letras, números, punto, guion y guion bajo (sin espacios) |
+| Cliente | Obligatorio y existente (solo en el registro de huella)                                      |
 
 ## Membresías
 
@@ -465,8 +484,7 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 
 - React Router: rutas con URL propia, menú lateral y barra superior.
 - Rutas protegidas y menú según el rol (Admin y Empleado).
-- Biometría: registro de huella simulada.
-- Control de acceso: validación por huella simulada e historial.
+- Historial de accesos (`GET /api/acceso-fisico/historial`).
 - Usuarios: gestión (solo Admin).
 - Manejo automático de token vencido: ante una respuesta `401`, cerrar la sesión y avisar al usuario.
 - Los módulos de pagos y reportes aún no tienen endpoints en el backend.
