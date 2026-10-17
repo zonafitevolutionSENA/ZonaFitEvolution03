@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import BarraLateral from "./components/BarraLateral";
 import Encabezado from "./components/Encabezado";
+import Clientes from "./pages/Clientes";
 import Inicio from "./pages/Inicio";
 import Login from "./pages/Login";
 import SeccionPendiente from "./pages/SeccionPendiente";
@@ -33,8 +34,10 @@ function leerUsuarioGuardado() {
   return null;
 }
 
+// "registrar-cliente" es una acción rápida: abre Clientes con el formulario de registro
+const ACCION_REGISTRAR_CLIENTE = "registrar-cliente";
+
 const TITULOS_PENDIENTES = {
-  "registrar-cliente": "Registrar cliente",
   "renovar-membresia": "Asignar o renovar membresía",
   "validar-acceso": "Validar acceso",
 };
@@ -42,6 +45,7 @@ const TITULOS_PENDIENTES = {
 function App() {
   const [usuario, setUsuario] = useState(leerUsuarioGuardado);
   const [vista, setVista] = useState("inicio");
+  const [abrirRegistro, setAbrirRegistro] = useState(false);
   const [porVencer, setPorVencer] = useState(null);
   const [errorNotificaciones, setErrorNotificaciones] = useState("");
   const [recargaNotificaciones, setRecargaNotificaciones] = useState(0);
@@ -67,15 +71,23 @@ function App() {
     limpiarSesion();
     setUsuario(null);
     setVista("inicio");
+    setAbrirRegistro(false);
     setPorVencer(null);
   }, []);
 
   // Una vista solo se abre si existe y el rol puede verla (ej. "Personal" es solo del administrador)
   function navegar(destino) {
+    if (destino === ACCION_REGISTRAR_CLIENTE) {
+      if (!seccionPermitida(usuario.rol_id, "clientes")) return;
+      setAbrirRegistro(true);
+      setVista("clientes");
+      return;
+    }
     const esSeccion = SECCIONES.some((s) => s.id === destino);
     const esAccion = Object.hasOwn(TITULOS_PENDIENTES, destino);
     if (!esSeccion && !esAccion) return;
     if (esSeccion && !seccionPermitida(usuario.rol_id, destino)) return;
+    setAbrirRegistro(false);
     setVista(destino);
   }
 
@@ -104,6 +116,8 @@ function App() {
         <main>
           {vista === "inicio" ? (
             <Inicio usuario={usuario} alNavegar={navegar} />
+          ) : vista === "clientes" ? (
+            <Clientes usuario={usuario} iniciarEnRegistro={abrirRegistro} />
           ) : (
             <SeccionPendiente titulo={titulo} alVolver={() => setVista("inicio")} />
           )}
