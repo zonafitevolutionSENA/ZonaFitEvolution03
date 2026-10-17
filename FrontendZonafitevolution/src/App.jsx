@@ -1,21 +1,39 @@
 import { useState } from "react";
+import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import "./App.css";
 
+function limpiarSesion() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("usuario");
+}
+
+// Solo se acepta una sesión completa y con la forma esperada; cualquier dato alterado o incompleto se descarta
 function leerUsuarioGuardado() {
   try {
-    return JSON.parse(localStorage.getItem("usuario"));
+    const token = localStorage.getItem("token");
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const valido =
+      token &&
+      usuario &&
+      typeof usuario === "object" &&
+      typeof usuario.nombre === "string" &&
+      usuario.nombre.trim() !== "" &&
+      (usuario.rol_id === 1 || usuario.rol_id === 2);
+    if (valido) return usuario;
   } catch {
-    return null;
+    // JSON dañado: se trata como sin sesión
   }
+  limpiarSesion();
+  return null;
 }
 
 function App() {
   const [usuario, setUsuario] = useState(leerUsuarioGuardado);
 
   function cerrarSesion() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
+    if (!window.confirm("¿Seguro que deseas cerrar sesión?")) return;
+    limpiarSesion();
     setUsuario(null);
   }
 
@@ -24,11 +42,16 @@ function App() {
   }
 
   return (
-    <div className="bienvenida">
-      <h1>Bienvenido, {usuario.nombre}</h1>
-      <p>Rol: {usuario.rol_id === 1 ? "Administrador" : "Empleado"}</p>
-      <button onClick={cerrarSesion}>Cerrar sesión</button>
-    </div>
+    <main>
+      <header>
+        <h1>Zona Fit Evolution</h1>
+        <p>
+          {usuario.nombre} · {usuario.rol_id === 1 ? "Administrador" : "Empleado"}
+        </p>
+        <button onClick={cerrarSesion}>Cerrar sesión</button>
+      </header>
+      <Dashboard />
+    </main>
   );
 }
 
