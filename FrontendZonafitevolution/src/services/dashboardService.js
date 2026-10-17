@@ -1,4 +1,5 @@
 import { peticion } from "./api";
+import { listarClientes } from "./clienteService";
 
 function aTexto(fecha) {
   const mes = String(fecha.getMonth() + 1).padStart(2, "0");
@@ -43,12 +44,12 @@ export async function obtenerActividadReciente(limite = 5) {
 // Membresías activas que vencen en los próximos 7 días (campana de notificaciones)
 export async function obtenerPorVencer() {
   const [rawClientes, rawMembresias, rawPlanes] = await Promise.all([
-    peticion("/clientes"),
+    listarClientes(),
     peticion("/membresias"),
     peticion("/planes"),
   ]);
 
-  const clientes = exigirLista(rawClientes, "los clientes");
+  const clientes = rawClientes;
   const planes = exigirLista(rawPlanes, "los planes");
   // Se descartan membresías con fechas inválidas para no falsear los resultados
   const membresias = exigirLista(rawMembresias, "las membresías").filter((m) =>
