@@ -1,104 +1,236 @@
-/* ===== LOGIN ===== */
-.login-fondo {
-  min-height: 100vh;
+.app-shell {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  background: radial-gradient(circle at top, #1f1b00 0%, var(--negro) 55%);
+  min-height: 100vh;
+  background: #0b0c0d;
 }
 
-.login-caja {
-  width: 100%;
-  max-width: 400px;
-  background: var(--negro-claro);
-  border: 1px solid var(--gris-borde);
-  border-top: 4px solid var(--amarillo);
-  border-radius: var(--radio);
-  padding: 2.2rem 2rem;
+.app-sidebar {
+  width: 310px;
+  background: rgba(13, 14, 16, 0.96);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 22px 18px 18px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  box-shadow: 0 10px 40px rgba(255, 214, 0, 0.08);
+  gap: 18px;
 }
 
-.login-caja h1 {
-  color: var(--amarillo);
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+.app-brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.login-caja p {
-  color: var(--gris-texto);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.login-caja label {
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin-top: 0.4rem;
-}
-
-.login-caja input {
-  padding: 0.75rem 0.9rem;
-  border: 1px solid var(--gris-borde);
+.app-brand-mark {
+  position: relative;
+  width: 34px;
+  height: 34px;
   border-radius: 8px;
-  background: var(--negro);
-  color: var(--blanco);
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  background: linear-gradient(135deg, rgba(245, 208, 0, 0.1), rgba(245, 208, 0, 0.25));
+  border: 2px solid rgba(245, 208, 0, 0.8);
+  box-shadow: 0 0 0 4px rgba(245, 208, 0, 0.08);
 }
 
-.login-caja input:focus {
-  outline: none;
-  border-color: var(--amarillo);
-  box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.2);
+.app-brand-mark::before,
+.app-brand-mark::after {
+  content: "";
+  position: absolute;
+  background: #f5d000;
+  border-radius: 2px;
 }
 
-/* ===== MENSAJE DE ERROR ===== */
-.mensaje-error {
-  background: rgba(255, 77, 77, 0.1);
-  border-left: 4px solid var(--rojo);
-  color: #ff9a9a !important;
-  padding: 0.65rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  margin: 0.6rem 0 0 !important;
+.app-brand-mark::before {
+  width: 14px;
+  height: 4px;
+  left: 8px;
+  top: 14px;
+  box-shadow: 0 -8px 0 #f5d000, 0 8px 0 #f5d000;
 }
 
-/* ===== PANTALLA DE BIENVENIDA ===== */
-.bienvenida {
-  min-height: 100vh;
+.app-brand-mark::after {
+  width: 4px;
+  height: 14px;
+  left: 14px;
+  top: 8px;
+  box-shadow: -8px 0 0 #f5d000, 8px 0 0 #f5d000;
+}
+
+.app-brand {
   display: flex;
   flex-direction: column;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+  color: #f4f4f4;
+  margin: 0;
+}
+
+.app-brand-main {
+  font-size: 1.5rem;
+}
+
+.app-brand-sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  color: #f5d000;
+  margin-top: 3px;
+}
+
+.app-nav {
+  flex: 1;
+}
+
+.app-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.app-nav-button {
+  width: 100%;
+  background: #f5d000;
+  color: #0d0d0d;
+  border-radius: 14px;
+  padding: 16px 18px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  text-align: left;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 1rem;
-  text-align: center;
+  gap: 10px;
 }
 
-.bienvenida h1 {
-  color: var(--amarillo);
-  font-size: 2rem;
+.app-nav-button.is-active {
+  background: #f5d000;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.08), 0 10px 20px rgba(245, 208, 0, 0.2);
 }
 
-.bienvenida p {
-  color: var(--gris-texto);
+.app-nav-button:not(.is-active) {
+  background: transparent;
+  color: #f4f4f4;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 480px) {
-  .login-caja {
-    padding: 1.6rem 1.2rem;
+.app-nav-button:not(.is-active):hover {
+  background: rgba(245, 208, 0, 0.08);
+}
+
+.app-nav-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.app-logout {
+  margin-top: auto;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4f4f4;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 18px;
+  font-weight: 600;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0b0c0d;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(9, 10, 11, 0.96);
+}
+
+.app-header-notif {
+  position: relative;
+}
+
+.app-notif-button {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--blanco);
+  border-radius: 12px;
+  padding: 11px 14px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-notif-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  min-width: 280px;
+  background: rgba(18, 20, 23, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+  padding: 14px;
+  z-index: 20;
+}
+
+.app-notif-panel p,
+.app-notif-panel li {
+  color: var(--blanco);
+  font-size: 0.9rem;
+}
+
+.app-notif-retry {
+  margin-top: 10px;
+  background: var(--amarillo);
+  color: #141414;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-weight: 700;
+}
+
+.app-user-line {
+  color: #f5f5f5;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.app-user-line strong {
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.app-main-content {
+  flex: 1;
+  padding: 28px 30px 32px;
+  background:
+    linear-gradient(rgba(8, 10, 12, 0.58), rgba(8, 10, 12, 0.78)),
+    url("./assets/fondo_gimnacio.png") center / cover fixed no-repeat;
+}
+
+.mensaje-error {
+  background: rgba(255, 93, 93, 0.12);
+  color: #ff9d9d !important;
+  border: 1px solid rgba(255, 93, 93, 0.35);
+  border-left: 4px solid var(--rojo);
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
   }
 
-  .bienvenida h1 {
-    font-size: 1.5rem;
+  .app-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 }

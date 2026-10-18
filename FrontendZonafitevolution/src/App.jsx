@@ -123,21 +123,21 @@ function App() {
   }
 
   return (
-    <div>
+    <div className="app-shell">
       <BarraLateral
         rolId={usuario.rol_id}
         activa={vista}
         alNavegar={navegar}
         alCerrarSesion={cerrarSesion}
       />
-      <div>
+      <div className="app-content">
         <Encabezado
           usuario={usuario}
           porVencer={porVencer}
           errorNotificaciones={errorNotificaciones}
           alReintentar={() => setRecargaNotificaciones((r) => r + 1)}
         />
-        <main>
+        <main className="app-main-content">
           {pantalla()}
         </main>
       </div>

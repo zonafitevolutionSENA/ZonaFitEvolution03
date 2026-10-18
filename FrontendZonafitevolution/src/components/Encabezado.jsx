@@ -7,9 +7,10 @@ function Encabezado({ usuario, porVencer, errorNotificaciones, alReintentar }) {
   const cantidad = porVencer ? porVencer.length : 0;
 
   return (
-    <header>
-      <div>
+    <header className="app-header">
+      <div className="app-header-notif">
         <button
+          className="app-notif-button"
           type="button"
           onClick={() => setAbierto((v) => !v)}
           aria-expanded={abierto}
@@ -18,11 +19,11 @@ function Encabezado({ usuario, porVencer, errorNotificaciones, alReintentar }) {
           Notificaciones ({cantidad})
         </button>
         {abierto && (
-          <div id="panel-notificaciones" role="region" aria-label="Notificaciones">
+          <div className="app-notif-panel" id="panel-notificaciones" role="region" aria-label="Notificaciones">
             {errorNotificaciones ? (
               <>
                 <p className="mensaje-error" role="alert">{errorNotificaciones}</p>
-                <button type="button" onClick={alReintentar}>Reintentar</button>
+                <button type="button" className="app-notif-retry" onClick={alReintentar}>Reintentar</button>
               </>
             ) : cantidad === 0 ? (
               <p>No hay membresías por vencer en los próximos 7 días.</p>
@@ -38,7 +39,7 @@ function Encabezado({ usuario, porVencer, errorNotificaciones, alReintentar }) {
           </div>
         )}
       </div>
-      <p>
+      <p className="app-user-line">
         <strong>{usuario.nombre}</strong> · {etiquetaRol(usuario.rol_id)}
       </p>
     </header>

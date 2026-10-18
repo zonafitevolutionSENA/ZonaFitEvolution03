@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { iniciarSesion } from "../services/authService";
+import "../Login.css";
 
 function Login({ onLoginExitoso }) {
   const [correo, setCorreo] = useState("");
@@ -57,11 +58,12 @@ function Login({ onLoginExitoso }) {
   return (
     <div className="login-fondo">
       <form className="login-caja" onSubmit={manejarEnvio}>
-        <h1>Zona Fit Evolution</h1>
-        <p>Inicia sesión para continuar</p>
+        <h1 className="login-title">Zona Fit Evolution</h1>
+        <p className="login-subtitle">Inicia sesión para continuar</p>
 
-        <label htmlFor="correo">Correo</label>
+        <label className="login-label" htmlFor="correo">Correo</label>
         <input
+          className="login-input"
           id="correo"
           type="email"
           value={correo}
@@ -70,8 +72,9 @@ function Login({ onLoginExitoso }) {
           required
         />
 
-        <label htmlFor="contrasena">Contraseña</label>
+        <label className="login-label" htmlFor="contrasena">Contraseña</label>
         <input
+          className="login-input"
           id="contrasena"
           type="password"
           value={contrasena}
@@ -82,7 +85,7 @@ function Login({ onLoginExitoso }) {
 
         {error && <p className="mensaje-error">{error}</p>}
 
-        <button type="submit" disabled={cargando}>
+        <button className="login-submit" type="submit" disabled={cargando}>
           {cargando ? "Ingresando..." : "Iniciar sesión"}
         </button>
       </form>

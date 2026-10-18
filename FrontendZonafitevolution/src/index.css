@@ -1,77 +1,93 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
 
-/* ===== PALETA DE COLORES (cámbialos aquí y cambia toda la app) ===== */
 :root {
   --negro: #0d0d0d;
-  --negro-claro: #1a1a1a;
-  --gris-borde: #2e2e2e;
-  --gris-texto: #a8a8a8;
-  --amarillo: #ffd600;
-  --amarillo-hover: #ffe44d;
-  --blanco: #ffffff;
-  --rojo: #ff4d4d;
-  --radio: 10px;
+  --negro-2: #121417;
+  --negro-3: #1b1e22;
+  --panel: rgba(18, 20, 23, 0.96);
+  --panel-2: rgba(27, 30, 34, 0.96);
+  --gris-borde: rgba(255, 255, 255, 0.08);
+  --gris-texto: #9aa0a6;
+  --blanco: #f4f4f4;
+  --amarillo: #f5d000;
+  --amarillo-2: #ffd94d;
+  --rojo: #ff5d5d;
+  --verde: #43d18d;
+  --radio: 18px;
 }
 
-/* ===== RESET ===== */
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
 
-/* ===== BASE ===== */
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  height: 100%;
+}
+
 body {
-  font-family: "Poppins", sans-serif;
-  background: var(--negro);
+  background: #090a0b;
   color: var(--blanco);
+  font-family: "Poppins", sans-serif;
   line-height: 1.5;
 }
 
-/* ===== BOTÓN GLOBAL ===== */
+button,
+input,
+select {
+  font: inherit;
+}
+
 button {
-  margin-top: 0.8rem;
-  padding: 0.85rem 1.4rem;
-  border: none;
-  border-radius: 8px;
-  background: var(--amarillo);
-  color: var(--negro);
-  font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 600;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    transform 0.1s;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 button:hover:not(:disabled) {
-  background: var(--amarillo-hover);
-}
-
-button:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: translateY(-1px);
 }
 
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
-/* ===== SCROLLBAR (opcional, combina con el tema) ===== */
+p,
+h1,
+h2,
+h3,
+ul,
+ol,
+li,
+dd,
+dt,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--negro);
+  background: #0d0d0d;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gris-borde);
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--amarillo);
+  background: rgba(245, 208, 0, 0.6);
 }
