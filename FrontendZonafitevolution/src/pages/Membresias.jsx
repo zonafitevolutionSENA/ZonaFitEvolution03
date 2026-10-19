@@ -11,6 +11,7 @@ import {
 import { listarPlanes } from "../services/planService";
 import { ETIQUETAS_ESTADO, ESTADOS, diaDe } from "../utils/estadoMembresia";
 import { normalizarTexto } from "../utils/validacionesCliente";
+import "../PantallasGestion.css";
 
 const MAX_BUSQUEDA = 50;
 const FILTROS = [{ id: "todos", etiqueta: "Todos" }, ...ESTADOS.map((e) => ({ id: e, etiqueta: ETIQUETAS_ESTADO[e] }))];
@@ -118,7 +119,7 @@ function Membresias({ iniciarEnRenovar = false }) {
   }
 
   return (
-    <section>
+    <section className="gestion-page gestion-membresias">
       <h1>Membresías</h1>
 
       {modo === "asignar" && (
@@ -142,31 +143,39 @@ function Membresias({ iniciarEnRenovar = false }) {
 
       {!modo && (
         <>
-          <button type="button" onClick={() => abrir("asignar")} disabled={cargando}>Asignar membresía</button>
-          <button type="button" onClick={() => abrir("renovar")} disabled={cargando}>Renovar por cédula</button>
-          <button type="button" onClick={actualizarLista} disabled={cargando}>
-            {cargando ? "Actualizando..." : "Actualizar"}
-          </button>
+          <div className="gestion-actions">
+            <button type="button" onClick={() => abrir("asignar")} disabled={cargando}>Asignar membresía</button>
+            <button type="button" onClick={() => abrir("renovar")} disabled={cargando}>Renovar por cédula</button>
+            <button type="button" onClick={actualizarLista} disabled={cargando}>
+              {cargando ? "Actualizando..." : "Actualizar"}
+            </button>
+          </div>
 
-          <div>
-            <label htmlFor="filtro-membresias">Estado</label>
-            <select id="filtro-membresias" value={filtro} onChange={(e) => elegirFiltro(e.target.value)}>
-              {FILTROS.map((f) => (
-                <option key={f.id} value={f.id}>{f.etiqueta}</option>
-              ))}
-            </select>
+          <div className="gestion-filters gestion-filters-membresias">
+            <div className="gestion-field">
+              <label htmlFor="filtro-membresias">Estado</label>
+              <select id="filtro-membresias" value={filtro} onChange={(e) => elegirFiltro(e.target.value)}>
+                {FILTROS.map((f) => (
+                  <option key={f.id} value={f.id}>{f.etiqueta}</option>
+                ))}
+              </select>
+            </div>
 
-            <label htmlFor="busqueda-membresias">Buscar</label>
-            <input
-              id="busqueda-membresias"
-              type="search"
-              placeholder="Cliente, cédula o plan"
-              maxLength={MAX_BUSQUEDA}
-              autoComplete="off"
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value.replace(/\p{Cc}/gu, ""))}
-            />
-            <button type="button" onClick={() => setBusqueda("")} disabled={busqueda === ""}>Limpiar búsqueda</button>
+            <div className="gestion-field">
+              <label htmlFor="busqueda-membresias">Buscar</label>
+              <input
+                id="busqueda-membresias"
+                type="search"
+                placeholder="Cliente, cédula o plan"
+                maxLength={MAX_BUSQUEDA}
+                autoComplete="off"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value.replace(/\p{Cc}/gu, ""))}
+              />
+            </div>
+            <button className="gestion-button-quiet" type="button" onClick={() => setBusqueda("")} disabled={busqueda === ""}>
+              Limpiar búsqueda
+            </button>
           </div>
         </>
       )}

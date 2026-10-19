@@ -137,7 +137,7 @@ function App() {
           errorNotificaciones={errorNotificaciones}
           alReintentar={() => setRecargaNotificaciones((r) => r + 1)}
         />
-        <main className="app-main-content">
+        <main className={`app-main-content${vista === "inicio" ? " app-main-content-inicio" : ""}`}>
           {pantalla()}
         </main>
       </div>

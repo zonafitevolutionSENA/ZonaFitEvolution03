@@ -92,54 +92,53 @@ function Inicio({ usuario, alNavegar }) {
         </ul>
       </div>
 
-      <div className="inicio-actividad-header">
-        <h3 className="inicio-subtitle">Actividad reciente</h3>
-        <button className="inicio-link-btn" type="button" onClick={() => alNavegar("historial")}>
-          Ver historial
-        </button>
-      </div>
-
-      <div className="inicio-toolbar">
+      <section className="inicio-actividad">
+        <div className="inicio-actividad-header">
+          <h3 className="inicio-subtitle">Actividad reciente</h3>
         <button className="inicio-action-btn" type="button" onClick={actualizar} disabled={cargando}>
           {cargando ? "Actualizando..." : "Actualizar"}
         </button>
-      </div>
+          <button className="inicio-link-btn" type="button" onClick={() => alNavegar("historial")}>
+            Ver historial
+          </button>
+        </div>
 
-      {error && (
-        <p className="mensaje-error" role="alert">
-          {error}
-        </p>
-      )}
+        {error && (
+          <p className="mensaje-error" role="alert">
+            {error}
+          </p>
+        )}
 
-      {!error && cargando && actividad.length === 0 && (
-        <p>Cargando actividad...</p>
-      )}
-      {!error && !cargando && actividad.length === 0 && (
-        <p>Aún no hay accesos registrados.</p>
-      )}
+        {!error && cargando && actividad.length === 0 && (
+          <p>Cargando actividad...</p>
+        )}
+        {!error && !cargando && actividad.length === 0 && (
+          <p>Aún no hay accesos registrados.</p>
+        )}
 
-      {actividad.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Hora</th>
-              <th>Estado</th>
-              <th>Tipo</th>
-            </tr>
-          </thead>
-          <tbody>
-            {actividad.map((a) => (
-              <tr key={a.id}>
-                <td>{a.cliente}</td>
-                <td>{formatoHora.format(a.fechaHora)}</td>
-                <td>{a.permitido ? "Acceso permitido" : "Acceso denegado"}</td>
-                <td>{a.tipo}</td>
+        {actividad.length > 0 && (
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Hora</th>
+                <th>Estado</th>
+                <th>Tipo</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {actividad.map((a) => (
+                <tr key={a.id}>
+                  <td>{a.cliente}</td>
+                  <td>{formatoHora.format(a.fechaHora)}</td>
+                  <td>{a.permitido ? "Acceso permitido" : "Acceso denegado"}</td>
+                  <td>{a.tipo}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
     </section>
   );
 }
