@@ -8,6 +8,7 @@ import {
   hayErroresRango,
   validarRangoFechas,
 } from "../utils/filtrosHistorial";
+import "../PantallasGestion.css";
 
 const formatoHora = new Intl.DateTimeFormat("es-CO", {
   day: "2-digit",
@@ -66,56 +67,66 @@ function Historial() {
   const hayFiltros = JSON.stringify(filtros) !== JSON.stringify(FILTROS_INICIALES);
 
   return (
-    <section>
+    <section className="gestion-page gestion-historial">
       <h1>Historial de accesos</h1>
-      <p>Se muestran los 50 eventos más recientes.</p>
+      <p className="gestion-intro">Se muestran los 50 eventos más recientes.</p>
 
-      <button type="button" onClick={actualizar} disabled={cargando}>
-        {cargando ? "Actualizando..." : "Actualizar"}
-      </button>
+      <div className="gestion-actions">
+        <button type="button" onClick={actualizar} disabled={cargando}>
+          {cargando ? "Actualizando..." : "Actualizar"}
+        </button>
+      </div>
 
-      <div>
-        <label htmlFor="resultado-historial">Resultado</label>
-        <select id="resultado-historial" value={filtros.resultado} onChange={(e) => elegirResultado(e.target.value)}>
-          {FILTROS_RESULTADO.map((r) => (
-            <option key={r.id} value={r.id}>{r.etiqueta}</option>
-          ))}
-        </select>
+      <div className="gestion-history-filters">
+        <div className="gestion-field">
+          <label htmlFor="resultado-historial">Resultado</label>
+          <select id="resultado-historial" value={filtros.resultado} onChange={(e) => elegirResultado(e.target.value)}>
+            {FILTROS_RESULTADO.map((r) => (
+              <option key={r.id} value={r.id}>{r.etiqueta}</option>
+            ))}
+          </select>
+        </div>
 
-        <label htmlFor="texto-historial">Buscar</label>
-        <input
-          id="texto-historial"
-          type="search"
-          placeholder="Cliente o motivo"
-          maxLength={MAX_TEXTO_FILTRO}
-          autoComplete="off"
-          value={filtros.texto}
-          onChange={(e) => cambiar("texto", e.target.value.replace(/\p{Cc}/gu, ""))}
-        />
+        <div className="gestion-field">
+          <label htmlFor="texto-historial">Buscar</label>
+          <input
+            id="texto-historial"
+            type="search"
+            placeholder="Cliente o motivo"
+            maxLength={MAX_TEXTO_FILTRO}
+            autoComplete="off"
+            value={filtros.texto}
+            onChange={(e) => cambiar("texto", e.target.value.replace(/\p{Cc}/gu, ""))}
+          />
+        </div>
 
-        <label htmlFor="desde-historial">Desde</label>
-        <input
-          id="desde-historial"
-          type="date"
-          max={hoy}
-          value={filtros.desde}
-          onChange={(e) => cambiar("desde", e.target.value)}
-          aria-invalid={erroresRango.desde ? "true" : undefined}
-        />
-        {erroresRango.desde && <p className="mensaje-error" role="alert">{erroresRango.desde}</p>}
+        <div className="gestion-field">
+          <label htmlFor="desde-historial">Desde</label>
+          <input
+            id="desde-historial"
+            type="date"
+            max={hoy}
+            value={filtros.desde}
+            onChange={(e) => cambiar("desde", e.target.value)}
+            aria-invalid={erroresRango.desde ? "true" : undefined}
+          />
+          {erroresRango.desde && <p className="mensaje-error" role="alert">{erroresRango.desde}</p>}
+        </div>
 
-        <label htmlFor="hasta-historial">Hasta</label>
-        <input
-          id="hasta-historial"
-          type="date"
-          max={hoy}
-          value={filtros.hasta}
-          onChange={(e) => cambiar("hasta", e.target.value)}
-          aria-invalid={erroresRango.hasta ? "true" : undefined}
-        />
-        {erroresRango.hasta && <p className="mensaje-error" role="alert">{erroresRango.hasta}</p>}
+        <div className="gestion-field">
+          <label htmlFor="hasta-historial">Hasta</label>
+          <input
+            id="hasta-historial"
+            type="date"
+            max={hoy}
+            value={filtros.hasta}
+            onChange={(e) => cambiar("hasta", e.target.value)}
+            aria-invalid={erroresRango.hasta ? "true" : undefined}
+          />
+          {erroresRango.hasta && <p className="mensaje-error" role="alert">{erroresRango.hasta}</p>}
+        </div>
 
-        <button type="button" onClick={() => setFiltros(FILTROS_INICIALES)} disabled={!hayFiltros}>
+        <button className="gestion-button-quiet" type="button" onClick={() => setFiltros(FILTROS_INICIALES)} disabled={!hayFiltros}>
           Limpiar filtros
         </button>
       </div>
@@ -129,7 +140,7 @@ function Historial() {
 
       {visibles.length > 0 && (
         <>
-          <p>
+          <p className="gestion-result-count">
             Mostrando {visibles.length} de {filas.length} accesos
           </p>
           <table>

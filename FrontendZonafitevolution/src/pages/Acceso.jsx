@@ -4,6 +4,7 @@ import ValidarAcceso from "../components/ValidarAcceso";
 import { validarAcceso } from "../services/accesoService";
 import { registrarHuella } from "../services/biometriaService";
 import { listarClientes } from "../services/clienteService";
+import "../PantallasGestion.css";
 
 // Control de acceso: validar el acceso de un cliente con huella simulada y registrar su huella
 function Acceso() {
@@ -34,7 +35,7 @@ function Acceso() {
   }
 
   return (
-    <section>
+    <section className="gestion-page gestion-acceso">
       <h1>Control de acceso</h1>
 
       <ValidarAcceso alValidar={validarAcceso} />

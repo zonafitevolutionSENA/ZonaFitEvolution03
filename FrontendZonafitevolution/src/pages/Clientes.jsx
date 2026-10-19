@@ -9,6 +9,7 @@ import {
   membresiaActual,
 } from "../utils/estadoMembresia";
 import { normalizarTexto } from "../utils/validacionesCliente";
+import "../PantallasGestion.css";
 
 const MAX_BUSQUEDA = 50;
 
@@ -161,7 +162,7 @@ function Clientes({ iniciarEnRegistro = false }) {
   const ocupado = cargando || cambiandoId !== null;
 
   return (
-    <section>
+    <section className="gestion-page gestion-clientes">
       <h1>Clientes</h1>
 
       {formulario ? (
@@ -175,12 +176,15 @@ function Clientes({ iniciarEnRegistro = false }) {
         />
       ) : (
         <>
-          <button type="button" onClick={abrirRegistro}>Registrar cliente</button>
-          <button type="button" onClick={actualizarLista} disabled={cargando}>
-            {cargando ? "Actualizando..." : "Actualizar"}
-          </button>
+          <div className="gestion-actions">
+            <button type="button" onClick={abrirRegistro}>Registrar cliente</button>
+            <button type="button" onClick={actualizarLista} disabled={cargando}>
+              {cargando ? "Actualizando..." : "Actualizar"}
+            </button>
+          </div>
 
-          <div>
+          <div className="gestion-filters">
+            <div className="gestion-field">
             <label htmlFor="busqueda-clientes">Buscar</label>
             <input
               id="busqueda-clientes"
@@ -191,7 +195,8 @@ function Clientes({ iniciarEnRegistro = false }) {
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value.replace(/\p{Cc}/gu, ""))}
             />
-            <button type="button" onClick={() => setBusqueda("")} disabled={busqueda === ""}>
+            </div>
+            <button className="gestion-button-quiet" type="button" onClick={() => setBusqueda("")} disabled={busqueda === ""}>
               Limpiar búsqueda
             </button>
           </div>
@@ -213,7 +218,7 @@ function Clientes({ iniciarEnRegistro = false }) {
 
           {visibles.length > 0 && (
             <>
-              <p>
+              <p className="gestion-result-count">
                 Mostrando {visibles.length} de {clientes.length} clientes
               </p>
               <table>

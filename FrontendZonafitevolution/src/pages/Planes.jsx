@@ -8,6 +8,7 @@ import {
   listarPlanes,
 } from "../services/planService";
 import { ROL_ADMIN } from "../utils/permisos";
+import "../PantallasGestion.css";
 
 const FILTROS = [
   { id: "todos", etiqueta: "Todos" },
@@ -133,7 +134,7 @@ function Planes({ usuario }) {
   const ocupado = cargando || cambiandoId !== null;
 
   return (
-    <section>
+    <section className="gestion-page gestion-planes">
       <h1>Planes</h1>
 
       {formulario ? (
@@ -146,22 +147,26 @@ function Planes({ usuario }) {
         />
       ) : (
         <>
-          {esAdmin && (
-            <button type="button" onClick={() => { setAviso(""); setFormulario("nuevo"); }} disabled={ocupado}>
-              Crear plan
+          <div className="gestion-actions">
+            {esAdmin && (
+              <button type="button" onClick={() => { setAviso(""); setFormulario("nuevo"); }} disabled={ocupado}>
+                Crear plan
+              </button>
+            )}
+            <button type="button" onClick={actualizarLista} disabled={cargando}>
+              {cargando ? "Actualizando..." : "Actualizar"}
             </button>
-          )}
-          <button type="button" onClick={actualizarLista} disabled={cargando}>
-            {cargando ? "Actualizando..." : "Actualizar"}
-          </button>
+          </div>
 
-          <div>
-            <label htmlFor="filtro-planes">Mostrar</label>
-            <select id="filtro-planes" value={filtro} onChange={(e) => elegirFiltro(e.target.value)}>
-              {FILTROS.map((f) => (
-                <option key={f.id} value={f.id}>{f.etiqueta}</option>
-              ))}
-            </select>
+          <div className="gestion-filters">
+            <div className="gestion-field">
+              <label htmlFor="filtro-planes">Mostrar</label>
+              <select id="filtro-planes" value={filtro} onChange={(e) => elegirFiltro(e.target.value)}>
+                {FILTROS.map((f) => (
+                  <option key={f.id} value={f.id}>{f.etiqueta}</option>
+                ))}
+              </select>
+            </div>
           </div>
         </>
       )}

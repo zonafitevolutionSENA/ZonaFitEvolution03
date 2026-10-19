@@ -1,0 +1,226 @@
+.inicio-page {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  color: var(--blanco);
+}
+
+.inicio-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.inicio-title {
+  font-size: 2.65rem;
+  font-weight: 900;
+  color: #f4f4f4;
+  line-height: 1.1;
+}
+
+.inicio-role {
+  margin-top: 8px;
+  font-size: 1.3rem;
+  color: var(--amarillo-2);
+  font-weight: 600;
+}
+
+.inicio-question {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #f1f1f1;
+  margin-top: 8px;
+}
+
+.inicio-acciones-wrap {
+  margin-top: 8px;
+}
+
+.inicio-subtitle {
+  color: #f4f4f4;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.inicio-acciones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.inicio-accion-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px 18px;
+  background: rgba(19, 20, 23, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.inicio-accion-item:hover {
+  border-color: rgba(245, 208, 0, 0.42);
+  transform: translateY(-2px);
+}
+
+.inicio-accion-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 52px;
+  padding: 0;
+  background: transparent;
+  color: #f4f4f4;
+  font-weight: 800;
+  font-size: 1rem;
+  text-align: left;
+  box-shadow: none;
+}
+
+.inicio-accion-text {
+  display: inline-block;
+  max-width: 80%;
+}
+
+.inicio-accion-arrow {
+  display: grid;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--amarillo-2);
+  color: #151515;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.inicio-accion-detalle {
+  color: var(--gris-texto);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.inicio-actividad {
+  padding: 20px 22px;
+  background: rgba(19, 20, 23, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+}
+
+.inicio-actividad-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.inicio-actividad-header .inicio-subtitle {
+  margin-right: auto;
+}
+
+.inicio-link-btn,
+.inicio-action-btn {
+  background: transparent;
+  color: var(--amarillo-2);
+  border: 1px solid rgba(245, 208, 0, 0.45);
+  border-radius: 12px;
+  font-weight: 800;
+  padding: 10px 14px;
+}
+
+.inicio-actividad > p:not(.mensaje-error) {
+  padding: 20px;
+  color: var(--gris-texto);
+  text-align: center;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+.inicio-page table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.inicio-page th,
+.inicio-page td {
+  padding: 13px 14px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.inicio-page th {
+  color: #aeb4bf;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+@media (max-width: 1080px) {
+  .inicio-acciones {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .inicio-acciones {
+    grid-template-columns: 1fr;
+  }
+
+  .inicio-actividad-header {
+    flex-wrap: wrap;
+  }
+
+  .inicio-actividad-header .inicio-subtitle {
+    flex-basis: 100%;
+  }
+
+  .inicio-question {
+    font-size: 1.1rem;
+  }
+
+  .inicio-title {
+    font-size: 2rem;
+  }
+
+  .inicio-actividad {
+    padding: 16px;
+    overflow-x: auto;
+  }
+
+  .inicio-page table {
+    display: block;
+    min-width: 620px;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .inicio-title {
+    font-size: 1.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  .inicio-question {
+    font-size: 1rem;
+  }
+
+  .inicio-actividad-header .inicio-subtitle {
+    font-size: 1.15rem;
+  }
+
+  .inicio-actividad-header .inicio-action-btn,
+  .inicio-actividad-header .inicio-link-btn {
+    flex: 1 1 auto;
+  }
+}

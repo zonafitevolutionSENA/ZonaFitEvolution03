@@ -3,6 +3,7 @@ import FormularioUsuario from "../components/FormularioUsuario";
 import { crearUsuario, eliminarUsuario, listarUsuarios } from "../services/usuarioService";
 import { ROL_ADMIN, etiquetaRol } from "../utils/permisos";
 import { motivoNoEliminable } from "../utils/validacionesUsuario";
+import "../PantallasGestion.css";
 
 const formatoFecha = new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "short", year: "numeric" });
 
@@ -57,7 +58,7 @@ function Personal({ usuario }) {
 
   if (!esAdmin) {
     return (
-      <section>
+      <section className="gestion-page gestion-personal">
         <h1>Personal</h1>
         <p className="mensaje-error" role="alert">Esta sección es solo para el administrador.</p>
       </section>
@@ -101,7 +102,7 @@ function Personal({ usuario }) {
   const ocupado = cargando || eliminandoId !== null;
 
   return (
-    <section>
+    <section className="gestion-page gestion-personal">
       <h1>Personal</h1>
 
       {creando ? (
@@ -111,14 +112,14 @@ function Personal({ usuario }) {
           alCancelar={() => setCreando(false)}
         />
       ) : (
-        <>
+        <div className="gestion-actions">
           <button type="button" onClick={() => { setAviso(""); setCreando(true); }} disabled={ocupado}>
             Crear usuario
           </button>
           <button type="button" onClick={actualizarLista} disabled={cargando}>
             {cargando ? "Actualizando..." : "Actualizar"}
           </button>
-        </>
+        </div>
       )}
 
       {aviso && <p role="status">{aviso}</p>}
