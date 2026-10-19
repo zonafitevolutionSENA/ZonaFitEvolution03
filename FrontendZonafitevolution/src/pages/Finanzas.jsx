@@ -15,6 +15,7 @@ import {
 } from "../utils/finanzas";
 import { MAX_TEXTO_FILTRO, diaLocal, hayErroresRango, validarRangoFechas } from "../utils/filtrosHistorial";
 import { ROL_ADMIN } from "../utils/permisos";
+import "../PantallasGestion.css";
 
 const FILTROS_INICIALES = { texto: "", estado: "todos", desde: "", hasta: "", orden: "total", soloConPagos: true };
 
@@ -60,7 +61,7 @@ function Finanzas({ usuario }) {
 
   if (!esAdmin) {
     return (
-      <section>
+      <section className="gestion-page gestion-finanzas">
         <h1>Registro financiero</h1>
         <p className="mensaje-error" role="alert">Esta sección es solo para administradores.</p>
       </section>
@@ -87,21 +88,23 @@ function Finanzas({ usuario }) {
   const hayFiltros = JSON.stringify(filtros) !== JSON.stringify(FILTROS_INICIALES);
 
   return (
-    <section>
+    <section className="gestion-page gestion-finanzas">
       <h1>Registro financiero</h1>
-      <p>Resumen de pagos de cada cliente. Cada membresía cuenta como un pago por el precio actual de su plan.</p>
+      <p className="gestion-intro">Resumen de pagos de cada cliente. Cada membresía cuenta como un pago por el precio actual de su plan.</p>
 
-      <button type="button" onClick={actualizar} disabled={cargando}>
-        {cargando ? "Actualizando..." : "Actualizar"}
-      </button>
+      <div className="gestion-actions">
+        <button type="button" onClick={actualizar} disabled={cargando}>
+          {cargando ? "Actualizando..." : "Actualizar"}
+        </button>
+      </div>
 
       {error && <p className="mensaje-error" role="alert">{error}</p>}
       {cargando && !datos && !error && <p>Cargando registro financiero...</p>}
 
       {datos && (
         <>
-          <form onSubmit={(e) => e.preventDefault()} noValidate aria-label="Filtros del registro financiero">
-            <div>
+          <form className="gestion-filtros-finanzas" onSubmit={(e) => e.preventDefault()} noValidate aria-label="Filtros del registro financiero">
+            <div className="gestion-field">
               <label htmlFor="texto-finanzas">Buscar cliente</label>
               <input
                 id="texto-finanzas"
@@ -114,7 +117,7 @@ function Finanzas({ usuario }) {
               />
             </div>
 
-            <div>
+            <div className="gestion-field">
               <label htmlFor="estado-finanzas">Estado de la membresía</label>
               <select
                 id="estado-finanzas"
@@ -127,7 +130,7 @@ function Finanzas({ usuario }) {
               </select>
             </div>
 
-            <div>
+            <div className="gestion-field">
               <label htmlFor="desde-finanzas">Desde</label>
               <input
                 id="desde-finanzas"
@@ -140,7 +143,7 @@ function Finanzas({ usuario }) {
               {errores.desde && <p className="mensaje-error" role="alert">{errores.desde}</p>}
             </div>
 
-            <div>
+            <div className="gestion-field">
               <label htmlFor="hasta-finanzas">Hasta</label>
               <input
                 id="hasta-finanzas"
@@ -153,7 +156,7 @@ function Finanzas({ usuario }) {
               {errores.hasta && <p className="mensaje-error" role="alert">{errores.hasta}</p>}
             </div>
 
-            <div>
+            <div className="gestion-field">
               <label htmlFor="orden-finanzas">Ordenar por</label>
               <select
                 id="orden-finanzas"
@@ -166,7 +169,7 @@ function Finanzas({ usuario }) {
               </select>
             </div>
 
-            <div>
+            <div className="gestion-check">
               <input
                 id="solo-pagos-finanzas"
                 type="checkbox"
@@ -176,14 +179,14 @@ function Finanzas({ usuario }) {
               <label htmlFor="solo-pagos-finanzas">Solo clientes con pagos</label>
             </div>
 
-            <button type="button" onClick={() => setFiltros(FILTROS_INICIALES)} disabled={!hayFiltros}>
+            <button className="gestion-button-quiet" type="button" onClick={() => setFiltros(FILTROS_INICIALES)} disabled={!hayFiltros}>
               Limpiar filtros
             </button>
           </form>
 
-          {hayErroresRango(errores) && <p>El rango de fechas no es válido: no se aplica hasta que lo corrijas.</p>}
+          {hayErroresRango(errores) && <p className="mensaje-error" role="alert">El rango de fechas no es válido: no se aplica hasta que lo corrijas.</p>}
 
-          <dl aria-label="Totales">
+          <dl className="gestion-totales" aria-label="Totales">
             <div>
               <dt>Total recaudado</dt>
               <dd>{pesos(totales.total)}</dd>
@@ -210,7 +213,7 @@ function Finanzas({ usuario }) {
           )}
           {resumenes.length > 0 && (
             <>
-              <p>Mostrando {resumenes.length} de {datos.clientes.length} clientes</p>
+              <p className="gestion-result-count">Mostrando {resumenes.length} de {datos.clientes.length} clientes</p>
               <TablaPagos resumenes={resumenes} />
             </>
           )}

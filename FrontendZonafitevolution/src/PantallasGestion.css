@@ -284,3 +284,170 @@
 .gestion-history-filters .gestion-button-quiet {
   justify-self: start;
 }
+
+/* ---------- Registro financiero ---------- */
+
+.gestion-page form.gestion-filtros-finanzas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  align-items: end;
+  gap: 14px;
+  width: 100%;
+  max-width: none;
+  margin: 14px 0 18px;
+}
+
+.gestion-filtros-finanzas > .gestion-field:first-child {
+  grid-column: span 2;
+}
+
+.gestion-page form .gestion-check {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 10px;
+}
+
+.gestion-page .gestion-check input {
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
+  padding: 0;
+  accent-color: #f5b82e;
+}
+
+.gestion-page .gestion-check label {
+  color: #e8e9ec;
+  font-size: 0.92rem;
+}
+
+.gestion-totales {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0 0 18px;
+}
+
+.gestion-totales > div {
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 15px;
+  background: rgba(22, 23, 26, 0.94);
+}
+
+.gestion-totales dt {
+  color: #aeb4bf;
+  font-size: 0.85rem;
+}
+
+.gestion-totales dd {
+  margin: 4px 0 0;
+  color: #f5b82e;
+  font-size: 1.7rem;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.gestion-page > p[role="status"] {
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(67, 209, 141, 0.35);
+  border-left: 4px solid var(--verde);
+  border-radius: 12px;
+  background: rgba(67, 209, 141, 0.1);
+  color: #9be9c4;
+  font-size: 0.88rem;
+}
+
+/* En escritorio las tablas ocupan todo el ancho; en celular se desplazan (ver responsive) */
+.gestion-finanzas table,
+.gestion-personal table {
+  display: table;
+}
+
+.gestion-finanzas td > table {
+  width: 100%;
+}
+
+/* Tabla de pagos de un cliente, dentro de la fila desplegada */
+.gestion-finanzas td > table {
+  border-color: rgba(245, 184, 46, 0.25);
+  background: rgba(11, 12, 14, 0.6);
+}
+
+.gestion-finanzas td[colspan] {
+  padding: 12px;
+  white-space: normal;
+}
+
+/* ---------- Personal ---------- */
+
+.gestion-personal td small {
+  display: block;
+  max-width: 240px;
+  margin-top: 4px;
+  color: #aeb4bf;
+  white-space: normal;
+}
+
+.gestion-personal td button:disabled {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #858b96;
+}
+
+/* ---------- Responsive: Registro financiero y Personal ---------- */
+
+@media (max-width: 900px) {
+  .gestion-filtros-finanzas > .gestion-field:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .gestion-finanzas table,
+  .gestion-personal table {
+    display: block;
+  }
+
+  .gestion-finanzas td > table {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .gestion-page form.gestion-filtros-finanzas {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 17px;
+  }
+
+  .gestion-filtros-finanzas > .gestion-field:first-child {
+    grid-column: auto;
+  }
+
+  .gestion-totales {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .gestion-totales > div {
+    padding: 14px 16px;
+  }
+
+  .gestion-totales dd {
+    font-size: 1.45rem;
+  }
+
+  .gestion-intro {
+    margin-top: -6px;
+  }
+}
+
+@media (max-width: 420px) {
+  .gestion-page .gestion-check label {
+    font-size: 0.88rem;
+  }
+
+  .gestion-page form.gestion-filtros-finanzas .gestion-button-quiet {
+    width: 100%;
+    justify-self: stretch;
+  }
+}
