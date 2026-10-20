@@ -99,14 +99,6 @@
   background: rgba(245, 208, 0, 0.08);
 }
 
-.app-nav-tag {
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  opacity: 0.75;
-}
-
 .app-logout {
   margin-top: auto;
   background: rgba(255, 255, 255, 0.04);
@@ -251,10 +243,6 @@
     padding: 10px 14px;
     border-radius: 11px;
     font-size: 0.9rem;
-  }
-
-  .app-nav-tag {
-    font-size: 0.55rem;
   }
 
   .app-logout {

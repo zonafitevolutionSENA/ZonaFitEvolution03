@@ -132,7 +132,7 @@ function RenovarMembresia({ planes, alBuscar, alRenovar, alCancelar }) {
 
       {errorGeneral && <p className="mensaje-error" role="alert">{errorGeneral}</p>}
 
-      <button type="button" onClick={alCancelar} disabled={ocupado}>Cancelar</button>
+      <button className="gestion-button-quiet" type="button" onClick={alCancelar} disabled={ocupado}>Cancelar</button>
     </section>
   );
 }
