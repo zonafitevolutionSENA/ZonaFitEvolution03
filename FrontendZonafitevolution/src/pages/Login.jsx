@@ -57,7 +57,7 @@ function Login({ onLoginExitoso }) {
 
   return (
     <div className="login-fondo">
-      <form className="login-caja" onSubmit={manejarEnvio}>
+      <form className="login-caja" onSubmit={manejarEnvio} noValidate>
         <h1 className="login-title">Zona Fit Evolution</h1>
         <p className="login-subtitle">Inicia sesión para continuar</p>
 
@@ -69,7 +69,6 @@ function Login({ onLoginExitoso }) {
           value={correo}
           onChange={(e) => setCorreo(e.target.value)}
           maxLength={100} // Previene ataques de denegación de servicio por entradas masivas
-          required
         />
 
         <label className="login-label" htmlFor="contrasena">Contraseña</label>
@@ -80,7 +79,6 @@ function Login({ onLoginExitoso }) {
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
           maxLength={128} // Límite estándar para evitar hashes muy largos o DoS
-          required
         />
 
         {error && <p className="mensaje-error">{error}</p>}
