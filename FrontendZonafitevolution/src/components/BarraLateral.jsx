@@ -25,7 +25,6 @@ function BarraLateral({ rolId, activa, alNavegar, alCerrarSesion, cerrando = fal
                 disabled={activa === s.id}
               >
                 <span>{s.etiqueta}</span>
-                {s.soloAdmin && <span className="app-nav-tag">solo admin</span>}
               </button>
             </li>
           ))}

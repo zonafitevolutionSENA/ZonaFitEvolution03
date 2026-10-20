@@ -451,3 +451,17 @@
     justify-self: stretch;
   }
 }
+
+
+/* Subtítulos de secciones dentro de las pantallas (p. ej. "Renovar por cédula") */
+.gestion-page > h2 {
+  margin-bottom: 12px;
+  color: #f5f5f5;
+  font-size: 1.25rem;
+  font-weight: 750;
+}
+
+/* Botón secundario que queda fuera de un formulario (p. ej. Cancelar al renovar) */
+.gestion-page section > .gestion-button-quiet {
+  margin-top: 14px;
+}
