@@ -2,8 +2,8 @@
 import { diaDe, hoyLocal } from "./estadoMembresia";
 import { validarCedula } from "./validacionesCliente";
 
-// La fecha de inicio puede ir hasta 30 días atrás (registro tardío) y hasta 1 año adelante
-export const DIAS_ATRAS_MAX = 30;
+// La fecha de inicio no puede ser anterior a hoy y puede ir hasta 1 año adelante
+export const DIAS_ATRAS_MAX = 0;
 export const DIAS_ADELANTE_MAX = 365;
 
 export function sumarDias(fechaISO, dias) {
@@ -28,7 +28,7 @@ export function validarFechaInicio(valor, hoy = hoyLocal()) {
   if (!texto) return "La fecha de inicio es obligatoria.";
   if (!fechaExiste(texto)) return "La fecha de inicio no es válida.";
   const { min, max } = limitesFechaInicio(hoy);
-  if (texto < min) return `La fecha de inicio no puede ser anterior a ${DIAS_ATRAS_MAX} días atrás.`;
+  if (texto < min) return "La fecha de inicio no puede ser anterior a hoy.";
   if (texto > max) return "La fecha de inicio no puede superar un año desde hoy.";
   return "";
 }

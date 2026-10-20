@@ -466,7 +466,7 @@ La pantalla lista las membresías (con filtro por estado y búsqueda por cliente
 | ------------------- | ----------------------------------------------------------------------------------- |
 | Cliente             | Obligatorio y existente; no puede tener ya una membresía activa y vigente           |
 | Plan                | Obligatorio, existente y activo                                                     |
-| Fecha de inicio     | Obligatoria, fecha real, entre 30 días atrás y un año adelante                      |
+| Fecha de inicio     | Obligatoria, fecha real, desde hoy hasta un año adelante (el calendario no muestra días anteriores)|
 | Cédula (renovación) | Obligatoria, solo dígitos (6 a 15)                                                  |
 
 Al abrir Membresías (igual que Clientes) las membresías activas con fecha de fin pasada se pasan solas a `vencida`.
