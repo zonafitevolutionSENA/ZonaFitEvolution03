@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { iniciarSesion } from "../services/authService";
 import "../Login.css";
 
@@ -7,9 +7,22 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(errorInicial);
   const [cargando, setCargando] = useState(false);
+  const [bloqueadoHasta, setBloqueadoHasta] = useState(0);
+  const [ahora, setAhora] = useState(Date.now());
+
+  // Reloj que solo corre mientras hay un bloqueo activo
+  useEffect(() => {
+    if (bloqueadoHasta <= Date.now()) return;
+    const id = setInterval(() => setAhora(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [bloqueadoHasta]);
+
+  const segundosRestantes = Math.max(0, Math.ceil((bloqueadoHasta - ahora) / 1000));
+  const bloqueado = segundosRestantes > 0;
 
   async function manejarEnvio(e) {
     e.preventDefault();
+    if (bloqueado) return;
     setError("");
 
     // 1. Sanitización: Eliminar espacios en blanco sobrantes
@@ -42,9 +55,13 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
       // 3. Manejo de errores seguro: Usamos 'err' para depuración interna sin mostrar detalles sensibles
       console.error("Error al iniciar sesión:", err);
 
-      setError(
-        "Credenciales incorrectas o error en el servidor. Inténtalo de nuevo.",
-      );
+      if (err.status === 429) {
+        setBloqueadoHasta(Date.now() + 15 * 60 * 1000);
+        setAhora(Date.now());
+        setError("Demasiados intentos. Intenta de nuevo más tarde.");
+      } else {
+        setError(err.message);
+      }
     } finally {
       setCargando(false);
     }
@@ -78,8 +95,12 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
 
         {error && <p className="mensaje-error">{error}</p>}
 
-        <button className="login-submit" type="submit" disabled={cargando}>
-          {cargando ? "Ingresando..." : "Iniciar sesión"}
+        <button className="login-submit" type="submit" disabled={cargando || bloqueado}>
+          {cargando
+            ? "Ingresando..."
+            : bloqueado
+              ? `Intenta en ${Math.floor(segundosRestantes / 60)}:${String(segundosRestantes % 60).padStart(2, "0")}`
+              : "Iniciar sesión"}
         </button>
       </form>
     </div>
