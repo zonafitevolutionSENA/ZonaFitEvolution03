@@ -48,7 +48,7 @@ async function cargarDatos() {
 
 // Clientes: lista, búsqueda, registro, edición y cambio del estado de la membresía.
 // Los clientes no se eliminan: lo que cambia es el estado de su membresía.
-function Clientes({ iniciarEnRegistro = false }) {
+function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
   const [clientes, setClientes] = useState([]);
   const [membresias, setMembresias] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -237,7 +237,7 @@ function Clientes({ iniciarEnRegistro = false }) {
                   {visibles.map((c) => {
                     const delCliente = membresiasPorCliente.get(c.id) ?? [];
                     const membresia = membresiaActual(delCliente);
-                    const acciones = accionesPermitidas(membresia, delCliente);
+                    const acciones = accionesPermitidas(membresia, delCliente, undefined, puedeReactivar);
                     return (
                       <tr key={c.id}>
                         <td>{c.nombre}</td>

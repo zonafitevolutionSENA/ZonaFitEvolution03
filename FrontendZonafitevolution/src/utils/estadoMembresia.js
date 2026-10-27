@@ -46,7 +46,8 @@ export function membresiaActual(membresiasDelCliente) {
 // Cambios de estado que se pueden ofrecer para una membresía:
 // - activa vigente → cancelar · activa con fecha de fin pasada → marcar como vencida
 // - cancelada aún vigente y sin otra activa → reactivar · vencida → ninguno (se renueva desde Membresías)
-export function accionesPermitidas(membresia, membresiasDelCliente, hoy = hoyLocal()) {
+// Reactivar solo se ofrece a quien tenga permiso (Administrador): el Empleado no puede reabrir membresías.
+export function accionesPermitidas(membresia, membresiasDelCliente, hoy = hoyLocal(), puedeReactivar = true) {
   if (!membresia) return [];
   const fin = diaDe(membresia.fecha_fin);
 
@@ -57,7 +58,7 @@ export function accionesPermitidas(membresia, membresiasDelCliente, hoy = hoyLoc
 
   if (membresia.estado === "cancelada") {
     const hayOtraActiva = membresiasDelCliente.some((m) => m.estado === "activa" && m.id !== membresia.id);
-    if (fin && fin >= hoy && !hayOtraActiva) {
+    if (puedeReactivar && fin && fin >= hoy && !hayOtraActiva) {
       return [{ estado: "activa", etiqueta: "Reactivar membresía" }];
     }
   }
