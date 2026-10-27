@@ -11,32 +11,14 @@ import Membresias from "./pages/Membresias";
 import Personal from "./pages/Personal";
 import Planes from "./pages/Planes";
 import { obtenerPorVencer } from "./services/dashboardService";
+import { EVENTO_SESION_EXPIRADA, limpiarTokenSesion } from "./services/api";
 import { SECCIONES, seccionPermitida } from "./utils/permisos";
 import "./App.css";
 
 function limpiarSesion() {
+  limpiarTokenSesion();
   localStorage.removeItem("token");
   localStorage.removeItem("usuario");
-}
-
-// Solo se acepta una sesión completa y con la forma esperada; cualquier dato alterado o incompleto se descarta
-function leerUsuarioGuardado() {
-  try {
-    const token = localStorage.getItem("token");
-    const usuario = JSON.parse(localStorage.getItem("usuario"));
-    const valido =
-      token &&
-      usuario &&
-      typeof usuario === "object" &&
-      typeof usuario.nombre === "string" &&
-      usuario.nombre.trim() !== "" &&
-      (usuario.rol_id === 1 || usuario.rol_id === 2);
-    if (valido) return usuario;
-  } catch {
-    // JSON dañado: se trata como sin sesión
-  }
-  limpiarSesion();
-  return null;
 }
 
 // Acciones rápidas del Inicio: abren una sección con su formulario ya abierto
@@ -47,12 +29,32 @@ const ACCIONES_RAPIDAS = {
 };
 
 function App() {
-  const [usuario, setUsuario] = useState(leerUsuarioGuardado);
+  const [usuario, setUsuario] = useState(null);
+  const [mensajeSesion, setMensajeSesion] = useState("");
   const [vista, setVista] = useState("inicio");
   const [accionInicial, setAccionInicial] = useState(null);
   const [porVencer, setPorVencer] = useState(null);
   const [errorNotificaciones, setErrorNotificaciones] = useState("");
   const [recargaNotificaciones, setRecargaNotificaciones] = useState(0);
+
+  useEffect(() => {
+    function expirarSesion(evento) {
+      const mostrarAviso = Boolean(usuario) || evento.detail?.expirada;
+      limpiarSesion();
+      setUsuario(null);
+      setVista("inicio");
+      setAccionInicial(null);
+      setPorVencer(null);
+      setMensajeSesion(mostrarAviso ? "Tu sesión expiró. Inicia sesión nuevamente." : "");
+    }
+
+    window.addEventListener(EVENTO_SESION_EXPIRADA, expirarSesion);
+    return () => window.removeEventListener(EVENTO_SESION_EXPIRADA, expirarSesion);
+  }, [usuario]);
+
+  useEffect(() => {
+    limpiarSesion();
+  }, []);
 
   // Notificaciones (campana): se cargan una vez iniciada la sesión
   useEffect(() => {
@@ -77,6 +79,7 @@ function App() {
     setVista("inicio");
     setAccionInicial(null);
     setPorVencer(null);
+    setMensajeSesion("");
   }, []);
 
   // Una vista solo se abre si existe y el rol puede verla (ej. "Personal" es solo del administrador)
@@ -95,7 +98,15 @@ function App() {
   }
 
   if (!usuario) {
-    return <Login onLoginExitoso={setUsuario} />;
+    return (
+      <Login
+        onLoginExitoso={(usuarioActual) => {
+          setMensajeSesion("");
+          setUsuario(usuarioActual);
+        }}
+        errorInicial={mensajeSesion}
+      />
+    );
   }
 
   // Pantalla de la sección activa; cualquier valor desconocido vuelve al Inicio

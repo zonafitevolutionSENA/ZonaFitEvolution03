@@ -2,10 +2,10 @@ import { useState } from "react";
 import { iniciarSesion } from "../services/authService";
 import "../Login.css";
 
-function Login({ onLoginExitoso }) {
+function Login({ onLoginExitoso, errorInicial = "" }) {
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState(errorInicial);
   const [cargando, setCargando] = useState(false);
 
   async function manejarEnvio(e) {
@@ -32,15 +32,10 @@ function Login({ onLoginExitoso }) {
     setCargando(true);
 
     try {
-      const { token, usuario } = await iniciarSesion(
+      const { usuario } = await iniciarSesion(
         correoLimpio,
         contrasenaLimpias,
       );
-
-      // Nota de seguridad: 'localStorage' es vulnerable a ataques XSS.
-      // Si es posible, se recomienda almacenar los tokens en cookies seguras (HttpOnly, Secure, SameSite).
-      localStorage.setItem("token", token);
-      localStorage.setItem("usuario", JSON.stringify(usuario));
 
       onLoginExitoso(usuario);
     } catch (err) {
