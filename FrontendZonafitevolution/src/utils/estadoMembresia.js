@@ -24,11 +24,44 @@ export function hoyLocal() {
   return `${ahora.getFullYear()}-${mes}-${dia}`;
 }
 
-// Membresías activas cuya fecha de fin ya pasó (vencen al terminar el día de su fecha de fin)
+// Tiquetera: membresía con una cantidad limitada de ingresos (ingresos_totales viene en null en las membresías por tiempo)
+export function esTiquetera(membresia) {
+  return membresia?.ingresos_totales !== null && membresia?.ingresos_totales !== undefined;
+}
+
+// Ingresos que le quedan a una tiquetera (null si la membresía es por tiempo)
+export function ingresosRestantes(membresia) {
+  if (!esTiquetera(membresia)) return null;
+  return Math.max(Number(membresia.ingresos_totales) - Number(membresia.ingresos_usados ?? 0), 0);
+}
+
+// ¿Todavía se puede usar? Por tiempo: la fecha de fin no pasó. Tiquetera: le quedan ingresos y no venció
+// (sin fecha de fin = aún no se usa, el plazo empieza en el primer ingreso)
+export function estaVigente(membresia, hoy = hoyLocal()) {
+  const fin = diaDe(membresia?.fecha_fin);
+  if (esTiquetera(membresia)) return ingresosRestantes(membresia) > 0 && (fin === "" || fin >= hoy);
+  return fin !== "" && fin >= hoy;
+}
+
+// Texto del estado de una membresía, con los ingresos y el vencimiento cuando corresponde
+export function textoMembresia(membresia) {
+  const fin = diaDe(membresia?.fecha_fin);
+  let texto = ETIQUETAS_ESTADO[membresia?.estado] ?? String(membresia?.estado ?? "");
+  if (esTiquetera(membresia)) {
+    texto += ` · ${ingresosRestantes(membresia)} de ${membresia.ingresos_totales} ingresos disponibles`;
+  }
+  if (fin) texto += ` · vence ${fin}`;
+  else if (esTiquetera(membresia) && membresia.estado === "activa") texto += " · el plazo empieza en el primer ingreso";
+  return texto;
+}
+
+// Membresías activas que ya no se pueden usar: la fecha de fin pasó (vencen al terminar ese día) o a la tiquetera se le acabaron los ingresos
 export function membresiasVencidas(membresias, hoy = hoyLocal()) {
   return membresias.filter((m) => {
+    if (m.estado !== "activa") return false;
+    if (esTiquetera(m) && ingresosRestantes(m) === 0) return true;
     const fin = diaDe(m.fecha_fin);
-    return m.estado === "activa" && fin !== "" && fin < hoy;
+    return fin !== "" && fin < hoy;
   });
 }
 
@@ -52,13 +85,13 @@ export function accionesPermitidas(membresia, membresiasDelCliente, hoy = hoyLoc
   const fin = diaDe(membresia.fecha_fin);
 
   if (membresia.estado === "activa") {
-    if (fin && fin < hoy) return [{ estado: "vencida", etiqueta: "Marcar como vencida" }];
+    if ((fin && fin < hoy) || (esTiquetera(membresia) && ingresosRestantes(membresia) === 0)) return [{ estado: "vencida", etiqueta: "Marcar como vencida" }];
     return [{ estado: "cancelada", etiqueta: "Cancelar membresía" }];
   }
 
   if (membresia.estado === "cancelada") {
     const hayOtraActiva = membresiasDelCliente.some((m) => m.estado === "activa" && m.id !== membresia.id);
-    if (puedeReactivar && fin && fin >= hoy && !hayOtraActiva) {
+    if (puedeReactivar && estaVigente(membresia, hoy) && !hayOtraActiva) {
       return [{ estado: "activa", etiqueta: "Reactivar membresía" }];
     }
   }

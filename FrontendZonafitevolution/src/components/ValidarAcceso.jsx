@@ -79,6 +79,12 @@ function ValidarAcceso({ alValidar }) {
             </p>
           )}
           <p>{resultado.motivo}</p>
+          {resultado.ingresosRestantes !== null && resultado.ingresosRestantes !== undefined && (
+            <p>
+              Ingresos restantes: {resultado.ingresosRestantes}
+              {resultado.vence ? ` · vence ${resultado.vence}` : ""}
+            </p>
+          )}
         </div>
       )}
     </form>

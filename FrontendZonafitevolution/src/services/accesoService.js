@@ -50,5 +50,8 @@ export async function validarAcceso(identificador) {
     cliente: respuesta.cliente && typeof respuesta.cliente === "object" ? respuesta.cliente : null,
     permitido: respuesta.permitido,
     motivo: String(respuesta.motivo ?? ""),
+    // Solo vienen cuando el cliente entró con una tiquetera
+    ingresosRestantes: Number.isInteger(respuesta.ingresos_restantes) ? respuesta.ingresos_restantes : null,
+    vence: typeof respuesta.vence === "string" ? respuesta.vence : "",
   };
 }

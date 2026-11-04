@@ -186,6 +186,7 @@ function Planes({ usuario }) {
                 <tr>
                   <th>Plan</th>
                   <th>Duración</th>
+                  <th>Ingresos</th>
                   <th>Precio</th>
                   <th>Estado</th>
                   {esAdmin && <th>Acciones</th>}
@@ -195,7 +196,11 @@ function Planes({ usuario }) {
                 {visibles.map((p) => (
                   <tr key={p.id}>
                     <td>{p.nombre}</td>
-                    <td>{p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}</td>
+                    <td>
+                      {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}
+                      {p.max_ingresos ? " desde el primer uso" : ""}
+                    </td>
+                    <td>{p.max_ingresos ? `${p.max_ingresos} ingresos` : "Ilimitados"}</td>
                     <td>{textoPrecio(p.precio)}</td>
                     <td>{p.activo ? "Activo" : "Inactivo"}</td>
                     {esAdmin && (

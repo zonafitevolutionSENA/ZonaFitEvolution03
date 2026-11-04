@@ -99,7 +99,7 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
           <option value="">Selecciona un plan</option>
           {planesActivos.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"} — {formatoPrecio.format(Number(p.precio))}
+              {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}{p.max_ingresos ? ` · ${p.max_ingresos} ingresos` : ""} — {formatoPrecio.format(Number(p.precio))}
             </option>
           ))}
         </select>
@@ -122,7 +122,13 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
         {errores.fecha ? (
           <p className="mensaje-error" role="alert">{errores.fecha}</p>
         ) : (
-          fin && <small>Vencerá el {fin}.</small>
+          plan?.max_ingresos ? (
+            <small>
+              Incluye {plan.max_ingresos} ingresos. Los {plan.duracion_dias} días cuentan desde el primer ingreso.
+            </small>
+          ) : (
+            fin && <small>Vencerá el {fin}.</small>
+          )
         )}
       </div>
 

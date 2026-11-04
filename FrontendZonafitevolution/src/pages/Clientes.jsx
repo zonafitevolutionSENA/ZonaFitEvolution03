@@ -5,8 +5,8 @@ import { cambiarEstadoMembresia, listarMembresiasAlDia } from "../services/membr
 import {
   ETIQUETAS_ESTADO,
   accionesPermitidas,
-  diaDe,
   membresiaActual,
+  textoMembresia,
 } from "../utils/estadoMembresia";
 import { normalizarTexto } from "../utils/validacionesCliente";
 import "../PantallasGestion.css";
@@ -246,9 +246,7 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
                         <td>{c.telefono || "—"}</td>
                         <td>{textoFecha(c.fecha_registro)}</td>
                         <td>
-                          {membresia
-                            ? `${ETIQUETAS_ESTADO[membresia.estado]}${diaDe(membresia.fecha_fin) ? ` · vence ${diaDe(membresia.fecha_fin)}` : ""}`
-                            : "Sin membresía"}
+                          {membresia ? textoMembresia(membresia) : "Sin membresía"}
                         </td>
                         <td>
                           <button type="button" onClick={() => abrirEdicion(c)} disabled={ocupado}>
