@@ -25,6 +25,18 @@ function validarPrecio(precio) {
   return valor;
 }
 
+const MAXIMO_INGRESOS = 365;
+
+// null o vacío = plan por tiempo; un número entero positivo = tiquetera con esa cantidad de ingresos
+function validarMaxIngresos(valor) {
+  if (valor === undefined || valor === null || valor === '') return null;
+  const cantidad = Number(valor);
+  if (!Number.isInteger(cantidad) || cantidad < 1 || cantidad > MAXIMO_INGRESOS) {
+    throw new ErrorDominio(`Los ingresos de la tiquetera deben ser un entero entre 1 y ${MAXIMO_INGRESOS}`);
+  }
+  return cantidad;
+}
+
 function validarNombre(nombre) {
   const limpio = typeof nombre === 'string' ? nombre.trim() : '';
   if (!limpio) {
@@ -36,7 +48,7 @@ function validarNombre(nombre) {
   return limpio;
 }
 
-async function crearPlan({ nombre, duracion_dias, precio }) {
+async function crearPlan({ nombre, duracion_dias, precio, max_ingresos }) {
   if (!nombre || !duracion_dias || !precio) {
     throw new ErrorDominio('Nombre, duración y precio son obligatorios');
   }
@@ -44,13 +56,14 @@ async function crearPlan({ nombre, duracion_dias, precio }) {
   const nombreLimpio = validarNombre(nombre);
   const dias = validarDuracion(duracion_dias);
   const valor = validarPrecio(precio);
+  const ingresos = validarMaxIngresos(max_ingresos);
 
   const existente = await planRepository.obtenerPorNombre(nombreLimpio);
   if (existente) {
     throw new ErrorDominio('Ya existe un plan con ese nombre', 409);
   }
 
-  const nuevoId = await planRepository.crear({ nombre: nombreLimpio, duracion_dias: dias, precio: valor });
+  const nuevoId = await planRepository.crear({ nombre: nombreLimpio, duracion_dias: dias, precio: valor, max_ingresos: ingresos });
   return planRepository.obtenerPorId(nuevoId);
 }
 
@@ -66,7 +79,7 @@ async function obtenerPlan(id) {
   return plan;
 }
 
-async function actualizarPlan(id, { nombre, duracion_dias, precio, activo } = {}) {
+async function actualizarPlan(id, { nombre, duracion_dias, precio, max_ingresos, activo } = {}) {
   const plan = await planRepository.obtenerPorId(id);
   if (!plan) {
     throw new ErrorDominio('Plan no encontrado', 404);
@@ -83,6 +96,8 @@ async function actualizarPlan(id, { nombre, duracion_dias, precio, activo } = {}
 
   const dias = duracion_dias != null ? validarDuracion(duracion_dias) : plan.duracion_dias;
   const valor = precio != null ? validarPrecio(precio) : plan.precio;
+  // undefined = no se envió (se conserva); null o vacío = pasa a ser un plan por tiempo
+  const ingresos = max_ingresos === undefined ? plan.max_ingresos : validarMaxIngresos(max_ingresos);
 
   if (activo != null && typeof activo !== 'boolean') {
     throw new ErrorDominio('El campo activo debe ser verdadero o falso');
@@ -92,6 +107,7 @@ async function actualizarPlan(id, { nombre, duracion_dias, precio, activo } = {}
     nombre: nombreNuevo,
     duracion_dias: dias,
     precio: valor,
+    max_ingresos: ingresos,
     activo: activo ?? plan.activo
   });
 

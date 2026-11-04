@@ -1,10 +1,11 @@
 const pool = require('../config/database');
 const Membresia = require('../models/membresia.model');
 
-async function crear({ plan_id, fecha_inicio, fecha_fin, cliente_id }) {
+// fecha_fin e ingresos_totales son null en las tiqueteras sin usar / en las membresías por tiempo
+async function crear({ plan_id, fecha_inicio, fecha_fin = null, cliente_id, ingresos_totales = null }) {
   const [resultado] = await pool.query(
-    'INSERT INTO membresias (plan_id, fecha_inicio, fecha_fin, cliente_id) VALUES (?, ?, ?, ?)',
-    [plan_id, fecha_inicio, fecha_fin, cliente_id]
+    'INSERT INTO membresias (plan_id, fecha_inicio, fecha_fin, cliente_id, ingresos_totales) VALUES (?, ?, ?, ?, ?)',
+    [plan_id, fecha_inicio, fecha_fin, cliente_id, ingresos_totales]
   );
   return resultado.insertId;
 }
@@ -12,7 +13,7 @@ async function crear({ plan_id, fecha_inicio, fecha_fin, cliente_id }) {
 // Crea una membresía y, en la misma transacción, cambia el estado de la anterior (si la hay).
 // Si algo falla, no se cambia nada. Devuelve null si la anterior ya no estaba activa
 // (otra renovación se adelantó), para que el servicio pueda avisar sin dejar datos a medias.
-async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin, cliente_id, anterior }) {
+async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin = null, cliente_id, ingresos_totales = null, anterior }) {
   const conexion = await pool.getConnection();
   try {
     await conexion.beginTransaction();
@@ -41,8 +42,8 @@ async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin, cliente_id,
     }
 
     const [resultado] = await conexion.query(
-      'INSERT INTO membresias (plan_id, fecha_inicio, fecha_fin, cliente_id) VALUES (?, ?, ?, ?)',
-      [plan_id, fecha_inicio, fecha_fin, cliente_id]
+      'INSERT INTO membresias (plan_id, fecha_inicio, fecha_fin, cliente_id, ingresos_totales) VALUES (?, ?, ?, ?, ?)',
+      [plan_id, fecha_inicio, fecha_fin, cliente_id, ingresos_totales]
     );
 
     await conexion.commit();
@@ -95,12 +96,30 @@ async function obtenerUltimaPorCliente(cliente_id) {
      FROM membresias m
      JOIN planes p ON m.plan_id = p.id
      WHERE m.cliente_id = ?
-     ORDER BY m.fecha_fin DESC
+     ORDER BY m.id DESC
      LIMIT 1`,
     [cliente_id]
   );
   if (filas.length === 0) return null;
   return filas[0];
+}
+
+// Registra un ingreso de tiquetera en una sola sentencia, para que dos lecturas a la vez no gasten el mismo ingreso.
+// En el primer ingreso fija la fecha de fin (la duración cuenta desde el primer día de uso).
+// Al gastar el último ingreso la membresía pasa a "vencida". Devuelve false si ya no se podía usar.
+async function consumirIngreso(id, { hoy, fechaFinNueva }) {
+  const [resultado] = await pool.query(
+    `UPDATE membresias
+     SET estado = IF(ingresos_usados + 1 >= ingresos_totales, 'vencida', estado),
+         ingresos_usados = ingresos_usados + 1,
+         fecha_primer_uso = COALESCE(fecha_primer_uso, ?),
+         fecha_fin = COALESCE(fecha_fin, ?)
+     WHERE id = ? AND estado = 'activa' AND ingresos_totales IS NOT NULL
+       AND ingresos_usados < ingresos_totales
+       AND (fecha_fin IS NULL OR fecha_fin >= ?)`,
+    [hoy, fechaFinNueva, id, hoy]
+  );
+  return resultado.affectedRows > 0;
 }
 
 async function actualizarEstado(id, estado) {
@@ -124,6 +143,7 @@ module.exports = {
   obtenerActivaPorCliente,
   obtenerConCliente,
   obtenerUltimaPorCliente,
+  consumirIngreso,
   actualizarEstado,
   eliminar
 };

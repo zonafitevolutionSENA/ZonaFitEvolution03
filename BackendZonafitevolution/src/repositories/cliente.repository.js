@@ -41,12 +41,12 @@ async function eliminar(id) {
 
 async function obtenerPorCedulaConMembresia(cedula) {
   const [filas] = await pool.query(
-    `SELECT c.*, m.id AS membresia_id, m.estado, m.fecha_fin, p.nombre AS nombre_plan
+    `SELECT c.*, m.id AS membresia_id, m.estado, m.fecha_fin, m.ingresos_totales, m.ingresos_usados, p.nombre AS nombre_plan
      FROM clientes c
      LEFT JOIN membresias m ON m.cliente_id = c.id
      LEFT JOIN planes p ON m.plan_id = p.id
      WHERE c.cedula = ?
-     ORDER BY m.fecha_fin DESC
+     ORDER BY m.id DESC
      LIMIT 1`,
     [cedula]
   );

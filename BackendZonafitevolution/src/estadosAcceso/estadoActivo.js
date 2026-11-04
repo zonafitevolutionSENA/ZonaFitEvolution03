@@ -21,9 +21,26 @@ function fechaFinComoTexto(membresia) {
   return null;
 }
 
+// Tiquetera: membresía con una cantidad limitada de ingresos
+function esTiquetera(membresia) {
+  return membresia.ingresos_totales !== null && membresia.ingresos_totales !== undefined;
+}
+
 class EstadoActivo extends EstadoAcceso {
   evaluar(membresia) {
     const fechaFin = fechaFinComoTexto(membresia);
+
+    if (esTiquetera(membresia)) {
+      const restantes = membresia.ingresos_totales - (membresia.ingresos_usados || 0);
+      if (restantes <= 0) {
+        return { permitido: false, motivo: 'Tiquetera sin ingresos disponibles' };
+      }
+      // Sin fecha de fin = todavía no se usa: el primer ingreso fija el vencimiento
+      if (fechaFin && fechaFin < hoyISO()) {
+        return { permitido: false, motivo: 'Tiquetera vencida' };
+      }
+      return { permitido: true, motivo: 'Tiquetera activa y vigente' };
+    }
 
     if (!fechaFin) {
       return { permitido: false, motivo: 'Membresía sin fecha de vencimiento válida' };
@@ -38,3 +55,4 @@ class EstadoActivo extends EstadoAcceso {
 }
 
 module.exports = EstadoActivo;
+module.exports.esTiquetera = esTiquetera;
