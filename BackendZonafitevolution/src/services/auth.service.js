@@ -3,13 +3,18 @@ const jwt = require('jsonwebtoken');
 const usuarioRepository = require('../repositories/usuario.repository');
 const ErrorDominio = require('../utils/errores');
 
+// Hash de relleno: si el correo no existe se compara igual, para que la respuesta tarde lo mismo
+const HASH_FALSO = bcrypt.hashSync('contrasena-de-relleno', 10);
+
 async function login({ correo, contrasena }) {
   if (!correo || !contrasena) {
     throw new ErrorDominio('Correo y contraseña son obligatorios');
   }
 
   const usuario = await usuarioRepository.obtenerPorCorreo(correo);
-  const valido = usuario && await bcrypt.compare(contrasena, usuario.contrasena);
+  const hashComparado = usuario ? usuario.contrasena : HASH_FALSO;
+  const coincide = await bcrypt.compare(String(contrasena), hashComparado);
+  const valido = Boolean(usuario) && coincide;
   if (!valido) {
     throw new ErrorDominio('Credenciales inválidas', 401);
   }

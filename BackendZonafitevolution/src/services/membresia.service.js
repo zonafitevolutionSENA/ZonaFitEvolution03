@@ -3,6 +3,7 @@ const clienteRepository = require('../repositories/cliente.repository');
 const planRepository = require('../repositories/plan.repository');
 const ErrorDominio = require('../utils/errores');
 const { fechaATexto, hoyISO } = require('../utils/fechas');
+const ROLES = require('../utils/roles');
 
 const ESTADOS = ['activa', 'vencida', 'cancelada'];
 
@@ -127,9 +128,13 @@ async function obtenerMembresia(id) {
   return membresia;
 }
 
-async function cambiarEstado(id, estado) {
+async function cambiarEstado(id, estado, rolId) {
   if (!ESTADOS.includes(estado)) {
     throw new ErrorDominio('El estado debe ser uno de: ' + ESTADOS.join(', '));
+  }
+  // Reactivar una membresía es exclusivo del Administrador: el Empleado solo puede cancelar o marcar como vencida
+  if (estado === 'activa' && rolId !== ROLES.ADMIN) {
+    throw new ErrorDominio('Solo el Administrador puede reactivar una membresía', 403);
   }
   await obtenerMembresia(id);
   await membresiaRepository.actualizarEstado(id, estado);
