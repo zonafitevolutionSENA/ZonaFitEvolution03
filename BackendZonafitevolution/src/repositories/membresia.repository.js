@@ -106,18 +106,21 @@ async function obtenerUltimaPorCliente(cliente_id) {
 
 // Registra un ingreso de tiquetera en una sola sentencia, para que dos lecturas a la vez no gasten el mismo ingreso.
 // En el primer ingreso fija la fecha de fin (la duración cuenta desde el primer día de uso).
-// Al gastar el último ingreso la membresía pasa a "vencida". Devuelve false si ya no se podía usar.
+// Solo se descuenta un ingreso por día: si ya se descontó hoy, no hace nada.
+// Al gastar el último ingreso la membresía pasa a "vencida". Devuelve false si no se descontó.
 async function consumirIngreso(id, { hoy, fechaFinNueva }) {
   const [resultado] = await pool.query(
     `UPDATE membresias
      SET estado = IF(ingresos_usados + 1 >= ingresos_totales, 'vencida', estado),
          ingresos_usados = ingresos_usados + 1,
          fecha_primer_uso = COALESCE(fecha_primer_uso, ?),
-         fecha_fin = COALESCE(fecha_fin, ?)
+         fecha_fin = COALESCE(fecha_fin, ?),
+         fecha_ultimo_ingreso = ?
      WHERE id = ? AND estado = 'activa' AND ingresos_totales IS NOT NULL
        AND ingresos_usados < ingresos_totales
-       AND (fecha_fin IS NULL OR fecha_fin >= ?)`,
-    [hoy, fechaFinNueva, id, hoy]
+       AND (fecha_fin IS NULL OR fecha_fin >= ?)
+       AND (fecha_ultimo_ingreso IS NULL OR fecha_ultimo_ingreso < ?)`,
+    [hoy, fechaFinNueva, hoy, id, hoy, hoy]
   );
   return resultado.affectedRows > 0;
 }
