@@ -14,7 +14,9 @@ ALTER TABLE membresias
   MODIFY COLUMN fecha_fin DATE NULL,
   ADD COLUMN IF NOT EXISTS ingresos_totales INT NULL,
   ADD COLUMN IF NOT EXISTS ingresos_usados INT NOT NULL DEFAULT 0,
-  ADD COLUMN IF NOT EXISTS fecha_primer_uso DATE NULL;
+  ADD COLUMN IF NOT EXISTS fecha_primer_uso DATE NULL,
+  -- Una tiquetera descuenta máximo un ingreso por día
+  ADD COLUMN IF NOT EXISTS fecha_ultimo_ingreso DATE NULL;
 
 -- 2. Los planes de ejemplo anteriores pasan a las tarifas reales (se conservan sus ids y membresías)
 UPDATE IGNORE planes SET nombre = 'Sesión' WHERE nombre = 'diario';

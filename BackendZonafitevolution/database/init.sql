@@ -88,7 +88,8 @@ ALTER TABLE membresias
   MODIFY COLUMN fecha_fin DATE NULL,
   ADD COLUMN ingresos_totales INT NULL,
   ADD COLUMN ingresos_usados INT NOT NULL DEFAULT 0,
-  ADD COLUMN fecha_primer_uso DATE NULL;
+  ADD COLUMN fecha_primer_uso DATE NULL,
+  ADD COLUMN fecha_ultimo_ingreso DATE NULL; -- una tiquetera descuenta máximo un ingreso por día
 
 CREATE TABLE IF NOT EXISTS plantillas_biometricas (
   id INT AUTO_INCREMENT PRIMARY KEY,
