@@ -29,7 +29,7 @@ async function obtenerPorId(req, res, next) {
 
 async function actualizarEstado(req, res, next) {
   try {
-    const membresia = await membresiaService.cambiarEstado(req.params.id, req.body.estado);
+    const membresia = await membresiaService.cambiarEstado(req.params.id, req.body.estado, req.usuario.rol_id);
     res.status(200).json(membresia);
   } catch (error) {
     next(error);
