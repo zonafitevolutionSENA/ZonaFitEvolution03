@@ -1,3 +1,6 @@
+-- Codificación del cliente: sin esto, los nombres con tilde (Sesión) pueden guardarse mal según el programa que ejecute el script
+SET NAMES utf8mb4;
+
 -- Corrección de roles: ahora son del personal, no de clientes
 DROP TABLE IF EXISTS membresias;
 DROP TABLE IF EXISTS usuarios;
@@ -47,16 +50,23 @@ CREATE TABLE IF NOT EXISTS planes (
   nombre VARCHAR(50) NOT NULL UNIQUE,
   duracion_dias INT NOT NULL,
   precio DECIMAL(10,2) NOT NULL,
+  -- NULL = plan por tiempo. Con valor = tiquetera: cantidad de ingresos que incluye
+  max_ingresos INT NULL,
   activo BOOLEAN NOT NULL DEFAULT TRUE,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tarifas 2026. En las tiqueteras la duración cuenta desde el primer día de uso.
 -- INSERT IGNORE: el script se puede volver a ejecutar sin fallar por nombres duplicados
-INSERT IGNORE INTO planes (nombre, duracion_dias, precio) VALUES
-  ('diario', 1, 8000),
-  ('quincenal', 15, 60000),
-  ('mensual', 30, 50000),
-  ('trimestral', 90, 130000);
+INSERT IGNORE INTO planes (nombre, duracion_dias, precio, max_ingresos) VALUES
+  ('Sesión', 1, 10000, NULL),
+  ('Quincena', 15, 50000, NULL),
+  ('Mensualidad', 30, 85000, NULL),
+  ('Mensualidad Estudiantes', 30, 70000, NULL),
+  ('Tiquetera x6', 30, 55000, 6),
+  ('Tiquetera x12', 45, 100000, 12),
+  ('Trimestre', 90, 245000, NULL),
+  ('Trimestre Estudiantes', 90, 210000, NULL);
 
 -- Ajustar membresias para referenciar el plan
 ALTER TABLE membresias
@@ -71,6 +81,14 @@ ALTER TABLE membresias
   DROP COLUMN tipo,
   DROP COLUMN precio,
   MODIFY COLUMN plan_id INT NOT NULL;
+
+-- Tiqueteras: fecha_fin queda en NULL hasta el primer ingreso (ahí empieza a contar la duración).
+-- ingresos_totales es una copia de los ingresos del plan al momento de la venta (NULL = membresía por tiempo).
+ALTER TABLE membresias
+  MODIFY COLUMN fecha_fin DATE NULL,
+  ADD COLUMN ingresos_totales INT NULL,
+  ADD COLUMN ingresos_usados INT NOT NULL DEFAULT 0,
+  ADD COLUMN fecha_primer_uso DATE NULL;
 
 CREATE TABLE IF NOT EXISTS plantillas_biometricas (
   id INT AUTO_INCREMENT PRIMARY KEY,
