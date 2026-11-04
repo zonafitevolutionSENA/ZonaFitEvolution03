@@ -23,17 +23,17 @@ export async function listarPlanes() {
   return datos.filter((p) => p && typeof p === "object" && Number.isInteger(p.id));
 }
 
-// POST /api/planes  { nombre, duracion_dias, precio } (solo Admin)
+// POST /api/planes  { nombre, duracion_dias, precio, max_ingresos } (solo Admin). max_ingresos null = plan por tiempo
 export async function crearPlan(datos) {
   return exigirPlan(await peticion("/planes", { method: "POST", body: JSON.stringify(datos) }));
 }
 
 // PUT /api/planes/:id  { nombre, duracion_dias, precio } (solo Admin)
-export async function actualizarPlan(id, { nombre, duracion_dias, precio }) {
+export async function actualizarPlan(id, { nombre, duracion_dias, precio, max_ingresos }) {
   return exigirPlan(
     await peticion(`/planes/${exigirId(id)}`, {
       method: "PUT",
-      body: JSON.stringify({ nombre, duracion_dias, precio }),
+      body: JSON.stringify({ nombre, duracion_dias, precio, max_ingresos }),
     }),
   );
 }

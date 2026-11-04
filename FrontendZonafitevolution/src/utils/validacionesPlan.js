@@ -7,10 +7,13 @@ export const LIMITES_PLAN = {
   duracionMin: 1,
   duracionMax: 3650,
   precioMax: 50000000,
+  ingresosMin: 1,
+  ingresosMax: 365,
 };
 
 const REGEX_NOMBRE = /^[\p{L}\p{N}][\p{L}\p{N}\p{M} .-]*$/u;
 const REGEX_DURACION = /^\d+$/;
+const REGEX_INGRESOS = /^\d+$/;
 const REGEX_PRECIO = /^\d{1,8}(\.\d{1,2})?$/;
 
 // Quita caracteres de control, unifica Unicode y colapsa espacios
@@ -52,12 +55,25 @@ export function validarPrecio(valor) {
   return "";
 }
 
+// Opcional: vacío = plan por tiempo; con un número = tiquetera con esa cantidad de ingresos
+export function validarIngresos(valor) {
+  const texto = String(valor ?? "").trim();
+  if (!texto) return "";
+  if (!REGEX_INGRESOS.test(texto)) return "Los ingresos deben ser un número entero.";
+  const ingresos = Number(texto);
+  if (ingresos < LIMITES_PLAN.ingresosMin || ingresos > LIMITES_PLAN.ingresosMax) {
+    return `Los ingresos deben estar entre ${LIMITES_PLAN.ingresosMin} y ${LIMITES_PLAN.ingresosMax}.`;
+  }
+  return "";
+}
+
 // `otrosNombres` evita crear dos planes con el mismo nombre (sin distinguir mayúsculas) antes de llamar al servidor
 export function validarPlan(valores, { otrosNombres = [] } = {}) {
   const errores = {
     nombre: validarNombrePlan(valores.nombre),
     duracion: validarDuracion(valores.duracion),
     precio: validarPrecio(valores.precio),
+    ingresos: validarIngresos(valores.ingresos),
   };
   if (!errores.nombre) {
     const nombre = normalizarNombrePlan(valores.nombre).toLowerCase();
@@ -78,5 +94,7 @@ export function prepararPlan(valores) {
     nombre: normalizarNombrePlan(valores.nombre),
     duracion_dias: Number(String(valores.duracion).trim()),
     precio: Number(String(valores.precio).trim()),
+    // null = plan por tiempo (sin límite de ingresos)
+    max_ingresos: String(valores.ingresos ?? "").trim() ? Number(String(valores.ingresos).trim()) : null,
   };
 }

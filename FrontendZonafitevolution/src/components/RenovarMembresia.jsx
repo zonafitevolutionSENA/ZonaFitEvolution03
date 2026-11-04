@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ETIQUETAS_ESTADO, diaDe, hoyLocal } from "../utils/estadoMembresia";
+import { hoyLocal, textoMembresia } from "../utils/estadoMembresia";
 import { inicioRenovacion, validarCedulaRenovacion, validarPlanMembresia } from "../utils/validacionesMembresia";
 import Campo from "./Campo";
 
@@ -68,8 +68,6 @@ function RenovarMembresia({ planes, alBuscar, alRenovar, alCancelar }) {
     }
   }
 
-  const fin = diaDe(cliente?.fecha_fin);
-
   return (
     <section aria-label="Renovar por cédula">
       <h3>Renovar por cédula</h3>
@@ -99,7 +97,7 @@ function RenovarMembresia({ planes, alBuscar, alRenovar, alCancelar }) {
           <p>
             Membresía actual:{" "}
             {cliente.membresia_id
-              ? `${ETIQUETAS_ESTADO[cliente.estado] ?? cliente.estado}${cliente.nombre_plan ? ` (${cliente.nombre_plan})` : ""}${fin ? ` · vence ${fin}` : ""}`
+              ? `${cliente.nombre_plan ? `${cliente.nombre_plan}: ` : ""}${textoMembresia({ ...cliente, estado: cliente.estado })}`
               : "Sin membresía"}
           </p>
 
@@ -115,7 +113,7 @@ function RenovarMembresia({ planes, alBuscar, alRenovar, alCancelar }) {
               <option value="">Selecciona un plan</option>
               {planesActivos.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"} — {formatoPrecio.format(Number(p.precio))}
+                  {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}{p.max_ingresos ? ` · ${p.max_ingresos} ingresos` : ""} — {formatoPrecio.format(Number(p.precio))}
                 </option>
               ))}
             </select>

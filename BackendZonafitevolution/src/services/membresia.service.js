@@ -45,13 +45,16 @@ async function crearMembresia({ plan_id, fecha_inicio, cliente_id }) {
     throw new ErrorDominio('El cliente ya tiene una membresía activa. No se puede duplicar.', 409);
   }
 
-  const fecha_fin = calcularFechaFin(fecha_inicio, plan.duracion_dias);
+  // Tiquetera: la fecha de fin queda vacía hasta el primer ingreso (la duración cuenta desde el primer día de uso)
+  const ingresos_totales = plan.max_ingresos ?? null;
+  const fecha_fin = ingresos_totales === null ? calcularFechaFin(fecha_inicio, plan.duracion_dias) : null;
 
   const nuevoId = await membresiaRepository.crear({
     plan_id,
     fecha_inicio,
     fecha_fin,
-    cliente_id
+    cliente_id,
+    ingresos_totales
   });
 
   return membresiaRepository.obtenerConCliente(nuevoId);
@@ -86,26 +89,32 @@ async function renovarMembresia({ cedula, plan_id }) {
   let fechaInicio = hoy;
   let anterior = null;
   if (membresiaActiva) {
-    const finActual = fechaATexto(membresiaActiva.fecha_fin);
-    if (finActual >= hoy) {
-      // Aún tiene días vigentes: la renovación se encadena al día siguiente del vencimiento.
+    const esTiquetera = membresiaActiva.ingresos_totales !== null;
+    const sinIngresos = esTiquetera && membresiaActiva.ingresos_usados >= membresiaActiva.ingresos_totales;
+    // Tiquetera sin usar: no tiene fecha de fin y sigue vigente
+    const finActual = membresiaActiva.fecha_fin ? fechaATexto(membresiaActiva.fecha_fin) : null;
+    const vigente = !sinIngresos && (finActual === null || finActual >= hoy);
+    if (vigente) {
+      // Aún está vigente: la renovación se encadena al día siguiente del vencimiento (o empieza hoy si no hay fecha de fin).
       // La anterior se marca como cancelada para no dejar dos "activas" a la vez.
-      fechaInicio = calcularFechaFin(finActual, 1);
+      fechaInicio = finActual ? calcularFechaFin(finActual, 1) : hoy;
       anterior = { id: membresiaActiva.id, estado: 'cancelada' };
     } else {
-      // Figura "activa" pero su fecha de fin ya pasó: en la práctica está vencida
+      // Figura "activa" pero ya venció por fecha o se le acabaron los ingresos
       anterior = { id: membresiaActiva.id, estado: 'vencida' };
     }
   }
   // Sin membresía activa (vencida, cancelada o primera vez) → empieza hoy
 
-  const fecha_fin = calcularFechaFin(fechaInicio, plan.duracion_dias);
+  const ingresos_totales = plan.max_ingresos ?? null;
+  const fecha_fin = ingresos_totales === null ? calcularFechaFin(fechaInicio, plan.duracion_dias) : null;
 
   const nuevoId = await membresiaRepository.crearReemplazando({
     plan_id,
     fecha_inicio: fechaInicio,
     fecha_fin,
     cliente_id: cliente.id,
+    ingresos_totales,
     anterior
   });
 

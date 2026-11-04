@@ -9,4 +9,11 @@ function hoyISO() {
   return fechaATexto(new Date());
 }
 
-module.exports = { fechaATexto, hoyISO };
+// Suma días a una fecha AAAA-MM-DD. Se opera en UTC para que no dependa de la zona horaria del servidor
+function sumarDias(fechaTexto, dias) {
+  const fecha = new Date(fechaTexto);
+  fecha.setUTCDate(fecha.getUTCDate() + dias);
+  return fecha.toISOString().split('T')[0];
+}
+
+module.exports = { fechaATexto, hoyISO, sumarDias };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LIMITES_PLAN, hayErroresPlan, prepararPlan, validarPlan } from "../utils/validacionesPlan";
 import Campo from "./Campo";
 
-const SIN_ERRORES = { nombre: "", duracion: "", precio: "" };
+const SIN_ERRORES = { nombre: "", duracion: "", precio: "", ingresos: "" };
 
 // Formulario para crear o editar un plan. No llama a la API: entrega los datos limpios con `alGuardar`.
 function FormularioPlan({ plan = null, otrosNombres = [], alGuardar, alCancelar }) {
@@ -11,6 +11,7 @@ function FormularioPlan({ plan = null, otrosNombres = [], alGuardar, alCancelar 
     nombre: plan?.nombre ?? "",
     duracion: plan ? String(plan.duracion_dias) : "",
     precio: plan ? String(Number(plan.precio)) : "",
+    ingresos: plan?.max_ingresos ? String(plan.max_ingresos) : "",
   });
   const [errores, setErrores] = useState(SIN_ERRORES);
   const [errorGeneral, setErrorGeneral] = useState("");
@@ -94,6 +95,22 @@ function FormularioPlan({ plan = null, otrosNombres = [], alGuardar, alCancelar 
         onBlur={() => validarAlSalir("precio")}
         error={errores.precio}
         ayuda="Solo números, sin puntos de miles. Máximo 50.000.000."
+        disabled={guardando}
+      />
+
+      <Campo
+        id="ingresos-plan"
+        etiqueta="Ingresos incluidos (solo tiqueteras)"
+        type="text"
+        inputMode="numeric"
+        autoComplete="off"
+        maxLength={3}
+        value={valores.ingresos}
+        // Solo dígitos al escribir o pegar
+        onChange={(e) => cambiar("ingresos", e.target.value.replace(/\D/g, ""))}
+        onBlur={() => validarAlSalir("ingresos")}
+        error={errores.ingresos}
+        ayuda={`Déjalo vacío si el plan es por tiempo. En una tiquetera, la duración cuenta desde el primer ingreso (entre ${LIMITES_PLAN.ingresosMin} y ${LIMITES_PLAN.ingresosMax}).`}
         disabled={guardando}
       />
 

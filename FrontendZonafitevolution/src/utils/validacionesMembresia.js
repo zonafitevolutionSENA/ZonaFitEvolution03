@@ -1,5 +1,5 @@
 // Validaciones de los formularios de membresías. Cada validador devuelve "" si el valor es correcto o el mensaje de error.
-import { diaDe, hoyLocal } from "./estadoMembresia";
+import { diaDe, estaVigente, hoyLocal } from "./estadoMembresia";
 import { validarCedula } from "./validacionesCliente";
 
 // La fecha de inicio no puede ser anterior a hoy y puede ir hasta 1 año adelante
@@ -35,7 +35,7 @@ export function validarFechaInicio(valor, hoy = hoyLocal()) {
 
 // ¿El cliente ya tiene una membresía activa y vigente? (el backend no permite dos activas a la vez)
 export function tieneMembresiaVigente(clienteId, membresias, hoy = hoyLocal()) {
-  return membresias.some((m) => m.cliente_id === clienteId && m.estado === "activa" && diaDe(m.fecha_fin) >= hoy);
+  return membresias.some((m) => m.cliente_id === clienteId && m.estado === "activa" && estaVigente(m, hoy));
 }
 
 export function validarClienteMembresia(valor, clientes, membresias, hoy = hoyLocal()) {
@@ -74,7 +74,8 @@ export function hayErroresMembresia(errores) {
 
 // Fecha de fin que calculará el servidor: inicio + duración del plan
 export function fechaFinEstimada(fechaInicio, plan) {
-  if (!plan || !fechaExiste(String(fechaInicio))) return "";
+  // Tiquetera: la duración cuenta desde el primer ingreso, así que todavía no hay fecha de fin
+  if (!plan || plan.max_ingresos || !fechaExiste(String(fechaInicio))) return "";
   return sumarDias(fechaInicio, Number(plan.duracion_dias));
 }
 
