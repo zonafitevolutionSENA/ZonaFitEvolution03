@@ -12,7 +12,7 @@ import Personal from "./pages/Personal";
 import Planes from "./pages/Planes";
 import { obtenerPorVencer } from "./services/dashboardService";
 import { EVENTO_SESION_EXPIRADA, limpiarTokenSesion } from "./services/api";
-import { SECCIONES, seccionPermitida } from "./utils/permisos";
+import { ROL_ADMIN, SECCIONES, seccionPermitida } from "./utils/permisos";
 import "./App.css";
 
 function limpiarSesion() {
@@ -115,7 +115,7 @@ function App() {
     if (!seccionPermitida(usuario.rol_id, vista)) return <Inicio usuario={usuario} alNavegar={navegar} />;
     switch (vista) {
       case "clientes":
-        return <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} />;
+        return <Clientes iniciarEnRegistro={accionInicial === "registrar-cliente"} puedeReactivar={usuario.rol_id === ROL_ADMIN} />;
       case "membresias":
         return <Membresias iniciarEnRenovar={accionInicial === "renovar-membresia"} />;
       case "planes":

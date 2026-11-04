@@ -7,6 +7,7 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(errorInicial);
   const [cargando, setCargando] = useState(false);
+  const [bloqueado, setBloqueado] = useState(false);
 
   async function manejarEnvio(e) {
     e.preventDefault();
@@ -42,9 +43,16 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
       // 3. Manejo de errores seguro: Usamos 'err' para depuración interna sin mostrar detalles sensibles
       console.error("Error al iniciar sesión:", err);
 
-      setError(
-        "Credenciales incorrectas o error en el servidor. Inténtalo de nuevo.",
-      );
+      if (err.status === 429) {
+        // Demasiados intentos: se bloquea el botón unos segundos para no seguir insistiendo
+        setError("Demasiados intentos de inicio de sesión. Espera un momento e inténtalo de nuevo.");
+        setBloqueado(true);
+        setTimeout(() => setBloqueado(false), 30000);
+      } else {
+        setError(
+          "Credenciales incorrectas o error en el servidor. Inténtalo de nuevo.",
+        );
+      }
     } finally {
       setCargando(false);
     }
@@ -78,7 +86,7 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
 
         {error && <p className="mensaje-error">{error}</p>}
 
-        <button className="login-submit" type="submit" disabled={cargando}>
+        <button className="login-submit" type="submit" disabled={cargando || bloqueado}>
           {cargando ? "Ingresando..." : "Iniciar sesión"}
         </button>
       </form>
