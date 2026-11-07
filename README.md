@@ -234,6 +234,32 @@ Reglas de negocio:
 `POST /api/biometria/registrar` recibe `{ "cliente_id": 5, "identificadorSimulado": "dedo_juan_01" }`.
 `POST /api/biometria/identificar` recibe `{ "identificadorSimulado": "dedo_juan_01" }` y devuelve los datos del cliente.
 
+## Lector de huellas físico (AS608)
+
+Siguiendo el patrón Adapter, se agregó `src/hardware/as608Lector.adapter.js` para el sensor óptico
+AS608, conectado al PC por USB con un conversor CP2102 (librería `serialport`). Se activa con
+`TIPO_LECTOR=as608` y `PUERTO_LECTOR` (el puerto COM que muestra el Administrador de dispositivos).
+Los servicios, controladores y rutas siguen siendo los mismos.
+
+Funcionamiento:
+
+- **Registro:** el sensor toma dos lecturas del mismo dedo y guarda la huella en su memoria interna,
+  en la primera posición libre. En la base de datos solo se guarda un hash irreversible de esa posición.
+- **Identificación:** el sensor busca la huella entre las que tiene guardadas; si no la encuentra,
+  la respuesta es `404 Huella no reconocida`.
+- Cada lectura espera el dedo hasta 15 segundos; el sensor atiende una operación a la vez.
+- La capacidad depende del sensor (el modelo de prueba guarda 300 huellas).
+- `DELETE /api/biometria/:cliente_id` borra el registro en la base de datos, pero la huella sigue en
+  el sensor: si ese mismo dedo se vuelve a registrar, se reutiliza su posición.
+- El lector debe estar conectado al mismo equipo donde corre el backend.
+
+Conexión AS608 → CP2102: `V+ → 3V3`, `TX → RXD`, `RX → TXD`, `GND → GND` (TCH, VA, D+ y D- sin conectar).
+
+`GET /api/biometria/lector` (Admin, Empleado) devuelve `{ "tipo": "as608", "requiereIdentificador": false }`.
+El frontend lo usa para decidir si pide la huella simulada (texto) o si espera el dedo en el lector.
+Con el lector físico, `POST /api/biometria/registrar` recibe solo `{ "cliente_id": 5 }` y
+`POST /api/acceso-fisico/validar` se llama con el cuerpo vacío (`{}`).
+
 ## Épica 3, Sprint 2 — Validación automática de acceso (HU06)
 
 Se implementó el patrón State para representar los distintos estados de
@@ -285,7 +311,9 @@ Archivo `BackendZonafitevolution/.env` (no se sube a Git; la plantilla es `.env.
 | `JWT_SECRET`                                              | Clave para firmar los tokens (obligatoria)                                             |
 | `JWT_EXPIRES_IN`                                          | Duración del token (`8h` por defecto)                                                  |
 | `BIOMETRIA_SALT`                                          | Sal para los templates biométricos (obligatoria; no cambiarla con huellas registradas) |
-| `TIPO_LECTOR`                                             | Adaptador del lector biométrico (`simulador` por defecto)                              |
+| `TIPO_LECTOR`                                             | Adaptador del lector biométrico: `simulador` (por defecto) o `as608`                   |
+| `PUERTO_LECTOR`                                           | Puerto serial del lector físico (por ejemplo, `COM3`); solo con `as608`                |
+| `LECTOR_BAUDIOS`                                          | Velocidad del lector físico (`57600` por defecto)                                      |
 
 ---
 
@@ -309,7 +337,7 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Clientes: lista, búsqueda, registro, edición y estado de la membresía          | Implementado |
 | Planes: catálogo para todos; el Admin crea, edita, activa y desactiva          | Implementado |
 | Membresías: listado, asignación y renovación rápida por cédula                 | Implementado |
-| Control de acceso: validar con huella simulada y registrar la huella           | Implementado |
+| Control de acceso: validar y registrar la huella (simulada o con lector AS608) | Implementado |
 | Historial de accesos con filtros por resultado, texto y fechas                 | Implementado |
 | Personal: lista, creación y eliminación de usuarios (solo Admin)               | Implementado |
 | Registro financiero: resumen de pagos de cada cliente (solo Admin)             | Implementado |
@@ -339,10 +367,10 @@ src/
 │   ├── FormularioMembresia.jsx  formulario para asignar una membresía
 │   ├── FormularioPlan.jsx       formulario para crear y editar planes
 │   ├── FormularioUsuario.jsx    formulario para crear usuarios del personal
-│   ├── RegistrarHuella.jsx      registro de la huella simulada de un cliente
+│   ├── RegistrarHuella.jsx      registro de la huella (simulada o con el lector físico)
 │   ├── RenovarMembresia.jsx     búsqueda por cédula y renovación rápida
 │   ├── TablaPagos.jsx           tabla de pagos por cliente con su detalle
-│   └── ValidarAcceso.jsx        validación de acceso con huella simulada
+│   └── ValidarAcceso.jsx        validación de acceso (huella simulada o lector físico)
 ├── pages/
 │   ├── Acceso.jsx               validar acceso y registrar huellas
 │   ├── Clientes.jsx             lista, búsqueda, registro, edición y estado de membresía
@@ -357,7 +385,7 @@ src/
 │   ├── accesoService.js         validación e historial de acceso (/acceso-fisico)
 │   ├── api.js                   función base para llamar a la API
 │   ├── authService.js           llamadas de autenticación
-│   ├── biometriaService.js      registro de huellas (/biometria)
+│   ├── biometriaService.js      registro de huellas y tipo de lector (/biometria)
 │   ├── clienteService.js        llamadas de clientes (/clientes)
 │   ├── dashboardService.js      datos del dashboard (accesos y membresías por vencer)
 │   ├── finanzasService.js       datos del registro financiero (clientes, membresías y planes)
