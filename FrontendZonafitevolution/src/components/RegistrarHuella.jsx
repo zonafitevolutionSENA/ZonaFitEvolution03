@@ -3,8 +3,9 @@ import { LIMITES_HUELLA, validarClienteHuella, validarIdentificador } from "../u
 import BuscadorCliente from "./BuscadorCliente";
 import Campo from "./Campo";
 
-// Formulario para registrar la huella simulada de un cliente. No llama a la API: usa `alRegistrar`.
-function RegistrarHuella({ clientes, alRegistrar }) {
+// Formulario para registrar la huella de un cliente. No llama a la API: usa `alRegistrar`.
+// Con `usaSensor` la huella se toma del lector físico y no se pide el texto simulado.
+function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
   const [cliente, setCliente] = useState("");
   const [identificador, setIdentificador] = useState("");
   const [errores, setErrores] = useState({ cliente: "", identificador: "" });
@@ -30,7 +31,7 @@ function RegistrarHuella({ clientes, alRegistrar }) {
 
     const resultado = {
       cliente: validarClienteHuella(cliente, clientes),
-      identificador: validarIdentificador(identificador),
+      identificador: usaSensor ? "" : validarIdentificador(identificador),
     };
     setErrores(resultado);
     if (resultado.cliente || resultado.identificador) {
@@ -42,7 +43,7 @@ function RegistrarHuella({ clientes, alRegistrar }) {
     setGuardando(true);
     limpiarMensajes();
     try {
-      await alRegistrar({ cliente_id: Number(cliente), identificador });
+      await alRegistrar({ cliente_id: Number(cliente), identificador, usaSensor });
       const nombre = clientes.find((c) => c.id === Number(cliente))?.nombre ?? "el cliente";
       setAviso(`Huella registrada correctamente para ${nombre}.`);
       setCliente("");
@@ -68,6 +69,12 @@ function RegistrarHuella({ clientes, alRegistrar }) {
         disabled={guardando}
       />
 
+      {usaSensor ? (
+        <p>
+          Al presionar "Registrar huella", coloca el dedo en el lector, retíralo y vuelve a colocar el mismo dedo.
+          Tienes 15 segundos en cada lectura.
+        </p>
+      ) : (
       <Campo
         id="huella-registrar"
         etiqueta="Huella simulada *"
@@ -85,8 +92,11 @@ function RegistrarHuella({ clientes, alRegistrar }) {
         ayuda="Texto único por cliente (por ejemplo, dedo_juan_01). Cada cliente tiene una sola huella."
         disabled={guardando}
       />
+      )}
 
-      <button type="submit" disabled={guardando}>{guardando ? "Registrando..." : "Registrar huella"}</button>
+      <button type="submit" disabled={guardando}>
+        {guardando ? (usaSensor ? "Coloca el dedo en el lector..." : "Registrando...") : "Registrar huella"}
+      </button>
 
       {errorGeneral && <p className="mensaje-error" role="alert">{errorGeneral}</p>}
       {aviso && <p role="status">{aviso}</p>}

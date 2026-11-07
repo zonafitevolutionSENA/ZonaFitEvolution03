@@ -25,16 +25,19 @@ export async function listarHistorial() {
 }
 
 // POST /api/acceso-fisico/validar  { identificadorSimulado }
+// Con el lector físico se envía el cuerpo vacío: el backend lee la huella del sensor.
 // Devuelve { cliente, permitido, motivo }. Una huella que no existe (404) se entrega como acceso denegado, sin cliente.
-export async function validarAcceso(identificador) {
-  const error = validarIdentificador(identificador);
-  if (error) throw new Error(error);
+export async function validarAcceso(identificador, usaSensor = false) {
+  if (!usaSensor) {
+    const error = validarIdentificador(identificador);
+    if (error) throw new Error(error);
+  }
 
   let respuesta;
   try {
     respuesta = await peticion("/acceso-fisico/validar", {
       method: "POST",
-      body: JSON.stringify({ identificadorSimulado: normalizarIdentificador(identificador) }),
+      body: JSON.stringify(usaSensor ? {} : { identificadorSimulado: normalizarIdentificador(identificador) }),
     });
   } catch (err) {
     if (err.message === MOTIVO_HUELLA_NO_RECONOCIDA) {

@@ -1,5 +1,13 @@
 const biometriaService = require('../services/biometria.service');
 
+function infoLector(req, res, next) {
+  try {
+    res.status(200).json(biometriaService.obtenerInfoLector());
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function registrar(req, res, next) {
   try {
     const resultado = await biometriaService.registrarHuella(req.body);
@@ -27,4 +35,4 @@ async function eliminar(req, res, next) {
   }
 }
 
-module.exports = { registrar, identificar, eliminar };
+module.exports = { infoLector, registrar, identificar, eliminar };

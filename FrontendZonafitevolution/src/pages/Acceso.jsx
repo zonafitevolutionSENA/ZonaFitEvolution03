@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import RegistrarHuella from "../components/RegistrarHuella";
 import ValidarAcceso from "../components/ValidarAcceso";
 import { validarAcceso } from "../services/accesoService";
-import { registrarHuella } from "../services/biometriaService";
+import { obtenerInfoLector, registrarHuella } from "../services/biometriaService";
 import { listarClientes } from "../services/clienteService";
 import "../PantallasGestion.css";
 
-// Control de acceso: validar el acceso de un cliente con huella simulada y registrar su huella
+// Control de acceso: validar el acceso de un cliente y registrar su huella (simulada o con el lector físico)
 function Acceso() {
+  const [usaSensor, setUsaSensor] = useState(false);
+  const [errorLector, setErrorLector] = useState("");
   const [clientes, setClientes] = useState([]);
   const [errorClientes, setErrorClientes] = useState("");
   const [cargando, setCargando] = useState(true);
@@ -28,6 +30,17 @@ function Acceso() {
     };
   }, [recarga]);
 
+  // El backend indica si trabaja con el simulador o con el lector físico
+  useEffect(() => {
+    let vigente = true;
+    obtenerInfoLector()
+      .then((info) => vigente && setUsaSensor(info.usaSensor))
+      .catch((err) => vigente && setErrorLector(err.message));
+    return () => {
+      vigente = false;
+    };
+  }, []);
+
   function reintentar() {
     if (cargando) return;
     setCargando(true);
@@ -38,7 +51,10 @@ function Acceso() {
     <section className="gestion-page gestion-acceso">
       <h1>Control de acceso</h1>
 
-      <ValidarAcceso alValidar={validarAcceso} />
+      <p>{usaSensor ? "Lector de huellas conectado." : "Modo simulador: la huella se escribe como texto."}</p>
+      {errorLector && <p className="mensaje-error" role="alert">{errorLector}</p>}
+
+      <ValidarAcceso alValidar={validarAcceso} usaSensor={usaSensor} />
 
       {cargando && <p>Cargando clientes...</p>}
       {errorClientes && (
@@ -47,7 +63,7 @@ function Acceso() {
           <button type="button" onClick={reintentar} disabled={cargando}>Reintentar</button>
         </>
       )}
-      {!cargando && !errorClientes && <RegistrarHuella clientes={clientes} alRegistrar={registrarHuella} />}
+      {!cargando && !errorClientes && <RegistrarHuella clientes={clientes} alRegistrar={registrarHuella} usaSensor={usaSensor} />}
     </section>
   );
 }
