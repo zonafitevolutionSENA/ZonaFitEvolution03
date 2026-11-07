@@ -27,13 +27,15 @@ async function buscarPlantillaCoincidente(lector, template) {
   return null;
 }
 
-async function registrarHuella({ cliente_id, identificadorSimulado }) {
-  if (!cliente_id || !identificadorSimulado) {
+async function registrarHuella({ cliente_id, identificadorSimulado } = {}) {
+  const lector = obtenerLector();
+
+  if (!cliente_id || (lector.requiereIdentificador && !identificadorSimulado)) {
     throw new ErrorDominio('El cliente y la captura del sensor son obligatorios');
   }
 
   validarClienteId(cliente_id);
-  validarCaptura(identificadorSimulado);
+  if (lector.requiereIdentificador) validarCaptura(identificadorSimulado);
 
   const cliente = await clienteRepository.obtenerPorId(cliente_id);
   if (!cliente) {
@@ -45,8 +47,7 @@ async function registrarHuella({ cliente_id, identificadorSimulado }) {
     throw new ErrorDominio('Este cliente ya tiene una huella registrada. Elimínala primero para volver a registrar.', 409);
   }
 
-  const lector = obtenerLector();
-  const template = await lector.capturar(identificadorSimulado);
+  const template = await lector.registrar(identificadorSimulado);
 
   const coincidente = await buscarPlantillaCoincidente(lector, template);
   if (coincidente) {
@@ -74,12 +75,13 @@ async function registrarHuella({ cliente_id, identificadorSimulado }) {
 }
 
 async function identificarPorHuella({ identificadorSimulado } = {}) {
-  validarCaptura(identificadorSimulado);
-
   const lector = obtenerLector();
+  if (lector.requiereIdentificador) validarCaptura(identificadorSimulado);
+
   const templateCapturado = await lector.capturar(identificadorSimulado);
 
-  const coincidente = await buscarPlantillaCoincidente(lector, templateCapturado);
+  // El lector físico devuelve null cuando la huella no está guardada en el sensor
+  const coincidente = templateCapturado ? await buscarPlantillaCoincidente(lector, templateCapturado) : null;
   if (!coincidente) {
     throw new ErrorDominio('No se encontró ningún cliente con esta huella registrada', 404);
   }
@@ -97,7 +99,16 @@ async function eliminarHuella(cliente_id) {
   return { mensaje: 'Huella eliminada correctamente' };
 }
 
+function obtenerInfoLector() {
+  const lector = obtenerLector();
+  return {
+    tipo: lector.tipo,
+    requiereIdentificador: lector.requiereIdentificador
+  };
+}
+
 module.exports = {
+  obtenerInfoLector,
   registrarHuella,
   identificarPorHuella,
   eliminarHuella
