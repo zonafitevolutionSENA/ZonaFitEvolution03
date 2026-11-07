@@ -17,6 +17,10 @@ class SimuladorLector extends LectorBiometrico {
       .digest('hex');
   }
 
+  get tipo() {
+    return 'simulador';
+  }
+
   async comparar(templateA, templateB) {
     if (typeof templateA !== 'string' || typeof templateB !== 'string') {
       return false;
