@@ -91,6 +91,13 @@ ALTER TABLE membresias
   ADD COLUMN fecha_primer_uso DATE NULL,
   ADD COLUMN fecha_ultimo_ingreso DATE NULL; -- una tiquetera descuenta máximo un ingreso por día
 
+-- Membresías consecutivas: una membresía adquirida mientras el cliente tiene otra activa
+-- se registra como 'pendiente' y la tarea diaria la activa al llegar su fecha de inicio.
+ALTER TABLE membresias
+  MODIFY COLUMN estado ENUM('pendiente', 'activa', 'vencida', 'cancelada') NOT NULL DEFAULT 'activa';
+
+CREATE INDEX idx_membresias_estado_inicio ON membresias (estado, fecha_inicio);
+
 CREATE TABLE IF NOT EXISTS plantillas_biometricas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cliente_id INT NOT NULL UNIQUE,

@@ -15,6 +15,7 @@ router.post('/renovar', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEAD
 
 router.get('/:id', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), membresiaController.obtenerPorId);
 router.patch('/:id/estado', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), validarBodyNoVacio, membresiaController.actualizarEstado);
+router.patch('/:id/fecha-fin', verificarToken, permitirRoles(ROLES.ADMIN), validarBodyNoVacio, membresiaController.actualizarFechaFin);
 router.delete('/:id', verificarToken, permitirRoles(ROLES.ADMIN), membresiaController.eliminar); // solo Admin elimina
 
 module.exports = router;
