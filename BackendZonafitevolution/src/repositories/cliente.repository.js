@@ -40,13 +40,16 @@ async function eliminar(id) {
 }
 
 async function obtenerPorCedulaConMembresia(cedula) {
+  // ANTERIOR: ORDER BY m.id DESC
+  // NUEVO: se muestra primero la membresía activa; si no, la búsqueda para renovar
+  // mostraría la pendiente (creada después) como si fuera la membresía actual del cliente.
   const [filas] = await pool.query(
     `SELECT c.*, m.id AS membresia_id, m.estado, m.fecha_fin, m.ingresos_totales, m.ingresos_usados, p.nombre AS nombre_plan
      FROM clientes c
      LEFT JOIN membresias m ON m.cliente_id = c.id
      LEFT JOIN planes p ON m.plan_id = p.id
      WHERE c.cedula = ?
-     ORDER BY m.id DESC
+     ORDER BY (m.estado = 'activa') DESC, m.id DESC
      LIMIT 1`,
     [cedula]
   );
