@@ -33,17 +33,43 @@ export function validarFechaInicio(valor, hoy = hoyLocal()) {
   return "";
 }
 
-// ¿El cliente ya tiene una membresía activa y vigente? (el backend no permite dos activas a la vez)
-export function tieneMembresiaVigente(clienteId, membresias, hoy = hoyLocal()) {
-  return membresias.some((m) => m.cliente_id === clienteId && m.estado === "activa" && estaVigente(m, hoy));
+export function membresiaVigenteDe(clienteId, membresias, hoy = hoyLocal()) {
+  return membresias.find((m) => m.cliente_id === clienteId && m.estado === "activa" && estaVigente(m, hoy)) ?? null;
+}
+
+export function membresiaPendienteDe(clienteId, membresias) {
+  return membresias.find((m) => m.cliente_id === clienteId && m.estado === "pendiente") ?? null;
+}
+
+// Primer día en que puede iniciar una membresía nueva: el siguiente al fin de la activa, o null si no hay activa con fecha de fin
+export function inicioMinimoTrasActiva(clienteId, membresias, hoy = hoyLocal()) {
+  const fin = diaDe(membresiaVigenteDe(clienteId, membresias, hoy)?.fecha_fin);
+  return fin ? sumarDias(fin, 1) : null;
 }
 
 export function validarClienteMembresia(valor, clientes, membresias, hoy = hoyLocal()) {
   if (!valor) return "Selecciona un cliente.";
   const id = Number(valor);
   if (!Number.isInteger(id) || !clientes.some((c) => c.id === id)) return "El cliente seleccionado no existe.";
-  if (tieneMembresiaVigente(id, membresias, hoy)) {
-    return "Este cliente ya tiene una membresía activa. Usa «Renovar por cédula».";
+  // ANTERIOR: si el cliente tenía una membresía activa y vigente se devolvía
+  // "Este cliente ya tiene una membresía activa. Usa «Renovar por cédula»." y no se podía asignar.
+  // NUEVO: con una activa se permite asignar (quedará pendiente). Se bloquea si ya hay una pendiente
+  // (el servidor admite una sola) o si la activa es una tiquetera sin usar (aún no tiene fecha de fin).
+  const pendiente = membresiaPendienteDe(id, membresias);
+  if (pendiente) {
+    return `Este cliente ya tiene una membresía pendiente que inicia el ${diaDe(pendiente.fecha_inicio)}.`;
+  }
+  const vigente = membresiaVigenteDe(id, membresias, hoy);
+  if (vigente && !diaDe(vigente.fecha_fin)) {
+    return "Este cliente tiene una tiquetera sin usar: su fecha de fin se fija en el primer ingreso. Usa «Renovar por cédula».";
+  }
+  return "";
+}
+
+export function validarInicioTrasActiva(valorCliente, fecha, membresias, hoy = hoyLocal()) {
+  const minimo = inicioMinimoTrasActiva(Number(valorCliente), membresias, hoy);
+  if (minimo && String(fecha) < minimo) {
+    return `El cliente tiene una membresía activa; la nueva debe iniciar desde el ${minimo}.`;
   }
   return "";
 }
@@ -64,7 +90,9 @@ export function validarAsignacion(valores, { clientes, planes, membresias, hoy =
   return {
     cliente: validarClienteMembresia(valores.cliente, clientes, membresias, hoy),
     plan: validarPlanMembresia(valores.plan, planes),
-    fecha: validarFechaInicio(valores.fecha, hoy),
+    // ANTERIOR: fecha: validarFechaInicio(valores.fecha, hoy),
+    // NUEVO: además, si el cliente tiene una activa, la fecha debe ser posterior a su fin (evita periodos solapados).
+    fecha: validarFechaInicio(valores.fecha, hoy) || validarInicioTrasActiva(valores.cliente, valores.fecha, membresias, hoy),
   };
 }
 

@@ -1,9 +1,13 @@
 // Reglas para mostrar y cambiar el estado de la membresía de un cliente.
 // Los clientes no se eliminan: lo que cambia es el estado de su membresía.
 
-export const ESTADOS = ["activa", "vencida", "cancelada"];
+// ANTERIOR: export const ESTADOS = ["activa", "vencida", "cancelada"];
+// NUEVO: se agrega "pendiente" (membresía comprada con otra activa, se activa sola en su fecha de inicio)
+// para que se liste, se filtre y se etiquete en las pantallas.
+export const ESTADOS = ["pendiente", "activa", "vencida", "cancelada"];
 
 export const ETIQUETAS_ESTADO = {
+  pendiente: "Pendiente",
   activa: "Activa",
   vencida: "Vencida",
   cancelada: "Cancelada",
@@ -83,6 +87,9 @@ export function membresiaActual(membresiasDelCliente) {
 export function accionesPermitidas(membresia, membresiasDelCliente, hoy = hoyLocal(), puedeReactivar = true) {
   if (!membresia) return [];
   const fin = diaDe(membresia.fecha_fin);
+
+  // NUEVO: una pendiente solo se puede cancelar; la activación la hace la tarea diaria del servidor.
+  if (membresia.estado === "pendiente") return [{ estado: "cancelada", etiqueta: "Cancelar membresía" }];
 
   if (membresia.estado === "activa") {
     if ((fin && fin < hoy) || (esTiquetera(membresia) && ingresosRestantes(membresia) === 0)) return [{ estado: "vencida", etiqueta: "Marcar como vencida" }];
