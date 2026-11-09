@@ -91,7 +91,9 @@ function FormularioCliente({ cliente = null, cedulasExistentes = [], alGuardar, 
 
       <Campo
         id="correo"
-        etiqueta="Correo (opcional)"
+        // ANTERIOR: etiqueta="Correo (opcional)"
+        // NUEVO: el correo es obligatorio; se marca con * como los demás campos requeridos.
+        etiqueta="Correo *"
         type="email"
         autoComplete="off"
         maxLength={LIMITES.correoMax}
