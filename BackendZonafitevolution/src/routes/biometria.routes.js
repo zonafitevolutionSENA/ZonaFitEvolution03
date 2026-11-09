@@ -7,6 +7,7 @@ const permitirRoles = require('../middlewares/rol.middleware');
 const ROLES = require('../utils/roles');
 
 router.get('/lector', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), biometriaController.infoLector);
+router.get('/registro/estado/:capturaId', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), biometriaController.estadoRegistro);
 router.post('/registrar', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), validarBodyNoVacio, biometriaController.registrar);
 router.post('/identificar', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), biometriaController.identificar);
 router.delete('/:cliente_id', verificarToken, permitirRoles(ROLES.ADMIN), biometriaController.eliminar);

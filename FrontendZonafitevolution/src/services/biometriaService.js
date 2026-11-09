@@ -13,7 +13,7 @@ export async function obtenerInfoLector() {
 
 // POST /api/biometria/registrar  { cliente_id, identificadorSimulado }
 // Con el lector físico solo se envía el cliente: la huella se toma del sensor (dos lecturas)
-export async function registrarHuella({ cliente_id, identificador, usaSensor = false }) {
+export async function registrarHuella({ cliente_id, identificador, usaSensor = false, capturaId }) {
   if (!Number.isInteger(cliente_id) || cliente_id <= 0) {
     throw new Error("Cliente no válido.");
   }
@@ -22,7 +22,7 @@ export async function registrarHuella({ cliente_id, identificador, usaSensor = f
     if (error) throw new Error(error);
   }
 
-  const cuerpo = usaSensor ? { cliente_id } : { cliente_id, identificadorSimulado: normalizarIdentificador(identificador) };
+  const cuerpo = usaSensor ? { cliente_id, captura_id: capturaId } : { cliente_id, identificadorSimulado: normalizarIdentificador(identificador) };
   const respuesta = await peticion("/biometria/registrar", {
     method: "POST",
     body: JSON.stringify(cuerpo),
@@ -31,4 +31,12 @@ export async function registrarHuella({ cliente_id, identificador, usaSensor = f
     throw new Error("Respuesta inesperada del servidor al registrar la huella.");
   }
   return respuesta;
+}
+
+export async function obtenerEstadoRegistro(capturaId) {
+  const datos = await peticion(`/biometria/registro/estado/${encodeURIComponent(capturaId)}`);
+  if (!datos || typeof datos.etapa !== "string") {
+    throw new Error("Respuesta inesperada al consultar la lectura.");
+  }
+  return datos.etapa;
 }

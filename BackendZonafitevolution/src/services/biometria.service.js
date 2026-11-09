@@ -27,7 +27,7 @@ async function buscarPlantillaCoincidente(lector, template) {
   return null;
 }
 
-async function registrarHuella({ cliente_id, identificadorSimulado } = {}) {
+async function registrarHuella({ cliente_id, identificadorSimulado } = {}, alCambiarEtapa) {
   const lector = obtenerLector();
 
   if (!cliente_id || (lector.requiereIdentificador && !identificadorSimulado)) {
@@ -47,7 +47,7 @@ async function registrarHuella({ cliente_id, identificadorSimulado } = {}) {
     throw new ErrorDominio('Este cliente ya tiene una huella registrada. Elimínala primero para volver a registrar.', 409);
   }
 
-  const template = await lector.registrar(identificadorSimulado);
+  const template = await lector.registrar(identificadorSimulado, alCambiarEtapa);
 
   const coincidente = await buscarPlantillaCoincidente(lector, template);
   if (coincidente) {
@@ -74,11 +74,11 @@ async function registrarHuella({ cliente_id, identificadorSimulado } = {}) {
   };
 }
 
-async function identificarPorHuella({ identificadorSimulado } = {}) {
+async function identificarPorHuella({ identificadorSimulado, signal } = {}) {
   const lector = obtenerLector();
   if (lector.requiereIdentificador) validarCaptura(identificadorSimulado);
 
-  const templateCapturado = await lector.capturar(identificadorSimulado);
+  const templateCapturado = await lector.capturar(identificadorSimulado, signal);
 
   // El lector físico devuelve null cuando la huella no está guardada en el sensor
   const coincidente = templateCapturado ? await buscarPlantillaCoincidente(lector, templateCapturado) : null;

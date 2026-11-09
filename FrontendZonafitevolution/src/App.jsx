@@ -25,7 +25,7 @@ function limpiarSesion() {
 const ACCIONES_RAPIDAS = {
   "registrar-cliente": "clientes",
   "renovar-membresia": "membresias",
-  "validar-acceso": "acceso",
+  "registrar-huella": "acceso",
 };
 
 function App() {

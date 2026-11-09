@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import RegistrarHuella from "../components/RegistrarHuella";
-import ValidarAcceso from "../components/ValidarAcceso";
-import { validarAcceso } from "../services/accesoService";
 import { obtenerInfoLector, registrarHuella } from "../services/biometriaService";
 import { listarClientes } from "../services/clienteService";
 import "../PantallasGestion.css";
 
-// Control de acceso: validar el acceso de un cliente y registrar su huella (simulada o con el lector físico)
 function Acceso() {
   const [usaSensor, setUsaSensor] = useState(false);
   const [errorLector, setErrorLector] = useState("");
@@ -53,8 +50,6 @@ function Acceso() {
 
       <p>{usaSensor ? "Lector de huellas conectado." : "Modo simulador: la huella se escribe como texto."}</p>
       {errorLector && <p className="mensaje-error" role="alert">{errorLector}</p>}
-
-      <ValidarAcceso alValidar={validarAcceso} usaSensor={usaSensor} />
 
       {cargando && <p>Cargando clientes...</p>}
       {errorClientes && (

@@ -39,6 +39,7 @@ class As608Lector extends LectorBiometrico {
     this.esperandoRespuesta = null;
     // Cola: el sensor atiende una operación a la vez
     this.cola = Promise.resolve();
+    this.debeRetirarDedo = false;
   }
 
   get requiereIdentificador() {
@@ -49,19 +50,28 @@ class As608Lector extends LectorBiometrico {
     return 'as608';
   }
 
-  async capturar() {
+  async capturar(identificadorSimulado, signal) {
     return this.enCola(async () => {
+      if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
       await this.conectar();
-      await this.leerHuellaEnBuffer(1, 'Coloca el dedo en el lector');
+      if (this.debeRetirarDedo) {
+        await this.esperarSinDedo(signal);
+        this.debeRetirarDedo = false;
+      }
+      await this.leerHuellaEnBuffer(1, 'Coloca el dedo en el lector', signal);
+      this.debeRetirarDedo = true;
+      if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
       const pagina = await this.buscar(1);
       return pagina === null ? null : this.templateDePagina(pagina);
     });
   }
 
-  async registrar() {
+  async registrar(identificadorSimulado, alCambiarEtapa = () => {}) {
     return this.enCola(async () => {
+      alCambiarEtapa('conectando');
       await this.conectar();
 
+      alCambiarEtapa('primera');
       await this.leerHuellaEnBuffer(1, 'Coloca el dedo en el lector');
 
       // Si la huella ya está en el sensor, se devuelve su template y el servicio decide
@@ -70,9 +80,12 @@ class As608Lector extends LectorBiometrico {
         return this.templateDePagina(existente);
       }
 
+      alCambiarEtapa('retirar');
       await this.esperarSinDedo();
+      alCambiarEtapa('segunda');
       await this.leerHuellaEnBuffer(2, 'Vuelve a colocar el mismo dedo');
 
+      alCambiarEtapa('procesando');
       const combinacion = await this.enviar(CMD.REG_MODEL);
       if (combinacion[0] !== 0x00) {
         throw new ErrorDominio('Las dos lecturas no coinciden. Usa el mismo dedo e inténtalo de nuevo.');
@@ -204,10 +217,11 @@ class As608Lector extends LectorBiometrico {
     });
   }
 
-  async leerHuellaEnBuffer(bufferId, mensaje) {
+  async leerHuellaEnBuffer(bufferId, mensaje, signal) {
     const limite = Date.now() + TIEMPO_ESPERA_DEDO_MS;
 
     while (Date.now() < limite) {
+      if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
       const imagen = await this.enviar(CMD.GEN_IMG);
       if (imagen[0] === 0x00) {
         const conversion = await this.enviar(CMD.IMG_2_TZ, [bufferId]);
@@ -225,9 +239,10 @@ class As608Lector extends LectorBiometrico {
     throw new ErrorDominio(`${mensaje}: no se detectó ningún dedo en 15 segundos`, 408);
   }
 
-  async esperarSinDedo() {
+  async esperarSinDedo(signal) {
     const limite = Date.now() + TIEMPO_ESPERA_DEDO_MS;
     while (Date.now() < limite) {
+      if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
       const imagen = await this.enviar(CMD.GEN_IMG);
       if (imagen[0] === SIN_DEDO) return;
       await esperar(200);

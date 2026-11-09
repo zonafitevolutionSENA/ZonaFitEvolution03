@@ -1,7 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LIMITES_HUELLA, validarClienteHuella, validarIdentificador } from "../utils/validacionesAcceso";
+import { obtenerEstadoRegistro } from "../services/biometriaService";
 import BuscadorCliente from "./BuscadorCliente";
 import Campo from "./Campo";
+
+const MENSAJES_LECTURA = {
+  preparando: "Preparando la lectura...",
+  conectando: "Conectando el lector...",
+  primera: "Coloca el dedo en el lector y mantenlo hasta que se indique retirarlo.",
+  retirar: "Primera lectura completada. Retira el dedo del lector.",
+  segunda: "Vuelve a colocar el mismo dedo en el lector.",
+  procesando: "Procesando y guardando la huella...",
+};
 
 // Formulario para registrar la huella de un cliente. No llama a la API: usa `alRegistrar`.
 // Con `usaSensor` la huella se toma del lector físico y no se pide el texto simulado.
@@ -12,6 +22,35 @@ function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
   const [errorGeneral, setErrorGeneral] = useState("");
   const [aviso, setAviso] = useState("");
   const [guardando, setGuardando] = useState(false);
+  const [capturaId, setCapturaId] = useState("");
+  const [etapa, setEtapa] = useState("preparando");
+  const [errorEtapa, setErrorEtapa] = useState("");
+
+  useEffect(() => {
+    if (!guardando || !usaSensor || !capturaId) return undefined;
+    let vigente = true;
+    let temporizador;
+
+    async function consultar() {
+      try {
+        const estado = await obtenerEstadoRegistro(capturaId);
+        if (vigente) {
+          setEtapa(estado);
+          setErrorEtapa("");
+        }
+      } catch {
+        if (vigente) setErrorEtapa("No se pudo consultar el estado de la lectura.");
+      } finally {
+        if (vigente) temporizador = setTimeout(consultar, 350);
+      }
+    }
+
+    consultar();
+    return () => {
+      vigente = false;
+      clearTimeout(temporizador);
+    };
+  }, [guardando, usaSensor, capturaId]);
 
   function limpiarMensajes() {
     setErrorGeneral("");
@@ -40,10 +79,14 @@ function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
       return;
     }
 
+    const nuevaCapturaId = usaSensor ? crypto.randomUUID() : "";
+    setCapturaId(nuevaCapturaId);
+    setEtapa("preparando");
+    setErrorEtapa("");
     setGuardando(true);
     limpiarMensajes();
     try {
-      await alRegistrar({ cliente_id: Number(cliente), identificador, usaSensor });
+      await alRegistrar({ cliente_id: Number(cliente), identificador, usaSensor, capturaId: nuevaCapturaId });
       const nombre = clientes.find((c) => c.id === Number(cliente))?.nombre ?? "el cliente";
       setAviso(`Huella registrada correctamente para ${nombre}.`);
       setCliente("");
@@ -95,9 +138,10 @@ function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
       )}
 
       <button type="submit" disabled={guardando}>
-        {guardando ? (usaSensor ? "Coloca el dedo en el lector..." : "Registrando...") : "Registrar huella"}
+        {guardando ? "Registrando..." : "Registrar huella"}
       </button>
 
+      {guardando && usaSensor && <p role="status" aria-live="polite">{errorEtapa || MENSAJES_LECTURA[etapa] || MENSAJES_LECTURA.preparando}</p>}
       {errorGeneral && <p className="mensaje-error" role="alert">{errorGeneral}</p>}
       {aviso && <p role="status">{aviso}</p>}
     </form>

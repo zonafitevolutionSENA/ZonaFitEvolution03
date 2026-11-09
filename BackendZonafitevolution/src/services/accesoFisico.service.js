@@ -6,12 +6,13 @@ const ErrorDominio = require('../utils/errores');
 const { hoyISO, sumarDias } = require('../utils/fechas');
 const { esTiquetera } = require('../estadosAcceso/estadoActivo');
 
-async function validarAcceso({ identificadorSimulado } = {}) {
+async function validarAcceso({ identificadorSimulado, signal } = {}) {
   let cliente;
 
   try {
-    cliente = await biometriaService.identificarPorHuella({ identificadorSimulado });
+    cliente = await biometriaService.identificarPorHuella({ identificadorSimulado, signal });
   } catch (error) {
+    if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
     if (error instanceof ErrorDominio && error.status === 404) {
       await registroAccesoRepository.crear({
         cliente_id: null,
@@ -23,7 +24,10 @@ async function validarAcceso({ identificadorSimulado } = {}) {
     throw error;
   }
 
+  if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
+
   const membresia = await membresiaRepository.obtenerUltimaPorCliente(cliente.id);
+  if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
   const estado = obtenerEstado(membresia);
   let evaluacion = estado.evaluar(membresia);
   let detalle = {};
