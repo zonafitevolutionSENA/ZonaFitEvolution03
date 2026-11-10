@@ -48,8 +48,12 @@ Otros:
 | --- | --- |
 | CR-005 | El lector biométrico es un AS608 con conversor USB CP2102 y solo valida el ingreso; no abre la puerta automáticamente. |
 | CR-006 | El hosting deja de ser Render; queda por definir. |
+| CR-007 | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608. |
+| CR-008 | Un solo ingreso por día en todos los planes. El frontend ya lo muestra; la validación del backend está pendiente. |
 
 ## Pendientes del equipo
+
+- **Backend:** aplicar la regla de un ingreso por día (RN-015, CR-008) en la validación de acceso.
 
 En los formatos quedaron en blanco, marcados explícitamente, los datos que solo el equipo puede aportar: costos, horas de dedicación, línea base de indicadores, enlace de Figma, resultados de pruebas, declaración de uso de IA y firmas. Al completarlos se actualizan el Markdown y el entregable correspondiente.
 

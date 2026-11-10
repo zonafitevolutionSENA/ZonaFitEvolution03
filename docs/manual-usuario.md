@@ -5,9 +5,10 @@
 
 ## Control documental
 
-| **Versión** | **Fecha**  | **Cambio realizado**                                       | **Elaboró**              | **Revisó** | **Aprobó** | **Estado** |
-| ----------- | ---------- | ---------------------------------------------------------- | ------------------------ | ---------- | ---------- | ---------- |
-| 1.0         | 03/11/2026 | Borrador del manual con los módulos implementados en local | Maileth Begambre Movilla |            |            | Borrador   |
+| **Versión** | **Fecha**  | **Cambio realizado**                                                                                 | **Elaboró**              | **Revisó** | **Aprobó** | **Estado** |
+| ----------- | ---------- | ---------------------------------------------------------------------------------------------------- | ------------------------ | ---------- | ---------- | ---------- |
+| 1.0         | 03/11/2026 | Borrador del manual con los módulos implementados en local                                           | Maileth Begambre Movilla |            |            | Borrador   |
+| 1.1         | 10/11/2026 | Huella desde Clientes, pantalla de ingreso, correo obligatorio, un ingreso por día y nuevos mensajes | Juan Diego Mejía Llano   |            |            | Borrador   |
 
 ### Aprobaciones
 
@@ -72,16 +73,16 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 
 ### 2.2 Módulos funcionales
 
-| **Código** | **Módulo**          | **Objetivo**                                                        | **Perfiles con acceso**                      |
-| ---------- | ------------------- | ------------------------------------------------------------------- | -------------------------------------------- |
-| MOD-01     | Inicio              | Acciones rápidas, actividad reciente y membresías por vencer.       | Administrador, Empleado                      |
-| MOD-02     | Clientes            | Registrar, buscar y editar clientes; ver el estado de su membresía. | Administrador, Empleado                      |
-| MOD-03     | Membresías          | Asignar y renovar por cédula.                                       | Administrador, Empleado                      |
-| MOD-04     | Planes              | Consultar el catálogo; el Administrador crea, edita y desactiva.    | Administrador (gestión), Empleado (consulta) |
-| MOD-05     | Control de acceso   | Validar el ingreso y registrar la huella.                           | Administrador, Empleado                      |
-| MOD-06     | Historial           | Consultar intentos de acceso con filtros.                           | Administrador, Empleado                      |
-| MOD-07     | Personal            | Crear y eliminar usuarios del personal.                             | Administrador                                |
-| MOD-08     | Registro financiero | Resumen de pagos por cliente (solo lectura).                        | Administrador                                |
+| **Código** | **Módulo**          | **Objetivo**                                                                                                      | **Perfiles con acceso**                      |
+| ---------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| MOD-01     | Inicio              | Acciones rápidas, actividad reciente y membresías por vencer.                                                     | Administrador, Empleado                      |
+| MOD-02     | Clientes            | Registrar, buscar y editar clientes, registrar su huella y ver el estado de su membresía.                         | Administrador, Empleado                      |
+| MOD-03     | Membresías          | Asignar y renovar por cédula.                                                                                     | Administrador, Empleado                      |
+| MOD-04     | Planes              | Consultar el catálogo (cada plan permite un ingreso por día); el Administrador crea, edita y desactiva.           | Administrador (gestión), Empleado (consulta) |
+| MOD-05     | Pantalla de ingreso | Validar el ingreso del socio con su huella en una ventana aparte, sin sesión; el resultado se muestra 2 segundos. | Administrador, Empleado                      |
+| MOD-06     | Historial           | Consultar intentos de acceso con filtros.                                                                         | Administrador, Empleado                      |
+| MOD-07     | Personal            | Crear y eliminar usuarios del personal.                                                                           | Administrador                                |
+| MOD-08     | Registro financiero | Resumen de pagos por cliente (solo lectura).                                                                      | Administrador                                |
 
 ## 3\. Requisitos para el usuario
 
@@ -108,11 +109,11 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 
 ## 4\. Roles y permisos
 
-| **Rol** | **Descripción** | **Funciones permitidas**                                                 | **Restricciones**                                              |
-| ------- | --------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| ROL-01  | Administrador   | Todas las funciones del sistema.                                         | No puede eliminar su propia cuenta ni al último administrador. |
-| ROL-02  | Empleado        | Clientes, membresías, consulta de planes, control de acceso e historial. | No ve Personal ni Registro financiero; no modifica planes.     |
-| ROL-03  | Cliente (socio) | Presenta su huella en el sensor.                                         | No usa la aplicación.                                          |
+| **Rol** | **Descripción** | **Funciones permitidas**                                                          | **Restricciones**                                              |
+| ------- | --------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| ROL-01  | Administrador   | Todas las funciones del sistema.                                                  | No puede eliminar su propia cuenta ni al último administrador. |
+| ROL-02  | Empleado        | Clientes (con el registro de huella), membresías, consulta de planes e historial. | No ve Personal ni Registro financiero; no modifica planes.     |
+| ROL-03  | Cliente (socio) | Presenta su huella en el sensor.                                                  | No usa la aplicación.                                          |
 
 <table>
 <tbody>
@@ -209,16 +210,16 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 
 ### 7.1 Plantilla de procedimiento
 
-| **Campo**               | **Contenido**                                                   |
-| ----------------------- | --------------------------------------------------------------- |
-| ID y nombre             | PRU-01 – Registrar cliente                                      |
-| Rol autorizado          | Administrador, Empleado                                         |
-| Objetivo                | Inscribir un nuevo socio.                                       |
-| Precondiciones          | Sesión iniciada; la cédula no está registrada.                  |
-| Ruta de acceso          | Menú lateral → Clientes → Registrar cliente                     |
-| Datos requeridos        | Nombre y cédula (obligatorios); correo y teléfono (opcionales). |
-| Resultado esperado      | Mensaje «Cliente "\<nombre\>" registrado correctamente.»        |
-| Requisitos relacionados | RF-001, HU-001                                                  |
+| **Campo**               | **Contenido**                                                |
+| ----------------------- | ------------------------------------------------------------ |
+| ID y nombre             | PRU-01 – Registrar cliente                                   |
+| Rol autorizado          | Administrador, Empleado                                      |
+| Objetivo                | Inscribir un nuevo socio.                                    |
+| Precondiciones          | Sesión iniciada; la cédula no está registrada.               |
+| Ruta de acceso          | Menú lateral → Clientes → Registrar cliente                  |
+| Datos requeridos        | Nombre, cédula y correo (obligatorios); teléfono (opcional). |
+| Resultado esperado      | Mensaje «Cliente "\<nombre\>" registrado correctamente.»     |
+| Requisitos relacionados | RF-001, HU-001                                               |
 
 ### 7.2 Pasos del procedimiento
 
@@ -247,8 +248,8 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 | PRU-01 | Clientes            | Registrar cliente                 | Administrador, Empleado | Alta          | Borrador     |
 | PRU-02 | Membresías          | Asignar membresía                 | Administrador, Empleado | Alta          | Por redactar |
 | PRU-03 | Membresías          | Renovar por cédula                | Administrador, Empleado | Alta          | Por redactar |
-| PRU-04 | Control de acceso   | Registrar huella                  | Administrador, Empleado | Alta          | Por redactar |
-| PRU-05 | Control de acceso   | Validar acceso                    | Administrador, Empleado | Alta          | Por redactar |
+| PRU-04 | Clientes            | Registrar huella                  | Administrador, Empleado | Alta          | Por redactar |
+| PRU-05 | Pantalla de ingreso | Validar acceso                    | Administrador, Empleado | Alta          | Por redactar |
 | PRU-06 | Historial           | Filtrar accesos                   | Administrador, Empleado | Media         | Por redactar |
 | PRU-07 | Planes              | Crear, editar y desactivar planes | Administrador           | Media         | Por redactar |
 | PRU-08 | Personal            | Crear y eliminar usuarios         | Administrador           | Media         | Por redactar |
@@ -286,7 +287,7 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 | --------- | -------- | --------------- | ------------------------------------------------------------------ | ----------------------------------- |
 | Nombre    | Texto    | Sí              | 3 a 100 caracteres; letras, espacios, apóstrofes, puntos y guiones | El nombre es obligatorio.           |
 | Cédula    | Número   | Sí              | 6 a 15 dígitos                                                     | La cédula solo puede tener números. |
-| Correo    | Correo   | No              | Formato de correo; máx. 100                                        | El formato del correo no es válido. |
+| Correo    | Correo   | Sí              | Formato de correo; máx. 100                                        | El formato del correo no es válido. |
 | Teléfono  | Teléfono | No              | 7 a 15 dígitos; puede iniciar con +                                |                                     |
 
 ## 9\. Búsquedas, filtros y reportes
@@ -347,15 +348,17 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 
 ## 11\. Mensajes, estados y errores frecuentes
 
-| **Código** | **Mensaje o situación**                                               | **Significado**                             | **Acción recomendada**         | **Escalar** |
-| ---------- | --------------------------------------------------------------------- | ------------------------------------------- | ------------------------------ | ----------- |
-| MSG-01     | No se pudo conectar con el servidor                                   | La aplicación no llega a la API.            | Revisar internet y reintentar. | Si persiste |
-| MSG-02     | Tu sesión expiró. Inicia sesión nuevamente.                           | Pasaron más de 8 horas.                     | Iniciar sesión.                | No          |
-| MSG-03     | No tienes permisos para realizar esta acción                          | El rol no permite la acción.                | Ingresar con un Administrador. | No          |
-| MSG-04     | Este cliente ya tiene una membresía activa. Usa «Renovar por cédula». | Regla de una membresía activa.              | Usar Renovar por cédula.       | No          |
-| MSG-05     | La fecha de inicio no puede ser anterior a hoy.                       | Fecha inválida.                             | Corregir la fecha.             | No          |
-| MSG-06     | Acceso denegado (con el motivo)                                       | Membresía vencida, cancelada o inexistente. | Renovar o asignar membresía.   | No          |
-| MSG-07     | Huella no reconocida                                                  | La huella no está registrada.               | Repetir o validar por cédula.  | Si persiste |
+| **Código** | **Mensaje o situación**                                               | **Significado**                             | **Acción recomendada**                        | **Escalar**                            |
+| ---------- | --------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------- | -------------------------------------- |
+| MSG-01     | No se pudo conectar con el servidor                                   | La aplicación no llega a la API.            | Revisar internet y reintentar.                | Si persiste                            |
+| MSG-02     | Tu sesión expiró. Inicia sesión nuevamente.                           | Pasaron más de 8 horas.                     | Iniciar sesión.                               | No                                     |
+| MSG-03     | No tienes permisos para realizar esta acción                          | El rol no permite la acción.                | Ingresar con un Administrador.                | No                                     |
+| MSG-04     | Este cliente ya tiene una membresía activa. Usa «Renovar por cédula». | Regla de una membresía activa.              | Usar Renovar por cédula.                      | No                                     |
+| MSG-05     | La fecha de inicio no puede ser anterior a hoy.                       | Fecha inválida.                             | Corregir la fecha.                            | No                                     |
+| MSG-06     | Acceso denegado (con el motivo)                                       | Membresía vencida, cancelada o inexistente. | Renovar o asignar membresía.                  | No                                     |
+| MSG-07     | Huella no reconocida                                                  | La huella no está registrada.               | Repetir o validar por cédula.                 | Si persiste                            |
+| MSG-08     | Esta huella ya está registrada para otro cliente                      | El mismo dedo ya pertenece a otro socio.    | Usar otro dedo o revisar el cliente.          | Si el socio no tiene huella registrada |
+| MSG-09     | El lector no detectó un dedo nuevo                                    | Huella residual o dedo sin retirar.         | Retirar el dedo, limpiar el lector y repetir. | Si persiste                            |
 
 ### 11.1 Cómo reportar un error
 

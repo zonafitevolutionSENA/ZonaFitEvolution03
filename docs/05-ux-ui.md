@@ -20,12 +20,13 @@
 
 ### Historial de versiones
 
-| **Versión** | **Fecha**  | **Descripción**                                                                              | **Responsable**              | **Aprobado por** |
-| ----------- | ---------- | -------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
-| 1.0         | 24/06/2026 | Wireframes iniciales                                                                         | Maileth Begambre Movilla     |                  |
-| 1.1         | 25/06/2026 | Mockups                                                                                      | Liliana Sofía Panesso Méndez |                  |
-| 1.2         | 26/06/2026 | Prototipos navegables                                                                        | Maileth Begambre Movilla     |                  |
-| 2.0         | 03/11/2026 | Plantilla institucional con pantallas React implementadas, estados, tokens y mensajes reales | Juan Diego Mejía Llano       |                  |
+| **Versión** | **Fecha**  | **Descripción**                                                                                                                       | **Responsable**              | **Aprobado por** |
+| ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
+| 1.0         | 24/06/2026 | Wireframes iniciales                                                                                                                  | Maileth Begambre Movilla     |                  |
+| 1.1         | 25/06/2026 | Mockups                                                                                                                               | Liliana Sofía Panesso Méndez |                  |
+| 1.2         | 26/06/2026 | Prototipos navegables                                                                                                                 | Maileth Begambre Movilla     |                  |
+| 2.0         | 03/11/2026 | Plantilla institucional con pantallas React implementadas, estados, tokens y mensajes reales                                          | Juan Diego Mejía Llano       |                  |
+| 2.1         | 10/11/2026 | Control de acceso fuera del menú: huella desde Clientes y pantalla de ingreso aparte con resultado de 2 segundos; simulador eliminado | Juan Diego Mejía Llano       |                  |
 
 ### Registro de aprobaciones
 
@@ -158,24 +159,24 @@ El documento define cómo se comprenderán las necesidades de los usuarios, cóm
 
 ### 4.1 Inventario de contenidos y funciones
 
-| **ID**   | **Contenido / función**      | **Usuario**      | **Frecuencia** | **Prioridad** | **Ubicación propuesta** | **Fuente** |
-| -------- | ---------------------------- | ---------------- | -------------- | ------------- | ----------------------- | ---------- |
-| CONT-001 | Validar acceso por huella    | PER-002          | Alta           | Must          | Control de acceso       | RF-003     |
-| CONT-002 | Registrar y buscar clientes  | PER-002          | Alta           | Must          | Clientes                | RF-001     |
-| CONT-003 | Asignar y renovar membresías | PER-002          | Alta           | Must          | Membresías              | RF-005     |
-| CONT-004 | Registrar huella             | PER-002          | Media          | Must          | Control de acceso       | RF-004     |
-| CONT-005 | Historial de accesos         | PER-001, PER-002 | Media          | Should        | Historial               | RF-008     |
-| CONT-006 | Gestionar planes             | PER-001          | Baja           | Must          | Planes                  | RF-002     |
-| CONT-007 | Gestionar personal           | PER-001          | Baja           | Must          | Personal                | RF-007     |
-| CONT-008 | Registro financiero          | PER-001          | Media          | Must          | Registro financiero     | RF-006     |
+| **ID**   | **Contenido / función**      | **Usuario**      | **Frecuencia** | **Prioridad** | **Ubicación propuesta**              | **Fuente** |
+| -------- | ---------------------------- | ---------------- | -------------- | ------------- | ------------------------------------ | ---------- |
+| CONT-001 | Validar acceso por huella    | PER-002          | Alta           | Must          | Pantalla de ingreso (ventana aparte) | RF-003     |
+| CONT-002 | Registrar y buscar clientes  | PER-002          | Alta           | Must          | Clientes                             | RF-001     |
+| CONT-003 | Asignar y renovar membresías | PER-002          | Alta           | Must          | Membresías                           | RF-005     |
+| CONT-004 | Registrar huella             | PER-002          | Media          | Must          | Clientes                             | RF-004     |
+| CONT-005 | Historial de accesos         | PER-001, PER-002 | Media          | Should        | Historial                            | RF-008     |
+| CONT-006 | Gestionar planes             | PER-001          | Baja           | Must          | Planes                               | RF-002     |
+| CONT-007 | Gestionar personal           | PER-001          | Baja           | Must          | Personal                             | RF-007     |
+| CONT-008 | Registro financiero          | PER-001          | Media          | Must          | Registro financiero                  | RF-006     |
 
 ### 4.2 Estructura de navegación
 
-| **Nivel** | **Elemento**                                               | **Objetivo**                                                 | **Usuarios**            | **Elementos hijos**                  | **Reglas de acceso**              |
-| --------- | ---------------------------------------------------------- | ------------------------------------------------------------ | ----------------------- | ------------------------------------ | --------------------------------- |
-| 1         | Inicio (dashboard)                                         | Acciones rápidas, actividad reciente y membresías por vencer | Administrador, Empleado | Menú lateral                         | Según el rol                      |
-| 2         | Clientes, Membresías, Planes, Control de acceso, Historial | Operación diaria                                             | Administrador, Empleado | Formularios y listas                 | Planes: el Empleado solo consulta |
-| 2         | Registro financiero, Personal                              | Control del propietario                                      | Administrador           | Resumen y detalle; lista de usuarios | Solo Administrador                |
+| **Nivel** | **Elemento**                                                                   | **Objetivo**                                                 | **Usuarios**            | **Elementos hijos**                  | **Reglas de acceso**              |
+| --------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------- | ------------------------------------ | --------------------------------- |
+| 1         | Inicio (dashboard)                                                             | Acciones rápidas, actividad reciente y membresías por vencer | Administrador, Empleado | Menú lateral                         | Según el rol                      |
+| 2         | Clientes, Membresías, Planes, Historial (la huella se registra desde Clientes) | Operación diaria                                             | Administrador, Empleado | Formularios y listas                 | Planes: el Empleado solo consulta |
+| 2         | Registro financiero, Personal                                                  | Control del propietario                                      | Administrador           | Resumen y detalle; lista de usuarios | Solo Administrador                |
 
 ### 4.3 Mapa del sitio
 
@@ -213,22 +214,22 @@ Incluya el mapa del sitio o arquitectura de información en una herramienta edit
 
 ### 5.2 Ficha de flujo
 
-| **Campo**              | **Contenido**                                                                                         |
-| ---------------------- | ----------------------------------------------------------------------------------------------------- |
-| ID y nombre            | FLU-004 – Validar acceso                                                                              |
-| Actor / perfil         | PER-002 Recepcionista; socio presenta la huella                                                       |
-| Objetivo y valor       | Decidir en segundos si el socio puede entrar; cero ingresos vencidos.                                 |
-| Disparador             | El socio pone su huella en el sensor AS608.                                                           |
-| Precondiciones         | Sesión iniciada; huella registrada.                                                                   |
-| Camino feliz           | Huella → identificación → membresía activa y vigente → «Acceso permitido» → registro en el historial. |
-| Alternativas           | Membresía vencida, cancelada o inexistente → «Acceso denegado» con el motivo.                         |
-| Errores y recuperación | Huella no reconocida o sin conexión → mensaje y validación manual por cédula.                         |
-| Permisos               | Administrador y Empleado.                                                                             |
-| Datos requeridos       | Captura de la huella (hoy simulada).                                                                  |
-| Pantallas relacionadas | UI-06, UI-07                                                                                          |
-| Historias / casos      | HU-005, HU-006, HU-007 / CU-004                                                                       |
-| Criterios de éxito     | Respuesta en menos de 2 s (RNF-003).                                                                  |
-| Evidencia              |                                                                                                       |
+| **Campo**              | **Contenido**                                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| ID y nombre            | FLU-004 – Validar acceso                                                                                   |
+| Actor / perfil         | PER-002 Recepcionista; socio presenta la huella                                                            |
+| Objetivo y valor       | Decidir en segundos si el socio puede entrar; cero ingresos vencidos.                                      |
+| Disparador             | El socio pone su huella en el sensor AS608.                                                                |
+| Precondiciones         | Sesión iniciada; huella registrada.                                                                        |
+| Camino feliz           | Huella → identificación → membresía activa y vigente → «Acceso permitido» → registro en el historial.      |
+| Alternativas           | Membresía vencida, cancelada o inexistente → «Acceso denegado» con el motivo.                              |
+| Errores y recuperación | Huella no reconocida o sin conexión → mensaje y validación manual por cédula.                              |
+| Permisos               | Administrador y Empleado.                                                                                  |
+| Datos requeridos       | Huella leída por el sensor AS608. El resultado se muestra 2 segundos antes de esperar la siguiente huella. |
+| Pantallas relacionadas | UI-06, UI-07                                                                                               |
+| Historias / casos      | HU-005, HU-006, HU-007 / CU-004                                                                            |
+| Criterios de éxito     | Respuesta en menos de 2 s (RNF-003).                                                                       |
+| Evidencia              |                                                                                                            |
 
 ### 5.3 Reglas de navegación
 
@@ -242,17 +243,17 @@ Incluya el mapa del sitio o arquitectura de información en una herramienta edit
 
 ### 6.1 Inventario maestro
 
-| **ID** | **Pantalla / vista**                | **Tipo** | **Actor**                            | **Objetivo** | **Flujo** | **HU / RF**    | **Estado**   | **Versión** |
-| ------ | ----------------------------------- | -------- | ------------------------------------ | ------------ | --------- | -------------- | ------------ | ----------- |
-| UI-01  | Inicio de sesión                    | Página   | Todos                                |              |           | HU-002         | Implementado | 1.0         |
-| UI-02  | Inicio (dashboard)                  | Página   | Admin, Empleado                      |              |           | HU-012         | Implementado | 1.0         |
-| UI-03  | Gestión de clientes                 | Página   | Admin, Empleado                      |              |           | HU-001         | Implementado | 1.0         |
-| UI-04  | Gestión de planes                   | Página   | Admin (gestión), Empleado (consulta) |              |           | HU-003         | Implementado | 1.0         |
-| UI-05  | Membresías: asignación y renovación | Página   | Admin, Empleado                      |              |           | HU-004, HU-008 | Implementado | 1.0         |
-| UI-06  | Control de acceso por huella        | Página   | Admin, Empleado                      |              |           | HU-005, HU-006 | Implementado | 1.0         |
-| UI-07  | Historial de accesos                | Página   | Admin, Empleado                      |              |           | HU-006         | Implementado | 1.0         |
-| UI-08  | Personal                            | Página   | Admin                                |              |           | HU-002         | Implementado | 1.0         |
-| UI-09  | Registro financiero                 | Página   | Admin                                |              |           | HU-008         | Implementado | 1.0         |
+| **ID** | **Pantalla / vista**                                   | **Tipo** | **Actor**                            | **Objetivo** | **Flujo** | **HU / RF**    | **Estado**   | **Versión** |
+| ------ | ------------------------------------------------------ | -------- | ------------------------------------ | ------------ | --------- | -------------- | ------------ | ----------- |
+| UI-01  | Inicio de sesión                                       | Página   | Todos                                |              |           | HU-002         | Implementado | 1.0         |
+| UI-02  | Inicio (dashboard)                                     | Página   | Admin, Empleado                      |              |           | HU-012         | Implementado | 1.0         |
+| UI-03  | Gestión de clientes                                    | Página   | Admin, Empleado                      |              |           | HU-001         | Implementado | 1.0         |
+| UI-04  | Gestión de planes                                      | Página   | Admin (gestión), Empleado (consulta) |              |           | HU-003         | Implementado | 1.0         |
+| UI-05  | Membresías: asignación y renovación                    | Página   | Admin, Empleado                      |              |           | HU-004, HU-008 | Implementado | 1.0         |
+| UI-06  | Registro de huella (en Clientes) y pantalla de ingreso | Página   | Admin, Empleado                      |              |           | HU-005, HU-006 | Implementado | 1.0         |
+| UI-07  | Historial de accesos                                   | Página   | Admin, Empleado                      |              |           | HU-006         | Implementado | 1.0         |
+| UI-08  | Personal                                               | Página   | Admin                                |              |           | HU-002         | Implementado | 1.0         |
+| UI-09  | Registro financiero                                    | Página   | Admin                                |              |           | HU-008         | Implementado | 1.0         |
 
 ### 6.2 Ficha de pantalla
 
@@ -675,17 +676,17 @@ El sistema de diseño reúne reglas, tokens, componentes, patrones, documentaci�
 
 ### 17.1 Matriz resumida
 
-| **UI / flujo** | **Perfil** | **HU / CU**    | **RF / RNF** | **Reglas** | **Componente**       | **Prueba** | **Evidencia** | **Estado**   |
-| -------------- | ---------- | -------------- | ------------ | ---------- | -------------------- | ---------- | ------------- | ------------ |
-| UI-01          | PER-002    | HU-002         |              |            | pages/Login.jsx      |            |               | Implementado |
-| UI-02          | PER-002    | HU-012         |              |            | pages/Inicio.jsx     |            |               | Implementado |
-| UI-03          | PER-002    | HU-001         |              |            | pages/Clientes.jsx   |            |               | Implementado |
-| UI-04          | PER-002    | HU-003         |              |            | pages/Planes.jsx     |            |               | Implementado |
-| UI-05          | PER-002    | HU-004, HU-008 |              |            | pages/Membresias.jsx |            |               | Implementado |
-| UI-06          | PER-002    | HU-005, HU-006 |              |            | pages/Acceso.jsx     |            |               | Implementado |
-| UI-07          | PER-002    | HU-006         |              |            | pages/Historial.jsx  |            |               | Implementado |
-| UI-08          | PER-001    | HU-002         |              |            | pages/Personal.jsx   |            |               | Implementado |
-| UI-09          | PER-001    | HU-008         |              |            | pages/Finanzas.jsx   |            |               | Implementado |
+| **UI / flujo** | **Perfil** | **HU / CU**    | **RF / RNF** | **Reglas** | **Componente**                                                                | **Prueba** | **Evidencia** | **Estado**   |
+| -------------- | ---------- | -------------- | ------------ | ---------- | ----------------------------------------------------------------------------- | ---------- | ------------- | ------------ |
+| UI-01          | PER-002    | HU-002         |              |            | pages/Login.jsx                                                               |            |               | Implementado |
+| UI-02          | PER-002    | HU-012         |              |            | pages/Inicio.jsx                                                              |            |               | Implementado |
+| UI-03          | PER-002    | HU-001         |              |            | pages/Clientes.jsx                                                            |            |               | Implementado |
+| UI-04          | PER-002    | HU-003         |              |            | pages/Planes.jsx                                                              |            |               | Implementado |
+| UI-05          | PER-002    | HU-004, HU-008 |              |            | pages/Membresias.jsx                                                          |            |               | Implementado |
+| UI-06          | PER-002    | HU-005, HU-006 |              |            | pages/Clientes.jsx, components/RegistrarHuella.jsx, pages/PantallaIngreso.jsx |            |               | Implementado |
+| UI-07          | PER-002    | HU-006         |              |            | pages/Historial.jsx                                                           |            |               | Implementado |
+| UI-08          | PER-001    | HU-002         |              |            | pages/Personal.jsx                                                            |            |               | Implementado |
+| UI-09          | PER-001    | HU-008         |              |            | pages/Finanzas.jsx                                                            |            |               | Implementado |
 
 ### 17.2 Indicadores sugeridos
 

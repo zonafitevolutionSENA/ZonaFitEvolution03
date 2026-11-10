@@ -22,6 +22,7 @@
 | ----------- | ---------- | ---------------------------------------------------------------------------------------------- | ---------------------- | ---------- | ---------- |
 | 0.1         | 20/10/2026 | Creación inicial a partir del documento maestro integrado (v2.3)                               | Juan Diego Mejía Llano |            |            |
 | 1.0         | 03/11/2026 | Versión para revisión: problema, objetivos, alcance, entregables, recursos, riesgos y gobierno | Juan Diego Mejía Llano |            |            |
+| 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; supuestos y dependencias actualizados            | Juan Diego Mejía Llano |            |            |
 
 ### Aprobaciones
 
@@ -576,14 +577,14 @@ Limitaciones o excepciones a esta autoridad:
 
 ### 12.2 Evaluación preliminar de viabilidad
 
-| **Dimensión** | **Estado**   | **Hallazgo**                                                                     | **Acción requerida**                          | **Responsable**              | **Fecha límite** |
-| ------------- | ------------ | -------------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------- | ---------------- |
-| Técnica       | Viable       | Stack conocido y arquitectura implementada.                                      |                                               |                              |                  |
-| Operativa     | Viable       | La recepción usa el sistema desde el navegador.                                  |                                               |                              |                  |
-| Económica     | Condicionada | Costo del hosting por definir.                                                   | Definir proveedor y costo del hosting.        | Liliana Sofía Panesso Méndez |                  |
-| Temporal      | Condicionada | Pruebas, despliegue e integración del AS608 concentrados en los sprints 11 a 13. | Congelar alcance desde el sprint 12.          | Juan Diego Mejía Llano       |                  |
-| Legal y ética | Viable       | Solo se guarda el hash de la huella.                                             | Formato de autorización de datos biométricos. | Liliana Sofía Panesso Méndez |                  |
-| Formativa     | Viable       | Cubre análisis, diseño, desarrollo, pruebas y despliegue.                        |                                               |                              |                  |
+| **Dimensión** | **Estado**   | **Hallazgo**                                                                                               | **Acción requerida**                          | **Responsable**              | **Fecha límite** |
+| ------------- | ------------ | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------- | ---------------- |
+| Técnica       | Viable       | Stack conocido y arquitectura implementada.                                                                |                                               |                              |                  |
+| Operativa     | Viable       | La recepción usa el sistema desde el navegador.                                                            |                                               |                              |                  |
+| Económica     | Condicionada | Costo del hosting por definir.                                                                             | Definir proveedor y costo del hosting.        | Liliana Sofía Panesso Méndez |                  |
+| Temporal      | Condicionada | Pruebas y despliegue concentrados en los sprints 12 y 13; el sensor AS608 quedó integrado en el sprint 11. | Congelar alcance desde el sprint 12.          | Juan Diego Mejía Llano       |                  |
+| Legal y ética | Viable       | Solo se guarda el hash de la huella.                                                                       | Formato de autorización de datos biométricos. | Liliana Sofía Panesso Méndez |                  |
+| Formativa     | Viable       | Cubre análisis, diseño, desarrollo, pruebas y despliegue.                                                  |                                               |                              |                  |
 
 ### 12.3 Estimación inicial de esfuerzo
 
@@ -617,19 +618,19 @@ Limitaciones o excepciones a esta autoridad:
 
 ### 13.2 Supuestos
 
-| **ID** | **Supuesto**                                                                       | **Cómo se validará**                   | **Fecha de validación** | **Consecuencia si es falso**                |
-| ------ | ---------------------------------------------------------------------------------- | -------------------------------------- | ----------------------- | ------------------------------------------- |
-| SUP-01 | La recepción cuenta con computador y conexión a internet.                          | Visita al gimnasio con el propietario. |                         | Usar el sistema desde otro equipo o tablet. |
-| SUP-02 | El sensor AS608 y el conversor CP2102 funcionan con el computador de la recepción. | Prueba de integración en el sprint 11. |                         | Demostrar con el adaptador simulador.       |
-| SUP-03 | Los socios autorizan el registro de su huella.                                     | Formato de autorización del titular.   |                         | Validación por cédula en la recepción.      |
+| **ID** | **Supuesto**                                                                       | **Cómo se validará**                      | **Fecha de validación** | **Consecuencia si es falso**                                                                  |
+| ------ | ---------------------------------------------------------------------------------- | ----------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------- |
+| SUP-01 | La recepción cuenta con computador y conexión a internet.                          | Visita al gimnasio con el propietario.    |                         | Usar el sistema desde otro equipo o tablet.                                                   |
+| SUP-02 | El sensor AS608 y el conversor CP2102 funcionan con el computador de la recepción. | Prueba de integración con el lector real. | 10/11/2026              | Sin lector conectado no se pueden registrar ni validar huellas (ya no existe modo simulador). |
+| SUP-03 | Los socios autorizan el registro de su huella.                                     | Formato de autorización del titular.      |                         | Validación por cédula en la recepción.                                                        |
 
 ### 13.3 Dependencias
 
-| **ID** | **Dependencia**                                           | **Tipo** | **Responsable externo** | **Fecha requerida** | **Plan alternativo**            |
-| ------ | --------------------------------------------------------- | -------- | ----------------------- | ------------------- | ------------------------------- |
-| DEP-01 | Hosting de la API y del frontend (no Render, por definir) | Servicio |                         |                     | Demostración en ambiente local. |
-| DEP-02 | Proveedor de MySQL en la nube                             | Servicio |                         |                     | Base MySQL local.               |
-| DEP-03 | Controlador del CP2102 y comunicación serie con el AS608  | Servicio |                         |                     | Adaptador simulador.            |
+| **ID** | **Dependencia**                                           | **Tipo** | **Responsable externo** | **Fecha requerida** | **Plan alternativo**                                                                       |
+| ------ | --------------------------------------------------------- | -------- | ----------------------- | ------------------- | ------------------------------------------------------------------------------------------ |
+| DEP-01 | Hosting de la API y del frontend (no Render, por definir) | Servicio |                         |                     | Demostración en ambiente local.                                                            |
+| DEP-02 | Proveedor de MySQL en la nube                             | Servicio |                         |                     | Base MySQL local.                                                                          |
+| DEP-03 | Controlador del CP2102 y comunicación serie con el AS608  | Servicio |                         |                     | Revisar el controlador del CP2102 y el puerto COM (PUERTO\_LECTOR); no hay modo simulador. |
 
 <table>
 <tbody>

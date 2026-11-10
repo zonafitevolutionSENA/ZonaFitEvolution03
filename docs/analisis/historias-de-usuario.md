@@ -57,27 +57,27 @@
 
 **HU-003 – Gestionar planes**
 
-| **Campo**                    | **Contenido**                                                                                                                                               |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ID y título                  | HU-003 – Gestionar planes                                                                                                                                   |
-| Épica / funcionalidad        | EP-002 / FEAT-004                                                                                                                                           |
-| Narrativa                    | Como Administrador, quiero crear y gestionar los planes (diario, quincenal, mensual y trimestral) para ofrecer flexibilidad en las opciones de suscripción. |
-| Contexto y problema          | Las tarifas estaban fijas en el código.                                                                                                                     |
-| Valor esperado               | El propietario ajusta precios sin cambiar el sistema.                                                                                                       |
-| Actor principal              | ACT-01 Administrador                                                                                                                                        |
-| Requisitos relacionados      | RF-002                                                                                                                                                      |
-| Reglas relacionadas          | RN-006                                                                                                                                                      |
-| Prioridad                    | Must                                                                                                                                                        |
-| Estimación                   | 5 puntos de historia                                                                                                                                        |
-| Dependencias                 | HU-002                                                                                                                                                      |
-| Riesgos                      | Borrar un plan con historial.                                                                                                                               |
-| Prototipo relacionado        | UI-04                                                                                                                                                       |
-| Criterios de aceptación      | CA-HU-003-01, CA-HU-003-02, CA-HU-003-03                                                                                                                    |
-| Casos de prueba              | CP-004 a CP-006                                                                                                                                             |
-| Versión / iteración objetivo | MVP – Sprint 5                                                                                                                                              |
-| Responsable de validación    | Liliana Sofía Panesso Méndez (Product Owner)                                                                                                                |
-| Estado                       | En validación                                                                                                                                               |
-| Evidencia de aceptación      | Pull Requests en GitHub y demostración en la sprint review                                                                                                  |
+| **Campo**                    | **Contenido**                                                                                                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| ID y título                  | HU-003 – Gestionar planes                                                                                                                   |
+| Épica / funcionalidad        | EP-002 / FEAT-004                                                                                                                           |
+| Narrativa                    | Como Administrador, quiero crear y gestionar los planes (por tiempo y tiqueteras) para ofrecer flexibilidad en las opciones de suscripción. |
+| Contexto y problema          | Las tarifas estaban fijas en el código.                                                                                                     |
+| Valor esperado               | El propietario ajusta precios sin cambiar el sistema.                                                                                       |
+| Actor principal              | ACT-01 Administrador                                                                                                                        |
+| Requisitos relacionados      | RF-002                                                                                                                                      |
+| Reglas relacionadas          | RN-006                                                                                                                                      |
+| Prioridad                    | Must                                                                                                                                        |
+| Estimación                   | 5 puntos de historia                                                                                                                        |
+| Dependencias                 | HU-002                                                                                                                                      |
+| Riesgos                      | Borrar un plan con historial.                                                                                                               |
+| Prototipo relacionado        | UI-04                                                                                                                                       |
+| Criterios de aceptación      | CA-HU-003-01, CA-HU-003-02, CA-HU-003-03                                                                                                    |
+| Casos de prueba              | CP-004 a CP-006                                                                                                                             |
+| Versión / iteración objetivo | MVP – Sprint 5                                                                                                                              |
+| Responsable de validación    | Liliana Sofía Panesso Méndez (Product Owner)                                                                                                |
+| Estado                       | En validación                                                                                                                               |
+| Evidencia de aceptación      | Pull Requests en GitHub y demostración en la sprint review                                                                                  |
 
 **HU-004 – Renovar membresía por cédula**
 
@@ -118,7 +118,7 @@
 | Prioridad                    | Must                                                                                                             |
 | Estimación                   | 13 puntos de historia                                                                                            |
 | Dependencias                 | HU-001, INT-01                                                                                                   |
-| Riesgos                      | El sensor AS608 aún no está integrado con la API.                                                                |
+| Riesgos                      | Huellas residuales en el sensor: si no detecta un dedo nuevo responde el código 0x17.                            |
 | Prototipo relacionado        | UI-06                                                                                                            |
 | Criterios de aceptación      | CA-HU-005-01, CA-HU-005-02                                                                                       |
 | Casos de prueba              | CP-010, CP-011                                                                                                   |

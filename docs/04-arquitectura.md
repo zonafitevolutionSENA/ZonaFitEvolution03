@@ -20,11 +20,12 @@
 
 ### Historial de versiones
 
-| **Versión** | **Fecha**  | **Descripción**                                                                                      | **Responsable**              | **Aprobado por** |
-| ----------- | ---------- | ---------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
-| 0.1         | 19/10/2026 | Drivers, capas, patrones, modelo de datos y API (documento maestro v2.0)                             | Liliana Sofía Panesso Méndez |                  |
-| 0.2         | 20/10/2026 | Diagramas, despliegue propuesto y ADR (documento maestro v2.1)                                       | Liliana Sofía Panesso Méndez |                  |
-| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 sin apertura de puerta (CR-005) y hosting por definir (CR-006) | Juan Diego Mejía Llano       |                  |
+| **Versión** | **Fecha**  | **Descripción**                                                                                                                             | **Responsable**              | **Aprobado por** |
+| ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
+| 0.1         | 19/10/2026 | Drivers, capas, patrones, modelo de datos y API (documento maestro v2.0)                                                                    | Liliana Sofía Panesso Méndez |                  |
+| 0.2         | 20/10/2026 | Diagramas, despliegue propuesto y ADR (documento maestro v2.1)                                                                              | Liliana Sofía Panesso Méndez |                  |
+| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 sin apertura de puerta (CR-005) y hosting por definir (CR-006)                                        | Juan Diego Mejía Llano       |                  |
+| 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; diccionario de datos con tiqueteras, estado pendiente y template\_hash único; DT-010 aceptada | Juan Diego Mejía Llano       |                  |
 
 ### Registro de aprobaciones
 
@@ -136,7 +137,7 @@ Los drivers son las condiciones que realmente influyen en la arquitectura: requi
 | Disponibilidad | Uso durante el horario de atención                            | RNF-004    | 99,9 % mensual                     | Hosting por definir (CR-006) |               |
 | Seguridad      | Petición sin token o con rol Empleado a ruta de Administrador | RNF-001    | 401 / 403 en el 100 % de los casos | ADR-003                      |               |
 | Mantenibilidad | Agregar un estado de membresía o un sensor nuevo              | RNF-005    | 0 errores de lint y build          | ADR-001, ADR-002, ADR-005    |               |
-| Portabilidad   | Cambiar el simulador por el sensor AS608                      | INT-01     | Solo un adaptador nuevo            | ADR-004                      |               |
+| Portabilidad   | Cambiar el AS608 por otro modelo de sensor                    | INT-01     | Solo un adaptador nuevo            | ADR-004                      |               |
 | Escalabilidad  | Crecimiento de socios                                         |            |                                    |                              |               |
 
 ### 3.3 Restricciones técnicas y organizacionales
@@ -302,16 +303,16 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 ### 7.1 Catálogo de componentes
 
-| **ID** | **Componente**       | **Responsabilidad**                                                                                      | **Entradas**            | **Salidas**            | **Dependencias** | **Requisitos** | **Propietario**              |
-| ------ | -------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------- | ---------------- | -------------- | ---------------------------- |
-| CMP-01 | Frontend SPA         | Pantallas del personal, validaciones en el navegador y servicios por recurso.                            | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Juan Diego Mejía Llano       |
-| CMP-02 | Rutas y middlewares  | Endpoints bajo /api; verificarToken, permitirRoles, validarBodyNoVacio y manejo de errores.              | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-03 | Controladores        | Reciben la petición HTTP, llaman al servicio y responden en JSON.                                        | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-04 | Servicios de negocio | Reglas de clientes, planes, membresías, usuarios y autenticación.                                        | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-05 | Control de acceso    | Fachada que identifica la huella, evalúa el estado (State) y registra el intento.                        | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-06 | Adaptador del lector | Interfaz LectorBiometrico, fábrica y adaptadores (simulador; AS608 en desarrollo).                       | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-07 | Repositorios         | Consultas SQL parametrizadas.                                                                            | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-08 | Base de datos        | Siete tablas: roles, usuarios, clientes, planes, membresias, plantillas\_biometricas, registros\_acceso. | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| **ID** | **Componente**       | **Responsabilidad**                                                                                         | **Entradas**            | **Salidas**            | **Dependencias** | **Requisitos** | **Propietario**              |
+| ------ | -------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------- | ---------------- | -------------- | ---------------------------- |
+| CMP-01 | Frontend SPA         | Pantallas del personal, validaciones en el navegador y servicios por recurso.                               | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Juan Diego Mejía Llano       |
+| CMP-02 | Rutas y middlewares  | Endpoints bajo /api; verificarToken, permitirRoles, validarBodyNoVacio y manejo de errores.                 | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-03 | Controladores        | Reciben la petición HTTP, llaman al servicio y responden en JSON.                                           | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-04 | Servicios de negocio | Reglas de clientes, planes, membresías, usuarios y autenticación.                                           | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-05 | Control de acceso    | Fachada que identifica la huella, evalúa el estado (State) y registra el intento.                           | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-06 | Adaptador del lector | Interfaz LectorBiometrico, fábrica por TIPO\_LECTOR y adaptador del sensor AS608 (el simulador se eliminó). | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-07 | Repositorios         | Consultas SQL parametrizadas.                                                                               | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-08 | Base de datos        | Siete tablas: roles, usuarios, clientes, planes, membresias, plantillas\_biometricas, registros\_acceso.    | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
 
 ### 7.2 Ficha detallada de componente
 
@@ -329,9 +330,9 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 | Seguridad y permisos        | Admin y Empleado; nunca devuelve el hash de la plantilla.                                                                      |
 | Observabilidad              | Cada intento queda en registros\_acceso; errores 500 en consola.                                                               |
 | Pruebas asociadas           | CP-007 a CP-009, CP-019                                                                                                        |
-| Riesgos y limitaciones      | Sensor AS608 aún no integrado (DT-02).                                                                                         |
+| Riesgos y limitaciones      | Huellas residuales: el sensor responde 0x17 si no detecta un dedo nuevo.                                                       |
 | Ubicación en repositorio    | BackendZonafitevolution/src/services/accesoFisico.service.js; src/estadosAcceso                                                |
-| Estado y versión            | Implementado con simulador – MVP                                                                                               |
+| Estado y versión            | Implementado con el sensor AS608 – MVP                                                                                         |
 
 ### 7.3 Reglas de separación de responsabilidades
 
@@ -390,51 +391,56 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | DAT-001 | roles                   | Roles del personal (admin, empleado) | Entidad  | Liliana Sofía Panesso Méndez | No                  | 2 filas                | Permanente                      |
 | DAT-002 | usuarios                | Personal con acceso al sistema       | Entidad  | Liliana Sofía Panesso Méndez | Sí (contraseña)     | Decenas                | Mientras trabaje en el gimnasio |
 | DAT-003 | clientes                | Socios del gimnasio                  | Entidad  | Liliana Sofía Panesso Méndez | Sí (personales)     | 300 a 400              | Mientras exista (RN-001)        |
-| DAT-004 | planes                  | Catálogo de planes                   | Entidad  | Liliana Sofía Panesso Méndez | No                  | 4 iniciales            | Permanente (se desactiva)       |
+| DAT-004 | planes                  | Catálogo de planes                   | Entidad  | Liliana Sofía Panesso Méndez | No                  | 8 iniciales            | Permanente (se desactiva)       |
 | DAT-005 | membresias              | Vigencia de cada cliente             | Entidad  | Liliana Sofía Panesso Méndez | No                  | Crece con cada pago    | Permanente                      |
 | DAT-006 | plantillas\_biometricas | Hash de la huella                    | Entidad  | Liliana Sofía Panesso Méndez | Sí (biométrico)     | 1 por cliente          | Mientras el cliente esté activo |
 | DAT-007 | registros\_acceso       | Auditoría de ingresos                | Entidad  | Liliana Sofía Panesso Méndez | Sí (personales)     | Crece con cada ingreso | Por definir (propuesta: 1 año)  |
 
 ### 8.6 Diccionario de datos
 
-| **Entidad**             | **Campo**       | **Tipo**  | **Longitud** | **Nulo** | **Clave / índice**       | **Regla / dominio**                    | **Descripción**         | **Dato sensible** |
-| ----------------------- | --------------- | --------- | ------------ | -------- | ------------------------ | -------------------------------------- | ----------------------- | ----------------- |
-| roles                   | id              | INT       |              | No       | PK                       | Autoincremental                        | Identificador           | No                |
-| roles                   | nombre          | VARCHAR   | 50           | No       | UNIQUE                   | admin / empleado                       | Nombre del rol          | No                |
-| usuarios                | id              | INT       |              | No       | PK                       | Autoincremental                        | Identificador           | No                |
-| usuarios                | nombre          | VARCHAR   | 100          | No       |                          |                                        | Nombre completo         | No                |
-| usuarios                | correo          | VARCHAR   | 100          | No       | UNIQUE                   | Formato de correo                      | Inicio de sesión        | Sí                |
-| usuarios                | contrasena      | VARCHAR   | 255          | No       |                          | Hash bcrypt                            | Contraseña protegida    | Sí                |
-| usuarios                | rol\_id         | INT       |              | No       | FK → roles.id            |                                        | Rol del usuario         | No                |
-| usuarios                | fecha\_creacion | TIMESTAMP |              | No       |                          | Fecha actual                           | Creación                | No                |
-| clientes                | id              | INT       |              | No       | PK                       | Autoincremental                        | Identificador           | No                |
-| clientes                | nombre          | VARCHAR   | 100          | No       |                          |                                        | Nombre completo         | Sí                |
-| clientes                | cedula          | VARCHAR   | 20           | No       | UNIQUE                   | 6 a 15 dígitos (RN-007)                | Documento               | Sí                |
-| clientes                | correo          | VARCHAR   | 100          | Sí       |                          | Formato de correo                      | Contacto                | Sí                |
-| clientes                | telefono        | VARCHAR   | 20           | Sí       |                          | 7 a 15 dígitos                         | Contacto                | Sí                |
-| clientes                | fecha\_registro | TIMESTAMP |              | No       |                          | Fecha actual                           | Registro                | No                |
-| planes                  | id              | INT       |              | No       | PK                       | Autoincremental                        | Identificador           | No                |
-| planes                  | nombre          | VARCHAR   | 50           | No       | UNIQUE                   | diario, quincenal, mensual, trimestral | Nombre                  | No                |
-| planes                  | duracion\_dias  | INT       |              | No       |                          | \> 0                                   | Duración                | No                |
-| planes                  | precio          | DECIMAL   | 10,2         | No       |                          | \> 0                                   | Valor                   | No                |
-| planes                  | activo          | BOOLEAN   |              | No       |                          | TRUE por defecto                       | Disponible para asignar | No                |
-| planes                  | fecha\_creacion | TIMESTAMP |              | No       |                          | Fecha actual                           | Creación                | No                |
-| membresias              | id              | INT       |              | No       | PK                       | Autoincremental                        | Identificador           | No                |
-| membresias              | fecha\_inicio   | DATE      |              | No       |                          | No anterior a hoy al asignar           | Inicio                  | No                |
-| membresias              | fecha\_fin      | DATE      |              | No       |                          | Inicio + duración (RN-004)             | Fin                     | No                |
-| membresias              | estado          | ENUM      |              | No       |                          | activa, vencida, cancelada             | Estado                  | No                |
-| membresias              | cliente\_id     | INT       |              | No       | FK → clientes.id         |                                        | Cliente                 | No                |
-| membresias              | plan\_id        | INT       |              | No       | FK → planes.id           |                                        | Plan                    | No                |
-| membresias              | fecha\_creacion | TIMESTAMP |              | No       |                          | Fecha actual                           | Registro                | No                |
-| plantillas\_biometricas | id              | INT       |              | No       | PK                       | Autoincremental                        | Identificador           | No                |
-| plantillas\_biometricas | cliente\_id     | INT       |              | No       | UNIQUE, FK → clientes.id | Una huella por cliente (RN-008)        | Cliente                 | No                |
-| plantillas\_biometricas | template\_hash  | VARCHAR   | 255          | No       |                          | SHA-256 con sal                        | Hash de la plantilla    | Sí                |
-| plantillas\_biometricas | fecha\_registro | TIMESTAMP |              | No       |                          | Fecha actual                           | Registro                | No                |
-| registros\_acceso       | id              | INT       |              | No       | PK                       | Autoincremental                        | Identificador           | No                |
-| registros\_acceso       | cliente\_id     | INT       |              | Sí       | FK → clientes.id         | Vacío si no se reconoció               | Cliente                 | No                |
-| registros\_acceso       | resultado       | ENUM      |              | No       |                          | permitido, denegado                    | Resultado               | No                |
-| registros\_acceso       | motivo          | VARCHAR   | 100          | No       |                          |                                        | Explicación             | No                |
-| registros\_acceso       | fecha\_hora     | TIMESTAMP |              | No       |                          | Fecha actual                           | Momento                 | No                |
+| **Entidad**             | **Campo**              | **Tipo**  | **Longitud** | **Nulo** | **Clave / índice**       | **Regla / dominio**                                                                    | **Descripción**          | **Dato sensible** |
+| ----------------------- | ---------------------- | --------- | ------------ | -------- | ------------------------ | -------------------------------------------------------------------------------------- | ------------------------ | ----------------- |
+| roles                   | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| roles                   | nombre                 | VARCHAR   | 50           | No       | UNIQUE                   | admin / empleado                                                                       | Nombre del rol           | No                |
+| usuarios                | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| usuarios                | nombre                 | VARCHAR   | 100          | No       |                          |                                                                                        | Nombre completo          | No                |
+| usuarios                | correo                 | VARCHAR   | 100          | No       | UNIQUE                   | Formato de correo                                                                      | Inicio de sesión         | Sí                |
+| usuarios                | contrasena             | VARCHAR   | 255          | No       |                          | Hash bcrypt                                                                            | Contraseña protegida     | Sí                |
+| usuarios                | rol\_id                | INT       |              | No       | FK → roles.id            |                                                                                        | Rol del usuario          | No                |
+| usuarios                | fecha\_creacion        | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Creación                 | No                |
+| clientes                | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| clientes                | nombre                 | VARCHAR   | 100          | No       |                          |                                                                                        | Nombre completo          | Sí                |
+| clientes                | cedula                 | VARCHAR   | 20           | No       | UNIQUE                   | 6 a 15 dígitos (RN-007)                                                                | Documento                | Sí                |
+| clientes                | correo                 | VARCHAR   | 100          | Sí       |                          | Formato de correo; obligatorio en la aplicación                                        | Contacto                 | Sí                |
+| clientes                | telefono               | VARCHAR   | 20           | Sí       |                          | 7 a 15 dígitos                                                                         | Contacto                 | Sí                |
+| clientes                | fecha\_registro        | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Registro                 | No                |
+| planes                  | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| planes                  | nombre                 | VARCHAR   | 50           | No       | UNIQUE                   | Sesión, Quincena, Mensualidad, Trimestre, tarifas de estudiantes y tiqueteras x6 y x12 | Nombre                   | No                |
+| planes                  | duracion\_dias         | INT       |              | No       |                          | \> 0                                                                                   | Duración                 | No                |
+| planes                  | precio                 | DECIMAL   | 10,2         | No       |                          | \> 0                                                                                   | Valor                    | No                |
+| planes                  | max\_ingresos          | INT       |              | Sí       |                          | NULL = plan por tiempo; 1 a 365 en tiqueteras                                          | Ingresos incluidos       | No                |
+| planes                  | activo                 | BOOLEAN   |              | No       |                          | TRUE por defecto                                                                       | Disponible para asignar  | No                |
+| planes                  | fecha\_creacion        | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Creación                 | No                |
+| membresias              | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| membresias              | fecha\_inicio          | DATE      |              | No       |                          | No anterior a hoy al asignar                                                           | Inicio                   | No                |
+| membresias              | fecha\_fin             | DATE      |              | Sí       |                          | Inicio + duración; NULL en una tiquetera hasta el primer ingreso (RN-004, RN-013)      | Fin                      | No                |
+| membresias              | estado                 | ENUM      |              | No       |                          | pendiente, activa, vencida, cancelada (RN-014)                                         | Estado                   | No                |
+| membresias              | cliente\_id            | INT       |              | No       | FK → clientes.id         |                                                                                        | Cliente                  | No                |
+| membresias              | plan\_id               | INT       |              | No       | FK → planes.id           |                                                                                        | Plan                     | No                |
+| membresias              | fecha\_creacion        | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Registro                 | No                |
+| membresias              | ingresos\_totales      | INT       |              | Sí       |                          | NULL = membresía por tiempo                                                            | Ingresos de la tiquetera | No                |
+| membresias              | ingresos\_usados       | INT       |              | No       |                          | 0 por defecto                                                                          | Ingresos consumidos      | No                |
+| membresias              | fecha\_primer\_uso     | DATE      |              | Sí       |                          | Primer ingreso de la tiquetera                                                         | Inicio de la duración    | No                |
+| membresias              | fecha\_ultimo\_ingreso | DATE      |              | Sí       |                          | Un descuento por día en tiqueteras                                                     | Último ingreso           | No                |
+| plantillas\_biometricas | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| plantillas\_biometricas | cliente\_id            | INT       |              | No       | UNIQUE, FK → clientes.id | Una huella por cliente (RN-008)                                                        | Cliente                  | No                |
+| plantillas\_biometricas | template\_hash         | VARCHAR   | 255          | No       | UNIQUE                   | Hash de la posición en el sensor                                                       | Hash de la plantilla     | Sí                |
+| plantillas\_biometricas | fecha\_registro        | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Registro                 | No                |
+| registros\_acceso       | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| registros\_acceso       | cliente\_id            | INT       |              | Sí       | FK → clientes.id         | Vacío si no se reconoció                                                               | Cliente                  | No                |
+| registros\_acceso       | resultado              | ENUM      |              | No       |                          | permitido, denegado                                                                    | Resultado                | No                |
+| registros\_acceso       | motivo                 | VARCHAR   | 100          | No       |                          |                                                                                        | Explicación              | No                |
+| registros\_acceso       | fecha\_hora            | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Momento                  | No                |
 
 ### 8.7 Relaciones, integridad y restricciones
 
@@ -562,7 +568,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 | **ID**  | **Activo**                                  | **Amenaza**                       | **Probabilidad** | **Impacto** | **Control**                                                               | **Responsable**              | **Estado** |
 | ------- | ------------------------------------------- | --------------------------------- | ---------------- | ----------- | ------------------------------------------------------------------------- | ---------------------------- | ---------- |
-| SEC-001 | Credenciales del personal                   | Robo o fuerza bruta               | Media            | Alta        | bcrypt; límite de intentos (TT-003)                                       | Liliana Sofía Panesso Méndez | Abierto    |
+| SEC-001 | Credenciales del personal                   | Robo o fuerza bruta               | Media            | Alta        | bcrypt; límite de 5 intentos cada 15 minutos (TT-003)                     | Liliana Sofía Panesso Méndez | Mitigado   |
 | SEC-002 | Plantillas biométricas                      | Fuga de datos sensibles           | Media            | Alta        | Solo hash con sal; la API no devuelve el hash                             | Liliana Sofía Panesso Méndez | Mitigado   |
 | SEC-003 | Base de datos                               | Inyección SQL                     | Media            | Alta        | Consultas parametrizadas                                                  | Liliana Sofía Panesso Méndez | Mitigado   |
 | SEC-004 | Rutas de Administrador                      | Escalamiento de privilegios       | Media            | Alta        | permitirRoles en cada ruta; regla del último admin en el backend (TT-001) | Liliana Sofía Panesso Méndez | Abierto    |
@@ -614,16 +620,16 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 10.6 Controles técnicos mínimos
 
-| **Control**                         | **Aplica**                         | **Implementación**                          | **Prueba** | **Estado**   |
-| ----------------------------------- | ---------------------------------- | ------------------------------------------- | ---------- | ------------ |
-| HTTPS en ambientes públicos         | Sí                                 | Lo provee el hosting (por definir)          | CP-\_\_\_  | Pendiente    |
-| Prevención de inyección             | Sí                                 | Consultas parametrizadas con mysql2         |            | Implementado |
-| Protección XSS                      | Sí                                 | React escapa el contenido por defecto       |            | Implementado |
-| CSRF, si aplica                     | No (token en cabecera, no cookies) | —                                           |            | No aplica    |
-| Cabeceras de seguridad              | Sí                                 |                                             |            | Pendiente    |
-| Rate limiting / protección de abuso | Sí                                 | Rama feature/limite-intentos-login (TT-003) |            | En progreso  |
-| Auditoría de dependencias           | Sí                                 | npm audit                                   |            | Pendiente    |
-| Auditoría de acciones sensibles     | Sí                                 | registros\_acceso para accesos              |            | Parcial      |
+| **Control**                         | **Aplica**                         | **Implementación**                                  | **Prueba** | **Estado**   |
+| ----------------------------------- | ---------------------------------- | --------------------------------------------------- | ---------- | ------------ |
+| HTTPS en ambientes públicos         | Sí                                 | Lo provee el hosting (por definir)                  | CP-\_\_\_  | Pendiente    |
+| Prevención de inyección             | Sí                                 | Consultas parametrizadas con mysql2                 |            | Implementado |
+| Protección XSS                      | Sí                                 | React escapa el contenido por defecto               |            | Implementado |
+| CSRF, si aplica                     | No (token en cabecera, no cookies) | —                                                   |            | No aplica    |
+| Cabeceras de seguridad              | Sí                                 |                                                     |            | Pendiente    |
+| Rate limiting / protección de abuso | Sí                                 | express-rate-limit en POST /api/auth/login (TT-003) |            | Implementado |
+| Auditoría de dependencias           | Sí                                 | npm audit                                           |            | Pendiente    |
+| Auditoría de acciones sensibles     | Sí                                 | registros\_acceso para accesos                      |            | Parcial      |
 
 ## 11\. Manejo de errores, logging y observabilidad
 
@@ -696,7 +702,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | ---------------------------------------------------- | ------------------------------------------ | ----------- | -------------- | -------------------- | ---------------------------- |
 | DB\_HOST, DB\_PORT, DB\_USER, DB\_PASSWORD, DB\_NAME | localhost, 3306, root, —, zonafitevolution |             |                | Sí (DB\_PASSWORD)    | Liliana Sofía Panesso Méndez |
 | JWT\_SECRET, JWT\_EXPIRES\_IN                        | Valor local, 8h                            |             |                | Sí (JWT\_SECRET)     | Liliana Sofía Panesso Méndez |
-| BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, simulador                     |             |                | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
+| BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, as608 (PUERTO\_LECTOR=COM3)   |             |                | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
 | VITE\_API\_URL                                       | http://localhost:3000/api                  |             |                | No                   | Juan Diego Mejía Llano       |
 
 ### 12.4 Despliegue y rollback
@@ -747,20 +753,20 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 13.3 Deuda técnica
 
-| **ID** | **Descripción**                                                                        | **Origen**          | **Impacto**                                                    | **Prioridad** | **Plan**                                     | **Fecha objetivo** | **Estado** |
-| ------ | -------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------- | ------------- | -------------------------------------------- | ------------------ | ---------- |
-| DT-001 | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               | Crear la tabla pagos (TT-005).               |                    | Abierto    |
-| DT-002 | El sensor AS608 aún no está integrado; opera el adaptador simulador.                   | Revisión del código | El control de acceso real no está operativo.                   |               | Adaptador del AS608 y agente local (TT-010). |                    | Abierto    |
-| DT-003 | Vencimiento marcado desde el frontend, no con tarea programada.                        | Revisión del código | Estado guardado desactualizado.                                |               | Tarea programada en el backend (TT-006).     |                    | Abierto    |
-| DT-004 | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Revisión del código | Contradicción regla–API.                                       |               | Integrar TT-002.                             |                    | Abierto    |
-| DT-005 | La regla del último administrador solo se valida en el frontend.                       | Revisión del código | Se puede saltar llamando la API.                               |               | Integrar TT-001.                             |                    | Abierto    |
-| DT-006 | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               | Integrar TT-003 y TT-004.                    |                    | Abierto    |
-| DT-007 | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               | Evaluar cookies httpOnly.                    |                    | Abierto    |
-| DT-008 | Sin pruebas automatizadas ni pipeline de integración continua.                         | Revisión del código | Regresiones dependen de pruebas manuales.                      |               | TT-007 y TT-008.                             |                    | Abierto    |
-| DT-009 | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               | Incorporar React Router.                     |                    | Abierto    |
-| DT-010 | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               | Adoptar migraciones versionadas.             |                    | Abierto    |
-| DT-011 | Sistema no desplegado; hosting de la API por definir.                                  | Revisión del código | Solo funciona en local.                                        |               | TT-009.                                      |                    | Abierto    |
-| DT-012 | Archivos vacíos cd y npm en la raíz del backend.                                       | Revisión del código | Ruido en el repositorio.                                       |               | Eliminarlos con un commit chore.             |                    | Abierto    |
+| **ID** | **Descripción**                                                                        | **Origen**          | **Impacto**                                                    | **Prioridad** | **Plan**                                                                                       | **Fecha objetivo** | **Estado** |
+| ------ | -------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- | ------------------ | ---------- |
+| DT-001 | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               | Crear la tabla pagos (TT-005).                                                                 |                    | Abierto    |
+| DT-002 | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
+| DT-003 | Vencimiento marcado desde el frontend, no con tarea programada.                        | Revisión del código | Estado guardado desactualizado.                                |               | Tarea programada en el backend (TT-006).                                                       |                    | Abierto    |
+| DT-004 | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Revisión del código | Contradicción regla–API.                                       |               | Integrar TT-002.                                                                               |                    | Abierto    |
+| DT-005 | La regla del último administrador solo se valida en el frontend.                       | Revisión del código | Se puede saltar llamando la API.                               |               | Integrar TT-001.                                                                               |                    | Abierto    |
+| DT-006 | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               | Integrar TT-003 y TT-004.                                                                      |                    | Abierto    |
+| DT-007 | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               | Evaluar cookies httpOnly.                                                                      |                    | Abierto    |
+| DT-008 | Sin pruebas automatizadas ni pipeline de integración continua.                         | Revisión del código | Regresiones dependen de pruebas manuales.                      |               | TT-007 y TT-008.                                                                               |                    | Abierto    |
+| DT-009 | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               | Incorporar React Router.                                                                       |                    | Abierto    |
+| DT-010 | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                    | Aceptado   |
+| DT-011 | Sistema no desplegado; hosting de la API por definir.                                  | Revisión del código | Solo funciona en local.                                        |               | TT-009.                                                                                        |                    | Abierto    |
+| DT-012 | Archivos vacíos cd y npm en la raíz del backend.                                       | Revisión del código | Ruido en el repositorio.                                       |               | Eliminarlos con un commit chore.                                                               |                    | Abierto    |
 
 ### 13.4 Criterios de mantenibilidad
 
@@ -780,32 +786,32 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 
 ### 14.1 Registro de ADR
 
-| **ID**  | **Título**                                       | **Estado** | **Fecha** | **Driver** | **Decisión**                                                                                                                   | **Consecuencia**                                                                                            | **Ubicación**           |
-| ------- | ------------------------------------------------ | ---------- | --------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
-| ADR-001 | Monorepo con frontend y backend separados        | Aceptado   |           |            | Monorepo con BackendZonafitevolution y FrontendZonafitevolution, cada uno con su package.json.                                 | Un solo historial y flujo de Pull Requests; el frontend necesita VITE\_API\_URL.                            | Documento maestro, 5.12 |
-| ADR-002 | API REST con Express y MySQL sin ORM             | Aceptado   |           |            | Express 5 con mysql2 y consultas parametrizadas en repositorios.                                                               | SQL explícito; sin migraciones automáticas (init.sql).                                                      | Documento maestro, 5.12 |
-| ADR-003 | JWT y autorización por rol en el backend         | Aceptado   |           |            | JWT de 8 horas, bcrypt y permitirRoles en cada ruta.                                                                           | El token no se revoca antes de expirar; se guarda en localStorage.                                          | Documento maestro, 5.12 |
-| ADR-004 | Lector biométrico detrás de un adaptador         | Aceptado   |           |            | Interfaz LectorBiometrico, adaptador simulador y fábrica por TIPO\_LECTOR; el sensor AS608 se integra como un adaptador nuevo. | Cambiar de sensor solo exige un adaptador; el AS608 compara en el propio sensor, no por igualdad de hashes. | Documento maestro, 5.12 |
-| ADR-005 | Patrón State y fachada para validar el acceso    | Aceptado   |           |            | Estados activo, vencido, cancelado y sin membresía; accesoFisico.service coordina.                                             | Todo intento queda en registros\_acceso.                                                                    | Documento maestro, 5.12 |
-| ADR-006 | Registro financiero calculado con las membresías | Aceptado   |           |            | Cálculo en el frontend con el precio actual del plan.                                                                          | Cifras estimadas; pendiente TT-005.                                                                         | Documento maestro, 5.12 |
-| ADR-007 | Marcado de vencidas al consultar                 | Aceptado   |           |            | El frontend hace PATCH del estado al listar.                                                                                   | Estado guardado puede quedar desactualizado; se moverá al servidor (TT-006).                                | Documento maestro, 5.12 |
+| **ID**  | **Título**                                       | **Estado** | **Fecha** | **Driver** | **Decisión**                                                                                                                      | **Consecuencia**                                                                                            | **Ubicación**           |
+| ------- | ------------------------------------------------ | ---------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
+| ADR-001 | Monorepo con frontend y backend separados        | Aceptado   |           |            | Monorepo con BackendZonafitevolution y FrontendZonafitevolution, cada uno con su package.json.                                    | Un solo historial y flujo de Pull Requests; el frontend necesita VITE\_API\_URL.                            | Documento maestro, 5.12 |
+| ADR-002 | API REST con Express y MySQL sin ORM             | Aceptado   |           |            | Express 5 con mysql2 y consultas parametrizadas en repositorios.                                                                  | SQL explícito; sin migraciones automáticas (init.sql).                                                      | Documento maestro, 5.12 |
+| ADR-003 | JWT y autorización por rol en el backend         | Aceptado   |           |            | JWT de 8 horas, bcrypt y permitirRoles en cada ruta.                                                                              | El token no se revoca antes de expirar; se guarda en localStorage.                                          | Documento maestro, 5.12 |
+| ADR-004 | Lector biométrico detrás de un adaptador         | Aceptado   |           |            | Interfaz LectorBiometrico, adaptador del sensor AS608 y fábrica por TIPO\_LECTOR; otro sensor se integra como un adaptador nuevo. | Cambiar de sensor solo exige un adaptador; el AS608 compara en el propio sensor, no por igualdad de hashes. | Documento maestro, 5.12 |
+| ADR-005 | Patrón State y fachada para validar el acceso    | Aceptado   |           |            | Estados activo, vencido, cancelado y sin membresía; accesoFisico.service coordina.                                                | Todo intento queda en registros\_acceso.                                                                    | Documento maestro, 5.12 |
+| ADR-006 | Registro financiero calculado con las membresías | Aceptado   |           |            | Cálculo en el frontend con el precio actual del plan.                                                                             | Cifras estimadas; pendiente TT-005.                                                                         | Documento maestro, 5.12 |
+| ADR-007 | Marcado de vencidas al consultar                 | Aceptado   |           |            | El frontend hace PATCH del estado al listar.                                                                                      | Estado guardado puede quedar desactualizado; se moverá al servidor (TT-006).                                | Documento maestro, 5.12 |
 
 ### 14.2 Plantilla mínima de ADR
 
-| **Campo**                                   | **Contenido**                                                                                                                  |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Título                                      | ADR-004 – Lector biométrico detrás de un adaptador                                                                             |
-| Estado                                      | Aceptado (actualizado por CR-005)                                                                                              |
-| Contexto                                    | Hardware por integrar y prohibición de guardar imágenes de huellas.                                                            |
-| Drivers                                     | DRV-004, DRV-005                                                                                                               |
-| Alternativas                                | Programar directamente contra el sensor; interfaz y adaptadores.                                                               |
-| Decisión                                    | Interfaz LectorBiometrico, adaptador simulador y fábrica por TIPO\_LECTOR; el sensor AS608 se integra como un adaptador nuevo. |
-| Justificación                               | Aísla el hardware y protege la privacidad (solo hash).                                                                         |
-| Consecuencias positivas                     | Cambiar de sensor solo exige un adaptador.                                                                                     |
-| Consecuencias negativas                     | El simulador no reproduce la comparación real del sensor.                                                                      |
-| Riesgos                                     | RSK-06 integración del AS608 fuera de tiempo.                                                                                  |
-| Fecha y responsables                        | Liliana Sofía Panesso Méndez                                                                                                   |
-| Decisión que reemplaza / es reemplazada por |                                                                                                                                |
+| **Campo**                                   | **Contenido**                                                                                                                     |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Título                                      | ADR-004 – Lector biométrico detrás de un adaptador                                                                                |
+| Estado                                      | Aceptado (actualizado por CR-005)                                                                                                 |
+| Contexto                                    | Hardware por integrar y prohibición de guardar imágenes de huellas.                                                               |
+| Drivers                                     | DRV-004, DRV-005                                                                                                                  |
+| Alternativas                                | Programar directamente contra el sensor; interfaz y adaptadores.                                                                  |
+| Decisión                                    | Interfaz LectorBiometrico, adaptador del sensor AS608 y fábrica por TIPO\_LECTOR; otro sensor se integra como un adaptador nuevo. |
+| Justificación                               | Aísla el hardware y protege la privacidad (solo hash).                                                                            |
+| Consecuencias positivas                     | Cambiar de sensor solo exige un adaptador.                                                                                        |
+| Consecuencias negativas                     | Sin el lector conectado no se pueden registrar ni validar huellas (ya no hay simulador).                                          |
+| Riesgos                                     | RSK-06 cerrado: el AS608 quedó integrado en el sprint 11.                                                                         |
+| Fecha y responsables                        | Liliana Sofía Panesso Méndez                                                                                                      |
+| Decisión que reemplaza / es reemplazada por |                                                                                                                                   |
 
 <table>
 <tbody>
@@ -820,11 +826,11 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 
 ### 15.1 Registro de riesgos técnicos
 
-| **ID** | **Riesgo**                            | **Causa**                         | **Probabilidad** | **Impacto** | **Exposición** | **Respuesta** | **Responsable**              | **Estado** |
-| ------ | ------------------------------------- | --------------------------------- | ---------------- | ----------- | -------------- | ------------- | ---------------------------- | ---------- |
-| RT-001 | Integración del AS608 fuera de tiempo | Comunicación serie aún no probada | Media            | Alta        | Alta           | Mitigar       | Liliana Sofía Panesso Méndez | Abierto    |
-| RT-002 | Despliegue tardío                     | Hosting por definir               | Media            | Alta        | Alta           | Mitigar       | Liliana Sofía Panesso Méndez | Abierto    |
-| RT-003 | Regresiones sin pruebas automatizadas | No hay pruebas ni CI              | Alta             | Media       | Alta           | Mitigar       |                              | Abierto    |
+| **ID** | **Riesgo**                            | **Causa**                               | **Probabilidad** | **Impacto** | **Exposición** | **Respuesta** | **Responsable**              | **Estado** |
+| ------ | ------------------------------------- | --------------------------------------- | ---------------- | ----------- | -------------- | ------------- | ---------------------------- | ---------- |
+| RT-001 | Integración del AS608 fuera de tiempo | Comunicación serie probada con el AS608 | Media            | Alta        | Alta           | Mitigar       | Liliana Sofía Panesso Méndez | Cerrado    |
+| RT-002 | Despliegue tardío                     | Hosting por definir                     | Media            | Alta        | Alta           | Mitigar       | Liliana Sofía Panesso Méndez | Abierto    |
+| RT-003 | Regresiones sin pruebas automatizadas | No hay pruebas ni CI                    | Alta             | Media       | Alta           | Mitigar       |                              | Abierto    |
 
 ### 15.2 Disparadores y contingencias
 
@@ -837,14 +843,14 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 
 ### 16.1 Matriz técnica resumida
 
-| **Requisito / driver** | **Componente**  | **Dato**         | **API / integración** | **ADR**          | **Prueba**                      | **Evidencia** | **Estado**   |
-| ---------------------- | --------------- | ---------------- | --------------------- | ---------------- | ------------------------------- | ------------- | ------------ |
-| RF-003 / DRV-002       | CMP-05          | DAT-005, DAT-007 | API-18                | ADR-005          | CP-007 a CP-009                 |               | Implementado |
-| RF-004 / DRV-005       | CMP-06          | DAT-006          | API-16, INT-001       | ADR-004          | CP-010, CP-011                  |               | Simulado     |
-| RF-005                 | CMP-04          | DAT-005          | API-13                | —                | CP-012, CP-013                  |               | Implementado |
-| RF-006                 | CMP-01          | DAT-004, DAT-005 | API-08, API-11        | ADR-006          | CP-014, CP-015                  |               | Parcial      |
-| RF-007 / DRV-001       | CMP-02, CMP-04  | DAT-001, DAT-002 | API-01 a API-04       | ADR-003          | CP-016 a CP-018, CP-020, CP-021 |               | Implementado |
-| RNF-005 / DRV-003      | CMP-02 a CMP-07 | —                | —                     | ADR-001, ADR-002 | Inspección                      |               | Implementado |
+| **Requisito / driver** | **Componente**  | **Dato**         | **API / integración** | **ADR**          | **Prueba**                      | **Evidencia**                              | **Estado**   |
+| ---------------------- | --------------- | ---------------- | --------------------- | ---------------- | ------------------------------- | ------------------------------------------ | ------------ |
+| RF-003 / DRV-002       | CMP-05          | DAT-005, DAT-007 | API-18                | ADR-005          | CP-007 a CP-009                 |                                            | Implementado |
+| RF-004 / DRV-005       | CMP-06          | DAT-006          | API-16, INT-001       | ADR-004          | CP-010, CP-011, CP-022          | Pruebas manuales con el AS608 (10/11/2026) | Implementado |
+| RF-005                 | CMP-04          | DAT-005          | API-13                | —                | CP-012, CP-013                  |                                            | Implementado |
+| RF-006                 | CMP-01          | DAT-004, DAT-005 | API-08, API-11        | ADR-006          | CP-014, CP-015                  |                                            | Parcial      |
+| RF-007 / DRV-001       | CMP-02, CMP-04  | DAT-001, DAT-002 | API-01 a API-04       | ADR-003          | CP-016 a CP-018, CP-020, CP-021 |                                            | Implementado |
+| RNF-005 / DRV-003      | CMP-02 a CMP-07 | —                | —                     | ADR-001, ADR-002 | Inspección                      |                                            | Implementado |
 
 ### 16.2 Criterios de aprobación técnica
 
