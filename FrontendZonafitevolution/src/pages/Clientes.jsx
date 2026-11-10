@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import FormularioCliente from "../components/FormularioCliente";
 import RegistrarHuella from "../components/RegistrarHuella";
-import { obtenerInfoLector, registrarHuella } from "../services/biometriaService";
+import { registrarHuella } from "../services/biometriaService";
 import { actualizarCliente, crearCliente, listarClientes } from "../services/clienteService";
 import { cambiarEstadoMembresia, listarMembresiasAlDia } from "../services/membresiaService";
 import {
@@ -62,9 +62,6 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
   const [formulario, setFormulario] = useState(iniciarEnRegistro ? "nuevo" : null);
   const [cambiandoId, setCambiandoId] = useState(null);
   const [clienteHuella, setClienteHuella] = useState(null);
-  const [lector, setLector] = useState(null);
-  const [errorLector, setErrorLector] = useState("");
-  const [recargaLector, setRecargaLector] = useState(0);
 
   const aplicar = useCallback((datos) => {
     setClientes(datos.clientes);
@@ -93,15 +90,6 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
       vigente = false;
     };
   }, [recarga, aplicar]);
-
-  useEffect(() => {
-    if (!clienteHuella) return undefined;
-    let vigente = true;
-    obtenerInfoLector()
-      .then((info) => { if (vigente) setLector(info); })
-      .catch((err) => { if (vigente) setErrorLector(err.message); });
-    return () => { vigente = false; };
-  }, [clienteHuella, recargaLector]);
 
   function actualizarLista() {
     // Evita consultas duplicadas por doble clic
@@ -145,8 +133,6 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
 
   function abrirHuella(cliente) {
     setAviso("");
-    setErrorLector("");
-    setLector(null);
     setClienteHuella(cliente);
   }
 
@@ -204,25 +190,14 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
       <h1>Clientes</h1>
 
       {clienteHuella ? (
-        <>
-          {errorLector ? (
-            <>
-              <p className="mensaje-error" role="alert">{errorLector}</p>
-              <button type="button" className="gestion-button-quiet" onClick={() => { setErrorLector(""); setRecargaLector((actual) => actual + 1); }}>Reintentar</button>
-              <button type="button" className="gestion-button-quiet" onClick={volverSinHuella}>Volver a clientes</button>
-            </>
-          ) : !lector ? <p>Cargando lector...</p> : (
-            <RegistrarHuella
-              key={clienteHuella.id}
-              clientes={[clienteHuella]}
-              clienteFijo={clienteHuella}
-              alRegistrar={registrarHuella}
-              usaSensor={lector.usaSensor}
-              alTerminar={terminarHuella}
-              alCancelar={volverSinHuella}
-            />
-          )}
-        </>
+        <RegistrarHuella
+          key={clienteHuella.id}
+          clientes={[clienteHuella]}
+          clienteFijo={clienteHuella}
+          alRegistrar={registrarHuella}
+          alTerminar={terminarHuella}
+          alCancelar={volverSinHuella}
+        />
       ) : formulario ? (
         <FormularioCliente
           // La clave reinicia el formulario al cambiar de cliente

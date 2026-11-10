@@ -18,7 +18,7 @@ test('el lector informa las etapas de registro en orden', async (prueba) => {
   prueba.mock.method(lector, 'buscarPaginaLibre', async () => 1);
   prueba.mock.method(lector, 'templateDePagina', () => 'plantilla');
 
-  const resultado = await lector.registrar(undefined, etapa => etapas.push(etapa));
+  const resultado = await lector.registrar(etapa => etapas.push(etapa));
   assert.equal(resultado, 'plantilla');
   assert.deepEqual(buffers, [1, 2]);
   assert.deepEqual(etapas, ['conectando', 'primera', 'retirar', 'segunda', 'procesando']);

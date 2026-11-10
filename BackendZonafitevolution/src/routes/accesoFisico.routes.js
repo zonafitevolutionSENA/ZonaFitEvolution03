@@ -21,7 +21,6 @@ function soloPantallaLocal(req, res, next) {
 	next();
 }
 
-router.get('/pantalla/lector', soloPantallaLocal, accesoFisicoController.infoPantalla);
 router.post('/pantalla/validar', soloPantallaLocal, limiteIngreso, accesoFisicoController.validarPantalla);
 router.post('/validar', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), accesoFisicoController.validar);
 router.get('/historial', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), accesoFisicoController.historial);

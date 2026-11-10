@@ -1,27 +1,23 @@
+// Contrato del lector de huellas (patrón Adapter). Los servicios solo dependen de esta clase,
+// así que un lector distinto al AS608 se agrega con un nuevo adaptador, sin tocar servicios ni rutas.
 class LectorBiometrico {
+  // Lee una huella y devuelve su template, o null si el lector no la reconoce
   async capturar() {
     throw new Error('El método capturar() debe ser implementado por el adaptador concreto');
   }
 
-  // Captura la huella para registrarla. Por defecto es igual que capturar();
-  // un lector físico puede necesitar varias lecturas para guardarla.
-  async registrar(entrada) {
-    return this.capturar(entrada);
+  // Lee y guarda una huella nueva; devuelve su template
+  async registrar() {
+    throw new Error('El método registrar() debe ser implementado por el adaptador concreto');
   }
 
-  // Borra la huella del dispositivo. El simulador no guarda nada fuera de la base de datos.
+  // Borra la huella del dispositivo
   async eliminar() {
-    return false;
+    throw new Error('El método eliminar() debe ser implementado por el adaptador concreto');
   }
 
-  async comparar(templateA, templateB) {
+  async comparar() {
     throw new Error('El método comparar() debe ser implementado por el adaptador concreto');
-  }
-
-  // true si la captura llega como texto desde la petición (simulador);
-  // false si la huella se lee directamente del sensor
-  get requiereIdentificador() {
-    return true;
   }
 
   get tipo() {

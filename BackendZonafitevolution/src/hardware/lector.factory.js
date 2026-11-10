@@ -1,16 +1,13 @@
 require('dotenv').config();
-const SimuladorLector = require('./simuladorLector.adapter');
 const As608Lector = require('./as608Lector.adapter');
 
 // El lector físico mantiene abierto el puerto serial, por eso se reutiliza una sola instancia
 let lectorFisico = null;
 
 function obtenerLector() {
-  const tipoLector = process.env.TIPO_LECTOR || 'simulador';
+  const tipoLector = process.env.TIPO_LECTOR || 'as608';
 
   switch (tipoLector) {
-    case 'simulador':
-      return new SimuladorLector();
     case 'as608':
       if (!lectorFisico) {
         lectorFisico = new As608Lector({

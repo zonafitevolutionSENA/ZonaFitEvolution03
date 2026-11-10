@@ -1,16 +1,6 @@
 const accesoFisicoService = require('../services/accesoFisico.service');
-const biometriaService = require('../services/biometria.service');
 
 let lecturaPantallaEnCurso = false;
-
-function infoPantalla(req, res, next) {
-  try {
-    const info = biometriaService.obtenerInfoLector();
-    res.json({ requiereIdentificador: info.requiereIdentificador });
-  } catch (error) {
-    next(error);
-  }
-}
 
 async function validarPantalla(req, res, next) {
   if (lecturaPantallaEnCurso) return res.status(409).json({ error: 'El lector está ocupado' });
@@ -19,10 +9,7 @@ async function validarPantalla(req, res, next) {
   const cancelar = () => controlador.abort();
   res.on('close', cancelar);
   try {
-    const info = biometriaService.obtenerInfoLector();
-    const datos = info.requiereIdentificador ? { identificadorSimulado: req.body?.identificadorSimulado } : {};
-    datos.signal = controlador.signal;
-    const resultado = await accesoFisicoService.validarAcceso(datos);
+    const resultado = await accesoFisicoService.validarAcceso({ signal: controlador.signal });
     res.json({
       cliente: resultado.cliente ? { nombre: resultado.cliente.nombre } : null,
       permitido: resultado.permitido,
@@ -40,7 +27,7 @@ async function validarPantalla(req, res, next) {
 
 async function validar(req, res, next) {
   try {
-    const resultado = await accesoFisicoService.validarAcceso(req.body);
+    const resultado = await accesoFisicoService.validarAcceso();
     res.status(200).json(resultado);
   } catch (error) {
     next(error);
@@ -56,4 +43,4 @@ async function historial(req, res, next) {
   }
 }
 
-module.exports = { validar, historial, infoPantalla, validarPantalla };
+module.exports = { validar, historial, validarPantalla };
