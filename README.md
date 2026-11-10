@@ -48,7 +48,11 @@ Desde `BackendZonafitevolution/`:
    mysql -u root -p zonafitevolution < database/init.sql
 ```
 
-Atención: `init.sql` elimina y vuelve a crear `roles`, `usuarios` y `membresias`. No lo ejecutes si ya tienes datos que quieras conservar. 3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD`, `JWT_SECRET` y `BIOMETRIA_SALT`. 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
+Atención: `init.sql` elimina y vuelve a crear `roles`, `usuarios` y `membresias`. No lo ejecutes si ya tienes datos que quieras conservar.
+
+`init.sql` es el único script SQL del proyecto: no hay migraciones. Todo cambio de esquema se hace directamente en ese archivo. Como sus tablas usan `CREATE TABLE IF NOT EXISTS`, una base creada con una versión anterior no recibe los cambios: hay que recrearla (`DROP DATABASE zonafitevolution;` y volver a ejecutar los dos comandos de arriba).
+
+3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD`, `JWT_SECRET` y `BIOMETRIA_SALT`. 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
 (se ejecuta dentro de `BackendZonafitevolution/`, porque lee su `.env`). 5. Iniciar el servidor: `npm start` (por defecto en `http://localhost:3000`).
 
 Toda la API cuelga de `/api`. La raíz (`http://localhost:3000/`) responde `{ "error": "Ruta no encontrada" }`, y eso es normal: significa que el servidor está encendido.
