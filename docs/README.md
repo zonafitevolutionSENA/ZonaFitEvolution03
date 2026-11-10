@@ -23,7 +23,7 @@ La documentación se maneja en dos capas:
 | 01 | [Formulación y constitución del proyecto](01-proyecto.md) | [PDF](entregables/01_Inicio_y_Planeacion/Formulacion_y_Constitucion_Proyecto_ZonaFitEvolution.pdf) |
 | 02 | [Gestión de interesados y del proyecto (Scrum, sprints, riesgos)](02-gestion.md) | [PDF](entregables/01_Inicio_y_Planeacion/Gestion_de_Interesados_y_del_Proyecto_ZonaFitEvolution.pdf) |
 | 03 | [Alcance y especificación de requisitos](03-requisitos.md) | [PDF](entregables/02_Requerimientos/Alcance_y_Especificacion_de_Requisitos_ZonaFitEvolution.pdf) |
-| 04 | [Backlog, historias de usuario y casos de uso](03b-backlog-hu-casos-uso.md) | [PDF](entregables/02_Requerimientos/Backlog_HU_y_Casos_de_Uso_ZonaFitEvolution.pdf) |
+| 04 | [Backlog del producto](03b-backlog-hu-casos-uso.md) · [Historias de usuario](analisis/historias-de-usuario.md) · [Casos de uso](analisis/casos-de-uso.md) | [PDF](entregables/02_Requerimientos/Backlog_HU_y_Casos_de_Uso_ZonaFitEvolution.pdf) |
 | 05 | Matriz maestra de trazabilidad | [Excel](entregables/02_Requerimientos/Matriz_Maestra_de_Trazabilidad_ZonaFitEvolution.xlsx) |
 | 06 | [Arquitectura, datos y diseño técnico](04-arquitectura.md) | [PDF](entregables/03_Diseño/Arquitectura_Datos_y_Diseno_Tecnico_ZonaFitEvolution.pdf) |
 | 07 | [Diseño UX/UI y sistema de diseño](05-ux-ui.md) | [PDF](entregables/03_Diseño/Diseno_UX_UI_y_Sistema_de_Diseno_ZonaFitEvolution.pdf) |
@@ -38,7 +38,7 @@ La documentación se maneja en dos capas:
 
 Otros:
 
-- [`analisis/`](analisis/): documento de historias de usuario y casos de uso de la fase de análisis.
+- [`analisis/`](analisis/): historias de usuario con sus criterios de aceptación y casos de uso con sus diagramas.
 - `img/`: figuras y diagramas extraídos de los formatos.
 - Las épicas, historias y sprints se gestionan en **Jira** (tablero SCRUM); aquí se enlazan, no se copian.
 

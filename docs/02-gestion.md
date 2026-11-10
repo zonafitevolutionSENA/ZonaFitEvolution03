@@ -32,7 +32,6 @@
 | Product Owner      | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |            |                   |
 | Instructor         |                              | Aprobado / Devuelto |            |                   |
 
-##   
 Table of Contents
 
 [Control documental 2](#control-documental)
@@ -173,7 +172,6 @@ Table of Contents
 
 [Anexo C. Evidencias mínimas esperadas 28](#anexo-c.-evidencias-mínimas-esperadas)
 
-## 
 
 ## 1\. Propósito y alcance del documento
 
