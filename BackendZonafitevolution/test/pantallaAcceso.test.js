@@ -2,7 +2,6 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { once } = require('node:events');
 const app = require('../src/app');
-const biometriaService = require('../src/services/biometria.service');
 const accesoFisicoService = require('../src/services/accesoFisico.service');
 const As608Lector = require('../src/hardware/as608Lector.adapter');
 const ErrorDominio = require('../src/utils/errores');
@@ -15,24 +14,24 @@ test('pantalla de ingreso local', async (contexto) => {
   const cabeceras = { Origin: 'http://127.0.0.1:5173', 'Content-Type': 'application/json' };
 
   await contexto.test('acepta solo el origen local y mantiene protegido el historial', async (prueba) => {
-    prueba.mock.method(biometriaService, 'obtenerInfoLector', () => ({ requiereIdentificador: true }));
-    const local = await fetch(`${base}/pantalla/lector`, { headers: cabeceras });
-    assert.equal(local.status, 200);
-    assert.deepEqual(await local.json(), { requiereIdentificador: true });
-    const externo = await fetch(`${base}/pantalla/lector`, { headers: { Origin: 'https://externo.example' } });
+    const validar = prueba.mock.method(accesoFisicoService, 'validarAcceso', async () => ({ cliente: null, permitido: false, motivo: 'Prueba' }));
+    const externo = await fetch(`${base}/pantalla/validar`, {
+      method: 'POST', headers: { Origin: 'https://externo.example', 'Content-Type': 'application/json' }, body: '{}'
+    });
     assert.equal(externo.status, 403);
+    assert.equal(validar.mock.callCount(), 0);
     const historial = await fetch(`${base}/historial`, { headers: cabeceras });
     assert.equal(historial.status, 401);
   });
 
   await contexto.test('valida sin sesión y no expone la cédula', async (prueba) => {
-    prueba.mock.method(biometriaService, 'obtenerInfoLector', () => ({ requiereIdentificador: true }));
     prueba.mock.method(accesoFisicoService, 'validarAcceso', async (datos) => {
-      assert.equal(datos.identificadorSimulado, 'dedo_prueba');
+      // La huella se lee del sensor: el servicio solo recibe la señal para cancelar la lectura
+      assert.deepEqual(Object.keys(datos), ['signal']);
       return { cliente: { id: 1, nombre: 'Cliente Prueba', cedula: '123456' }, permitido: true, motivo: 'Membresía activa y vigente' };
     });
     const respuesta = await fetch(`${base}/pantalla/validar`, {
-      method: 'POST', headers: cabeceras, body: JSON.stringify({ identificadorSimulado: 'dedo_prueba' })
+      method: 'POST', headers: cabeceras, body: '{}'
     });
     assert.equal(respuesta.status, 200);
     assert.deepEqual(await respuesta.json(), {
@@ -41,7 +40,6 @@ test('pantalla de ingreso local', async (contexto) => {
   });
 
   await contexto.test('rechaza lecturas simultáneas', async (prueba) => {
-    prueba.mock.method(biometriaService, 'obtenerInfoLector', () => ({ requiereIdentificador: true }));
     let inicio;
     let terminar;
     const iniciada = new Promise(resolve => { inicio = resolve; });
@@ -50,7 +48,7 @@ test('pantalla de ingreso local', async (contexto) => {
       inicio();
       return pendiente;
     });
-    const opciones = { method: 'POST', headers: cabeceras, body: JSON.stringify({ identificadorSimulado: 'dedo_prueba' }) };
+    const opciones = { method: 'POST', headers: cabeceras, body: '{}' };
     const primera = fetch(`${base}/pantalla/validar`, opciones);
     await iniciada;
     try {
@@ -63,7 +61,6 @@ test('pantalla de ingreso local', async (contexto) => {
   });
 
   await contexto.test('cancela la lectura cuando se cierra la pantalla', async (prueba) => {
-    prueba.mock.method(biometriaService, 'obtenerInfoLector', () => ({ requiereIdentificador: false }));
     let inicio;
     let avisoCancelacion;
     const iniciada = new Promise(resolve => { inicio = resolve; });
@@ -101,5 +98,5 @@ test('el sensor exige retirar el dedo y admite cancelar la espera', async (prueb
   assert.equal(retiros, 1);
   const controlador = new AbortController();
   controlador.abort();
-  await assert.rejects(lector.capturar(undefined, controlador.signal), /cancelada/);
+  await assert.rejects(lector.capturar(controlador.signal), /cancelada/);
 });

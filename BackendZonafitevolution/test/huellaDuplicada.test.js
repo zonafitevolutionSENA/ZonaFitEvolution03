@@ -1,11 +1,12 @@
+// La fábrica crea el adaptador AS608, que exige un puerto; en las pruebas nunca se abre
+process.env.PUERTO_LECTOR = process.env.PUERTO_LECTOR || 'PRUEBA';
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const As608Lector = require('../src/hardware/as608Lector.adapter');
-const LectorBiometrico = require('../src/hardware/lectorBiometrico.interface');
 const biometriaRepository = require('../src/repositories/biometria.repository');
 const biometriaService = require('../src/services/biometria.service');
 
-// Lector con el sensor simulado: `encontradas` dice qué devuelve cada búsqueda, en orden
+// AS608 con las respuestas del sensor reemplazadas: `encontradas` dice qué devuelve cada búsqueda, en orden
 function lectorDePrueba(prueba, encontradas) {
   const lector = new As608Lector({ puerto: 'prueba' });
   const comandos = [];
@@ -80,12 +81,10 @@ test('eliminar la huella de un cliente la borra del lector antes que de la base 
     orden.push('base de datos');
     return true;
   });
-  for (const Clase of [As608Lector, LectorBiometrico]) {
-    prueba.mock.method(Clase.prototype, 'eliminar', async (template) => {
-      orden.push(`lector:${template}`);
-      return true;
-    });
-  }
+  prueba.mock.method(As608Lector.prototype, 'eliminar', async (template) => {
+    orden.push(`lector:${template}`);
+    return true;
+  });
 
   await biometriaService.eliminarHuella('12');
   assert.deepEqual(orden, ['lector:pagina-3', 'base de datos']);
@@ -94,11 +93,9 @@ test('eliminar la huella de un cliente la borra del lector antes que de la base 
 test('si el lector no puede borrar la huella, la base de datos no cambia', async (prueba) => {
   const eliminarBD = prueba.mock.method(biometriaRepository, 'eliminarPorClienteId', async () => true);
   prueba.mock.method(biometriaRepository, 'obtenerPorClienteId', async () => ({ template_hash: 'pagina-3' }));
-  for (const Clase of [As608Lector, LectorBiometrico]) {
-    prueba.mock.method(Clase.prototype, 'eliminar', async () => {
-      throw new Error('lector desconectado');
-    });
-  }
+  prueba.mock.method(As608Lector.prototype, 'eliminar', async () => {
+    throw new Error('lector desconectado');
+  });
 
   await assert.rejects(biometriaService.eliminarHuella('12'), /lector desconectado/);
   assert.equal(eliminarBD.mock.callCount(), 0);

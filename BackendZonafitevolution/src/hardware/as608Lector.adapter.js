@@ -27,7 +27,7 @@ function esperar(ms) {
 
 // Adaptador del sensor físico AS608 conectado por USB con un conversor CP2102.
 // Las huellas se guardan dentro del sensor (una posición por huella); en la base de datos
-// solo queda un hash irreversible de esa posición, igual que con el simulador.
+// solo queda un hash irreversible de esa posición.
 class As608Lector extends LectorBiometrico {
   constructor({ puerto, baudios = 57600 } = {}) {
     super();
@@ -45,15 +45,11 @@ class As608Lector extends LectorBiometrico {
     this.debeRetirarDedo = false;
   }
 
-  get requiereIdentificador() {
-    return false;
-  }
-
   get tipo() {
     return 'as608';
   }
 
-  async capturar(identificadorSimulado, signal) {
+  async capturar(signal) {
     return this.enCola(async () => {
       if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
       await this.conectar();
@@ -69,7 +65,7 @@ class As608Lector extends LectorBiometrico {
     });
   }
 
-  async registrar(identificadorSimulado, alCambiarEtapa = () => {}) {
+  async registrar(alCambiarEtapa = () => {}) {
     return this.enCola(async () => {
       alCambiarEtapa('conectando');
       await this.conectar();
@@ -157,7 +153,7 @@ class As608Lector extends LectorBiometrico {
   async conectar() {
     if (this.serial && this.serial.isOpen) return;
 
-    // Se carga aquí para que el modo simulador no necesite la librería
+    // Se carga al conectar para que el resto del backend (y las pruebas) no dependan del puerto serial
     const { SerialPort } = require('serialport');
 
     this.serial = new SerialPort({ path: this.puerto, baudRate: this.baudios, autoOpen: false });

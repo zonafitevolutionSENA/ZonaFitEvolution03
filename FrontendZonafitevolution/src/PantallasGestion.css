@@ -79,13 +79,6 @@
   font-weight: 700;
 }
 
-.pantalla-ingreso-simulador {
-  display: grid;
-  gap: 8px;
-  width: min(100%, 420px);
-  text-align: left;
-}
-
 .pantalla-ingreso {
   min-height: 100vh;
   background: #0b0c0d;
@@ -314,10 +307,6 @@
     min-width: 0;
     max-width: 100%;
   }
-
-  .gestion-acceso > form {
-    width: 100%;
-  }
 }
 
 @media (max-width: 420px) {
@@ -334,10 +323,6 @@
   .gestion-page > h1 {
     overflow-wrap: anywhere;
   }
-
-  .gestion-acceso > form {
-    padding: 16px;
-  }
 }
 
 .gestion-intro {
@@ -346,30 +331,9 @@
   font-size: 0.92rem;
 }
 
-.gestion-acceso {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
-}
 
-.gestion-acceso > h1 {
-  margin-bottom: 4px;
-}
 
-.gestion-acceso > form {
-  width: min(100%, 620px);
-}
 
-.gestion-acceso > button {
-  min-height: 42px;
-  padding: 9px 14px;
-  border: 1px solid rgba(245, 184, 46, 0.8);
-  border-radius: 11px;
-  background: #f5b82e;
-  color: #17130b;
-  font-weight: 700;
-}
 
 .gestion-history-filters {
   display: grid;

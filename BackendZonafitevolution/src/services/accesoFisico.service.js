@@ -6,11 +6,11 @@ const ErrorDominio = require('../utils/errores');
 const { hoyISO, sumarDias } = require('../utils/fechas');
 const { esTiquetera } = require('../estadosAcceso/estadoActivo');
 
-async function validarAcceso({ identificadorSimulado, signal } = {}) {
+async function validarAcceso({ signal } = {}) {
   let cliente;
 
   try {
-    cliente = await biometriaService.identificarPorHuella({ identificadorSimulado, signal });
+    cliente = await biometriaService.identificarPorHuella({ signal });
   } catch (error) {
     if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
     if (error instanceof ErrorDominio && error.status === 404) {
