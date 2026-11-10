@@ -7,7 +7,6 @@ export const SECCIONES = [
   { id: "clientes", etiqueta: "Clientes", roles: [ROL_ADMIN, ROL_EMPLEADO] },
   { id: "membresias", etiqueta: "Membresías", roles: [ROL_ADMIN, ROL_EMPLEADO] },
   { id: "planes", etiqueta: "Planes", roles: [ROL_ADMIN, ROL_EMPLEADO] },
-  { id: "acceso", etiqueta: "Control de acceso", roles: [ROL_ADMIN, ROL_EMPLEADO] },
   { id: "historial", etiqueta: "Historial", roles: [ROL_ADMIN, ROL_EMPLEADO] },
   { id: "finanzas", etiqueta: "Registro financiero", roles: [ROL_ADMIN], soloAdmin: true },
   { id: "personal", etiqueta: "Personal", roles: [ROL_ADMIN], soloAdmin: true },

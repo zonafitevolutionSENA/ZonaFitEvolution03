@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import FormularioCliente from "../components/FormularioCliente";
+import RegistrarHuella from "../components/RegistrarHuella";
+import { obtenerInfoLector, registrarHuella } from "../services/biometriaService";
 import { actualizarCliente, crearCliente, listarClientes } from "../services/clienteService";
 import { cambiarEstadoMembresia, listarMembresiasAlDia } from "../services/membresiaService";
 import {
@@ -59,6 +61,10 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
   // null = solo lista · "nuevo" = formulario de registro · objeto = cliente que se edita
   const [formulario, setFormulario] = useState(iniciarEnRegistro ? "nuevo" : null);
   const [cambiandoId, setCambiandoId] = useState(null);
+  const [clienteHuella, setClienteHuella] = useState(null);
+  const [lector, setLector] = useState(null);
+  const [errorLector, setErrorLector] = useState("");
+  const [recargaLector, setRecargaLector] = useState(0);
 
   const aplicar = useCallback((datos) => {
     setClientes(datos.clientes);
@@ -87,6 +93,15 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
       vigente = false;
     };
   }, [recarga, aplicar]);
+
+  useEffect(() => {
+    if (!clienteHuella) return undefined;
+    let vigente = true;
+    obtenerInfoLector()
+      .then((info) => { if (vigente) setLector(info); })
+      .catch((err) => { if (vigente) setErrorLector(err.message); });
+    return () => { vigente = false; };
+  }, [clienteHuella, recargaLector]);
 
   function actualizarLista() {
     // Evita consultas duplicadas por doble clic
@@ -128,10 +143,33 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
     setFormulario(cliente);
   }
 
+  function abrirHuella(cliente) {
+    setAviso("");
+    setErrorLector("");
+    setLector(null);
+    setClienteHuella(cliente);
+  }
+
+  function volverSinHuella() {
+    setClienteHuella(null);
+    setAviso("El registro está incompleto: falta registrar la huella del cliente.");
+    cargar();
+  }
+
+  function terminarHuella() {
+    const nombre = clienteHuella.nombre;
+    setClienteHuella(null);
+    setAviso(`Registro de "${nombre}" completado con huella.`);
+    cargar();
+  }
+
   async function guardar(datos) {
     if (formulario === "nuevo") {
-      await crearCliente(datos);
-      setAviso(`Cliente "${datos.nombre}" registrado correctamente.`);
+      const cliente = await crearCliente(datos);
+      setClientes((anteriores) => [...anteriores, cliente]);
+      setFormulario(null);
+      abrirHuella(cliente);
+      return;
     } else {
       await actualizarCliente(formulario.id, datos);
       setAviso(`Cliente "${datos.nombre}" actualizado correctamente.`);
@@ -165,7 +203,27 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
     <section className="gestion-page gestion-clientes">
       <h1>Clientes</h1>
 
-      {formulario ? (
+      {clienteHuella ? (
+        <>
+          {errorLector ? (
+            <>
+              <p className="mensaje-error" role="alert">{errorLector}</p>
+              <button type="button" className="gestion-button-quiet" onClick={() => { setErrorLector(""); setRecargaLector((actual) => actual + 1); }}>Reintentar</button>
+              <button type="button" className="gestion-button-quiet" onClick={volverSinHuella}>Volver a clientes</button>
+            </>
+          ) : !lector ? <p>Cargando lector...</p> : (
+            <RegistrarHuella
+              key={clienteHuella.id}
+              clientes={[clienteHuella]}
+              clienteFijo={clienteHuella}
+              alRegistrar={registrarHuella}
+              usaSensor={lector.usaSensor}
+              alTerminar={terminarHuella}
+              alCancelar={volverSinHuella}
+            />
+          )}
+        </>
+      ) : formulario ? (
         <FormularioCliente
           // La clave reinicia el formulario al cambiar de cliente
           key={formulario === "nuevo" ? "nuevo" : formulario.id}
@@ -208,7 +266,7 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
         <p className="mensaje-error" role="alert">{error}</p>
       )}
 
-      {!formulario && (
+      {!formulario && !clienteHuella && (
         <>
           {cargando && clientes.length === 0 && !error && <p>Cargando clientes...</p>}
           {!cargando && !error && clientes.length === 0 && <p>Aún no hay clientes registrados.</p>}
@@ -230,6 +288,7 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
                     <th>Teléfono</th>
                     <th>Registro</th>
                     <th>Membresía</th>
+                    <th>Huella</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
@@ -248,10 +307,14 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
                         <td>
                           {membresia ? textoMembresia(membresia) : "Sin membresía"}
                         </td>
+                        <td>{typeof c.tiene_huella !== "boolean" ? "No disponible" : c.tiene_huella ? "Registrada" : "Pendiente"}</td>
                         <td>
                           <button type="button" onClick={() => abrirEdicion(c)} disabled={ocupado}>
                             Editar
                           </button>
+                          {c.tiene_huella === false && (
+                            <button type="button" onClick={() => abrirHuella(c)} disabled={ocupado}>Registrar huella</button>
+                          )}
                           {acciones.map((a) => (
                             <button
                               key={a.estado}

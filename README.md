@@ -343,7 +343,7 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Clientes: lista, búsqueda, registro, edición y estado de la membresía          | Implementado |
 | Planes: catálogo para todos; el Admin crea, edita, activa y desactiva          | Implementado |
 | Membresías: listado, asignación y renovación rápida por cédula                 | Implementado |
-| Control de acceso: validar y registrar la huella (simulada o con lector AS608) | Implementado |
+| Registro de huella desde Clientes y pantalla independiente de ingreso          | Implementado |
 | Historial de accesos con filtros por resultado, texto y fechas                 | Implementado |
 | Personal: lista, creación y eliminación de usuarios (solo Admin)               | Implementado |
 | Registro financiero: resumen de pagos de cada cliente (solo Admin)             | Implementado |
@@ -477,17 +477,16 @@ Muestra los 50 eventos más recientes de `GET /api/acceso-fisico/historial` (cli
 
 El botón "Ver historial" del Inicio abre esta pantalla, y la tarjeta "Actividad reciente" usa el mismo servicio (`listarHistorial`).
 
-## Control de acceso
+## Registro de huella e ingreso
 
-La pantalla tiene dos formularios (Admin y Empleado):
+Al crear un cliente desde el panel, se solicita registrar su huella antes de mostrar el registro como completado. Si la captura falla o se interrumpe, los datos del cliente permanecen guardados y aparecen con huella pendiente; se puede reintentar desde la lista de Clientes sin volver a crear el cliente. También se puede registrar desde esa lista la huella de clientes existentes.
 
-- **Validar acceso** (`POST /api/acceso-fisico/validar`): se escribe la huella simulada y se muestra "Acceso permitido" o "Acceso denegado" con el cliente y el motivo. Una huella que no corresponde a ningún cliente (respuesta `404`) se muestra como acceso denegado, sin cliente. La acción rápida "Validar acceso" del Inicio abre esta pantalla.
-- **Registrar huella** (`POST /api/biometria/registrar`): se busca el cliente por nombre o cédula y se escribe su huella simulada. Cada cliente tiene una sola huella y no puede repetirse entre clientes (el servidor responde `409` y la pantalla muestra el mensaje).
+El registro usa `POST /api/biometria/registrar`. Cada cliente tiene una sola huella y no puede repetirse entre clientes. La pantalla independiente de ingreso usa `POST /api/acceso-fisico/pantalla/validar` y muestra si el acceso está permitido y el motivo.
 
 | Campo   | Validación                                                                                   |
 | ------- | -------------------------------------------------------------------------------------------- |
 | Huella  | Obligatoria, de 3 a 50 caracteres: letras, números, punto, guion y guion bajo (sin espacios) |
-| Cliente | Obligatorio y existente (solo en el registro de huella)                                      |
+| Cliente | Se selecciona automáticamente al crear el cliente o al elegirlo en la lista                   |
 
 ## Membresías
 

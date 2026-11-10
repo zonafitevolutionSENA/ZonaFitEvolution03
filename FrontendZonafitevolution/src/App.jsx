@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import BarraLateral from "./components/BarraLateral";
 import Encabezado from "./components/Encabezado";
-import Acceso from "./pages/Acceso";
 import Clientes from "./pages/Clientes";
 import Finanzas from "./pages/Finanzas";
 import Historial from "./pages/Historial";
@@ -25,7 +24,7 @@ function limpiarSesion() {
 const ACCIONES_RAPIDAS = {
   "registrar-cliente": "clientes",
   "renovar-membresia": "membresias",
-  "registrar-huella": "acceso",
+  "registrar-huella": "clientes",
 };
 
 function App() {
@@ -120,8 +119,6 @@ function App() {
         return <Membresias iniciarEnRenovar={accionInicial === "renovar-membresia"} />;
       case "planes":
         return <Planes usuario={usuario} />;
-      case "acceso":
-        return <Acceso />;
       case "historial":
         return <Historial />;
       case "finanzas":

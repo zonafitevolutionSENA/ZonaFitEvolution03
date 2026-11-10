@@ -10,18 +10,26 @@ async function crear({ nombre, cedula, correo, telefono }) {
 }
 
 async function obtenerTodos() {
-  const [filas] = await pool.query('SELECT * FROM clientes');
+  const [filas] = await pool.query(
+    'SELECT c.*, EXISTS(SELECT 1 FROM plantillas_biometricas pb WHERE pb.cliente_id = c.id) AS tiene_huella FROM clientes c'
+  );
   return filas.map(fila => new Cliente(fila));
 }
 
 async function obtenerPorId(id) {
-  const [filas] = await pool.query('SELECT * FROM clientes WHERE id = ?', [id]);
+  const [filas] = await pool.query(
+    'SELECT c.*, EXISTS(SELECT 1 FROM plantillas_biometricas pb WHERE pb.cliente_id = c.id) AS tiene_huella FROM clientes c WHERE c.id = ?',
+    [id]
+  );
   if (filas.length === 0) return null;
   return new Cliente(filas[0]);
 }
 
 async function obtenerPorCedula(cedula) {
-  const [filas] = await pool.query('SELECT * FROM clientes WHERE cedula = ?', [cedula]);
+  const [filas] = await pool.query(
+    'SELECT c.*, EXISTS(SELECT 1 FROM plantillas_biometricas pb WHERE pb.cliente_id = c.id) AS tiene_huella FROM clientes c WHERE c.cedula = ?',
+    [cedula]
+  );
   if (filas.length === 0) return null;
   return new Cliente(filas[0]);
 }

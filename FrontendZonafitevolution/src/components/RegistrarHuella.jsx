@@ -15,8 +15,8 @@ const MENSAJES_LECTURA = {
 
 // Formulario para registrar la huella de un cliente. No llama a la API: usa `alRegistrar`.
 // Con `usaSensor` la huella se toma del lector físico y no se pide el texto simulado.
-function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
-  const [cliente, setCliente] = useState("");
+function RegistrarHuella({ clientes, alRegistrar, usaSensor = false, clienteFijo = null, alTerminar, alCancelar }) {
+  const [cliente, setCliente] = useState(clienteFijo ? String(clienteFijo.id) : "");
   const [identificador, setIdentificador] = useState("");
   const [errores, setErrores] = useState({ cliente: "", identificador: "" });
   const [errorGeneral, setErrorGeneral] = useState("");
@@ -91,6 +91,7 @@ function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
       setAviso(`Huella registrada correctamente para ${nombre}.`);
       setCliente("");
       setIdentificador("");
+      if (alTerminar) alTerminar();
     } catch (err) {
       setErrorGeneral(err.message);
     } finally {
@@ -102,15 +103,19 @@ function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
     <form onSubmit={enviar} noValidate aria-label="Registrar huella">
       <h2>Registrar huella</h2>
 
-      <BuscadorCliente
-        id="cliente-huella"
-        etiqueta="Cliente *"
-        clientes={clientes}
-        valor={cliente}
-        alCambiar={elegirCliente}
-        error={errores.cliente}
-        disabled={guardando}
-      />
+      {clienteFijo ? (
+        <p>Cliente: <strong>{clienteFijo.nombre}</strong> — {clienteFijo.cedula}</p>
+      ) : (
+        <BuscadorCliente
+          id="cliente-huella"
+          etiqueta="Cliente *"
+          clientes={clientes}
+          valor={cliente}
+          alCambiar={elegirCliente}
+          error={errores.cliente}
+          disabled={guardando}
+        />
+      )}
 
       {usaSensor ? (
         <p>
@@ -140,6 +145,7 @@ function RegistrarHuella({ clientes, alRegistrar, usaSensor = false }) {
       <button type="submit" disabled={guardando}>
         {guardando ? "Registrando..." : "Registrar huella"}
       </button>
+      {alCancelar && <button type="button" onClick={alCancelar} disabled={guardando}>Volver a clientes</button>}
 
       {guardando && usaSensor && <p role="status" aria-live="polite">{errorEtapa || MENSAJES_LECTURA[etapa] || MENSAJES_LECTURA.preparando}</p>}
       {errorGeneral && <p className="mensaje-error" role="alert">{errorGeneral}</p>}
