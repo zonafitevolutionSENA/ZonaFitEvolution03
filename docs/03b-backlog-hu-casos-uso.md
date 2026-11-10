@@ -366,28 +366,28 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 
 ### 14.1 Matriz resumida
 
-| **HU / CU** | **RF / RNF**           | **RN**                         | **Actor**      | **UI**               | **Componente / API** | **Caso de prueba**              | **Versión** | **Estado**                     |
-| ----------- | ---------------------- | ------------------------------ | -------------- | -------------------- | -------------------- | ------------------------------- | ----------- | ------------------------------ |
-| HU-001      | RF-001                 | RN-001, RN-007                 | ACT-01         | UI-03                | FEAT-003             | CP-001 a CP-003                 | MVP         | En validación                  |
-| HU-002      | RF-007                 | RN-011, RN-012                 | ACT-01         | UI-01, UI-08         | FEAT-001, FEAT-002   | CP-016 a CP-018, CP-020, CP-021 | MVP         | En validación                  |
-| HU-003      | RF-002                 | RN-006                         | ACT-01         | UI-04                | FEAT-004             | CP-004 a CP-006                 | MVP         | En validación                  |
-| HU-004      | RF-005                 | RN-003, RN-004, RN-005         | ACT-02         | UI-05                | FEAT-005             | CP-012, CP-013                  | MVP         | En validación                  |
-| HU-005      | RF-004                 | RN-008                         | ACT-01         | UI-06                | FEAT-006             | CP-010, CP-011                  | MVP         | En progreso                    |
-| HU-006      | RF-003, RF-008         | RN-002, RN-009, RN-010         | ACT-02         | UI-06, UI-07         | FEAT-007, FEAT-008   | CP-007 a CP-009, CP-019         | MVP         | En validación                  |
-| HU-007      | RF-003, RNF-003        | RN-009                         | ACT-02         | UI-06                | FEAT-007             | Medición RNF-003                | MVP         | En validación                  |
-| HU-008      | RF-006                 | RN-004, RN-011                 | ACT-01         | UI-05, UI-09         | FEAT-009             | CP-014, CP-015                  | MVP         | En progreso                    |
-| HU-009      | RF-006                 | RN-004                         | ACT-03         | UI-09                | FEAT-010             | Por definir                     | MVP         | Planificada                    |
-| HU-010      | RNF-001, RNF-006       | RN-008, RN-011, RN-012         | ACT-01         | —                    | FEAT-011             | CP-020, CP-021                  | MVP         | En progreso                    |
-| HU-011      | RNF-004                | —                              | ACT-01         | —                    | FEAT-011             | Monitoreo RNF-004               | MVP         | Planificada                    |
-| HU-012      | RNF-002, RNF-007       | —                              | ACT-02         | UI-01 a UI-09        | FEAT-012             | Medición RNF-002                | MVP         | En validación                  |
-| HU-013      | RNF-005                | —                              | Equipo         | —                    | FEAT-011             | Inspección RNF-005              | MVP         | En validación                  |
-| CU-001      | RF-007                 | RN-011                         | ACT-01, ACT-02 | UI-01                | —                    | CP-016, CP-017                  | MVP         | Implementado                   |
-| CU-002      | RF-001                 | RN-001, RN-007                 | ACT-01, ACT-02 | UI-03                | —                    | CP-001 a CP-003                 | MVP         | Implementado                   |
-| CU-003      | RF-002                 | RN-006                         | ACT-01         | UI-04                | —                    | CP-004 a CP-006                 | MVP         | Implementado                   |
-| CU-004      | RF-003, RF-004, RF-008 | RN-002, RN-009, RN-010         | ACT-02, ACT-03 | UI-06, UI-07; INT-01 | —                    | CP-007 a CP-009                 | MVP         | Implementado (lector simulado) |
-| CU-005      | RF-005, RF-006         | RN-003, RN-004, RN-005, RN-006 | ACT-01, ACT-02 | UI-05                | —                    | CP-012 a CP-014                 | MVP         | Implementado                   |
-| CU-006      | RF-007                 | RN-011, RN-012                 | ACT-01         | UI-08                | —                    | CP-018                          | MVP         | Implementado                   |
-| CU-007      | RF-006                 | RN-004, RN-011                 | ACT-01         | UI-09                | —                    | CP-014, CP-015                  | MVP         | Implementado parcialmente      |
+| **HU / CU** | **RF / RNF**           | **RN**                         | **Actor**      | **UI**               | **Componente / API** | **Caso de prueba**              | **Versión** | **Estado**                  |
+| ----------- | ---------------------- | ------------------------------ | -------------- | -------------------- | -------------------- | ------------------------------- | ----------- | --------------------------- |
+| HU-001      | RF-001                 | RN-001, RN-007                 | ACT-01         | UI-03                | FEAT-003             | CP-001 a CP-003                 | MVP         | En validación               |
+| HU-002      | RF-007                 | RN-011, RN-012                 | ACT-01         | UI-01, UI-08         | FEAT-001, FEAT-002   | CP-016 a CP-018, CP-020, CP-021 | MVP         | En validación               |
+| HU-003      | RF-002                 | RN-006                         | ACT-01         | UI-04                | FEAT-004             | CP-004 a CP-006                 | MVP         | En validación               |
+| HU-004      | RF-005                 | RN-003, RN-004, RN-005         | ACT-02         | UI-05                | FEAT-005             | CP-012, CP-013                  | MVP         | En validación               |
+| HU-005      | RF-004                 | RN-008                         | ACT-01         | UI-06                | FEAT-006             | CP-010, CP-011                  | MVP         | En progreso                 |
+| HU-006      | RF-003, RF-008         | RN-002, RN-009, RN-010         | ACT-02         | UI-06, UI-07         | FEAT-007, FEAT-008   | CP-007 a CP-009, CP-019         | MVP         | En validación               |
+| HU-007      | RF-003, RNF-003        | RN-009                         | ACT-02         | UI-06                | FEAT-007             | Medición RNF-003                | MVP         | En validación               |
+| HU-008      | RF-006                 | RN-004, RN-011                 | ACT-01         | UI-05, UI-09         | FEAT-009             | CP-014, CP-015                  | MVP         | En progreso                 |
+| HU-009      | RF-006                 | RN-004                         | ACT-03         | UI-09                | FEAT-010             | Por definir                     | MVP         | Planificada                 |
+| HU-010      | RNF-001, RNF-006       | RN-008, RN-011, RN-012         | ACT-01         | —                    | FEAT-011             | CP-020, CP-021                  | MVP         | En progreso                 |
+| HU-011      | RNF-004                | —                              | ACT-01         | —                    | FEAT-011             | Monitoreo RNF-004               | MVP         | Planificada                 |
+| HU-012      | RNF-002, RNF-007       | —                              | ACT-02         | UI-01 a UI-09        | FEAT-012             | Medición RNF-002                | MVP         | En validación               |
+| HU-013      | RNF-005                | —                              | Equipo         | —                    | FEAT-011             | Inspección RNF-005              | MVP         | En validación               |
+| CU-001      | RF-007                 | RN-011                         | ACT-01, ACT-02 | UI-01                | —                    | CP-016, CP-017                  | MVP         | Implementado                |
+| CU-002      | RF-001                 | RN-001, RN-007                 | ACT-01, ACT-02 | UI-03                | —                    | CP-001 a CP-003                 | MVP         | Implementado                |
+| CU-003      | RF-002                 | RN-006                         | ACT-01         | UI-04                | —                    | CP-004 a CP-006                 | MVP         | Implementado                |
+| CU-004      | RF-003, RF-004, RF-008 | RN-002, RN-009, RN-010         | ACT-02, ACT-03 | UI-06, UI-07; INT-01 | —                    | CP-007 a CP-009                 | MVP         | Implementado (sensor AS608) |
+| CU-005      | RF-005, RF-006         | RN-003, RN-004, RN-005, RN-006 | ACT-01, ACT-02 | UI-05                | —                    | CP-012 a CP-014                 | MVP         | Implementado                |
+| CU-006      | RF-007                 | RN-011, RN-012                 | ACT-01         | UI-08                | —                    | CP-018                          | MVP         | Implementado                |
+| CU-007      | RF-006                 | RN-004, RN-011                 | ACT-01         | UI-09                | —                    | CP-014, CP-015                  | MVP         | Implementado parcialmente   |
 
 ### 14.2 Cobertura de historias y casos de uso
 

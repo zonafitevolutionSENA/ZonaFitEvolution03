@@ -798,20 +798,20 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 
 ### 14.2 Plantilla mínima de ADR
 
-| **Campo**                                   | **Contenido**                                                                                                                  |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Título                                      | ADR-004 – Lector biométrico detrás de un adaptador                                                                             |
-| Estado                                      | Aceptado (actualizado por CR-005)                                                                                              |
-| Contexto                                    | Hardware por integrar y prohibición de guardar imágenes de huellas.                                                            |
-| Drivers                                     | DRV-004, DRV-005                                                                                                               |
-| Alternativas                                | Programar directamente contra el sensor; interfaz y adaptadores.                                                               |
-| Decisión                                    | Interfaz LectorBiometrico, adaptador simulador y fábrica por TIPO\_LECTOR; el sensor AS608 se integra como un adaptador nuevo. |
-| Justificación                               | Aísla el hardware y protege la privacidad (solo hash).                                                                         |
-| Consecuencias positivas                     | Cambiar de sensor solo exige un adaptador.                                                                                     |
-| Consecuencias negativas                     | Sin el lector conectado no se pueden registrar ni validar huellas (ya no hay simulador).                                       |
-| Riesgos                                     | RSK-06 cerrado: el AS608 quedó integrado en el sprint 11.                                                                      |
-| Fecha y responsables                        | Liliana Sofía Panesso Méndez                                                                                                   |
-| Decisión que reemplaza / es reemplazada por |                                                                                                                                |
+| **Campo**                                   | **Contenido**                                                                                                                     |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Título                                      | ADR-004 – Lector biométrico detrás de un adaptador                                                                                |
+| Estado                                      | Aceptado (actualizado por CR-005)                                                                                                 |
+| Contexto                                    | Hardware por integrar y prohibición de guardar imágenes de huellas.                                                               |
+| Drivers                                     | DRV-004, DRV-005                                                                                                                  |
+| Alternativas                                | Programar directamente contra el sensor; interfaz y adaptadores.                                                                  |
+| Decisión                                    | Interfaz LectorBiometrico, adaptador del sensor AS608 y fábrica por TIPO\_LECTOR; otro sensor se integra como un adaptador nuevo. |
+| Justificación                               | Aísla el hardware y protege la privacidad (solo hash).                                                                            |
+| Consecuencias positivas                     | Cambiar de sensor solo exige un adaptador.                                                                                        |
+| Consecuencias negativas                     | Sin el lector conectado no se pueden registrar ni validar huellas (ya no hay simulador).                                          |
+| Riesgos                                     | RSK-06 cerrado: el AS608 quedó integrado en el sprint 11.                                                                         |
+| Fecha y responsables                        | Liliana Sofía Panesso Méndez                                                                                                      |
+| Decisión que reemplaza / es reemplazada por |                                                                                                                                   |
 
 <table>
 <tbody>

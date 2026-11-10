@@ -340,7 +340,7 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | Criterios de aceptación        | Se registra una huella por cliente; no se repite entre clientes; nunca se guarda ni devuelve la imagen o el hash.                                                                                                |
 | Método de verificación         | Prueba (CP-010, CP-011) e inspección de la base de datos                                                                                                                                                         |
 | Responsable de validación      | Liliana Sofía Panesso Méndez (Product Owner)                                                                                                                                                                     |
-| Estado                         | Implementado con lector simulado; integración del AS608 pendiente                                                                                                                                                |
+| Estado                         | Implementado con el sensor AS608                                                                                                                                                                                 |
 
 **RF-005 – Renovar membresía**
 
