@@ -77,7 +77,7 @@ Scripts disponibles: `npm run dev` (desarrollo), `npm run build` (versión de pr
 
 ### Pantalla de ingreso sin sesión
 
-En el equipo conectado al lector, abre `http://127.0.0.1:5173/?pantalla=acceso` en una ventana independiente. El cliente no necesita una cuenta: con `TIPO_LECTOR=as608` la pantalla espera la huella y muestra el resultado durante ocho segundos. Con `TIPO_LECTOR=simulador`, escribe el identificador de prueba; se valida automáticamente 1,5 segundos después de dejar de escribir. El registro de huellas y las demás funciones administrativas siguen requiriendo sesión.
+En el equipo conectado al lector, abre `http://127.0.0.1:5173/?pantalla=acceso` en una ventana independiente. El cliente no necesita una cuenta: con `TIPO_LECTOR=as608` la pantalla espera la huella y muestra el resultado durante dos segundos antes de esperar la siguiente huella. Con `TIPO_LECTOR=simulador`, escribe el identificador de prueba; se valida automáticamente 1,5 segundos después de dejar de escribir. El registro de huellas y las demás funciones administrativas siguen requiriendo sesión.
 
 La ruta de ingreso solo acepta conexiones directas desde el mismo equipo y el origen `http://127.0.0.1:5173` o `http://localhost:5173`. Si el frontend local usa otro origen, configura `ORIGEN_PANTALLA_ACCESO` en el `.env` del backend y reinícialo. No expongas esta ruta a través de un proxy público. El lector físico debe estar conectado al equipo donde se ejecuta el backend.
 
