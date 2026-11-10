@@ -9,6 +9,11 @@ class LectorBiometrico {
     return this.capturar(entrada);
   }
 
+  // Borra la huella del dispositivo. El simulador no guarda nada fuera de la base de datos.
+  async eliminar() {
+    return false;
+  }
+
   async comparar(templateA, templateB) {
     throw new Error('El método comparar() debe ser implementado por el adaptador concreto');
   }
