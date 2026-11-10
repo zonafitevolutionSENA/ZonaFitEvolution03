@@ -3,6 +3,8 @@ import { LIMITES_HUELLA, normalizarIdentificador, validarIdentificador } from ".
 import "../PantallasGestion.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
+// Tiempo que se muestra el resultado antes de volver a esperar la siguiente huella
+const TIEMPO_RESULTADO_MS = 2000;
 
 async function consultarPantalla(ruta, opciones = {}) {
   const respuesta = await fetch(`${API_URL}/acceso-fisico/pantalla${ruta}`, opciones);
@@ -53,7 +55,7 @@ function PantallaIngreso() {
         temporizador = setTimeout(() => {
           setResultado(null);
           leerSensor();
-        }, 8000);
+        }, TIEMPO_RESULTADO_MS);
       } catch (err) {
         if (err.name === "AbortError") return;
         if (err.status === 404 && err.message === "Huella no reconocida") {
@@ -61,7 +63,7 @@ function PantallaIngreso() {
           temporizador = setTimeout(() => {
             setResultado(null);
             leerSensor();
-          }, 8000);
+          }, TIEMPO_RESULTADO_MS);
         } else if (err.status === 408 || err.status === 409) {
           temporizador = setTimeout(leerSensor, 1000);
         } else {
@@ -79,7 +81,7 @@ function PantallaIngreso() {
 
   useEffect(() => {
     if (!resultado || !usaSimulador) return undefined;
-    const temporizador = setTimeout(() => setResultado(null), 8000);
+    const temporizador = setTimeout(() => setResultado(null), TIEMPO_RESULTADO_MS);
     return () => clearTimeout(temporizador);
   }, [resultado, usaSimulador]);
 
