@@ -16,6 +16,8 @@ const CMD = {
 
 const SIN_DEDO = 0x02;
 const NO_ENCONTRADA = 0x09;
+// El sensor rechaza buscar de nuevo sin una imagen nueva (huella residual o dedo que no se movió)
+const SIN_MOVIMIENTO = 0x17;
 const TIEMPO_ESPERA_DEDO_MS = 15000;
 const TIEMPO_RESPUESTA_MS = 3000;
 
@@ -87,7 +89,7 @@ class As608Lector extends LectorBiometrico {
       await this.leerHuellaEnBuffer(2, 'Vuelve a colocar el mismo dedo');
 
       // Una sola lectura puede no reconocer una huella guardada (dedo de lado o lectura parcial):
-      // se vuelve a buscar con la segunda lectura y con la plantilla combinada antes de guardar
+      // se vuelve a buscar con la segunda lectura antes de guardar
       const existenteSegunda = await this.buscar(2);
       if (existenteSegunda !== null) {
         return this.templateDePagina(existenteSegunda);
@@ -97,12 +99,6 @@ class As608Lector extends LectorBiometrico {
       const combinacion = await this.enviar(CMD.REG_MODEL);
       if (combinacion[0] !== 0x00) {
         throw new ErrorDominio('Las dos lecturas no coinciden. Usa el mismo dedo e inténtalo de nuevo.');
-      }
-
-      // REG_MODEL deja la plantilla combinada en el buffer 1
-      const existenteCombinada = await this.buscar(1);
-      if (existenteCombinada !== null) {
-        return this.templateDePagina(existenteCombinada);
       }
 
       const pagina = await this.buscarPaginaLibre();
@@ -287,6 +283,9 @@ class As608Lector extends LectorBiometrico {
     const respuesta = await this.enviar(CMD.SEARCH, [bufferId, 0x00, 0x00, capacidad >> 8, capacidad & 0xff]);
     if (respuesta[0] === 0x00) return respuesta.readUInt16BE(1);
     if (respuesta[0] === NO_ENCONTRADA) return null;
+    if (respuesta[0] === SIN_MOVIMIENTO) {
+      throw new ErrorDominio('El lector no detectó un dedo nuevo. Retira el dedo, limpia el lector e inténtalo de nuevo.');
+    }
     throw new ErrorDominio(`Error del lector al buscar la huella (código 0x${respuesta[0].toString(16)})`);
   }
 

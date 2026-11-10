@@ -36,19 +36,23 @@ test('no guarda una huella que el sensor reconoce en la segunda lectura', async 
   assert.ok(!comandos.includes(STORE));
 });
 
-test('no guarda una huella que el sensor reconoce con la plantilla combinada', async (prueba) => {
-  const { lector, comandos, busquedas } = lectorDePrueba(prueba, [null, null, 5]);
-  const resultado = await lector.registrar();
-  assert.equal(resultado, 'pagina-5');
-  assert.deepEqual(busquedas, [1, 2, 1]);
-  assert.ok(!comandos.includes(STORE));
+test('no vuelve a buscar con la plantilla combinada (el AS608 responde 0x17 sin imagen nueva)', async (prueba) => {
+  const { lector, busquedas } = lectorDePrueba(prueba, [null, null]);
+  await lector.registrar();
+  assert.deepEqual(busquedas, [1, 2]);
+});
+
+test('el código 0x17 del lector se informa con un mensaje claro', async () => {
+  const lector = new As608Lector({ puerto: 'prueba' });
+  lector.enviar = async () => Buffer.from([0x17]);
+  await assert.rejects(lector.buscar(1), /no detectó un dedo nuevo/);
 });
 
 test('guarda en una posición libre la huella que no está en el sensor', async (prueba) => {
-  const { lector, comandos, busquedas } = lectorDePrueba(prueba, [null, null, null]);
+  const { lector, comandos, busquedas } = lectorDePrueba(prueba, [null, null]);
   const resultado = await lector.registrar();
   assert.equal(resultado, 'pagina-9');
-  assert.deepEqual(busquedas, [1, 2, 1]);
+  assert.deepEqual(busquedas, [1, 2]);
   assert.ok(comandos.includes(STORE));
 });
 
