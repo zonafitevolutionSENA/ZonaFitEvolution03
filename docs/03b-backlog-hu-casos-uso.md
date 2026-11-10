@@ -24,6 +24,7 @@
 | ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------- | ---------------- |
 | 0.1         | 20/10/2026 | Estructura y backlog inicial a partir del documento maestro integrado (v2.3) y de Jira                                  | Juan Diego Mejía Llano |                  |
 | 1.0         | 03/11/2026 | Versión para revisión: épicas, backlog, historias detalladas, criterios, casos de uso, plan de iteración y trazabilidad | Juan Diego Mejía Llano |                  |
+| 1.1         | 10/11/2026 | TT-010 y TT-003 terminadas, CU-004 con el sensor AS608, planes con tiqueteras y cambios CR-007 y CR-008                 | Juan Diego Mejía Llano |                  |
 
 ### Registro de aprobaciones
 
@@ -191,7 +192,7 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | 5         | TT-005 | Técnica  | Crear la tabla de pagos con monto y método                            | EP-004             | Alto      | Must          | 5 pts          | HU-008                 | Planificada                                       | MVP         |
 | 6         | TT-007 | Técnica  | Pruebas automatizadas de backend y frontend                           | EP-005             | Alto      | Must          | 8 pts          | —                      | Planificada                                       | MVP         |
 | 7         | TT-009 | Técnica  | Despliegue de la API en hosting (por definir) y base MySQL en la nube | EP-005             | Alto      | Must          | 5 pts          | —                      | Planificada                                       | MVP         |
-| 8         | TT-010 | Técnica  | Adaptador del sensor AS608 (CP2102) en la capa hardware               | EP-003             | Alto      | Must          | 8 pts          | INT-01                 | Planificada                                       | MVP         |
+| 8         | TT-010 | Técnica  | Adaptador del sensor AS608 (CP2102) en la capa hardware               | EP-003             | Alto      | Must          | 8 pts          | INT-01                 | Terminada                                         | MVP         |
 | 9         | TT-004 | Técnica  | Restringir CORS al dominio del frontend                               | EP-005             | Medio     | Should        | 1 pts          | TT-009                 | Planificada                                       | MVP         |
 | 10        | TT-006 | Técnica  | Tarea programada de vencimiento en el servidor                        | EP-002             | Medio     | Should        | 3 pts          | HU-006                 | Planificada                                       | MVP         |
 | 11        | TT-008 | Técnica  | Pipeline de integración continua                                      | EP-005             | Medio     | Should        | 3 pts          | TT-007                 | Planificada                                       | MVP         |
@@ -206,7 +207,7 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | 20        | HU-013 | Historia | Código con patrones de diseño                                         | EP-005             | Bajo      | Could         | 5 pts          | —                      | En validación                                     | MVP         |
 | 21        | TT-001 | Técnica  | Validar en el backend la regla del último administrador               | EP-005             | Alto      | Must          | 2 pts          | HU-002                 | En progreso (rama feature/correcciones-seguridad) | MVP         |
 | 22        | TT-002 | Técnica  | Quitar la ruta de borrado de clientes                                 | EP-001             | Alto      | Must          | 1 pts          | HU-001                 | En progreso (rama feature/correcciones-seguridad) | MVP         |
-| 23        | TT-003 | Técnica  | Límite de intentos de inicio de sesión                                | EP-005             | Alto      | Must          | 3 pts          | HU-002                 | En progreso (rama feature/limite-intentos-login)  | MVP         |
+| 23        | TT-003 | Técnica  | Límite de intentos de inicio de sesión                                | EP-005             | Alto      | Must          | 3 pts          | HU-002                 | Terminada (PR \#41)                               | MVP         |
 
 ### 5.2 Estados recomendados
 
@@ -327,23 +328,25 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 
 ### 12.3 Seguimiento de bloqueos
 
-| **ID**  | **Elemento afectado** | **Impedimento**                                                                    | **Impacto**                                      | **Responsable de resolver**  | **Fecha límite** | **Estado** |
-| ------- | --------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------- | ---------------- | ---------- |
-| BLQ-001 | HU-005, TT-010        | El sensor AS608 aún no está integrado con la API (TT-010).                         | Las pruebas de acceso se hacen con el simulador. | Liliana Sofía Panesso Méndez |                  | Abierto    |
-| BLQ-002 | HU-011, TT-009        | Falta definir el hosting de la API (no Render) y el proveedor de MySQL en la nube. | Retrasa el despliegue.                           | Liliana Sofía Panesso Méndez |                  | Abierto    |
+| **ID**  | **Elemento afectado** | **Impedimento**                                                                    | **Impacto**            | **Responsable de resolver**  | **Fecha límite** | **Estado** |
+| ------- | --------------------- | ---------------------------------------------------------------------------------- | ---------------------- | ---------------------------- | ---------------- | ---------- |
+| BLQ-001 | HU-005, TT-010        | El sensor AS608 no estaba integrado con la API (TT-010).                           | —                      | Liliana Sofía Panesso Méndez | 10/11/2026       | Cerrado    |
+| BLQ-002 | HU-011, TT-009        | Falta definir el hosting de la API (no Render) y el proveedor de MySQL en la nube. | Retrasa el despliegue. | Liliana Sofía Panesso Méndez |                  | Abierto    |
 
 ## 13\. Gestión de cambios
 
 ### 13.1 Solicitud y análisis
 
-| **ID cambio** | **Origen**           | **Descripción**                                                                                                                          | **Elementos afectados**                        | **Impacto**      | **Decisión**                     | **Responsable**        | **Fecha** |
-| ------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------- | -------------------------------- | ---------------------- | --------- |
-| CR-001        | STK-01 Propietario   | Reemplazar tarjetas RFID por huella y renovar por cédula.                                                                                | HU-004, HU-005, CU-004, RF-004, RF-005         | Alcance y riesgo | Aprobado                         | Juan Diego Mejía Llano | Sprint 6  |
-| CR-002        | STK-01 Propietario   | Retirar el torniquete; abrir con relé y electroimán.                                                                                     | RF-004, INT-02                                 | Alcance          | Aprobado                         | Juan Diego Mejía Llano | Sprint 7  |
-| CR-003        | Equipo de desarrollo | Migrar el frontend a React en un monorepo.                                                                                               | UI-01 a UI-09                                  | Tiempo y riesgo  | Aprobado                         | Juan Diego Mejía Llano | Sprint 9  |
-| CR-004        | Equipo de desarrollo | Calcular el registro financiero desde las membresías hasta tener la tabla de pagos.                                                      | HU-008, RF-006                                 | Alcance          | Aprobado (temporal)              | Juan Diego Mejía Llano | Sprint 10 |
-| CR-005        | STK-01 Propietario   | Usar el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02, CU-004 | Alcance          | Aprobado                         | Juan Diego Mejía Llano |           |
-| CR-006        | Equipo de desarrollo | Publicar el backend en un hosting distinto de Render (proveedor por definir).                                                            | TT-009, INT-02                                 | Tiempo y riesgo  | Aprobado (proveedor por definir) | Juan Diego Mejía Llano |           |
+| **ID cambio** | **Origen**           | **Descripción**                                                                                                                          | **Elementos afectados**                        | **Impacto**      | **Decisión**                     | **Responsable**        | **Fecha**  |
+| ------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ---------------- | -------------------------------- | ---------------------- | ---------- |
+| CR-001        | STK-01 Propietario   | Reemplazar tarjetas RFID por huella y renovar por cédula.                                                                                | HU-004, HU-005, CU-004, RF-004, RF-005         | Alcance y riesgo | Aprobado                         | Juan Diego Mejía Llano | Sprint 6   |
+| CR-002        | STK-01 Propietario   | Retirar el torniquete; abrir con relé y electroimán.                                                                                     | RF-004, INT-02                                 | Alcance          | Aprobado                         | Juan Diego Mejía Llano | Sprint 7   |
+| CR-003        | Equipo de desarrollo | Migrar el frontend a React en un monorepo.                                                                                               | UI-01 a UI-09                                  | Tiempo y riesgo  | Aprobado                         | Juan Diego Mejía Llano | Sprint 9   |
+| CR-004        | Equipo de desarrollo | Calcular el registro financiero desde las membresías hasta tener la tabla de pagos.                                                      | HU-008, RF-006                                 | Alcance          | Aprobado (temporal)              | Juan Diego Mejía Llano | Sprint 10  |
+| CR-005        | STK-01 Propietario   | Usar el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02, CU-004 | Alcance          | Aprobado                         | Juan Diego Mejía Llano |            |
+| CR-006        | Equipo de desarrollo | Publicar el backend en un hosting distinto de Render (proveedor por definir).                                                            | TT-009, INT-02                                 | Tiempo y riesgo  | Aprobado (proveedor por definir) | Juan Diego Mejía Llano |            |
+| CR-007        | Equipo de desarrollo | Eliminar la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                | RF-004, INT-01, CU-004                         | Alcance          | Aprobado                         | Juan Diego Mejía Llano | 10/11/2026 |
+| CR-008        | STK-01 Propietario   | Un solo ingreso por día en todos los planes (frontend listo; validación del backend pendiente).                                          | RF-002, RF-003, CU-004                         | Alcance          | Aprobado (backend pendiente)     | Juan Diego Mejía Llano | 10/11/2026 |
 
 ### 13.2 Reglas de actualización
 

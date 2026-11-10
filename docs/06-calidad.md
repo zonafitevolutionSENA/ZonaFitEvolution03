@@ -23,6 +23,7 @@
 | **Versión** | **Fecha**  | **Descripción**                                                                                      | **Responsable**        | **Aprobado por** |
 | ----------- | ---------- | ---------------------------------------------------------------------------------------------------- | ---------------------- | ---------------- |
 | 0.1         | 03/11/2026 | Estrategia inicial, riesgos, ambientes y catálogo de casos CP-001 a CP-021 (diseñados, sin ejecutar) | Juan Diego Mejía Llano |                  |
+| 0.2         | 10/11/2026 | Pruebas con el sensor AS608 (CP-010, CP-011 y nuevo CP-022) y simulador eliminado                    | Juan Diego Mejía Llano |                  |
 
 ### Registro de aprobaciones
 
@@ -120,16 +121,16 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 ### 3.1 Enfoque seleccionado
 
-| **Campo**                            | **Definición**                                                                                         |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| Enfoque general                      | Basado en riesgos e iterativo: primero los flujos críticos de acceso, membresías y seguridad.          |
-| Momento de inicio                    | Sprint 11 (diseño) y sprints 12 y 13 (ejecución).                                                      |
-| Frecuencia de ejecución              | Por sprint y antes de la versión v1.0.0.                                                               |
-| Niveles automatizados                | Por definir (TT-007).                                                                                  |
-| Niveles manuales                     | Sistema/E2E, aceptación, usabilidad, compatibilidad y accesibilidad.                                   |
-| Criterio de priorización             | P0/P1 para RF-003, RF-004, RF-005, RF-007 y RNF-001; P2 para el resto.                                 |
-| Tratamiento de pruebas condicionadas | Con el adaptador simulador mientras se integra el sensor AS608; repetir CP-007 a CP-011 con el sensor. |
-| Política de regresión                | Reejecutar los casos P0/P1 después de cada integración a develop.                                      |
+| **Campo**                            | **Definición**                                                                                |
+| ------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Enfoque general                      | Basado en riesgos e iterativo: primero los flujos críticos de acceso, membresías y seguridad. |
+| Momento de inicio                    | Sprint 11 (diseño) y sprints 12 y 13 (ejecución).                                             |
+| Frecuencia de ejecución              | Por sprint y antes de la versión v1.0.0.                                                      |
+| Niveles automatizados                | Por definir (TT-007).                                                                         |
+| Niveles manuales                     | Sistema/E2E, aceptación, usabilidad, compatibilidad y accesibilidad.                          |
+| Criterio de priorización             | P0/P1 para RF-003, RF-004, RF-005, RF-007 y RNF-001; P2 para el resto.                        |
+| Tratamiento de pruebas condicionadas | Las pruebas de acceso se hacen con el sensor AS608 conectado (el simulador se eliminó).       |
+| Política de regresión                | Reejecutar los casos P0/P1 después de cada integración a develop.                             |
 
 ### 3.2 Pirámide y distribución de pruebas
 
@@ -232,15 +233,15 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 ### 6.2 Configuración de ambiente
 
-| **Elemento**               | **Valor / versión**                                                  | **Origen**                        | **Verificación** |
-| -------------------------- | -------------------------------------------------------------------- | --------------------------------- | ---------------- |
-| Sistema operativo          | Windows (equipos del equipo y de la recepción)                       |                                   |                  |
-| Runtime / SDK              | Node.js LTS reciente                                                 |                                   |                  |
-| Base de datos              | MySQL local (XAMPP) o en la nube                                     | init.sql + scripts/crear-admin.js |                  |
-| Navegadores / dispositivos | Chrome, Edge y Firefox; computador, tablet y celular                 |                                   |                  |
-| Servicios externos / mocks | Adaptador simulador (TIPO\_LECTOR=simulador) o sensor AS608 + CP2102 | src/hardware                      |                  |
-| Variables de entorno       | .env.example del backend y VITE\_API\_URL del frontend               | Repositorio                       |                  |
-| Build / commit             |                                                                      |                                   |                  |
+| **Elemento**               | **Valor / versión**                                                                          | **Origen**                        | **Verificación** |
+| -------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------- | ---------------- |
+| Sistema operativo          | Windows (equipos del equipo y de la recepción)                                               |                                   |                  |
+| Runtime / SDK              | Node.js LTS reciente                                                                         |                                   |                  |
+| Base de datos              | MySQL local (XAMPP) o en la nube                                                             | init.sql + scripts/crear-admin.js |                  |
+| Navegadores / dispositivos | Chrome, Edge y Firefox; computador, tablet y celular                                         |                                   |                  |
+| Servicios externos / mocks | Sensor AS608 + CP2102 (sin simulador); en pruebas automatizadas se reemplazan sus respuestas | src/hardware                      |                  |
+| Variables de entorno       | .env.example del backend y VITE\_API\_URL del frontend                                       | Repositorio                       |                  |
+| Build / commit             |                                                                                              |                                   |                  |
 
 ### 6.3 Herramientas de prueba
 
@@ -298,29 +299,30 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 ### 8.1 Catálogo maestro
 
-| **ID** | **Título**                        | **Requisito / HU / CU** | **Prioridad** | **Tipo**    | **Estado** | **Automatizada** | **Responsable** |
-| ------ | --------------------------------- | ----------------------- | ------------- | ----------- | ---------- | ---------------- | --------------- |
-| CP-001 | Registro de cliente válido        | RF-001 / HU-001         | P1            | Integración | Diseñado   |                  |                 |
-| CP-002 | Cédula duplicada                  | RF-001 / HU-001         | P1            | Integración | Diseñado   |                  |                 |
-| CP-003 | Campos inválidos                  | RF-001 / HU-001         | P1            | Integración | Diseñado   |                  |                 |
-| CP-004 | Crear plan                        | RF-002 / HU-003         | P1            | Integración | Diseñado   |                  |                 |
-| CP-005 | Eliminar plan con membresías      | RF-002 / HU-003         | P1            | Integración | Diseñado   |                  |                 |
-| CP-006 | Empleado intenta crear plan       | RF-002 / HU-003         | P1            | Seguridad   | Diseñado   |                  |                 |
-| CP-007 | Acceso con membresía activa       | RF-003 / HU-006         | P0            | Integración | Diseñado   |                  |                 |
-| CP-008 | Acceso con membresía vencida      | RF-003 / HU-006         | P0            | Integración | Diseñado   |                  |                 |
-| CP-009 | Huella no reconocida              | RF-003 / HU-006         | P0            | Integración | Diseñado   |                  |                 |
-| CP-010 | Registrar huella                  | RF-004 / HU-005         | P1            | Integración | Diseñado   |                  |                 |
-| CP-011 | Huella ya registrada              | RF-004 / HU-005         | P1            | Integración | Diseñado   |                  |                 |
-| CP-012 | Renovar vigente                   | RF-005 / HU-004         | P0            | Integración | Diseñado   |                  |                 |
-| CP-013 | Renovar vencida                   | RF-005 / HU-004         | P0            | Integración | Diseñado   |                  |                 |
-| CP-014 | Resumen de pagos                  | RF-006 / HU-008         | P1            | Integración | Diseñado   |                  |                 |
-| CP-015 | Empleado sin registro financiero  | RF-006 / HU-008         | P1            | Seguridad   | Diseñado   |                  |                 |
-| CP-016 | Inicio de sesión válido           | RF-007 / HU-002         | P0            | Integración | Diseñado   |                  |                 |
-| CP-017 | Credenciales inválidas            | RF-007 / HU-002         | P1            | Integración | Diseñado   |                  |                 |
-| CP-018 | Eliminar último administrador     | RF-007 / HU-002         | P0            | Seguridad   | Diseñado   |                  |                 |
-| CP-019 | Filtrar historial                 | RF-008 / HU-006         | P1            | Integración | Diseñado   |                  |                 |
-| CP-020 | Petición sin token                | RNF-001 / HU-010        | P0            | Seguridad   | Diseñado   |                  |                 |
-| CP-021 | Empleado en ruta de Administrador | RNF-001 / HU-010        | P0            | Seguridad   | Diseñado   |                  |                 |
+| **ID** | **Título**                                                  | **Requisito / HU / CU** | **Prioridad** | **Tipo**    | **Estado**                                   | **Automatizada** | **Responsable** |
+| ------ | ----------------------------------------------------------- | ----------------------- | ------------- | ----------- | -------------------------------------------- | ---------------- | --------------- |
+| CP-001 | Registro de cliente válido                                  | RF-001 / HU-001         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-002 | Cédula duplicada                                            | RF-001 / HU-001         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-003 | Campos inválidos                                            | RF-001 / HU-001         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-004 | Crear plan                                                  | RF-002 / HU-003         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-005 | Eliminar plan con membresías                                | RF-002 / HU-003         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-006 | Empleado intenta crear plan                                 | RF-002 / HU-003         | P1            | Seguridad   | Diseñado                                     |                  |                 |
+| CP-007 | Acceso con membresía activa                                 | RF-003 / HU-006         | P0            | Integración | Diseñado                                     |                  |                 |
+| CP-008 | Acceso con membresía vencida                                | RF-003 / HU-006         | P0            | Integración | Diseñado                                     |                  |                 |
+| CP-009 | Huella no reconocida                                        | RF-003 / HU-006         | P0            | Integración | Diseñado                                     |                  |                 |
+| CP-010 | Registrar huella                                            | RF-004 / HU-005         | P1            | Integración | Ejecutado manualmente (10/11/2026): aprobado |                  |                 |
+| CP-011 | Huella ya registrada (mismo dedo, también en otra posición) | RF-004 / HU-005         | P1            | Integración | Ejecutado manualmente (10/11/2026): aprobado |                  |                 |
+| CP-012 | Renovar vigente                                             | RF-005 / HU-004         | P0            | Integración | Diseñado                                     |                  |                 |
+| CP-013 | Renovar vencida                                             | RF-005 / HU-004         | P0            | Integración | Diseñado                                     |                  |                 |
+| CP-014 | Resumen de pagos                                            | RF-006 / HU-008         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-015 | Empleado sin registro financiero                            | RF-006 / HU-008         | P1            | Seguridad   | Diseñado                                     |                  |                 |
+| CP-016 | Inicio de sesión válido                                     | RF-007 / HU-002         | P0            | Integración | Diseñado                                     |                  |                 |
+| CP-017 | Credenciales inválidas                                      | RF-007 / HU-002         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-018 | Eliminar último administrador                               | RF-007 / HU-002         | P0            | Seguridad   | Diseñado                                     |                  |                 |
+| CP-019 | Filtrar historial                                           | RF-008 / HU-006         | P1            | Integración | Diseñado                                     |                  |                 |
+| CP-020 | Petición sin token                                          | RNF-001 / HU-010        | P0            | Seguridad   | Diseñado                                     |                  |                 |
+| CP-021 | Empleado en ruta de Administrador                           | RNF-001 / HU-010        | P0            | Seguridad   | Diseñado                                     |                  |                 |
+| CP-022 | Eliminar huella (se borra del sensor y de la base de datos) | RF-004 / HU-005         | P1            | Integración | Ejecutado manualmente (10/11/2026): aprobado |                  |                 |
 
 ### 8.2 Ficha detallada de caso de prueba
 

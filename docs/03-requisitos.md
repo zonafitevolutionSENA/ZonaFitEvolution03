@@ -20,10 +20,11 @@
 
 ### Historial de versiones
 
-| **Versión** | **Fecha**  | **Descripción**                                                                                              | **Responsable**        | **Aprobado por** |
-| ----------- | ---------- | ------------------------------------------------------------------------------------------------------------ | ---------------------- | ---------------- |
-| 0.1         | 20/10/2026 | Creación inicial a partir del documento maestro integrado (v2.3)                                             | Juan Diego Mejía Llano |                  |
-| 1.0         | 03/11/2026 | Versión para revisión: alcance, requisitos, reglas, permisos, datos, interfaces, priorización y trazabilidad | Juan Diego Mejía Llano |                  |
+| **Versión** | **Fecha**  | **Descripción**                                                                                                | **Responsable**        | **Aprobado por** |
+| ----------- | ---------- | -------------------------------------------------------------------------------------------------------------- | ---------------------- | ---------------- |
+| 0.1         | 20/10/2026 | Creación inicial a partir del documento maestro integrado (v2.3)                                               | Juan Diego Mejía Llano |                  |
+| 1.0         | 03/11/2026 | Versión para revisión: alcance, requisitos, reglas, permisos, datos, interfaces, priorización y trazabilidad   | Juan Diego Mejía Llano |                  |
+| 1.1         | 10/11/2026 | AS608 integrado, catálogo de planes 2026, correo obligatorio, reglas RN-013 a RN-015 y cambios CR-007 y CR-008 | Juan Diego Mejía Llano |                  |
 
 ### Registro de aprobaciones
 
@@ -151,18 +152,18 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 </tbody>
 </table>
 
-| **ID** | **Módulo / capacidad**       | **Descripción**                                                                                      | **Actores**                         | **Versión** | **Criterio de inclusión**              |
-| ------ | ---------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- | -------------------------------------- |
-| ALC-01 | Autenticación y roles        | Inicio de sesión con JWT y permisos por rol (Administrador y Empleado).                              | ACT-01, ACT-02                      | MVP         | Ningún usuario opera sin autenticarse. |
-| ALC-02 | Gestión del personal         | Crear, consultar y eliminar usuarios del personal.                                                   | ACT-01                              | MVP         | Necesario para separar funciones.      |
-| ALC-03 | Gestión de clientes          | Registrar, buscar, consultar y editar clientes; ver el estado de su membresía.                       | ACT-01, ACT-02                      | MVP         | Base de todos los procesos.            |
-| ALC-04 | Catálogo de planes           | Planes diario, quincenal, mensual y trimestral; crear, editar y desactivar.                          | ACT-01 (gestión), ACT-02 (consulta) | MVP         | Define duración y precio.              |
-| ALC-05 | Membresías                   | Asignar, renovar por cédula y marcar vencidas.                                                       | ACT-01, ACT-02                      | MVP         | Núcleo del negocio.                    |
-| ALC-06 | Control de acceso biométrico | Registro de huella y validación del ingreso con el sensor AS608 (sin apertura automática de puerta). | ACT-02, ACT-03, ACT-04              | MVP         | Objetivo principal del proyecto.       |
-| ALC-07 | Historial de accesos         | Registro y consulta de todos los intentos de acceso.                                                 | ACT-01, ACT-02                      | MVP         | Auditoría exigida por el propietario.  |
-| ALC-08 | Registro financiero          | Resumen de pagos por cliente, solo para el Administrador.                                            | ACT-01                              | MVP         | Control de ingresos.                   |
-| ALC-09 | Comprobante digital de pago  | Soporte del pago para el cliente.                                                                    | ACT-03                              | Posterior   | Prioridad Could (HU-009).              |
-| ALC-10 | Inicio (dashboard)           | Acciones rápidas, actividad reciente y membresías por vencer.                                        | ACT-01, ACT-02                      | MVP         | Agiliza el trabajo diario.             |
+| **ID** | **Módulo / capacidad**       | **Descripción**                                                                                                                                    | **Actores**                         | **Versión** | **Criterio de inclusión**              |
+| ------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- | -------------------------------------- |
+| ALC-01 | Autenticación y roles        | Inicio de sesión con JWT y permisos por rol (Administrador y Empleado).                                                                            | ACT-01, ACT-02                      | MVP         | Ningún usuario opera sin autenticarse. |
+| ALC-02 | Gestión del personal         | Crear, consultar y eliminar usuarios del personal.                                                                                                 | ACT-01                              | MVP         | Necesario para separar funciones.      |
+| ALC-03 | Gestión de clientes          | Registrar, buscar, consultar y editar clientes; ver el estado de su membresía.                                                                     | ACT-01, ACT-02                      | MVP         | Base de todos los procesos.            |
+| ALC-04 | Catálogo de planes           | Planes por tiempo (Sesión, Quincena, Mensualidad, Trimestre y tarifas de estudiantes) y tiqueteras de 6 y 12 ingresos; crear, editar y desactivar. | ACT-01 (gestión), ACT-02 (consulta) | MVP         | Define duración y precio.              |
+| ALC-05 | Membresías                   | Asignar, renovar por cédula y marcar vencidas.                                                                                                     | ACT-01, ACT-02                      | MVP         | Núcleo del negocio.                    |
+| ALC-06 | Control de acceso biométrico | Registro de huella y validación del ingreso con el sensor AS608 (sin apertura automática de puerta).                                               | ACT-02, ACT-03, ACT-04              | MVP         | Objetivo principal del proyecto.       |
+| ALC-07 | Historial de accesos         | Registro y consulta de todos los intentos de acceso.                                                                                               | ACT-01, ACT-02                      | MVP         | Auditoría exigida por el propietario.  |
+| ALC-08 | Registro financiero          | Resumen de pagos por cliente, solo para el Administrador.                                                                                          | ACT-01                              | MVP         | Control de ingresos.                   |
+| ALC-09 | Comprobante digital de pago  | Soporte del pago para el cliente.                                                                                                                  | ACT-03                              | Posterior   | Prioridad Could (HU-009).              |
+| ALC-10 | Inicio (dashboard)           | Acciones rápidas, actividad reciente y membresías por vencer.                                                                                      | ACT-01, ACT-02                      | MVP         | Agiliza el trabajo diario.             |
 
 ### 4.3 Alcance del proyecto
 
@@ -190,16 +191,16 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 
 ### 4.5 MVP y versiones posteriores
 
-| **Capacidad**                                           | **MVP** | **Versión posterior** | **No prevista** | **Justificación**                                      |
-| ------------------------------------------------------- | ------- | --------------------- | --------------- | ------------------------------------------------------ |
-| Autenticación, roles y personal                         | X       |                       |                 | Base de seguridad.                                     |
-| Clientes, planes y membresías                           | X       |                       |                 | Núcleo del negocio.                                    |
-| Validación de acceso con el sensor AS608 (CP2102)       | X       |                       |                 | Hoy opera el simulador; integración en curso (TT-010). |
-| Apertura automática de la puerta con relé y electroimán |         | X                     |                 | Retirada del MVP por CR-005.                           |
-| Historial de accesos                                    | X       |                       |                 | Auditoría.                                             |
-| Registro financiero con pagos reales                    | X       |                       |                 | Planeado en los sprints 11 y 12.                       |
-| Comprobante digital de pago                             |         | X                     |                 | Prioridad Could.                                       |
-| Pagos en línea y facturación electrónica                |         |                       | X               | EXC-01 y EXC-02.                                       |
+| **Capacidad**                                           | **MVP** | **Versión posterior** | **No prevista** | **Justificación**                                       |
+| ------------------------------------------------------- | ------- | --------------------- | --------------- | ------------------------------------------------------- |
+| Autenticación, roles y personal                         | X       |                       |                 | Base de seguridad.                                      |
+| Clientes, planes y membresías                           | X       |                       |                 | Núcleo del negocio.                                     |
+| Validación de acceso con el sensor AS608 (CP2102)       | X       |                       |                 | Integrado con el sensor AS608; el simulador se eliminó. |
+| Apertura automática de la puerta con relé y electroimán |         | X                     |                 | Retirada del MVP por CR-005.                            |
+| Historial de accesos                                    | X       |                       |                 | Auditoría.                                              |
+| Registro financiero con pagos reales                    | X       |                       |                 | Planeado en los sprints 11 y 12.                        |
+| Comprobante digital de pago                             |         | X                     |                 | Prioridad Could.                                        |
+| Pagos en línea y facturación electrónica                |         |                       | X               | EXC-01 y EXC-02.                                        |
 
 ### 4.6 Restricciones, supuestos y dependencias
 
@@ -228,16 +229,16 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 
 ### 5.1 Catálogo general
 
-| **ID** | **Nombre**                 | **Módulo**           | **Actor**                           | **Prioridad** | **Estado**                                                        | **Versión** |
-| ------ | -------------------------- | -------------------- | ----------------------------------- | ------------- | ----------------------------------------------------------------- | ----------- |
-| RF-001 | Registrar clientes         | Clientes             | ACT-01, ACT-02                      | Alta          | Implementado                                                      | MVP         |
-| RF-002 | Gestionar planes           | Planes               | ACT-01 (gestión), ACT-02 (consulta) | Alta          | Implementado                                                      | MVP         |
-| RF-003 | Validar acceso             | Control de acceso    | ACT-02, ACT-03                      | Alta          | Implementado                                                      | MVP         |
-| RF-004 | Control por huella         | Control de acceso    | ACT-01, ACT-02, ACT-04              | Media         | Implementado con lector simulado; integración del AS608 pendiente | MVP         |
-| RF-005 | Renovar membresía          | Membresías           | ACT-01, ACT-02                      | Media         | Implementado                                                      | MVP         |
-| RF-006 | Registrar pagos            | Finanzas             | ACT-01                              | Alta          | Implementado parcialmente                                         | MVP         |
-| RF-007 | Gestionar roles y personal | Seguridad y personal | ACT-01                              | Alta          | Implementado                                                      | MVP         |
-| RF-008 | Historial de accesos       | Control de acceso    | ACT-01, ACT-02                      | Media         | Implementado                                                      | MVP         |
+| **ID** | **Nombre**                 | **Módulo**           | **Actor**                           | **Prioridad** | **Estado**                       | **Versión** |
+| ------ | -------------------------- | -------------------- | ----------------------------------- | ------------- | -------------------------------- | ----------- |
+| RF-001 | Registrar clientes         | Clientes             | ACT-01, ACT-02                      | Alta          | Implementado                     | MVP         |
+| RF-002 | Gestionar planes           | Planes               | ACT-01 (gestión), ACT-02 (consulta) | Alta          | Implementado                     | MVP         |
+| RF-003 | Validar acceso             | Control de acceso    | ACT-02, ACT-03                      | Alta          | Implementado                     | MVP         |
+| RF-004 | Control por huella         | Control de acceso    | ACT-01, ACT-02, ACT-04              | Media         | Implementado con el sensor AS608 | MVP         |
+| RF-005 | Renovar membresía          | Membresías           | ACT-01, ACT-02                      | Media         | Implementado                     | MVP         |
+| RF-006 | Registrar pagos            | Finanzas             | ACT-01                              | Alta          | Implementado parcialmente        | MVP         |
+| RF-007 | Gestionar roles y personal | Seguridad y personal | ACT-01                              | Alta          | Implementado                     | MVP         |
+| RF-008 | Historial de accesos       | Control de acceso    | ACT-01, ACT-02                      | Media         | Implementado                     | MVP         |
 
 ### 5.2 Ficha detallada de requisito funcional
 
@@ -252,7 +253,7 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | Actor principal                | ACT-01 Administrador, ACT-02 Empleado                                                                                                                    |
 | Precondiciones                 | Usuario autenticado con rol Administrador o Empleado.                                                                                                    |
 | Disparador                     | Un nuevo socio llega a la recepción a inscribirse.                                                                                                       |
-| Entradas                       | Nombre (obligatorio), cédula (obligatoria), correo y teléfono (opcionales).                                                                              |
+| Entradas                       | Nombre, cédula y correo (obligatorios) y teléfono (opcional).                                                                                            |
 | Procesamiento / comportamiento | Valida formatos en el navegador y en el servidor, verifica que la cédula no exista y guarda el cliente.                                                  |
 | Salidas                        | Cliente registrado y mensaje de confirmación.                                                                                                            |
 | Postcondiciones                | El cliente queda disponible para asignarle membresía y registrar su huella.                                                                              |
@@ -268,28 +269,28 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 
 **RF-002 – Gestionar planes**
 
-| **Campo**                      | **Contenido**                                                                                                                                                   |
-| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ID y nombre                    | RF-002 – Gestionar planes                                                                                                                                       |
-| Descripción                    | El sistema debe permitir al Administrador crear, editar, desactivar y eliminar los planes (diario, quincenal, mensual y trimestral) y al Empleado consultarlos. |
-| Fuente                         | STK-01 / OBJ-01                                                                                                                                                 |
-| Justificación                  | El plan define la duración y el precio de cada membresía.                                                                                                       |
-| Actor principal                | ACT-01 Administrador                                                                                                                                            |
-| Precondiciones                 | Administrador autenticado.                                                                                                                                      |
-| Disparador                     | El propietario decide crear o ajustar una tarifa.                                                                                                               |
-| Entradas                       | Nombre, duración en días y precio.                                                                                                                              |
-| Procesamiento / comportamiento | Valida los datos y que el nombre sea único; al eliminar, verifica que el plan no tenga membresías asociadas.                                                    |
-| Salidas                        | Catálogo de planes actualizado.                                                                                                                                 |
-| Postcondiciones                | Solo los planes activos se ofrecen en nuevas asignaciones.                                                                                                      |
-| Excepciones                    | Nombre duplicado (409); plan con membresías asociadas (no se elimina); Empleado intenta modificar (403).                                                        |
-| Reglas de negocio asociadas    | RN-006                                                                                                                                                          |
-| Dependencias                   | RF-007                                                                                                                                                          |
-| Prioridad                      | Must / Alta                                                                                                                                                     |
-| Versión objetivo               | MVP                                                                                                                                                             |
-| Criterios de aceptación        | El Administrador crea y desactiva planes; un plan con membresías no se elimina; el Empleado solo consulta.                                                      |
-| Método de verificación         | Prueba (CP-004 a CP-006)                                                                                                                                        |
-| Responsable de validación      | Liliana Sofía Panesso Méndez (Product Owner)                                                                                                                    |
-| Estado                         | Implementado                                                                                                                                                    |
+| **Campo**                      | **Contenido**                                                                                                                                                                                                           |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ID y nombre                    | RF-002 – Gestionar planes                                                                                                                                                                                               |
+| Descripción                    | El sistema debe permitir al Administrador crear, editar, desactivar y eliminar los planes (por tiempo y tiqueteras con un número de ingresos) y al Empleado consultarlos. Todos los planes permiten un ingreso por día. |
+| Fuente                         | STK-01 / OBJ-01                                                                                                                                                                                                         |
+| Justificación                  | El plan define la duración y el precio de cada membresía.                                                                                                                                                               |
+| Actor principal                | ACT-01 Administrador                                                                                                                                                                                                    |
+| Precondiciones                 | Administrador autenticado.                                                                                                                                                                                              |
+| Disparador                     | El propietario decide crear o ajustar una tarifa.                                                                                                                                                                       |
+| Entradas                       | Nombre, duración en días y precio.                                                                                                                                                                                      |
+| Procesamiento / comportamiento | Valida los datos y que el nombre sea único; al eliminar, verifica que el plan no tenga membresías asociadas.                                                                                                            |
+| Salidas                        | Catálogo de planes actualizado.                                                                                                                                                                                         |
+| Postcondiciones                | Solo los planes activos se ofrecen en nuevas asignaciones.                                                                                                                                                              |
+| Excepciones                    | Nombre duplicado (409); plan con membresías asociadas (no se elimina); Empleado intenta modificar (403).                                                                                                                |
+| Reglas de negocio asociadas    | RN-006                                                                                                                                                                                                                  |
+| Dependencias                   | RF-007                                                                                                                                                                                                                  |
+| Prioridad                      | Must / Alta                                                                                                                                                                                                             |
+| Versión objetivo               | MVP                                                                                                                                                                                                                     |
+| Criterios de aceptación        | El Administrador crea y desactiva planes; un plan con membresías no se elimina; el Empleado solo consulta.                                                                                                              |
+| Método de verificación         | Prueba (CP-004 a CP-006)                                                                                                                                                                                                |
+| Responsable de validación      | Liliana Sofía Panesso Méndez (Product Owner)                                                                                                                                                                            |
+| Estado                         | Implementado                                                                                                                                                                                                            |
 
 **RF-003 – Validar acceso**
 
@@ -327,7 +328,7 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | Actor principal                | ACT-01 Administrador, ACT-02 Empleado, ACT-04 Lector                                                                                                                                                             |
 | Precondiciones                 | Cliente registrado; variable BIOMETRIA\_SALT configurada.                                                                                                                                                        |
 | Disparador                     | La recepción registra la huella de un cliente nuevo.                                                                                                                                                             |
-| Entradas                       | Captura del sensor AS608 conectado por USB mediante el conversor CP2102 (hoy simulada con un identificador de prueba).                                                                                           |
+| Entradas                       | Captura del sensor AS608 conectado por USB mediante el conversor CP2102: dos lecturas del mismo dedo al registrar y una al validar.                                                                              |
 | Procesamiento / comportamiento | Genera un hash irreversible de la plantilla y verifica que la huella no esté asignada a otro cliente.                                                                                                            |
 | Salidas                        | Huella registrada (sin devolver el hash).                                                                                                                                                                        |
 | Postcondiciones                | El cliente puede identificarse en el lector.                                                                                                                                                                     |
@@ -645,20 +646,23 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 
 ### 7.1 Catálogo de reglas
 
-| **ID** | **Nombre**                  | **Regla**                                                                                                                                                     | **Fuente**               | **Excepciones**                                                      | **Requisitos asociados** | **Estado** |
-| ------ | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------------- | ------------------------ | ---------- |
-| RN-001 | Clientes no se eliminan     | Los clientes no deben eliminarse: se conserva su historial y solo cambia el estado de su membresía.                                                           | STK-01                   | Ninguna                                                              | RF-001                   | Aprobada   |
-| RN-002 | Vencimiento automático      | Cuando la fecha actual supera la fecha de fin, la membresía debe pasar a «vencida» y el acceso se niega.                                                      | STK-01                   | Ninguna                                                              | RF-003, RF-005           | Aprobada   |
-| RN-003 | Una membresía activa        | Un cliente no debe tener más de una membresía activa a la vez.                                                                                                | STK-01                   | Ninguna                                                              | RF-005                   | Aprobada   |
-| RN-004 | Fecha de fin calculada      | La fecha de fin debe calcularla el servidor: fecha de inicio + duración del plan.                                                                             | STK-04                   | Ninguna                                                              | RF-005, RF-006           | Aprobada   |
-| RN-005 | Renovación encadenada       | Al renovar con la membresía vigente, la nueva debe empezar al día siguiente del vencimiento y la anterior pasa a «cancelada»; si estaba vencida, empieza hoy. | STK-01, STK-02           | Ninguna                                                              | RF-005                   | Aprobada   |
-| RN-006 | Planes activos              | Solo se deben asignar planes activos; un plan con membresías asociadas no se elimina, se desactiva.                                                           | STK-01                   | Ninguna                                                              | RF-002                   | Aprobada   |
-| RN-007 | Cédula única                | La cédula del cliente debe ser obligatoria, numérica (6 a 15 dígitos) y única.                                                                                | STK-02                   | Ninguna                                                              | RF-001                   | Aprobada   |
-| RN-008 | Una huella por cliente      | Cada cliente debe tener como máximo una huella y una huella no puede registrarse en dos clientes; solo se guarda el hash.                                     | Ley 1581 de 2012; STK-03 | Para registrar de nuevo, el Administrador elimina la huella anterior | RF-004                   | Aprobada   |
-| RN-009 | Condición de ingreso        | Solo se permite el ingreso si la membresía más reciente está activa y su fecha de fin es hoy o posterior.                                                     | STK-01                   | Ninguna                                                              | RF-003                   | Aprobada   |
-| RN-010 | Auditoría de accesos        | Todo intento de acceso, permitido o denegado, debe quedar registrado.                                                                                         | STK-01                   | Ninguna                                                              | RF-003, RF-008           | Aprobada   |
-| RN-011 | Exclusivo del Administrador | El registro financiero y la gestión del personal solo deben estar disponibles para el Administrador.                                                          | STK-01                   | Ninguna                                                              | RF-006, RF-007           | Aprobada   |
-| RN-012 | Protección de cuentas       | No se debe eliminar la propia cuenta ni al último administrador.                                                                                              | STK-04                   | Ninguna                                                              | RF-007                   | Aprobada   |
+| **ID** | **Nombre**                  | **Regla**                                                                                                                                                                                                             | **Fuente**               | **Excepciones**                                                                                                  | **Requisitos asociados** | **Estado**                             |
+| ------ | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------- | ------------------------ | -------------------------------------- |
+| RN-001 | Clientes no se eliminan     | Los clientes no deben eliminarse: se conserva su historial y solo cambia el estado de su membresía.                                                                                                                   | STK-01                   | Ninguna                                                                                                          | RF-001                   | Aprobada                               |
+| RN-002 | Vencimiento automático      | Cuando la fecha actual supera la fecha de fin, la membresía debe pasar a «vencida» y el acceso se niega.                                                                                                              | STK-01                   | Ninguna                                                                                                          | RF-003, RF-005           | Aprobada                               |
+| RN-003 | Una membresía activa        | Un cliente no debe tener más de una membresía activa a la vez.                                                                                                                                                        | STK-01                   | Ninguna                                                                                                          | RF-005                   | Aprobada                               |
+| RN-004 | Fecha de fin calculada      | La fecha de fin debe calcularla el servidor: fecha de inicio + duración del plan.                                                                                                                                     | STK-04                   | Ninguna                                                                                                          | RF-005, RF-006           | Aprobada                               |
+| RN-005 | Renovación encadenada       | Al renovar con la membresía vigente, la nueva queda «pendiente» y empieza al día siguiente del vencimiento (la anterior sigue activa); si estaba vencida, empieza hoy. Una tiquetera sin usar se reemplaza desde hoy. | STK-01, STK-02           | Ninguna                                                                                                          | RF-005                   | Aprobada                               |
+| RN-006 | Planes activos              | Solo se deben asignar planes activos; un plan con membresías asociadas no se elimina, se desactiva.                                                                                                                   | STK-01                   | Ninguna                                                                                                          | RF-002                   | Aprobada                               |
+| RN-007 | Cédula única                | La cédula del cliente debe ser obligatoria, numérica (6 a 15 dígitos) y única.                                                                                                                                        | STK-02                   | Ninguna                                                                                                          | RF-001                   | Aprobada                               |
+| RN-008 | Una huella por cliente      | Cada cliente debe tener como máximo una huella y una huella no puede registrarse en dos clientes: el sensor la busca antes de guardarla y el hash es único. Solo se guarda el hash.                                   | Ley 1581 de 2012; STK-03 | Para registrar de nuevo, el Administrador elimina la huella anterior (se borra del sensor y de la base de datos) | RF-004                   | Aprobada                               |
+| RN-009 | Condición de ingreso        | Solo se permite el ingreso si la membresía más reciente está activa y su fecha de fin es hoy o posterior. En una tiquetera, además, debe tener ingresos disponibles.                                                  | STK-01                   | Ninguna                                                                                                          | RF-003                   | Aprobada                               |
+| RN-010 | Auditoría de accesos        | Todo intento de acceso, permitido o denegado, debe quedar registrado.                                                                                                                                                 | STK-01                   | Ninguna                                                                                                          | RF-003, RF-008           | Aprobada                               |
+| RN-011 | Exclusivo del Administrador | El registro financiero y la gestión del personal solo deben estar disponibles para el Administrador.                                                                                                                  | STK-01                   | Ninguna                                                                                                          | RF-006, RF-007           | Aprobada                               |
+| RN-012 | Protección de cuentas       | No se debe eliminar la propia cuenta ni al último administrador.                                                                                                                                                      | STK-04                   | Ninguna                                                                                                          | RF-007                   | Aprobada                               |
+| RN-013 | Tiqueteras                  | Una tiquetera incluye un número de ingresos; su duración cuenta desde el primer ingreso y descuenta como máximo un ingreso por día.                                                                                   | STK-01                   | Ninguna                                                                                                          | RF-002, RF-003           | Aprobada                               |
+| RN-014 | Membresía pendiente         | Una membresía adquirida mientras el cliente tiene otra activa queda «pendiente» y se activa automáticamente en su fecha de inicio. Solo se permite una pendiente y solo se puede cancelar.                            | STK-01                   | Ninguna                                                                                                          | RF-005                   | Aprobada                               |
+| RN-015 | Un ingreso por día          | Todos los planes permiten un solo ingreso por día.                                                                                                                                                                    | STK-01                   | Ninguna                                                                                                          | RF-002, RF-003           | Aprobada (el backend aún no la aplica) |
 
 ### 7.2 Ficha de regla de negocio
 
@@ -821,21 +825,21 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 
 ### 10.2 Ficha de integración
 
-| **Campo**                  | **Contenido**                                                                                                                                                                             |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ID y nombre                | INT-01 – Sensor de huella AS608 con conversor USB CP2102                                                                                                                                  |
-| Proveedor / propietario    | Sensor óptico AS608 conectado al computador de la recepción con el conversor USB-serial CP2102; propietario: gimnasio Zona Fit.                                                           |
-| Objetivo                   | Identificar al cliente por su huella para validar el acceso.                                                                                                                              |
-| Protocolo o mecanismo      | Comunicación serie (UART) a través del CP2102; el adaptador LectorBiometrico (patrón Adapter) traduce los comandos del sensor. Hoy opera el adaptador simulador (TIPO\_LECTOR=simulador). |
-| Autenticación              | El agente de la recepción llama a la API con un token JWT del personal.                                                                                                                   |
-| Datos de entrada y salida  | Entrada: captura de la huella. Salida: cliente identificado o huella no reconocida.                                                                                                       |
-| Frecuencia / volumen       | Cada ingreso; de 150 a 200 clientes activos, con picos en la mañana y la noche.                                                                                                           |
-| Tiempo de espera           | Menos de 2 segundos por validación (RNF-003).                                                                                                                                             |
-| Manejo de indisponibilidad | Si el sensor o la API no responden, se niega el acceso y la recepción valida manualmente por cédula.                                                                                      |
-| Reintentos e idempotencia  | El cliente puede volver a poner la huella; cada intento se registra por separado.                                                                                                         |
-| Privacidad y seguridad     | Solo se guarda el hash de la plantilla; nunca la imagen (RN-008, RNF-006).                                                                                                                |
-| Requisitos relacionados    | RF-003, RF-004, RNF-003, RNF-006                                                                                                                                                          |
-| Evidencia de prueba        | Pendiente de pruebas con el sensor AS608; con el simulador: CP-009 a CP-011.                                                                                                              |
+| **Campo**                  | **Contenido**                                                                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| ID y nombre                | INT-01 – Sensor de huella AS608 con conversor USB CP2102                                                                                |
+| Proveedor / propietario    | Sensor óptico AS608 conectado al computador de la recepción con el conversor USB-serial CP2102; propietario: gimnasio Zona Fit.         |
+| Objetivo                   | Identificar al cliente por su huella para validar el acceso.                                                                            |
+| Protocolo o mecanismo      | Comunicación serie (UART) a través del CP2102; el adaptador AS608 (patrón Adapter, TIPO\_LECTOR=as608) traduce los comandos del sensor. |
+| Autenticación              | El agente de la recepción llama a la API con un token JWT del personal.                                                                 |
+| Datos de entrada y salida  | Entrada: captura de la huella. Salida: cliente identificado o huella no reconocida.                                                     |
+| Frecuencia / volumen       | Cada ingreso; de 150 a 200 clientes activos, con picos en la mañana y la noche.                                                         |
+| Tiempo de espera           | Menos de 2 segundos por validación (RNF-003).                                                                                           |
+| Manejo de indisponibilidad | Si el sensor o la API no responden, se niega el acceso y la recepción valida manualmente por cédula.                                    |
+| Reintentos e idempotencia  | El cliente puede volver a poner la huella; cada intento se registra por separado.                                                       |
+| Privacidad y seguridad     | Solo se guarda el hash de la plantilla; nunca la imagen (RN-008, RNF-006).                                                              |
+| Requisitos relacionados    | RF-003, RF-004, RNF-003, RNF-006                                                                                                        |
+| Evidencia de prueba        | Probado con el sensor AS608 el 10/11/2026: registro, rechazo de huellas duplicadas y borrado (CP-010, CP-011 y CP-022).                 |
 
 ## 11\. Priorización y versiones
 
@@ -909,6 +913,8 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | CR-004 | Sprint 10 (oct. 2026) | El registro financiero se calcula con las membresías mientras se crea la tabla de pagos.                                                            | RF-006, HU-008                         | Aprobado (temporal)              | Juan Diego Mejía Llano | MVP         |
 | CR-005 |                       | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02 | Aprobado                         | Juan Diego Mejía Llano | MVP         |
 | CR-006 |                       | El backend se publicará en un hosting distinto de Render; el proveedor está por definir.                                                            | TT-009, INT-02, RSD-07                 | Aprobado (proveedor por definir) | Juan Diego Mejía Llano | MVP         |
+| CR-007 | 10/11/2026            | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                         | RF-004, INT-01, UI-06                  | Aprobado                         | Juan Diego Mejía Llano | MVP         |
+| CR-008 | 10/11/2026            | Regla de un ingreso por día en todos los planes; el frontend la muestra y la validación del backend queda pendiente.                                | RF-002, RF-003, RN-015                 | Aprobado (backend pendiente)     | Juan Diego Mejía Llano | MVP         |
 
 ## 13\. Trazabilidad y cobertura
 
@@ -925,17 +931,17 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 
 ### 13.2 Matriz resumida
 
-| **RF/RNF** | **Origen**              | **Reglas**             | **HU/CU**               | **Diseño**   | **Componente**                            | **Prueba**      | **Evidencia** | **Estado**              |
-| ---------- | ----------------------- | ---------------------- | ----------------------- | ------------ | ----------------------------------------- | --------------- | ------------- | ----------------------- |
-| RF-001     | OBJ-01 / STK-02         | RN-001, RN-007         | HU-001 / CU-002         | UI-03        | cliente.service.js                        | CP-001 a CP-003 | Pendiente     | Implementado            |
-| RF-002     | OBJ-01 / STK-01         | RN-006                 | HU-003 / CU-003         | UI-04        | plan.service.js                           | CP-004 a CP-006 | Pendiente     | Implementado            |
-| RF-003     | OBJ-01, OBJ-04 / STK-01 | RN-002, RN-009, RN-010 | HU-006, HU-007 / CU-004 | UI-06        | accesoFisico.service.js, estadosAcceso    | CP-007 a CP-009 | Pendiente     | Implementado            |
-| RF-004     | OBJ-04 / STK-01         | RN-008                 | HU-005 / CU-004         | UI-06        | biometria.service.js, hardware            | CP-010, CP-011  | Pendiente     | Implementado (simulado) |
-| RF-005     | OBJ-01 / STK-02         | RN-003, RN-004, RN-005 | HU-004 / CU-005         | UI-05        | membresia.service.js                      | CP-012, CP-013  | Pendiente     | Implementado            |
-| RF-006     | OBJ-02, OBJ-05 / STK-01 | RN-004, RN-011         | HU-008 / CU-005, CU-007 | UI-05, UI-09 | finanzasService.js                        | CP-014, CP-015  | Pendiente     | Parcial                 |
-| RF-007     | OBJ-03 / STK-01         | RN-011, RN-012         | HU-002 / CU-001, CU-006 | UI-01, UI-08 | auth y rol middleware, usuario.service.js | CP-016 a CP-018 | Pendiente     | Implementado            |
-| RF-008     | OBJ-04 / STK-01         | RN-010                 | HU-006 / CU-004         | UI-07        | registroAcceso.repository.js              | CP-019          | Pendiente     | Implementado            |
-| RNF-001    | STK-01, STK-04          | RN-008, RN-011         | HU-010                  | —            | auth.middleware.js, rol.middleware.js     | CP-020, CP-021  | Pendiente     | Implementado            |
+| **RF/RNF** | **Origen**              | **Reglas**             | **HU/CU**               | **Diseño**   | **Componente**                            | **Prueba**             | **Evidencia**                              | **Estado**   |
+| ---------- | ----------------------- | ---------------------- | ----------------------- | ------------ | ----------------------------------------- | ---------------------- | ------------------------------------------ | ------------ |
+| RF-001     | OBJ-01 / STK-02         | RN-001, RN-007         | HU-001 / CU-002         | UI-03        | cliente.service.js                        | CP-001 a CP-003        | Pendiente                                  | Implementado |
+| RF-002     | OBJ-01 / STK-01         | RN-006                 | HU-003 / CU-003         | UI-04        | plan.service.js                           | CP-004 a CP-006        | Pendiente                                  | Implementado |
+| RF-003     | OBJ-01, OBJ-04 / STK-01 | RN-002, RN-009, RN-010 | HU-006, HU-007 / CU-004 | UI-06        | accesoFisico.service.js, estadosAcceso    | CP-007 a CP-009        | Pendiente                                  | Implementado |
+| RF-004     | OBJ-04 / STK-01         | RN-008                 | HU-005 / CU-004         | UI-06        | biometria.service.js, hardware            | CP-010, CP-011, CP-022 | Pruebas manuales con el AS608 (10/11/2026) | Implementado |
+| RF-005     | OBJ-01 / STK-02         | RN-003, RN-004, RN-005 | HU-004 / CU-005         | UI-05        | membresia.service.js                      | CP-012, CP-013         | Pendiente                                  | Implementado |
+| RF-006     | OBJ-02, OBJ-05 / STK-01 | RN-004, RN-011         | HU-008 / CU-005, CU-007 | UI-05, UI-09 | finanzasService.js                        | CP-014, CP-015         | Pendiente                                  | Parcial      |
+| RF-007     | OBJ-03 / STK-01         | RN-011, RN-012         | HU-002 / CU-001, CU-006 | UI-01, UI-08 | auth y rol middleware, usuario.service.js | CP-016 a CP-018        | Pendiente                                  | Implementado |
+| RF-008     | OBJ-04 / STK-01         | RN-010                 | HU-006 / CU-004         | UI-07        | registroAcceso.repository.js              | CP-019                 | Pendiente                                  | Implementado |
+| RNF-001    | STK-01, STK-04          | RN-008, RN-011         | HU-010                  | —            | auth.middleware.js, rol.middleware.js     | CP-020, CP-021         | Pendiente                                  | Implementado |
 
 ### 13.3 Reglas de cobertura
 
@@ -964,13 +970,13 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 
 ### 14.2 Registro de observaciones
 
-| **ID**  | **Sección / requisito** | **Observación**                                                                                    | **Severidad** | **Responsable**              | **Fecha límite** | **Estado** |
-| ------- | ----------------------- | -------------------------------------------------------------------------------------------------- | ------------- | ---------------------------- | ---------------- | ---------- |
-| OBS-001 | RN-001 / RF-001         | El backend mantiene la ruta DELETE /api/clientes/:id, que contradice RN-001.                       | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Abierta    |
-| OBS-002 | RN-012 / RF-007         | La regla de no eliminar la propia cuenta ni al último administrador solo se valida en el frontend. | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Abierta    |
-| OBS-003 | RNF-001                 | No hay límite de intentos de inicio de sesión ni CORS restringido.                                 | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Abierta    |
-| OBS-004 | RF-006                  | Los pagos se estiman con el precio actual del plan; falta la tabla de pagos.                       | Mayor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |
-| OBS-005 | RN-002                  | El vencimiento se marca al consultar, no con una tarea programada.                                 | Menor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |
+| **ID**  | **Sección / requisito** | **Observación**                                                                                                | **Severidad** | **Responsable**              | **Fecha límite** | **Estado** |
+| ------- | ----------------------- | -------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------------- | ---------------- | ---------- |
+| OBS-001 | RN-001 / RF-001         | El backend mantiene la ruta DELETE /api/clientes/:id, que contradice RN-001.                                   | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Abierta    |
+| OBS-002 | RN-012 / RF-007         | La regla de no eliminar la propia cuenta ni al último administrador solo se valida en el frontend.             | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Abierta    |
+| OBS-003 | RNF-001                 | El límite de intentos de inicio de sesión ya está implementado (5 cada 15 minutos); CORS sigue sin restringir. | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | En curso   |
+| OBS-004 | RF-006                  | Los pagos se estiman con el precio actual del plan; falta la tabla de pagos.                                   | Mayor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |
+| OBS-005 | RN-002                  | El vencimiento se marca al consultar, no con una tarea programada.                                             | Menor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |
 
 ### 14.3 Acta de aprobación
 

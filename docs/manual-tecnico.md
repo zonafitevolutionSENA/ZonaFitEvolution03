@@ -5,10 +5,11 @@
 
 ## Control documental
 
-| **Versión** | **Fecha**  | **Descripción del cambio**                                  | **Elaboró**                  | **Revisó** | **Aprobó** | **Estado**  |
-| ----------- | ---------- | ----------------------------------------------------------- | ---------------------------- | ---------- | ---------- | ----------- |
-| 0.1         | 20/10/2026 | Manual técnico inicial en el documento maestro (sección 10) | Liliana Sofía Panesso Méndez |            |            | Borrador    |
-| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 y hosting por definir | Juan Diego Mejía Llano       |            |            | En revisión |
+| **Versión** | **Fecha**  | **Descripción del cambio**                                                                                          | **Elaboró**                  | **Revisó** | **Aprobó** | **Estado**  |
+| ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------- | ---------- | ----------- |
+| 0.1         | 20/10/2026 | Manual técnico inicial en el documento maestro (sección 10)                                                         | Liliana Sofía Panesso Méndez |            |            | Borrador    |
+| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 y hosting por definir                                                         | Juan Diego Mejía Llano       |            |            | En revisión |
+| 1.1         | 10/11/2026 | Sensor AS608 integrado: variables PUERTO\_LECTOR, incidentes 0x17 y simulador eliminado; init.sql como único script | Juan Diego Mejía Llano       |            |            | En revisión |
 
 ### Aprobaciones
 
@@ -120,12 +121,12 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 ### 3.2 Componentes desplegables
 
-| **ID** | **Componente**       | **Artefacto generado**    | **Puerto / endpoint** | **Dependencias** | **Responsable**              |
-| ------ | -------------------- | ------------------------- | --------------------- | ---------------- | ---------------------------- |
-| CMP-01 | Frontend SPA         | dist/ (npm run build)     | 5173 en desarrollo    | VITE\_API\_URL   | Juan Diego Mejía Llano       |
-| CMP-02 | API REST             | Código fuente (npm start) | 3000 · /api           | MySQL, .env      | Liliana Sofía Panesso Méndez |
-| CMP-03 | Base de datos        | Esquema init.sql          | 3306                  | —                | Liliana Sofía Panesso Méndez |
-| CMP-04 | Adaptador del sensor | src/hardware              | USB-serie (CP2102)    | TIPO\_LECTOR     | Liliana Sofía Panesso Méndez |
+| **ID** | **Componente**       | **Artefacto generado**    | **Puerto / endpoint** | **Dependencias**             | **Responsable**              |
+| ------ | -------------------- | ------------------------- | --------------------- | ---------------------------- | ---------------------------- |
+| CMP-01 | Frontend SPA         | dist/ (npm run build)     | 5173 en desarrollo    | VITE\_API\_URL               | Juan Diego Mejía Llano       |
+| CMP-02 | API REST             | Código fuente (npm start) | 3000 · /api           | MySQL, .env                  | Liliana Sofía Panesso Méndez |
+| CMP-03 | Base de datos        | Esquema init.sql          | 3306                  | —                            | Liliana Sofía Panesso Méndez |
+| CMP-04 | Adaptador del sensor | src/hardware              | USB-serie (CP2102)    | TIPO\_LECTOR, PUERTO\_LECTOR | Liliana Sofía Panesso Méndez |
 
 ## 4\. Requisitos de infraestructura
 
@@ -234,14 +235,15 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 ### 6.1 Matriz de variables de entorno
 
-| **Variable**                     | **Descripción**                         | **Tipo**       | **Obligatoria** | **Valor de ejemplo**           | **Secreto**          | **Ambientes** |
-| -------------------------------- | --------------------------------------- | -------------- | --------------- | ------------------------------ | -------------------- | ------------- |
-| DB\_HOST, DB\_PORT               | Servidor y puerto de MySQL              | Texto / número | Sí              | localhost, 3306                | No                   | Todos         |
-| DB\_USER, DB\_PASSWORD, DB\_NAME | Credenciales y base                     | Texto          | Sí              | root, —, zonafitevolution      | Sí (DB\_PASSWORD)    | Todos         |
-| PORT                             | Puerto de la API                        | Número         | No              | 3000                           | No                   | Todos         |
-| JWT\_SECRET, JWT\_EXPIRES\_IN    | Firma y duración del token              | Texto          | Sí              | \<valor largo aleatorio\>, 8h  | Sí (JWT\_SECRET)     | Todos         |
-| BIOMETRIA\_SALT, TIPO\_LECTOR    | Sal de plantillas; adaptador del sensor | Texto          | Sí              | \<valor aleatorio\>, simulador | Sí (BIOMETRIA\_SALT) | Todos         |
-| VITE\_API\_URL                   | URL base de la API (frontend)           | URL            | Sí              | http://localhost:3000/api      | No                   | Todos         |
+| **Variable**                     | **Descripción**                         | **Tipo**       | **Obligatoria**     | **Valor de ejemplo**          | **Secreto**          | **Ambientes** |
+| -------------------------------- | --------------------------------------- | -------------- | ------------------- | ----------------------------- | -------------------- | ------------- |
+| DB\_HOST, DB\_PORT               | Servidor y puerto de MySQL              | Texto / número | Sí                  | localhost, 3306               | No                   | Todos         |
+| DB\_USER, DB\_PASSWORD, DB\_NAME | Credenciales y base                     | Texto          | Sí                  | root, —, zonafitevolution     | Sí (DB\_PASSWORD)    | Todos         |
+| PORT                             | Puerto de la API                        | Número         | No                  | 3000                          | No                   | Todos         |
+| JWT\_SECRET, JWT\_EXPIRES\_IN    | Firma y duración del token              | Texto          | Sí                  | \<valor largo aleatorio\>, 8h | Sí (JWT\_SECRET)     | Todos         |
+| BIOMETRIA\_SALT, TIPO\_LECTOR    | Sal de plantillas; adaptador del sensor | Texto          | Sí                  | \<valor aleatorio\>, as608    | Sí (BIOMETRIA\_SALT) | Todos         |
+| PUERTO\_LECTOR, LECTOR\_BAUDIOS  | Puerto COM y velocidad del sensor AS608 | Texto / número | Sí (PUERTO\_LECTOR) | COM3, 57600                   | No                   | Todos         |
+| VITE\_API\_URL                   | URL base de la API (frontend)           | URL            | Sí                  | http://localhost:3000/api     | No                   | Todos         |
 
 <table>
 <tbody>
@@ -254,15 +256,15 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 ### 6.2 Configuración por ambiente
 
-| **Aspecto**        | **Desarrollo**                     | **Pruebas**              | **Producción**                           |
-| ------------------ | ---------------------------------- | ------------------------ | ---------------------------------------- |
-| Base de datos      | MySQL local, base zonafitevolution |                          | MySQL gestionado (proveedor por definir) |
-| Nivel de logs      |                                    |                          |                                          |
-| Dominio / URL      | Local (localhost)                  |                          | Por definir                              |
-| Servicios externos | Simulador (TIPO\_LECTOR=simulador) |                          | Sensor AS608                             |
-| Datos permitidos   | Sintéticos                         | Ficticios o anonimizados | Reales                                   |
-| Depuración         | Consola del backend                | Limitada                 | Deshabilitada                            |
-| Secretos           | .env local (fuera de Git)          | Gestor del ambiente      | Variables del hosting; secretos nuevos   |
+| **Aspecto**        | **Desarrollo**                                    | **Pruebas**              | **Producción**                           |
+| ------------------ | ------------------------------------------------- | ------------------------ | ---------------------------------------- |
+| Base de datos      | MySQL local, base zonafitevolution                |                          | MySQL gestionado (proveedor por definir) |
+| Nivel de logs      |                                                   |                          |                                          |
+| Dominio / URL      | Local (localhost)                                 |                          | Por definir                              |
+| Servicios externos | Sensor AS608 (TIPO\_LECTOR=as608, PUERTO\_LECTOR) |                          | Sensor AS608                             |
+| Datos permitidos   | Sintéticos                                        | Ficticios o anonimizados | Reales                                   |
+| Depuración         | Consola del backend                               | Limitada                 | Deshabilitada                            |
+| Secretos           | .env local (fuera de Git)                         | Gestor del ambiente      | Variables del hosting; secretos nuevos   |
 
 ### 6.3 Verificación de configuración
 
@@ -345,7 +347,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 <td><p>cd BackendZonafitevolution</p>
 <p>mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS zonafitevolution;"</p>
 <p>mysql -u root -p zonafitevolution &lt; database\init.sql</p>
-<p>Atención: init.sql borra y vuelve a crear roles, usuarios y membresias; no ejecutarlo sobre una base con datos. Crea los planes diario, quincenal, mensual y trimestral.</p>
+<p>Atención: init.sql borra y vuelve a crear roles, usuarios y membresias; no ejecutarlo sobre una base con datos. Crea los 8 planes de 2026 (Sesión, Quincena, Mensualidad, Trimestre, tarifas de estudiantes y tiqueteras x6 y x12). Es el único script SQL: ante un cambio de esquema se recrea la base.</p>
 <p>Usuario técnico con permisos mínimos: por definir para producción.</p></td>
 </tr>
 </tbody>
@@ -353,13 +355,13 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 ### 8.2 Migraciones
 
-| **Operación**         | **Comando / procedimiento**                              | **Precondición** | **Resultado esperado** | **Rollback** |
-| --------------------- | -------------------------------------------------------- | ---------------- | ---------------------- | ------------ |
-| Consultar estado      | mysql -u root -p -e "USE zonafitevolution; SHOW TABLES;" |                  |                        |              |
-| Aplicar migraciones   | No hay migraciones: database\\init.sql (solo base vacía) |                  |                        |              |
-| Crear nueva migración | Script SQL manual (por definir)                          |                  |                        |              |
-| Revertir migración    | Restaurar respaldo                                       |                  |                        |              |
-| Validar esquema       | SHOW TABLES y DESCRIBE \<tabla\>                         |                  |                        |              |
+| **Operación**         | **Comando / procedimiento**                                                                         | **Precondición** | **Resultado esperado** | **Rollback** |
+| --------------------- | --------------------------------------------------------------------------------------------------- | ---------------- | ---------------------- | ------------ |
+| Consultar estado      | mysql -u root -p -e "USE zonafitevolution; SHOW TABLES;"                                            |                  |                        |              |
+| Aplicar migraciones   | No hay migraciones: database\\init.sql es el único script (recrear la base ante cambios de esquema) |                  |                        |              |
+| Crear nueva migración | Editar database\\init.sql y recrear la base                                                         |                  |                        |              |
+| Revertir migración    | Restaurar respaldo                                                                                  |                  |                        |              |
+| Validar esquema       | SHOW TABLES y DESCRIBE \<tabla\>                                                                    |                  |                        |              |
 
 ### 8.3 Datos semilla
 
@@ -774,20 +776,20 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 ### 17.4 Deuda técnica
 
-| **ID** | **Descripción**                                                                        | **Impacto**                                                    | **Riesgo** | **Prioridad** | **Plan**                                     | **Versión objetivo** |
-| ------ | -------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------- | ------------- | -------------------------------------------- | -------------------- |
-| DT-01  | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Histórico financiero inexacto; no se guarda el método de pago. |            |               | Crear la tabla pagos (TT-005).               |                      |
-| DT-02  | El sensor AS608 aún no está integrado; opera el adaptador simulador.                   | El control de acceso real no está operativo.                   |            |               | Adaptador del AS608 y agente local (TT-010). |                      |
-| DT-03  | Vencimiento marcado desde el frontend, no con tarea programada.                        | Estado guardado desactualizado.                                |            |               | Tarea programada en el backend (TT-006).     |                      |
-| DT-04  | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Contradicción regla–API.                                       |            |               | Integrar TT-002.                             |                      |
-| DT-05  | La regla del último administrador solo se valida en el frontend.                       | Se puede saltar llamando la API.                               |            |               | Integrar TT-001.                             |                      |
-| DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                    |                      |
-| DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                    |                      |
-| DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Regresiones dependen de pruebas manuales.                      |            |               | TT-007 y TT-008.                             |                      |
-| DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                     |                      |
-| DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Adoptar migraciones versionadas.             |                      |
-| DT-11  | Sistema no desplegado; hosting de la API por definir.                                  | Solo funciona en local.                                        |            |               | TT-009.                                      |                      |
-| DT-12  | Archivos vacíos cd y npm en la raíz del backend.                                       | Ruido en el repositorio.                                       |            |               | Eliminarlos con un commit chore.             |                      |
+| **ID** | **Descripción**                                                                        | **Impacto**                                                    | **Riesgo** | **Prioridad** | **Plan**                                                                                       | **Versión objetivo** |
+| ------ | -------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------- | ------------- | ---------------------------------------------------------------------------------------------- | -------------------- |
+| DT-01  | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Histórico financiero inexacto; no se guarda el método de pago. |            |               | Crear la tabla pagos (TT-005).                                                                 |                      |
+| DT-02  | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | —                                                              |            |               | —                                                                                              |                      |
+| DT-03  | Vencimiento marcado desde el frontend, no con tarea programada.                        | Estado guardado desactualizado.                                |            |               | Tarea programada en el backend (TT-006).                                                       |                      |
+| DT-04  | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Contradicción regla–API.                                       |            |               | Integrar TT-002.                                                                               |                      |
+| DT-05  | La regla del último administrador solo se valida en el frontend.                       | Se puede saltar llamando la API.                               |            |               | Integrar TT-001.                                                                               |                      |
+| DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
+| DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                                                                      |                      |
+| DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Regresiones dependen de pruebas manuales.                      |            |               | TT-007 y TT-008.                                                                               |                      |
+| DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                                                                       |                      |
+| DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                      |
+| DT-11  | Sistema no desplegado; hosting de la API por definir.                                  | Solo funciona en local.                                        |            |               | TT-009.                                                                                        |                      |
+| DT-12  | Archivos vacíos cd y npm en la raíz del backend.                                       | Ruido en el repositorio.                                       |            |               | Eliminarlos con un commit chore.                                                               |                      |
 
 ## 18\. Diagnóstico y solución de problemas
 
@@ -809,16 +811,18 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 ### 18.2 Catálogo de incidentes frecuentes
 
-| **Código** | **Síntoma**                                                    | **Causa probable**                          | **Diagnóstico**              | **Solución**                                                   | **Escalar cuando**      |
-| ---------- | -------------------------------------------------------------- | ------------------------------------------- | ---------------------------- | -------------------------------------------------------------- | ----------------------- |
-| INC-01     | La aplicación no inicia                                        | Puerto 3000 ocupado (EADDRINUSE)            | netstat -ano | findstr :3000 | taskkill /PID \<PID\> /F y volver a iniciar                    | Persiste tras reiniciar |
-| INC-02     | 'mysql' no se reconoce como un comando                         | MySQL no está en el PATH                    | where mysql                  | Usar la ruta completa, p. ej. C:\\xampp\\mysql\\bin\\mysql.exe | —                       |
-| INC-03     | Table 'zonafitevolution.clientes' doesn't exist                | Base incompleta o esquema antiguo           | SHOW TABLES                  | Ejecutar database\\init.sql en una base vacía                  | Hay datos que conservar |
-| INC-04     | Error 500: JWT\_SECRET no está configurado                     | Falta la variable en .env                   | Revisar .env                 | Definir JWT\_SECRET y reiniciar                                | —                       |
-| INC-05     | Error al registrar huella: BIOMETRIA\_SALT no está configurado | Falta la variable en .env                   | Revisar .env                 | Definirla y no cambiarla después                               | Huellas ya registradas  |
-| INC-06     | «No se pudo conectar con el servidor»                          | Backend apagado o VITE\_API\_URL incorrecta | Abrir la URL de la API       | Encender el backend, corregir .env y reiniciar npm run dev     | —                       |
-| INC-07     | «Token inválido o expirado»                                    | Sesión de más de 8 horas                    | —                            | Cerrar sesión e ingresar de nuevo                              | —                       |
-| INC-08     | «No tienes permisos para realizar esta acción»                 | El rol no tiene acceso                      | Rol del usuario              | Ingresar con un Administrador                                  | —                       |
+| **Código** | **Síntoma**                                                    | **Causa probable**                          | **Diagnóstico**              | **Solución**                                                   | **Escalar cuando**            |
+| ---------- | -------------------------------------------------------------- | ------------------------------------------- | ---------------------------- | -------------------------------------------------------------- | ----------------------------- |
+| INC-01     | La aplicación no inicia                                        | Puerto 3000 ocupado (EADDRINUSE)            | netstat -ano | findstr :3000 | taskkill /PID \<PID\> /F y volver a iniciar                    | Persiste tras reiniciar       |
+| INC-02     | 'mysql' no se reconoce como un comando                         | MySQL no está en el PATH                    | where mysql                  | Usar la ruta completa, p. ej. C:\\xampp\\mysql\\bin\\mysql.exe | —                             |
+| INC-03     | Table 'zonafitevolution.clientes' doesn't exist                | Base incompleta o esquema antiguo           | SHOW TABLES                  | Ejecutar database\\init.sql en una base vacía                  | Hay datos que conservar       |
+| INC-04     | Error 500: JWT\_SECRET no está configurado                     | Falta la variable en .env                   | Revisar .env                 | Definir JWT\_SECRET y reiniciar                                | —                             |
+| INC-05     | Error al registrar huella: BIOMETRIA\_SALT no está configurado | Falta la variable en .env                   | Revisar .env                 | Definirla y no cambiarla después                               | Huellas ya registradas        |
+| INC-06     | «No se pudo conectar con el servidor»                          | Backend apagado o VITE\_API\_URL incorrecta | Abrir la URL de la API       | Encender el backend, corregir .env y reiniciar npm run dev     | —                             |
+| INC-07     | «Token inválido o expirado»                                    | Sesión de más de 8 horas                    | —                            | Cerrar sesión e ingresar de nuevo                              | —                             |
+| INC-08     | «No tienes permisos para realizar esta acción»                 | El rol no tiene acceso                      | Rol del usuario              | Ingresar con un Administrador                                  | —                             |
+| INC-09     | «El lector no detectó un dedo nuevo» (código 0x17)             | Huella residual o dedo sin retirar          | —                            | Retirar el dedo, limpiar el lector y repetir                   | Persiste con el lector limpio |
+| INC-10     | Tipo de lector no soportado: simulador                         | .env antiguo con TIPO\_LECTOR=simulador     | Revisar .env                 | Cambiar a TIPO\_LECTOR=as608 y definir PUERTO\_LECTOR          | —                             |
 
 ### 18.3 Información mínima para escalar
 

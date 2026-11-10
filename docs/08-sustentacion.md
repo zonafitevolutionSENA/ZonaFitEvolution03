@@ -5,9 +5,10 @@
 
 ## Control documental
 
-| **Versión** | **Fecha**  | **Cambio**                                                          | **Elaboró**            | **Revisó** | **Aprobó** | **Estado** |
-| ----------- | ---------- | ------------------------------------------------------------------- | ---------------------- | ---------- | ---------- | ---------- |
-| 0.1         | 03/11/2026 | Borrador de agenda, flujos de demostración y reparto por integrante | Juan Diego Mejía Llano |            |            | Borrador   |
+| **Versión** | **Fecha**  | **Cambio**                                                                   | **Elaboró**            | **Revisó** | **Aprobó** | **Estado** |
+| ----------- | ---------- | ---------------------------------------------------------------------------- | ---------------------- | ---------- | ---------- | ---------- |
+| 0.1         | 03/11/2026 | Borrador de agenda, flujos de demostración y reparto por integrante          | Juan Diego Mejía Llano |            |            | Borrador   |
+| 0.2         | 10/11/2026 | Demostración con el sensor AS608 y prueba de huella duplicada; sin simulador | Juan Diego Mejía Llano |            |            | Borrador   |
 
 ### Aprobaciones
 
@@ -400,20 +401,20 @@ La demostración debe contar una historia de uso coherente. No debe consistir en
 
 ## Anexo A. Plantilla de guion de demostración
 
-| **Campo**                       | **Contenido**                                                                                                                   |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| ID del flujo                    | DEM-03 – Registrar huella y validar acceso                                                                                      |
-| Necesidad que demuestra         | Cero ingresos con membresía vencida (OBJ-04).                                                                                   |
-| Rol                             | Empleado                                                                                                                        |
-| Precondiciones                  | Backend y frontend encendidos; sensor AS608 conectado o TIPO\_LECTOR=simulador.                                                 |
-| Datos                           | Cliente A con membresía activa; cliente B con membresía vencida.                                                                |
-| Pasos                           | 1\. Registrar la huella del cliente A. 2. Validar acceso del cliente A. 3. Validar acceso del cliente B. 4. Abrir el historial. |
-| Escenario negativo              | Cliente B: «Acceso denegado – Membresía vencida»; huella no registrada: «Huella no reconocida».                                 |
-| Resultado esperado              | Permitido para A, denegado para B y ambos intentos en el historial.                                                             |
-| Requisito y prueba relacionados | RF-003, RF-004 / CP-007 a CP-011                                                                                                |
-| Tiempo máximo                   |                                                                                                                                 |
-| Responsable                     | Liliana Sofía Panesso Méndez                                                                                                    |
-| Contingencia                    | Usar el adaptador simulador si el sensor falla.                                                                                 |
+| **Campo**                       | **Contenido**                                                                                                                                                                                                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ID del flujo                    | DEM-03 – Registrar huella y validar acceso                                                                                                                                                                                                              |
+| Necesidad que demuestra         | Cero ingresos con membresía vencida (OBJ-04).                                                                                                                                                                                                           |
+| Rol                             | Empleado                                                                                                                                                                                                                                                |
+| Precondiciones                  | Backend y frontend encendidos; sensor AS608 conectado al equipo del backend (PUERTO\_LECTOR).                                                                                                                                                           |
+| Datos                           | Cliente A con membresía activa; cliente B con membresía vencida.                                                                                                                                                                                        |
+| Pasos                           | 1\. Registrar la huella del cliente A desde Clientes. 2. Intentar registrar el mismo dedo para el cliente B (debe rechazarse). 3. Validar el acceso del cliente A en la pantalla de ingreso. 4. Validar el acceso del cliente B. 5. Abrir el historial. |
+| Escenario negativo              | Cliente B: «Acceso denegado – Membresía vencida»; huella no registrada: «Huella no reconocida».                                                                                                                                                         |
+| Resultado esperado              | Permitido para A, denegado para B y ambos intentos en el historial.                                                                                                                                                                                     |
+| Requisito y prueba relacionados | RF-003, RF-004 / CP-007 a CP-011, CP-022                                                                                                                                                                                                                |
+| Tiempo máximo                   |                                                                                                                                                                                                                                                         |
+| Responsable                     | Liliana Sofía Panesso Méndez                                                                                                                                                                                                                            |
+| Contingencia                    | Si el sensor falla, revisar la conexión del CP2102 y el puerto COM y reiniciar el backend (no existe modo simulador).                                                                                                                                   |
 
 ## Anexo B. Plantilla de pregunta individual
 

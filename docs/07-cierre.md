@@ -8,6 +8,7 @@
 | **Versión** | **Fecha**  | **Descripción**                                                         | **Elaboró**            | **Revisó** | **Aprobó** | **Estado** |
 | ----------- | ---------- | ----------------------------------------------------------------------- | ---------------------- | ---------- | ---------- | ---------- |
 | 0.1         | 03/11/2026 | Borrador con el estado al sprint 11; resultados por completar al cierre | Juan Diego Mejía Llano |            |            | Borrador   |
+| 0.2         | 10/11/2026 | Estado al 10/11/2026: sensor AS608 integrado y simulador eliminado      | Juan Diego Mejía Llano |            |            | Borrador   |
 
 ### Aprobaciones
 
@@ -86,18 +87,18 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 ## 4\. Alcance comprometido frente al alcance entregado
 
-| **ID** | **Módulo / capacidad**               | **Comprometido** | **Entregado**             | **Estado** | **Justificación / evidencia**                                      |
-| ------ | ------------------------------------ | ---------------- | ------------------------- | ---------- | ------------------------------------------------------------------ |
-| ALC-01 | Autenticación y roles                | Sí               | Implementado en local     |            | Regla del último administrador por integrar en el backend (TT-001) |
-| ALC-02 | Gestión del personal                 | Sí               | Implementado en local     |            |                                                                    |
-| ALC-03 | Gestión de clientes                  | Sí               | Implementado en local     |            | Ruta DELETE /api/clientes/:id por retirar (TT-002)                 |
-| ALC-04 | Catálogo de planes                   | Sí               | Implementado en local     |            |                                                                    |
-| ALC-05 | Membresías                           | Sí               | Implementado en local     |            | Vencimiento marcado desde el frontend (TT-006)                     |
-| ALC-06 | Control de acceso biométrico (AS608) | Sí               | Con simulador             |            | Integración del sensor AS608 en curso (TT-010)                     |
-| ALC-07 | Historial de accesos                 | Sí               | Implementado en local     |            |                                                                    |
-| ALC-08 | Registro financiero                  | Sí               | Parcial (pagos estimados) |            | Tabla de pagos pendiente (TT-005)                                  |
-| ALC-09 | Comprobante digital de pago          | Could            |                           |            |                                                                    |
-| ALC-10 | Inicio (dashboard)                   | Sí               | Implementado en local     |            |                                                                    |
+| **ID** | **Módulo / capacidad**               | **Comprometido** | **Entregado**             | **Estado** | **Justificación / evidencia**                                                          |
+| ------ | ------------------------------------ | ---------------- | ------------------------- | ---------- | -------------------------------------------------------------------------------------- |
+| ALC-01 | Autenticación y roles                | Sí               | Implementado en local     |            | Regla del último administrador por integrar en el backend (TT-001)                     |
+| ALC-02 | Gestión del personal                 | Sí               | Implementado en local     |            |                                                                                        |
+| ALC-03 | Gestión de clientes                  | Sí               | Implementado en local     |            | Ruta DELETE /api/clientes/:id por retirar (TT-002)                                     |
+| ALC-04 | Catálogo de planes                   | Sí               | Implementado en local     |            |                                                                                        |
+| ALC-05 | Membresías                           | Sí               | Implementado en local     |            | Vencimiento marcado desde el frontend (TT-006)                                         |
+| ALC-06 | Control de acceso biométrico (AS608) | Sí               | Sí (sensor AS608)         | Cumplido   | Registro, validación, huellas duplicadas y borrado probados con el lector (10/11/2026) |
+| ALC-07 | Historial de accesos                 | Sí               | Implementado en local     |            |                                                                                        |
+| ALC-08 | Registro financiero                  | Sí               | Parcial (pagos estimados) |            | Tabla de pagos pendiente (TT-005)                                                      |
+| ALC-09 | Comprobante digital de pago          | Could            |                           |            |                                                                                        |
+| ALC-10 | Inicio (dashboard)                   | Sí               | Implementado en local     |            |                                                                                        |
 
 ### 4.1 Elementos fuera de alcance
 
@@ -175,15 +176,15 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 ## 7\. Resultados técnicos del producto
 
-| **Componente**               | **Tecnología / versión**        | **Estado**                  | **Resultado relevante**          | **Evidencia** |
-| ---------------------------- | ------------------------------- | --------------------------- | -------------------------------- | ------------- |
-| Frontend                     | React 19 + Vite                 | Implementado                | 9 pantallas (UI-01 a UI-09)      |               |
-| Backend / API                | Node.js + Express 5             | Implementado                | 19 grupos de endpoints bajo /api |               |
-| Base de datos                | MySQL (mysql2)                  | Implementado                | 7 tablas (init.sql)              |               |
-| Autenticación / autorización | JWT 8 h + bcrypt; permitirRoles | Implementado con pendientes | TT-001, TT-003 en progreso       |               |
-| Integraciones                | Sensor AS608 + CP2102           | En desarrollo               | Opera el simulador               |               |
-| Infraestructura / despliegue | Hosting por definir             | Pendiente                   |                                  |               |
-| Observabilidad               | Consola + registros\_acceso     | Parcial                     | Sin /health ni monitoreo         |               |
+| **Componente**               | **Tecnología / versión**        | **Estado**                  | **Resultado relevante**                  | **Evidencia** |
+| ---------------------------- | ------------------------------- | --------------------------- | ---------------------------------------- | ------------- |
+| Frontend                     | React 19 + Vite                 | Implementado                | 9 pantallas (UI-01 a UI-09)              |               |
+| Backend / API                | Node.js + Express 5             | Implementado                | 19 grupos de endpoints bajo /api         |               |
+| Base de datos                | MySQL (mysql2)                  | Implementado                | 7 tablas (init.sql)                      |               |
+| Autenticación / autorización | JWT 8 h + bcrypt; permitirRoles | Implementado con pendientes | TT-001, TT-003 en progreso               |               |
+| Integraciones                | Sensor AS608 + CP2102           | Integrado                   | Registro y validación con el lector real |               |
+| Infraestructura / despliegue | Hosting por definir             | Pendiente                   |                                          |               |
+| Observabilidad               | Consola + registros\_acceso     | Parcial                     | Sin /health ni monitoreo                 |               |
 
 ### 7.1 Coherencia arquitectónica
 
@@ -312,7 +313,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | **ID** | **Riesgo / limitación**                           | **Probabilidad** | **Impacto** | **Tratamiento**                                                       | **Responsable**              | **Fecha revisión** |
 | ------ | ------------------------------------------------- | ---------------- | ----------- | --------------------------------------------------------------------- | ---------------------------- | ------------------ |
 | RSK-05 | Indisponibilidad del sistema                      | 3                | 4           | Hosting con monitoreo, validación manual por cédula como contingencia | Liliana Sofía Panesso Méndez |                    |
-| RSK-06 | Integración del sensor AS608 fuera de tiempo      | 3                | 4           | Adapter ya definido; pruebas tempranas en el sprint 11                | Liliana Sofía Panesso Méndez |                    |
+| RSK-06 | Integración del sensor AS608 fuera de tiempo      | 3                | 4           | Cerrado: AS608 integrado en el sprint 11                              | Liliana Sofía Panesso Méndez |                    |
 | RSK-07 | Cronograma insuficiente para pruebas y despliegue | 3                | 4           | Priorizar Must, congelar alcance desde el sprint 12                   | Juan Diego Mejía Llano       |                    |
 
 ### 12.1 Restricciones operativas
@@ -326,7 +327,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | **ID** | **Descripción**                                                                        | **Origen**          | **Impacto**                                                    | **Prioridad** | **Esfuerzo** | **Versión objetivo** |
 | ------ | -------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------- | ------------- | ------------ | -------------------- |
 | DT-01  | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               |              |                      |
-| DT-02  | El sensor AS608 aún no está integrado; opera el adaptador simulador.                   | Revisión del código | El control de acceso real no está operativo.                   |               |              |                      |
+| DT-02  | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | Revisión del código | —                                                              |               |              |                      |
 | DT-03  | Vencimiento marcado desde el frontend, no con tarea programada.                        | Revisión del código | Estado guardado desactualizado.                                |               |              |                      |
 | DT-04  | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Revisión del código | Contradicción regla–API.                                       |               |              |                      |
 | DT-05  | La regla del último administrador solo se valida en el frontend.                       | Revisión del código | Se puede saltar llamando la API.                               |               |              |                      |
