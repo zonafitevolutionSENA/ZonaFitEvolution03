@@ -62,6 +62,10 @@ async function registrarHuella({ cliente_id, identificadorSimulado } = {}, alCam
     });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
+      // La restricción UNIQUE de template_hash impide guardar la misma huella para dos clientes
+      if (String(error.sqlMessage || '').includes('template_hash')) {
+        throw new ErrorDominio('Esta huella ya está registrada para otro cliente', 409);
+      }
       throw new ErrorDominio('Este cliente ya tiene una huella registrada. Elimínala primero para volver a registrar.', 409);
     }
     throw error;
@@ -91,6 +95,14 @@ async function identificarPorHuella({ identificadorSimulado, signal } = {}) {
 
 async function eliminarHuella(cliente_id) {
   validarClienteId(cliente_id);
+
+  const plantilla = await biometriaRepository.obtenerPorClienteId(cliente_id);
+  if (!plantilla) {
+    throw new ErrorDominio('Este cliente no tiene huella registrada', 404);
+  }
+
+  // Primero se borra del lector: si falla, la base de datos no cambia y no queda una huella huérfana en el sensor
+  await obtenerLector().eliminar(plantilla.template_hash);
 
   const eliminado = await biometriaRepository.eliminarPorClienteId(cliente_id);
   if (!eliminado) {

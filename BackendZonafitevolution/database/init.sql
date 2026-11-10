@@ -87,7 +87,8 @@ CREATE TABLE IF NOT EXISTS membresias (
 CREATE TABLE IF NOT EXISTS plantillas_biometricas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cliente_id INT NOT NULL UNIQUE,
-  template_hash VARCHAR(255) NOT NULL,
+  -- UNIQUE: la misma huella no puede quedar registrada para dos clientes
+  template_hash VARCHAR(255) NOT NULL UNIQUE,
   fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );

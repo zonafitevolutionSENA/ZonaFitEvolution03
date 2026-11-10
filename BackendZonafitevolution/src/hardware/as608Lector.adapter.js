@@ -9,6 +9,7 @@ const CMD = {
   SEARCH: 0x04,
   REG_MODEL: 0x05,
   STORE: 0x06,
+  DELETE_CHAR: 0x0c,
   READ_SYS_PARA: 0x0f,
   READ_INDEX_TABLE: 0x1f
 };
@@ -85,10 +86,23 @@ class As608Lector extends LectorBiometrico {
       alCambiarEtapa('segunda');
       await this.leerHuellaEnBuffer(2, 'Vuelve a colocar el mismo dedo');
 
+      // Una sola lectura puede no reconocer una huella guardada (dedo de lado o lectura parcial):
+      // se vuelve a buscar con la segunda lectura y con la plantilla combinada antes de guardar
+      const existenteSegunda = await this.buscar(2);
+      if (existenteSegunda !== null) {
+        return this.templateDePagina(existenteSegunda);
+      }
+
       alCambiarEtapa('procesando');
       const combinacion = await this.enviar(CMD.REG_MODEL);
       if (combinacion[0] !== 0x00) {
         throw new ErrorDominio('Las dos lecturas no coinciden. Usa el mismo dedo e inténtalo de nuevo.');
+      }
+
+      // REG_MODEL deja la plantilla combinada en el buffer 1
+      const existenteCombinada = await this.buscar(1);
+      if (existenteCombinada !== null) {
+        return this.templateDePagina(existenteCombinada);
       }
 
       const pagina = await this.buscarPaginaLibre();
@@ -98,6 +112,24 @@ class As608Lector extends LectorBiometrico {
       }
 
       return this.templateDePagina(pagina);
+    });
+  }
+
+  // Borra del sensor la huella que corresponde al template guardado en la base de datos,
+  // para que no quede ocupando una posición ni pueda reconocerse después
+  async eliminar(template) {
+    return this.enCola(async () => {
+      await this.conectar();
+      const capacidad = this.capacidad || 300;
+      for (let pagina = 0; pagina < capacidad; pagina++) {
+        if (!(await this.comparar(this.templateDePagina(pagina), template))) continue;
+        const respuesta = await this.enviar(CMD.DELETE_CHAR, [pagina >> 8, pagina & 0xff, 0x00, 0x01]);
+        if (respuesta[0] !== 0x00) {
+          throw new ErrorDominio(`El lector no pudo borrar la huella (código 0x${respuesta[0].toString(16)})`);
+        }
+        return true;
+      }
+      return false;
     });
   }
 
