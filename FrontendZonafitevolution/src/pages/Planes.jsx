@@ -200,7 +200,7 @@ function Planes({ usuario }) {
                       {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}
                       {p.max_ingresos ? " desde el primer uso" : ""}
                     </td>
-                    <td>{p.max_ingresos ? `${p.max_ingresos} ingresos` : "Ilimitados"}</td>
+                    <td>{p.max_ingresos ? `${p.max_ingresos} ingresos (1 por día)` : "1 por día"}</td>
                     <td>{textoPrecio(p.precio)}</td>
                     <td>{p.activo ? "Activo" : "Inactivo"}</td>
                     {esAdmin && (

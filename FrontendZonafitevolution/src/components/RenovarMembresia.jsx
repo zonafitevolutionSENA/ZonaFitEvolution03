@@ -113,7 +113,7 @@ function RenovarMembresia({ planes, alBuscar, alRenovar, alCancelar }) {
               <option value="">Selecciona un plan</option>
               {planesActivos.map((p) => (
                 <option key={p.id} value={p.id}>
-                  {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}{p.max_ingresos ? ` · ${p.max_ingresos} ingresos` : ""} — {formatoPrecio.format(Number(p.precio))}
+                  {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}{p.max_ingresos ? ` · ${p.max_ingresos} ingresos (1 por día)` : " · 1 ingreso por día"} — {formatoPrecio.format(Number(p.precio))}
                 </option>
               ))}
             </select>

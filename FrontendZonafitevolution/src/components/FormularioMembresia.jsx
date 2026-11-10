@@ -106,7 +106,7 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
           <option value="">Selecciona un plan</option>
           {planesActivos.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}{p.max_ingresos ? ` · ${p.max_ingresos} ingresos` : ""} — {formatoPrecio.format(Number(p.precio))}
+              {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}{p.max_ingresos ? ` · ${p.max_ingresos} ingresos (1 por día)` : " · 1 ingreso por día"} — {formatoPrecio.format(Number(p.precio))}
             </option>
           ))}
         </select>
@@ -131,7 +131,7 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
         ) : (
           plan?.max_ingresos ? (
             <small>
-              Incluye {plan.max_ingresos} ingresos. Los {plan.duracion_dias} días cuentan desde el primer ingreso.
+              Incluye {plan.max_ingresos} ingresos, uno por día. Los {plan.duracion_dias} días cuentan desde el primer ingreso.
               {/* NUEVO: aviso cuando la tiquetera quedará pendiente hasta su fecha de inicio */}
               {quedaraPendiente && ` Quedará pendiente y se activará automáticamente el ${valores.fecha}.`}
             </small>
