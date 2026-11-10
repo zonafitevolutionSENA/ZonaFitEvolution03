@@ -110,7 +110,7 @@ function FormularioPlan({ plan = null, otrosNombres = [], alGuardar, alCancelar 
         onChange={(e) => cambiar("ingresos", e.target.value.replace(/\D/g, ""))}
         onBlur={() => validarAlSalir("ingresos")}
         error={errores.ingresos}
-        ayuda={`Déjalo vacío si el plan es por tiempo. En una tiquetera, la duración cuenta desde el primer ingreso (entre ${LIMITES_PLAN.ingresosMin} y ${LIMITES_PLAN.ingresosMax}).`}
+        ayuda={`Déjalo vacío si el plan es por tiempo. Todos los planes permiten un ingreso por día. En una tiquetera, la duración cuenta desde el primer ingreso (entre ${LIMITES_PLAN.ingresosMin} y ${LIMITES_PLAN.ingresosMax}).`}
         disabled={guardando}
       />
 
