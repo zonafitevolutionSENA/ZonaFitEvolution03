@@ -13,6 +13,7 @@ El repositorio es un **monorepo** con dos aplicaciones:
 zonafitproyectocompleto/
 ├── README.md
 ├── .gitignore
+├── docs/                documentación del proyecto y entregables SENA
 ├── BackendZonafitevolution/
 │   ├── database/        script SQL de las tablas
 │   ├── scripts/         crear-admin.js
@@ -26,6 +27,12 @@ zonafitproyectocompleto/
     ├── index.html
     └── package.json
 ```
+
+## Documentación del proyecto
+
+La documentación formal (formulación, gestión, requisitos, historias de usuario, casos de uso,
+arquitectura, UX/UI, calidad, manuales, cierre y sustentación) y los entregables SENA en PDF y Excel
+están en [`docs/`](docs/README.md). Este README cubre la instalación, la API y el código.
 
 ## Stack
 
