@@ -1,0 +1,16 @@
+%% DIA-006 · Vista de despliegue (v1.2). Fuente del diagrama de docs/04-arquitectura.md
+flowchart TB
+  subgraph pc["PC de recepción"]
+    nav["<b>Navegador web</b><br/>panel del personal y<br/>pantalla de ingreso (<span style='white-space:nowrap'>?pantalla=acceso</span>)"]:::sis
+    api["<b>API Node.js + Express</b><br/>puerto 3000 · /api"]:::sis
+    sensor["<b>Sensor de huella AS608</b><br/>+ conversor USB CP2102"]:::hw
+  end
+  front["<b>Frontend</b><br/>Vite en local · compilado en dist/<br/>hosting por definir (CR-006)"]:::sis
+  db[("<b>MySQL</b><br/>local (3306) · proveedor<br/>en la nube por definir")]:::sis
+  nav -- "1 · HTTP(S): descarga la aplicación" --> front
+  nav -- "2 · /api + JWT<br/>pantalla: /api/acceso-fisico/pantalla/validar" --> api
+  sensor -- "USB-serie (UART)<br/>PUERTO_LECTOR" --> api
+  api -- "3 · TCP 3306" --> db
+  classDef sis fill:#FFF2C4,stroke:#222,stroke-width:1px,color:#111
+  classDef actor fill:#1A1A1A,stroke:#1A1A1A,color:#FFFFFF
+  classDef hw fill:#F2F2F2,stroke:#666,stroke-width:1px,stroke-dasharray:5 5,color:#111

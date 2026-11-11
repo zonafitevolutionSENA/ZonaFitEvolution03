@@ -1,0 +1,37 @@
+%% DIA-003 · Vista de componentes (v1.2). Fuente del diagrama de docs/04-arquitectura.md
+flowchart LR
+  subgraph front["FrontendZonafitevolution · React + Vite"]
+    pages["pages/<br/>Login · Inicio · Planes<br/>Clientes (con registro de huella)<br/>Membresías · Historial<br/>Personal · Finanzas<br/>PantallaIngreso"]:::sis
+    comp["components/<br/>formularios, buscador,<br/>barra lateral, RegistrarHuella"]:::sis
+    utils["utils/<br/>validaciones y permisos"]:::sis
+    fserv["services/<br/>un servicio por recurso"]:::sis
+    apijs["api.js<br/>fetch + token JWT"]:::sis
+    pages --> comp
+    pages --> utils
+    pages --> fserv
+    fserv --> apijs
+  end
+  subgraph back["BackendZonafitevolution · Node.js + Express"]
+    routes["routes/<br/>/api/..."]:::sis
+    mw["middlewares/<br/>verificarToken · permitirRoles<br/>validarBody · limiteLogin · manejarErrores"]:::sis
+    ctrl["controllers/"]:::sis
+    bserv["services/<br/>reglas de negocio"]:::sis
+    jobs["jobs/<br/>tarea diaria: vence y<br/>activa membresías"]:::sis
+    estados["estadosAcceso/<br/>patrón State"]:::sis
+    hw["hardware/<br/>patrón Adapter · AS608"]:::sis
+    repos["repositories/<br/>SQL parametrizado"]:::sis
+    cfg["config/database.js<br/>pool de conexiones"]:::sis
+    routes --> mw --> ctrl --> bserv
+    jobs --> bserv
+    bserv --> estados
+    bserv --> hw
+    bserv --> repos --> cfg
+  end
+  db[("MySQL<br/>7 tablas")]:::sis
+  sensor["Sensor AS608<br/>+ CP2102"]:::hw
+  front -- "HTTP JSON<br/>Authorization: Bearer" --> back
+  hw -- "USB-serie" --- sensor
+  back --> db
+  classDef sis fill:#FFF2C4,stroke:#222,stroke-width:1px,color:#111
+  classDef actor fill:#1A1A1A,stroke:#1A1A1A,color:#FFFFFF
+  classDef hw fill:#F2F2F2,stroke:#666,stroke-width:1px,stroke-dasharray:5 5,color:#111
