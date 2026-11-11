@@ -8,6 +8,9 @@
     "start": "node index.js",
     "crear-admin": "node scripts/crear-admin.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,6 +22,7 @@
     "express-rate-limit": "^8.7.3",
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.24.4",
-    "serialport": "^13.0.0"
+    "serialport": "^13.0.0",
+    "ws": "^8.22.2"
   }
 }

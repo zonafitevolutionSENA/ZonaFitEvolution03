@@ -1,0 +1,17 @@
+{
+  "name": "agente-lector-zonafit",
+  "version": "1.0.0",
+  "description": "Agente local que conecta el lector AS608 del portátil con el backend de ZonaFit en la nube",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "ws": "^8.22.2"
+  }
+}
