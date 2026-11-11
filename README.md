@@ -13,6 +13,7 @@ El repositorio es un **monorepo** con dos aplicaciones:
 zonafitproyectocompleto/
 ├── README.md
 ├── .gitignore
+├── docs/                documentación del proyecto y entregables SENA
 ├── BackendZonafitevolution/
 │   ├── database/        script SQL de las tablas
 │   ├── scripts/         crear-admin.js
@@ -26,6 +27,12 @@ zonafitproyectocompleto/
     ├── index.html
     └── package.json
 ```
+
+## Documentación del proyecto
+
+La documentación formal (formulación, gestión, requisitos, historias de usuario, casos de uso,
+arquitectura, UX/UI, calidad, manuales, cierre y sustentación) y los entregables SENA en PDF y Excel
+están en [`docs/`](docs/README.md). Este README cubre la instalación, la API y el código.
 
 ## Stack
 
@@ -48,7 +55,11 @@ Desde `BackendZonafitevolution/`:
    mysql -u root -p zonafitevolution < database/init.sql
 ```
 
-Atención: `init.sql` elimina y vuelve a crear `roles`, `usuarios` y `membresias`. No lo ejecutes si ya tienes datos que quieras conservar. 3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD`, `JWT_SECRET` y `BIOMETRIA_SALT`. 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
+Atención: `init.sql` elimina y vuelve a crear `roles`, `usuarios` y `membresias`. No lo ejecutes si ya tienes datos que quieras conservar.
+
+`init.sql` es el único script SQL del proyecto: no hay migraciones. Todo cambio de esquema se hace directamente en ese archivo. Como sus tablas usan `CREATE TABLE IF NOT EXISTS`, una base creada con una versión anterior no recibe los cambios: hay que recrearla (`DROP DATABASE zonafitevolution;` y volver a ejecutar los dos comandos de arriba).
+
+3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD`, `JWT_SECRET` y `BIOMETRIA_SALT`. 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
 (se ejecuta dentro de `BackendZonafitevolution/`, porque lee su `.env`). 5. Iniciar el servidor: `npm start` (por defecto en `http://localhost:3000`).
 
 Toda la API cuelga de `/api`. La raíz (`http://localhost:3000/`) responde `{ "error": "Ruta no encontrada" }`, y eso es normal: significa que el servidor está encendido.
@@ -70,6 +81,12 @@ Desde `FrontendZonafitevolution/`, con el backend encendido:
 Vite solo lee el `.env` al arrancar: si lo cambias, reinicia `npm run dev`.
 
 Scripts disponibles: `npm run dev` (desarrollo), `npm run build` (versión de producción en `dist/`), `npm run preview` (probar esa versión) y `npm run lint` (revisar el código con ESLint).
+
+### Pantalla de ingreso sin sesión
+
+En el equipo conectado al lector, abre `http://127.0.0.1:5173/?pantalla=acceso` en una ventana independiente. El cliente no necesita una cuenta: la pantalla espera la huella en el lector y muestra el resultado durante dos segundos antes de esperar la siguiente huella. El registro de huellas y las demás funciones administrativas siguen requiriendo sesión.
+
+La ruta de ingreso solo acepta conexiones directas desde el mismo equipo y el origen `http://127.0.0.1:5173` o `http://localhost:5173`. Si el frontend local usa otro origen, configura `ORIGEN_PANTALLA_ACCESO` en el `.env` del backend y reinícialo. No expongas esta ruta a través de un proxy público. El lector físico debe estar conectado al equipo donde se ejecuta el backend.
 
 ---
 
@@ -196,30 +213,31 @@ Detalles de la implementación:
 ## Épica 3, Sprint 1 — Registro biométrico (HU05)
 
 Se implementó el patrón Adapter para desacoplar la lógica de negocio del
-hardware físico. Actualmente el sistema opera en modo simulador
-(`TIPO_LECTOR=simulador` en `.env`); cuando se adquiera el lector físico,
-solo se debe crear un nuevo adaptador que implemente `LectorBiometrico`
-y cambiar esa variable de entorno — sin tocar servicios, controladores
-ni rutas existentes.
+hardware. El sistema trabaja con el lector físico AS608; para usar otro
+modelo solo se crea un nuevo adaptador que implemente `LectorBiometrico`
+y se agrega a la fábrica, sin tocar servicios, controladores ni rutas.
+La simulación de huellas (texto en lugar del dedo) se eliminó al integrar el sensor real.
 
 Cumplimiento de la restricción de privacidad: el sistema nunca almacena
 imágenes de huellas, solo un hash irreversible (`template_hash`).
 
 Estructura de la capa de hardware (`src/hardware/`):
 
-- `lectorBiometrico.interface.js` — contrato con `capturar()` y `comparar(templateA, templateB)`.
-- `simuladorLector.adapter.js` — simulador: genera un SHA-256 a partir de un identificador de prueba y la sal.
-- `lector.factory.js` — `obtenerLector()` elige el adaptador según `TIPO_LECTOR`.
+- `lectorBiometrico.interface.js` — contrato con `capturar()`, `registrar()`, `eliminar()` y `comparar(templateA, templateB)`.
+- `as608Lector.adapter.js` — adaptador del sensor AS608 por puerto serial (ver la sección del lector físico).
+- `lector.factory.js` — `obtenerLector()` crea el adaptador según `TIPO_LECTOR` (`as608`, el único disponible).
 
 Variables de entorno de esta épica:
 
-- `TIPO_LECTOR`: tipo de lector a usar (`simulador` por defecto).
+- `TIPO_LECTOR`: tipo de lector a usar (`as608` por defecto y único valor admitido).
+- `PUERTO_LECTOR`: puerto COM del lector (obligatorio).
 - `BIOMETRIA_SALT`: obligatoria para generar los templates. No debe cambiarse cuando ya hay huellas
   registradas, porque los templates guardados dejarían de coincidir.
 
 Reglas de negocio:
 
-- Un cliente tiene como máximo una huella, y una misma huella no puede registrarse en dos clientes.
+- Un cliente tiene como máximo una huella, y una misma huella no puede registrarse en dos clientes
+  (el sensor la busca antes de guardarla y `template_hash` es `UNIQUE` en la base de datos).
 - Las respuestas de la API nunca incluyen el `template_hash`.
 - Para volver a registrar la huella de un cliente, primero debe eliminarse la anterior (solo Admin).
 
@@ -228,11 +246,40 @@ Reglas de negocio:
 | Método | Ruta                       | Roles permitidos |
 | ------ | -------------------------- | ---------------- |
 | POST   | /api/biometria/registrar   | Admin, Empleado  |
+| GET    | /api/biometria/registro/estado/:capturaId | Admin, Empleado |
 | POST   | /api/biometria/identificar | Admin, Empleado  |
 | DELETE | /api/biometria/:cliente_id | Solo Admin       |
 
-`POST /api/biometria/registrar` recibe `{ "cliente_id": 5, "identificadorSimulado": "dedo_juan_01" }`.
-`POST /api/biometria/identificar` recibe `{ "identificadorSimulado": "dedo_juan_01" }` y devuelve los datos del cliente.
+`POST /api/biometria/registrar` recibe `{ "cliente_id": 5, "captura_id": "<uuid>" }` y toma la huella del lector.
+`captura_id` es opcional: con él, `GET /api/biometria/registro/estado/:capturaId` devuelve la etapa de la lectura
+(`conectando`, `primera`, `retirar`, `segunda`, `procesando`) para guiar al usuario.
+`POST /api/biometria/identificar` no recibe cuerpo: lee la huella del sensor y devuelve los datos del cliente.
+
+## Lector de huellas físico (AS608)
+
+Siguiendo el patrón Adapter, `src/hardware/as608Lector.adapter.js` maneja el sensor óptico
+AS608, conectado al PC por USB con un conversor CP2102 (librería `serialport`). Se configura con
+`PUERTO_LECTOR` (el puerto COM que muestra el Administrador de dispositivos).
+
+Funcionamiento:
+
+- **Registro:** el sensor toma dos lecturas del mismo dedo y guarda la huella en su memoria interna,
+  en la primera posición libre. En la base de datos solo se guarda un hash irreversible de esa posición.
+- **Huellas duplicadas:** antes de guardar, el sensor busca la huella con la primera y con la segunda
+  lectura; si ya está guardada, responde `409 Esta huella ya está registrada para otro cliente`.
+  No se vuelve a buscar con la plantilla combinada: sin una imagen nueva el AS608 responde `0x17`.
+- **Código 0x17:** si el sensor no detecta un dedo nuevo, se responde "El lector no detectó un dedo nuevo.
+  Retira el dedo, limpia el lector e inténtalo de nuevo".
+- **Identificación:** el sensor busca la huella entre las que tiene guardadas; si no la encuentra,
+  la respuesta es `404 Huella no reconocida`.
+- Cada lectura espera el dedo hasta 15 segundos; el sensor atiende una operación a la vez.
+- La capacidad depende del sensor (el modelo de prueba guarda 300 huellas).
+- `DELETE /api/biometria/:cliente_id` borra la huella primero del sensor y después de la base de datos;
+  si el sensor no responde, la base de datos no cambia y el cliente conserva su huella.
+- El lector debe estar conectado al mismo equipo donde corre el backend.
+
+Conexión AS608 → CP2102: `V+ → 3V3`, `TX → RXD`, `RX → TXD`, `GND → GND` (TCH, VA, D+ y D- sin conectar).
+
 
 ## Épica 3, Sprint 2 — Validación automática de acceso (HU06)
 
@@ -266,7 +313,7 @@ Reglas de decisión:
 | POST   | /api/acceso-fisico/validar   | Admin, Empleado  |
 | GET    | /api/acceso-fisico/historial | Admin, Empleado  |
 
-`POST /api/acceso-fisico/validar` recibe `{ "identificadorSimulado": "dedo_mario" }` y devuelve
+`POST /api/acceso-fisico/validar` no recibe cuerpo: lee la huella del sensor y devuelve
 `{ "cliente": { "id", "nombre", "cedula" }, "permitido": true|false, "motivo": "..." }`.
 Un acceso denegado por la membresía responde `200` con `permitido: false`; la lectura debe mirar ese campo.
 Una huella que no corresponde a ningún cliente responde `404` y también queda registrada en la auditoría.
@@ -285,7 +332,9 @@ Archivo `BackendZonafitevolution/.env` (no se sube a Git; la plantilla es `.env.
 | `JWT_SECRET`                                              | Clave para firmar los tokens (obligatoria)                                             |
 | `JWT_EXPIRES_IN`                                          | Duración del token (`8h` por defecto)                                                  |
 | `BIOMETRIA_SALT`                                          | Sal para los templates biométricos (obligatoria; no cambiarla con huellas registradas) |
-| `TIPO_LECTOR`                                             | Adaptador del lector biométrico (`simulador` por defecto)                              |
+| `TIPO_LECTOR`                                             | Adaptador del lector biométrico: `as608` (por defecto y único disponible)              |
+| `PUERTO_LECTOR`                                           | Puerto serial del lector físico (por ejemplo, `COM3`); solo con `as608`                |
+| `LECTOR_BAUDIOS`                                          | Velocidad del lector físico (`57600` por defecto)                                      |
 
 ---
 
@@ -303,13 +352,14 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | Sesión persistente (sobrevive a recargar la página)                            | Implementado |
 | Cierre de sesión                                                               | Implementado |
 | Tema visual negro y amarillo, responsive                                       | Implementado |
-| Rutas con React Router, menú lateral y barra superior                          | Pendiente    |
-| Rutas protegidas y menú según el rol                                           | Pendiente    |
+| Menú lateral y barra superior                                                  | Implementado |
+| Menú según el rol (Admin y Empleado)                                           | Implementado |
+| Rutas con React Router                                                         | Pendiente    |
 | Inicio (dashboard): acciones rápidas, actividad reciente y notificaciones      | Implementado |
 | Clientes: lista, búsqueda, registro, edición y estado de la membresía          | Implementado |
 | Planes: catálogo para todos; el Admin crea, edita, activa y desactiva          | Implementado |
 | Membresías: listado, asignación y renovación rápida por cédula                 | Implementado |
-| Control de acceso: validar con huella simulada y registrar la huella           | Implementado |
+| Registro de huella desde Clientes y pantalla independiente de ingreso          | Implementado |
 | Historial de accesos con filtros por resultado, texto y fechas                 | Implementado |
 | Personal: lista, creación y eliminación de usuarios (solo Admin)               | Implementado |
 | Registro financiero: resumen de pagos de cada cliente (solo Admin)             | Implementado |
@@ -339,25 +389,24 @@ src/
 │   ├── FormularioMembresia.jsx  formulario para asignar una membresía
 │   ├── FormularioPlan.jsx       formulario para crear y editar planes
 │   ├── FormularioUsuario.jsx    formulario para crear usuarios del personal
-│   ├── RegistrarHuella.jsx      registro de la huella simulada de un cliente
+│   ├── RegistrarHuella.jsx      registro de la huella con el lector, guiado por etapas
 │   ├── RenovarMembresia.jsx     búsqueda por cédula y renovación rápida
-│   ├── TablaPagos.jsx           tabla de pagos por cliente con su detalle
-│   └── ValidarAcceso.jsx        validación de acceso con huella simulada
+│   └── TablaPagos.jsx           tabla de pagos por cliente con su detalle
 ├── pages/
-│   ├── Acceso.jsx               validar acceso y registrar huellas
 │   ├── Clientes.jsx             lista, búsqueda, registro, edición y estado de membresía
 │   ├── Finanzas.jsx             registro financiero: resumen de pagos por cliente (solo Admin)
 │   ├── Historial.jsx            historial de accesos con filtros
 │   ├── Inicio.jsx               dashboard: acciones rápidas y actividad reciente
 │   ├── Login.jsx                formulario de inicio de sesión
 │   ├── Membresias.jsx           listado, asignación y renovación de membresías
+│   ├── PantallaIngreso.jsx      pantalla de ingreso sin sesión (?pantalla=acceso)
 │   ├── Personal.jsx             gestión de usuarios del sistema (solo Admin)
 │   └── Planes.jsx               catálogo de planes y su gestión (Admin)
 ├── services/
-│   ├── accesoService.js         validación e historial de acceso (/acceso-fisico)
+│   ├── accesoService.js         historial de acceso (/acceso-fisico)
 │   ├── api.js                   función base para llamar a la API
 │   ├── authService.js           llamadas de autenticación
-│   ├── biometriaService.js      registro de huellas (/biometria)
+│   ├── biometriaService.js      registro de huellas y etapa de la lectura (/biometria)
 │   ├── clienteService.js        llamadas de clientes (/clientes)
 │   ├── dashboardService.js      datos del dashboard (accesos y membresías por vencer)
 │   ├── finanzasService.js       datos del registro financiero (clientes, membresías y planes)
@@ -370,7 +419,7 @@ src/
 │   ├── filtrosHistorial.js      validación de fechas y filtros del historial
 │   ├── finanzas.js              cálculo de pagos, totales, filtros y orden del registro financiero
 │   ├── permisos.js              secciones del menú y qué rol puede verlas
-│   ├── validacionesAcceso.js    validaciones de la huella simulada
+│   ├── validacionesAcceso.js    validación del cliente al registrar la huella
 │   ├── validacionesCliente.js   validaciones del formulario de clientes
 │   ├── validacionesMembresia.js validaciones de asignar y renovar membresías
 │   ├── validacionesPlan.js      validaciones del formulario de planes
@@ -443,17 +492,15 @@ Muestra los 50 eventos más recientes de `GET /api/acceso-fisico/historial` (cli
 
 El botón "Ver historial" del Inicio abre esta pantalla, y la tarjeta "Actividad reciente" usa el mismo servicio (`listarHistorial`).
 
-## Control de acceso
+## Registro de huella e ingreso
 
-La pantalla tiene dos formularios (Admin y Empleado):
+Al crear un cliente desde el panel, se solicita registrar su huella antes de mostrar el registro como completado. Si la captura falla o se interrumpe, los datos del cliente permanecen guardados y aparecen con huella pendiente; se puede reintentar desde la lista de Clientes sin volver a crear el cliente. También se puede registrar desde esa lista la huella de clientes existentes.
 
-- **Validar acceso** (`POST /api/acceso-fisico/validar`): se escribe la huella simulada y se muestra "Acceso permitido" o "Acceso denegado" con el cliente y el motivo. Una huella que no corresponde a ningún cliente (respuesta `404`) se muestra como acceso denegado, sin cliente. La acción rápida "Validar acceso" del Inicio abre esta pantalla.
-- **Registrar huella** (`POST /api/biometria/registrar`): se busca el cliente por nombre o cédula y se escribe su huella simulada. Cada cliente tiene una sola huella y no puede repetirse entre clientes (el servidor responde `409` y la pantalla muestra el mensaje).
+El registro usa `POST /api/biometria/registrar`. Cada cliente tiene una sola huella y no puede repetirse entre clientes. La pantalla independiente de ingreso usa `POST /api/acceso-fisico/pantalla/validar` y muestra si el acceso está permitido y el motivo.
 
 | Campo   | Validación                                                                                   |
 | ------- | -------------------------------------------------------------------------------------------- |
-| Huella  | Obligatoria, de 3 a 50 caracteres: letras, números, punto, guion y guion bajo (sin espacios) |
-| Cliente | Obligatorio y existente (solo en el registro de huella)                                      |
+| Cliente | Se selecciona automáticamente al crear el cliente o al elegirlo en la lista                   |
 
 ## Membresías
 
@@ -480,6 +527,12 @@ Todos los roles ven el catálogo (con filtro Todos / Activos / Inactivos). Solo 
 | Nombre   | Obligatorio, de 2 a 50 caracteres (letras, números, espacios, `.` y `-`); no repetido |
 | Duración | Obligatoria, número entero de 1 a 3650 días                                           |
 | Precio   | Obligatorio, mayor a 0 y hasta 50.000.000, máximo 2 decimales, sin puntos de miles    |
+| Ingresos | Opcional: vacío para un plan por tiempo; de 1 a 365 para una tiquetera                |
+
+La columna **Ingresos** del catálogo muestra la regla del gimnasio: **1 ingreso por día** en todos los planes
+(en las tiqueteras, por ejemplo, "6 ingresos (1 por día)"). Los selectores de plan de Membresías muestran lo mismo.
+**Pendiente del backend:** la validación de acceso todavía no bloquea un segundo ingreso el mismo día
+(las tiqueteras solo dejan de descontar el ingreso repetido).
 
 ## Clientes y estado de la membresía
 
@@ -541,7 +594,7 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 | `--rojo`           | `#ff4d4d` | Mensajes de error          |
 
 - `index.css` contiene la paleta, el reset y los botones globales; `App.css` contiene el login y la pantalla de bienvenida.
-- Las pantallas de Clientes, Planes, Membresías, Control de acceso, Historial y Personal se construyeron sin CSS propio: usan solo los estilos globales.
+- Las pantallas de Clientes, Planes, Membresías, Historial y Personal se construyeron sin CSS propio: usan solo los estilos globales.
 
 ## Convenciones
 
@@ -552,9 +605,7 @@ Cada recurso tendrá su propio archivo en `services/`, con funciones que llaman 
 
 ## Pendientes del frontend
 
-- React Router: rutas con URL propia, menú lateral y barra superior.
-- Rutas protegidas y menú según el rol (Admin y Empleado).
-- Manejo automático de token vencido: ante una respuesta `401`, cerrar la sesión y avisar al usuario.
+- React Router: rutas con URL propia (hoy la navegación es por estado).
 - Pagos reales: el registro financiero estima los pagos con el precio del plan. Falta un módulo de pagos en el backend (monto realmente pagado, método y fecha) para que sea exacto; los reportes tampoco tienen endpoints.
 
 ---

@@ -24,9 +24,9 @@ const ACCIONES_RAPIDAS = [
     detalle: "Gestiona los planes de tus clientes",
   },
   {
-    id: "validar-acceso",
-    titulo: "Validar acceso",
-    detalle: "Comprueba el acceso de un miembro",
+    id: "registrar-huella",
+    titulo: "Registrar huella",
+    detalle: "Registra la huella de un cliente",
   },
 ];
 

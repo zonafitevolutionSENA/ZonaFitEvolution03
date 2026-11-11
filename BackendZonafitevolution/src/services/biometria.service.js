@@ -9,12 +9,6 @@ function validarClienteId(cliente_id) {
   }
 }
 
-function validarCaptura(identificadorSimulado) {
-  if (typeof identificadorSimulado !== 'string' || !identificadorSimulado.trim()) {
-    throw new ErrorDominio('La captura del sensor es obligatoria y debe ser un texto');
-  }
-}
-
 async function buscarPlantillaCoincidente(lector, template) {
   const todas = await biometriaRepository.obtenerTodas();
 
@@ -27,13 +21,13 @@ async function buscarPlantillaCoincidente(lector, template) {
   return null;
 }
 
-async function registrarHuella({ cliente_id, identificadorSimulado }) {
-  if (!cliente_id || !identificadorSimulado) {
-    throw new ErrorDominio('El cliente y la captura del sensor son obligatorios');
+async function registrarHuella({ cliente_id } = {}, alCambiarEtapa) {
+  if (!cliente_id) {
+    throw new ErrorDominio('El cliente es obligatorio');
   }
 
   validarClienteId(cliente_id);
-  validarCaptura(identificadorSimulado);
+  const lector = obtenerLector();
 
   const cliente = await clienteRepository.obtenerPorId(cliente_id);
   if (!cliente) {
@@ -45,8 +39,7 @@ async function registrarHuella({ cliente_id, identificadorSimulado }) {
     throw new ErrorDominio('Este cliente ya tiene una huella registrada. Elimínala primero para volver a registrar.', 409);
   }
 
-  const lector = obtenerLector();
-  const template = await lector.capturar(identificadorSimulado);
+  const template = await lector.registrar(alCambiarEtapa);
 
   const coincidente = await buscarPlantillaCoincidente(lector, template);
   if (coincidente) {
@@ -61,6 +54,10 @@ async function registrarHuella({ cliente_id, identificadorSimulado }) {
     });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
+      // La restricción UNIQUE de template_hash impide guardar la misma huella para dos clientes
+      if (String(error.sqlMessage || '').includes('template_hash')) {
+        throw new ErrorDominio('Esta huella ya está registrada para otro cliente', 409);
+      }
       throw new ErrorDominio('Este cliente ya tiene una huella registrada. Elimínala primero para volver a registrar.', 409);
     }
     throw error;
@@ -73,13 +70,12 @@ async function registrarHuella({ cliente_id, identificadorSimulado }) {
   };
 }
 
-async function identificarPorHuella({ identificadorSimulado } = {}) {
-  validarCaptura(identificadorSimulado);
-
+async function identificarPorHuella({ signal } = {}) {
   const lector = obtenerLector();
-  const templateCapturado = await lector.capturar(identificadorSimulado);
+  const templateCapturado = await lector.capturar(signal);
 
-  const coincidente = await buscarPlantillaCoincidente(lector, templateCapturado);
+  // El lector devuelve null cuando la huella no está guardada en el sensor
+  const coincidente = templateCapturado ? await buscarPlantillaCoincidente(lector, templateCapturado) : null;
   if (!coincidente) {
     throw new ErrorDominio('No se encontró ningún cliente con esta huella registrada', 404);
   }
@@ -89,6 +85,14 @@ async function identificarPorHuella({ identificadorSimulado } = {}) {
 
 async function eliminarHuella(cliente_id) {
   validarClienteId(cliente_id);
+
+  const plantilla = await biometriaRepository.obtenerPorClienteId(cliente_id);
+  if (!plantilla) {
+    throw new ErrorDominio('Este cliente no tiene huella registrada', 404);
+  }
+
+  // Primero se borra del lector: si falla, la base de datos no cambia y no queda una huella huérfana en el sensor
+  await obtenerLector().eliminar(plantilla.template_hash);
 
   const eliminado = await biometriaRepository.eliminarPorClienteId(cliente_id);
   if (!eliminado) {

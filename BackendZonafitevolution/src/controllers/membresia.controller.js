@@ -36,6 +36,15 @@ async function actualizarEstado(req, res, next) {
   }
 }
 
+async function actualizarFechaFin(req, res, next) {
+  try {
+    const membresia = await membresiaService.actualizarFechaFin(req.params.id, req.body.fecha_fin);
+    res.status(200).json(membresia);
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function eliminar(req, res, next) {
   try {
     const resultado = await membresiaService.eliminarMembresia(req.params.id);
@@ -63,4 +72,6 @@ async function renovar(req, res, next) {
   }
 }
 
-module.exports = { crear, listar, obtenerPorId, actualizarEstado, eliminar, buscarPorCedula, renovar };
+// ANTERIOR: module.exports = { crear, listar, obtenerPorId, actualizarEstado, eliminar, buscarPorCedula, renovar };
+// NUEVO: se expone actualizarFechaFin para reprogramar la membresía pendiente cuando cambia el fin de la activa.
+module.exports = { crear, listar, obtenerPorId, actualizarEstado, actualizarFechaFin, eliminar, buscarPorCedula, renovar };

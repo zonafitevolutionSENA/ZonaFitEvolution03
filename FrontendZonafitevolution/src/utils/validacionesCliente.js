@@ -48,10 +48,12 @@ export function validarCedula(valor) {
   return "";
 }
 
-// El correo es opcional: vacío es válido
+// ANTERIOR: // El correo es opcional: vacío es válido
+//           if (!correo) return "";
+// NUEVO: el correo es obligatorio al registrar y al editar, igual que en el backend.
 export function validarCorreo(valor) {
   const correo = String(valor ?? "").trim();
-  if (!correo) return "";
+  if (!correo) return "El correo es obligatorio.";
   if (correo.length > LIMITES.correoMax) return `El correo no puede superar ${LIMITES.correoMax} caracteres.`;
   if (!REGEX_CORREO.test(correo)) return "El formato del correo no es válido.";
   return "";
@@ -95,7 +97,9 @@ export function prepararCliente(valores) {
   return {
     nombre: normalizarTexto(valores.nombre),
     cedula: String(valores.cedula ?? "").trim(),
-    correo: correo || null,
+    // ANTERIOR: correo: correo || null,
+    // NUEVO: el correo ya no es opcional, así que se envía tal cual (nunca se convierte en null).
+    correo,
     telefono: telefono || null,
   };
 }

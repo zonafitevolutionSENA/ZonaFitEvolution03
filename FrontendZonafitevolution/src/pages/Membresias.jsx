@@ -9,7 +9,7 @@ import {
   renovarMembresia,
 } from "../services/membresiaService";
 import { listarPlanes } from "../services/planService";
-import { ETIQUETAS_ESTADO, ESTADOS, diaDe } from "../utils/estadoMembresia";
+import { ETIQUETAS_ESTADO, ESTADOS, diaDe, esTiquetera } from "../utils/estadoMembresia";
 import { normalizarTexto } from "../utils/validacionesCliente";
 import "../PantallasGestion.css";
 
@@ -90,13 +90,15 @@ function Membresias({ iniciarEnRenovar = false }) {
         cedula: clientePorId.get(m.cliente_id)?.cedula ?? "—",
         plan: planPorId.get(m.plan_id)?.nombre ?? "—",
         inicio: diaDe(m.fecha_inicio) || "—",
-        fin: diaDe(m.fecha_fin) || "—",
+        fin: diaDe(m.fecha_fin) || (esTiquetera(m) && m.estado === "activa" ? "Por activar" : "—"),
+        finOrden: diaDe(m.fecha_fin) || "9999-12-31",
+        ingresos: esTiquetera(m) ? `${m.ingresos_usados ?? 0} de ${m.ingresos_totales} usados` : "—",
         estado: m.estado,
       }))
       .filter((f) => ESTADOS.includes(f.estado))
       .filter((f) => filtro === "todos" || f.estado === filtro)
       .filter((f) => !termino || `${f.cliente} ${f.cedula} ${f.plan}`.toLowerCase().includes(termino))
-      .sort((a, b) => b.fin.localeCompare(a.fin) || b.id - a.id);
+      .sort((a, b) => b.finOrden.localeCompare(a.finOrden) || b.id - a.id);
   }, [datos, filtro, busqueda]);
 
   async function asignar(valores) {
@@ -200,6 +202,7 @@ function Membresias({ iniciarEnRenovar = false }) {
                   <th>Plan</th>
                   <th>Inicio</th>
                   <th>Vence</th>
+                  <th>Ingresos</th>
                   <th>Estado</th>
                 </tr>
               </thead>
@@ -211,6 +214,7 @@ function Membresias({ iniciarEnRenovar = false }) {
                     <td>{f.plan}</td>
                     <td>{f.inicio}</td>
                     <td>{f.fin}</td>
+                    <td>{f.ingresos}</td>
                     <td>{ETIQUETAS_ESTADO[f.estado]}</td>
                   </tr>
                 ))}

@@ -1,3 +1,12 @@
+-- Esquema completo de la base de datos zonafitevolution.
+-- Es el único script SQL del proyecto: no hay migraciones. Cada cambio de esquema se hace aquí.
+-- Uso:
+--   mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS zonafitevolution;"
+--   mysql -u root -p zonafitevolution < database/init.sql
+
+-- Codificación del cliente: sin esto, los nombres con tilde (Sesión) pueden guardarse mal según el programa que ejecute el script
+SET NAMES utf8mb4;
+
 -- Corrección de roles: ahora son del personal, no de clientes
 DROP TABLE IF EXISTS membresias;
 DROP TABLE IF EXISTS usuarios;
@@ -29,53 +38,57 @@ CREATE TABLE IF NOT EXISTS clientes (
   fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS membresias (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  tipo VARCHAR(50) NOT NULL,
-  precio DECIMAL(10,2) NOT NULL,
-  fecha_inicio DATE NOT NULL,
-  fecha_fin DATE NOT NULL,
-  estado ENUM('activa', 'vencida', 'cancelada') NOT NULL DEFAULT 'activa',
-  cliente_id INT NOT NULL,
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (cliente_id) REFERENCES clientes(id)
-);
-
--- Épica 2, Sprint 1: catálogo de planes
+-- Catálogo de planes
 CREATE TABLE IF NOT EXISTS planes (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL UNIQUE,
   duracion_dias INT NOT NULL,
   precio DECIMAL(10,2) NOT NULL,
+  -- NULL = plan por tiempo. Con valor = tiquetera: cantidad de ingresos que incluye
+  max_ingresos INT NULL,
   activo BOOLEAN NOT NULL DEFAULT TRUE,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tarifas 2026. En las tiqueteras la duración cuenta desde el primer día de uso.
 -- INSERT IGNORE: el script se puede volver a ejecutar sin fallar por nombres duplicados
-INSERT IGNORE INTO planes (nombre, duracion_dias, precio) VALUES
-  ('diario', 1, 8000),
-  ('quincenal', 15, 60000),
-  ('mensual', 30, 50000),
-  ('trimestral', 90, 130000);
+INSERT IGNORE INTO planes (nombre, duracion_dias, precio, max_ingresos) VALUES
+  ('Sesión', 1, 10000, NULL),
+  ('Quincena', 15, 50000, NULL),
+  ('Mensualidad', 30, 85000, NULL),
+  ('Mensualidad Estudiantes', 30, 70000, NULL),
+  ('Tiquetera x6', 30, 55000, 6),
+  ('Tiquetera x12', 45, 100000, 12),
+  ('Trimestre', 90, 245000, NULL),
+  ('Trimestre Estudiantes', 90, 210000, NULL);
 
--- Ajustar membresias para referenciar el plan
-ALTER TABLE membresias
-  ADD COLUMN plan_id INT NULL AFTER cliente_id,
-  ADD CONSTRAINT fk_membresia_plan FOREIGN KEY (plan_id) REFERENCES planes(id);
-
--- Migración (Épica 2, Sprint 1, Día 5): el plan pasa a ser la única fuente de tipo y precio.
--- Al ejecutar este script completo, membresias se recrea vacía, así que el ALTER siempre aplica.
--- Para una base de datos ya existente, ejecutar solo este ALTER (una sola vez) y solo si
--- no hay membresías con plan_id NULL:
-ALTER TABLE membresias
-  DROP COLUMN tipo,
-  DROP COLUMN precio,
-  MODIFY COLUMN plan_id INT NOT NULL;
+-- El plan es la única fuente de tipo y precio de la membresía.
+-- Estado 'pendiente': membresía adquirida mientras el cliente tiene otra activa; la tarea diaria la activa en su fecha de inicio.
+-- Tiqueteras: fecha_fin queda en NULL hasta el primer ingreso (ahí empieza a contar la duración);
+-- ingresos_totales es una copia de los ingresos del plan al momento de la venta (NULL = membresía por tiempo).
+CREATE TABLE IF NOT EXISTS membresias (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  fecha_inicio DATE NOT NULL,
+  fecha_fin DATE NULL,
+  estado ENUM('pendiente', 'activa', 'vencida', 'cancelada') NOT NULL DEFAULT 'activa',
+  cliente_id INT NOT NULL,
+  plan_id INT NOT NULL,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  ingresos_totales INT NULL,
+  ingresos_usados INT NOT NULL DEFAULT 0,
+  fecha_primer_uso DATE NULL,
+  fecha_ultimo_ingreso DATE NULL, -- una tiquetera descuenta máximo un ingreso por día
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+  CONSTRAINT fk_membresia_plan FOREIGN KEY (plan_id) REFERENCES planes(id),
+  -- Acelera la consulta diaria de pendientes por fecha de inicio
+  INDEX idx_membresias_estado_inicio (estado, fecha_inicio)
+);
 
 CREATE TABLE IF NOT EXISTS plantillas_biometricas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cliente_id INT NOT NULL UNIQUE,
-  template_hash VARCHAR(255) NOT NULL,
+  -- UNIQUE: la misma huella no puede quedar registrada para dos clientes
+  template_hash VARCHAR(255) NOT NULL UNIQUE,
   fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );

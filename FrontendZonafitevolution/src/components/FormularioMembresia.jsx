@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import {
   fechaFinEstimada,
   hayErroresMembresia,
+  inicioMinimoTrasActiva,
   limitesFechaInicio,
   validarAsignacion,
   validarClienteMembresia,
@@ -28,6 +29,8 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
   const plan = planesActivos.find((p) => String(p.id) === valores.plan);
   const fin = fechaFinEstimada(valores.fecha, plan);
   const contexto = { clientes, planes, membresias };
+  const inicioMinimo = valores.cliente ? inicioMinimoTrasActiva(Number(valores.cliente), membresias) : null;
+  const quedaraPendiente = Boolean(inicioMinimo) || valores.fecha > hoyLocal();
 
   function cambiar(campo, valor) {
     setValores((v) => ({ ...v, [campo]: valor }));
@@ -35,9 +38,13 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
     if (errorGeneral) setErrorGeneral("");
   }
 
-  // Al elegir un cliente se avisa de inmediato si ya tiene una membresía activa
+  // ANTERIOR: al elegir un cliente se avisaba de inmediato si ya tenía una membresía activa
+  // y solo se guardaba el cliente: setValores((v) => ({ ...v, cliente: id }));
+  // NUEVO: si tiene una activa, la fecha de inicio se mueve al día siguiente de su fin para que
+  // la nueva quede pendiente sin solaparse.
   function elegirCliente(id) {
-    setValores((v) => ({ ...v, cliente: id }));
+    const minimo = id ? inicioMinimoTrasActiva(Number(id), membresias) : null;
+    setValores((v) => ({ ...v, cliente: id, fecha: minimo && v.fecha < minimo ? minimo : v.fecha }));
     setErrores((e) => ({ ...e, cliente: id ? validarClienteMembresia(id, clientes, membresias) : "" }));
     if (errorGeneral) setErrorGeneral("");
   }
@@ -99,7 +106,7 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
           <option value="">Selecciona un plan</option>
           {planesActivos.map((p) => (
             <option key={p.id} value={p.id}>
-              {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"} — {formatoPrecio.format(Number(p.precio))}
+              {p.nombre} — {p.duracion_dias} {Number(p.duracion_dias) === 1 ? "día" : "días"}{p.max_ingresos ? ` · ${p.max_ingresos} ingresos (1 por día)` : " · 1 ingreso por día"} — {formatoPrecio.format(Number(p.precio))}
             </option>
           ))}
         </select>
@@ -122,7 +129,22 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
         {errores.fecha ? (
           <p className="mensaje-error" role="alert">{errores.fecha}</p>
         ) : (
-          fin && <small>Vencerá el {fin}.</small>
+          plan?.max_ingresos ? (
+            <small>
+              Incluye {plan.max_ingresos} ingresos, uno por día. Los {plan.duracion_dias} días cuentan desde el primer ingreso.
+              {/* NUEVO: aviso cuando la tiquetera quedará pendiente hasta su fecha de inicio */}
+              {quedaraPendiente && ` Quedará pendiente y se activará automáticamente el ${valores.fecha}.`}
+            </small>
+          ) : (
+            // ANTERIOR: fin && <small>Vencerá el {fin}.</small>
+            // NUEVO: se informa cuando la membresía quedará pendiente hasta su fecha de inicio.
+            fin && (
+              <small>
+                Vencerá el {fin}.
+                {quedaraPendiente && ` Quedará pendiente y se activará automáticamente el ${valores.fecha}.`}
+              </small>
+            )
+          )
         )}
       </div>
 

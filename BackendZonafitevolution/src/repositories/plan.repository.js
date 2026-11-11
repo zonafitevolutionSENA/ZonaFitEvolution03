@@ -1,10 +1,10 @@
 const pool = require('../config/database');
 const Plan = require('../models/plan.model');
 
-async function crear({ nombre, duracion_dias, precio }) {
+async function crear({ nombre, duracion_dias, precio, max_ingresos = null }) {
   const [resultado] = await pool.query(
-    'INSERT INTO planes (nombre, duracion_dias, precio) VALUES (?, ?, ?)',
-    [nombre, duracion_dias, precio]
+    'INSERT INTO planes (nombre, duracion_dias, precio, max_ingresos) VALUES (?, ?, ?, ?)',
+    [nombre, duracion_dias, precio, max_ingresos]
   );
   return resultado.insertId;
 }
@@ -31,10 +31,10 @@ async function obtenerPorNombre(nombre) {
   return new Plan(filas[0]);
 }
 
-async function actualizar(id, { nombre, duracion_dias, precio, activo }) {
+async function actualizar(id, { nombre, duracion_dias, precio, max_ingresos, activo }) {
   const [resultado] = await pool.query(
-    'UPDATE planes SET nombre = ?, duracion_dias = ?, precio = ?, activo = ? WHERE id = ?',
-    [nombre, duracion_dias, precio, activo, id]
+    'UPDATE planes SET nombre = ?, duracion_dias = ?, precio = ?, max_ingresos = ?, activo = ? WHERE id = ?',
+    [nombre, duracion_dias, precio, max_ingresos, activo, id]
   );
   return resultado.affectedRows > 0;
 }
