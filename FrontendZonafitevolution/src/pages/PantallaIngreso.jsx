@@ -5,8 +5,28 @@ const API_URL = import.meta.env.VITE_API_URL;
 // Tiempo que se muestra el resultado antes de volver a esperar la siguiente huella
 const TIEMPO_RESULTADO_MS = 2000;
 
+// El token llega una vez en la URL (?pantalla=acceso&token=...), se guarda en el navegador
+// y se quita de la barra de direcciones para que no quede a la vista
+function tokenPantalla() {
+  const parametros = new URLSearchParams(window.location.search);
+  const desdeUrl = parametros.get("token");
+  try {
+    if (desdeUrl) {
+      localStorage.setItem("zonafitTokenPantalla", desdeUrl);
+      parametros.delete("token");
+      window.history.replaceState(null, "", `?${parametros.toString()}`);
+    }
+    return localStorage.getItem("zonafitTokenPantalla") || "";
+  } catch {
+    return desdeUrl || "";
+  }
+}
+
 async function consultarPantalla(ruta, opciones = {}) {
-  const respuesta = await fetch(`${API_URL}/acceso-fisico/pantalla${ruta}`, opciones);
+  const respuesta = await fetch(`${API_URL}/acceso-fisico/pantalla${ruta}`, {
+    ...opciones,
+    headers: { ...opciones.headers, "X-Pantalla-Token": tokenPantalla() },
+  });
   const datos = await respuesta.json().catch(() => ({}));
   if (!respuesta.ok) {
     const error = new Error(datos.error || "No se pudo consultar el lector.");

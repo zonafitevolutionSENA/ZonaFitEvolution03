@@ -8,6 +8,7 @@ const authRoutes = require('./auth.routes');
 const planRoutes = require('./plan.routes');
 const biometriaRoutes = require('./biometria.routes');
 const accesoFisicoRoutes = require('./accesoFisico.routes');
+const { lectorConectado } = require('../hardware/canalAgente');
 
 router.use('/usuarios', usuarioRoutes);
 router.use('/clientes', clienteRoutes);
@@ -17,5 +18,9 @@ router.use('/auth', authRoutes);
 router.use('/planes', planRoutes);
 router.use('/biometria', biometriaRoutes);
 router.use('/acceso-fisico', accesoFisicoRoutes);
+
+router.get('/salud', (req, res) => {
+  res.json({ estado: 'ok', lector: lectorConectado() ? 'conectado' : 'desconectado' });
+});
 
 module.exports = router;
