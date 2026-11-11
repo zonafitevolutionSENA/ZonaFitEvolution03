@@ -40,6 +40,7 @@ Otros:
 
 - [`analisis/`](analisis/): historias de usuario con sus criterios de aceptación y casos de uso con sus diagramas.
 - `img/`: figuras y diagramas extraídos de los formatos.
+- [`diagramas/`](diagramas/): fuentes Mermaid (`.mmd`) de los diagramas de contenedores, componentes y despliegue. Para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i diagramas/<archivo>.mmd -o <archivo>.png`.
 - Las épicas, historias y sprints se gestionan en **Jira** (tablero SCRUM); aquí se enlazan, no se copian.
 
 ## Cambios de alcance registrados
