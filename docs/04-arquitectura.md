@@ -20,12 +20,13 @@
 
 ### Historial de versiones
 
-| **Versión** | **Fecha**  | **Descripción**                                                                                                                             | **Responsable**              | **Aprobado por** |
-| ----------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
-| 0.1         | 19/10/2026 | Drivers, capas, patrones, modelo de datos y API (documento maestro v2.0)                                                                    | Liliana Sofía Panesso Méndez |                  |
-| 0.2         | 20/10/2026 | Diagramas, despliegue propuesto y ADR (documento maestro v2.1)                                                                              | Liliana Sofía Panesso Méndez |                  |
-| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 sin apertura de puerta (CR-005) y hosting por definir (CR-006)                                        | Juan Diego Mejía Llano       |                  |
-| 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; diccionario de datos con tiqueteras, estado pendiente y template\_hash único; DT-010 aceptada | Juan Diego Mejía Llano       |                  |
+| **Versión** | **Fecha**  | **Descripción**                                                                                                                                                              | **Responsable**              | **Aprobado por** |
+| ----------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
+| 0.1         | 19/10/2026 | Drivers, capas, patrones, modelo de datos y API (documento maestro v2.0)                                                                                                     | Liliana Sofía Panesso Méndez |                  |
+| 0.2         | 20/10/2026 | Diagramas, despliegue propuesto y ADR (documento maestro v2.1)                                                                                                               | Liliana Sofía Panesso Méndez |                  |
+| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 sin apertura de puerta (CR-005) y hosting por definir (CR-006)                                                                         | Juan Diego Mejía Llano       |                  |
+| 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; diccionario de datos con tiqueteras, estado pendiente y template\_hash único; DT-010 aceptada                                  | Juan Diego Mejía Llano       |                  |
+| 1.2         | 10/11/2026 | Diagramas de contenedores, componentes y despliegue actualizados: el sensor se conecta por USB al PC de la API (sin agente aparte), pantalla de ingreso y nuevos componentes | Juan Diego Mejía Llano       |                  |
 
 ### Registro de aprobaciones
 
@@ -247,21 +248,21 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 ### 6.1 Catálogo de diagramas
 
-| **ID**  | **Vista**    | **Propósito**                    | **Herramienta**            | **Ubicación**           | **Versión** | **Estado**                      |
-| ------- | ------------ | -------------------------------- | -------------------------- | ----------------------- | ----------- | ------------------------------- |
-| DIA-001 | Contexto     | Actores y sistemas externos      | Mermaid (contexto.mmd)     | Figura 1                | 1.1         | Actualizado (CR-005)            |
-| DIA-002 | Contenedores | Aplicaciones y base de datos     | Mermaid (contenedores.mmd) | Figura 2                | 1.0         | Borrador                        |
-| DIA-003 | Componentes  | Capas del frontend y backend     | Mermaid (componentes.mmd)  | Figura 3                | 1.0         | Borrador                        |
-| DIA-004 | Secuencia    | Validar acceso (CU-004)          | Mermaid (secuencia.mmd)    | Documento maestro, 5.10 | 1.0         | Borrador                        |
-| DIA-005 | Datos        | Entidad-relación de las 7 tablas | Mermaid (er.mmd)           | Documento maestro, 5.10 | 1.0         | Borrador                        |
-| DIA-006 | Despliegue   | Nodos y protocolos               | Mermaid (despliegue.mmd)   | Figura 4                | 1.1         | Propuesta (hosting por definir) |
+| **ID**  | **Vista**    | **Propósito**                                             | **Herramienta**                           | **Ubicación**           | **Versión** | **Estado**                                                   |
+| ------- | ------------ | --------------------------------------------------------- | ----------------------------------------- | ----------------------- | ----------- | ------------------------------------------------------------ |
+| DIA-001 | Contexto     | Actores y sistemas externos                               | Mermaid (contexto.mmd)                    | Figura 1                | 1.1         | Actualizado (CR-005)                                         |
+| DIA-002 | Contenedores | Aplicaciones, pantalla de ingreso, base de datos y sensor | Mermaid (docs/diagramas/contenedores.mmd) | Figura 2                | 1.2         | Actualizado (sensor conectado a la API)                      |
+| DIA-003 | Componentes  | Capas del frontend y backend                              | Mermaid (docs/diagramas/componentes.mmd)  | Figura 3                | 1.2         | Actualizado (PantallaIngreso, jobs/ y limiteLogin)           |
+| DIA-004 | Secuencia    | Validar acceso (CU-004)                                   | Mermaid (secuencia.mmd)                   | Documento maestro, 5.10 | 1.0         | Borrador                                                     |
+| DIA-005 | Datos        | Entidad-relación de las 7 tablas                          | Mermaid (er.mmd)                          | Documento maestro, 5.10 | 1.0         | Borrador                                                     |
+| DIA-006 | Despliegue   | Nodos y protocolos                                        | Mermaid (docs/diagramas/despliegue.mmd)   | Figura 4                | 1.2         | Actualizado (sensor en el PC de la API; hosting por definir) |
 
 ### 6.2 Vista de contenedores
 
 <table>
 <tbody>
 <tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image2.png" style="width:6.29921in;height:1.45428in" /></p>
+<td><p><img src="img/04-arquitectura/media/image2.png" style="width:6.29921in;height:2.01107in" /></p>
 <p><em>Figura 2. Diagrama de contenedores (DIA-002).</em></p></td>
 </tr>
 </tbody>
@@ -272,7 +273,7 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 <table>
 <tbody>
 <tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image3.png" style="width:5.90551in;height:2.97836in" /></p>
+<td><p><img src="img/04-arquitectura/media/image3.png" style="width:5.90551in;height:1.6709in" /></p>
 <p><em>Figura 3. Diagrama de componentes (DIA-003).</em></p></td>
 </tr>
 </tbody>
@@ -280,10 +281,10 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 ### 6.4 Diagramas de secuencia
 
-| **ID**  | **Flujo**                    | **Caso de uso / HU** | **Participantes**                                                         | **Condición principal**                           | **Excepciones**                                                                |
-| ------- | ---------------------------- | -------------------- | ------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
-| SEQ-001 | Validar acceso por huella    | CU-004 / HU-006      | Agente del sensor, API, accesoFisico.service, estadosAcceso, repositorios | Membresía activa y vigente                        | Huella no reconocida (404); vencida/cancelada/sin membresía; error de conexión |
-| SEQ-002 | Renovar membresía por cédula | CU-005 / HU-004      | Frontend, membresia.service, repositorios                                 | Membresía vigente se encadena; vencida inicia hoy | Cédula no encontrada; plan inactivo                                            |
+| **ID**  | **Flujo**                    | **Caso de uso / HU** | **Participantes**                                                                                       | **Condición principal**                           | **Excepciones**                                                                |
+| ------- | ---------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
+| SEQ-001 | Validar acceso por huella    | CU-004 / HU-006      | Pantalla de ingreso, API, adaptador del sensor AS608, accesoFisico.service, estadosAcceso, repositorios | Membresía activa y vigente                        | Huella no reconocida (404); vencida/cancelada/sin membresía; error de conexión |
+| SEQ-002 | Renovar membresía por cédula | CU-005 / HU-004      | Frontend, membresia.service, repositorios                                                               | Membresía vigente se encadena; vencida inicia hoy | Cédula no encontrada; plan inactivo                                            |
 
 ### 6.5 Reglas de calidad de diagramas
 
@@ -690,7 +691,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 <table>
 <tbody>
 <tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image4.png" style="width:5.51181in;height:3.91592in" /></p>
+<td><p><img src="img/04-arquitectura/media/image4.png" style="width:5.51181in;height:3.30606in" /></p>
 <p><em>Figura 4. Diagrama de despliegue propuesto (DIA-006).</em></p></td>
 </tr>
 </tbody>
