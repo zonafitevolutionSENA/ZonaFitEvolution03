@@ -20,13 +20,13 @@
 
 ### Historial de versiones
 
-| **Versión** | **Fecha**  | **Descripción**                                                                                                                                                              | **Responsable**              | **Aprobado por** |
-| ----------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
-| 0.1         | 19/10/2026 | Drivers, capas, patrones, modelo de datos y API (documento maestro v2.0)                                                                                                     | Liliana Sofía Panesso Méndez |                  |
-| 0.2         | 20/10/2026 | Diagramas, despliegue propuesto y ADR (documento maestro v2.1)                                                                                                               | Liliana Sofía Panesso Méndez |                  |
-| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 sin apertura de puerta (CR-005) y hosting por definir (CR-006)                                                                         | Juan Diego Mejía Llano       |                  |
-| 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; diccionario de datos con tiqueteras, estado pendiente y template\_hash único; DT-010 aceptada                                  | Juan Diego Mejía Llano       |                  |
-| 1.2         | 10/11/2026 | Diagramas de contenedores, componentes y despliegue actualizados: el sensor se conecta por USB al PC de la API (sin agente aparte), pantalla de ingreso y nuevos componentes | Juan Diego Mejía Llano       |                  |
+| **Versión** | **Fecha**  | **Descripción**                                                                                                                                                                                                   | **Responsable**              | **Aprobado por** |
+| ----------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------------- |
+| 0.1         | 19/10/2026 | Drivers, capas, patrones, modelo de datos y API (documento maestro v2.0)                                                                                                                                          | Liliana Sofía Panesso Méndez |                  |
+| 0.2         | 20/10/2026 | Diagramas, despliegue propuesto y ADR (documento maestro v2.1)                                                                                                                                                    | Liliana Sofía Panesso Méndez |                  |
+| 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 sin apertura de puerta (CR-005) y hosting por definir (CR-006)                                                                                                              | Juan Diego Mejía Llano       |                  |
+| 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; diccionario de datos con tiqueteras, estado pendiente y template\_hash único; DT-010 aceptada                                                                       | Juan Diego Mejía Llano       |                  |
+| 1.2         | 10/11/2026 | Diagramas de contenedores, componentes y despliegue actualizados: el sensor se conecta por USB al PC de la API (sin agente aparte), pantalla de ingreso y nuevos componentes                                      | Juan Diego Mejía Llano       |                  |
 | 1.3         | 11/11/2026 | Despliegue en la nube: frontend en Vercel, API y MySQL en Railway, agente local del lector por WebSocket (ADR-008), pantalla de ingreso con token, seguridad y zona horaria; diagramas DIA-002, DIA-003 y DIA-006 | Juan Diego Mejía Llano       |                  |
 
 ### Registro de aprobaciones
@@ -168,11 +168,11 @@ Describa el sistema como una unidad, quién lo usa, con qué sistemas se relacio
 
 ### 4.2 Catálogo de actores y sistemas externos
 
-| **ID**  | **Actor / sistema**        | **Tipo**    | **Interacción**                                           | **Datos intercambiados** | **Protocolo / medio** | **Propietario** |
-| ------- | -------------------------- | ----------- | --------------------------------------------------------- | ------------------------ | --------------------- | --------------- |
-| EXT-001 | Administrador / Empleado   | Usuario     | Gestiona clientes, planes, membresías, accesos y finanzas | JSON                     | HTTPS + JWT           | Gimnasio        |
-| EXT-002 | Sensor AS608 + CP2102      | Dispositivo | Captura la huella para registrar y validar                | Plantilla (solo hash)    | USB-serie (UART) al agente del lector; WebSocket (wss) al backend | Gimnasio        |
-| EXT-003 | Vercel (frontend) y Railway (API y MySQL) | Sistema     | Publica la aplicación, la API y la base                   | Datos del sistema        | HTTPS / WSS; MySQL por red privada | Equipo del proyecto |
+| **ID**  | **Actor / sistema**                       | **Tipo**    | **Interacción**                                           | **Datos intercambiados** | **Protocolo / medio**                                             | **Propietario**     |
+| ------- | ----------------------------------------- | ----------- | --------------------------------------------------------- | ------------------------ | ----------------------------------------------------------------- | ------------------- |
+| EXT-001 | Administrador / Empleado                  | Usuario     | Gestiona clientes, planes, membresías, accesos y finanzas | JSON                     | HTTPS + JWT                                                       | Gimnasio            |
+| EXT-002 | Sensor AS608 + CP2102                     | Dispositivo | Captura la huella para registrar y validar                | Plantilla (solo hash)    | USB-serie (UART) al agente del lector; WebSocket (wss) al backend | Gimnasio            |
+| EXT-003 | Vercel (frontend) y Railway (API y MySQL) | Sistema     | Publica la aplicación, la API y la base                   | Datos del sistema        | HTTPS / WSS; MySQL por red privada                                | Equipo del proyecto |
 
 ### 4.3 Diagrama de contexto
 
@@ -234,14 +234,14 @@ Describa el sistema como una unidad, quién lo usa, con qué sistemas se relacio
 
 ### 5.3 Stack tecnológico
 
-| **Categoría**   | **Tecnología / versión**                           | **Propósito**                    | **Justificación**                             | **Alternativa considerada** | **Riesgo / dependencia**            |
-| --------------- | -------------------------------------------------- | -------------------------------- | --------------------------------------------- | --------------------------- | ----------------------------------- |
-| Frontend        | React 19 + Vite 8, ESLint 10, CSS propio (Poppins) | SPA del personal                 | Componentes y servicios por recurso           | HTML servido por el backend | Navegación sin React Router (DT-09) |
-| Backend         | Node.js (LTS) + Express 5                          | API REST bajo /api               | Conocido por el equipo                        | FastAPI                     | —                                   |
-| Base de datos   | MySQL + mysql2 3                                   | Persistencia relacional          | Datos relacionales y consultas parametrizadas | ORM Sequelize/Prisma        | Sin migraciones (DT-10)             |
-| Autenticación   | jsonwebtoken 9 + bcrypt 6                          | JWT de 8 h y hash de contraseñas | API sin estado                                | Sesiones en servidor        | Sin revocación (DT-07)              |
-| Pruebas         |                                                    |                                  |                                               |                             | Sin pruebas automatizadas (DT-08)   |
-| Infraestructura | Vercel Hobby (frontend); Railway (API Node.js 20 y MySQL 8.4); agente local AgenteLector (Node.js 20 + ws) | Publicación en la nube | Railway mantiene la API siempre encendida (tarea diaria, WebSocket del agente) y ofrece MySQL en el mismo proyecto | Render + Aiven; Vercel para la API (descartado: funciones sin servidor persistente) | Prueba de Railway de 30 días (RT-004); internet en el portátil del lector (RT-005) |
+| **Categoría**   | **Tecnología / versión**                                                                                   | **Propósito**                    | **Justificación**                                                                                                  | **Alternativa considerada**                                                         | **Riesgo / dependencia**                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Frontend        | React 19 + Vite 8, ESLint 10, CSS propio (Poppins)                                                         | SPA del personal                 | Componentes y servicios por recurso                                                                                | HTML servido por el backend                                                         | Navegación sin React Router (DT-09)                                                |
+| Backend         | Node.js (LTS) + Express 5                                                                                  | API REST bajo /api               | Conocido por el equipo                                                                                             | FastAPI                                                                             | —                                                                                  |
+| Base de datos   | MySQL + mysql2 3                                                                                           | Persistencia relacional          | Datos relacionales y consultas parametrizadas                                                                      | ORM Sequelize/Prisma                                                                | Sin migraciones (DT-10)                                                            |
+| Autenticación   | jsonwebtoken 9 + bcrypt 6                                                                                  | JWT de 8 h y hash de contraseñas | API sin estado                                                                                                     | Sesiones en servidor                                                                | Sin revocación (DT-07)                                                             |
+| Pruebas         |                                                                                                            |                                  |                                                                                                                    |                                                                                     | Sin pruebas automatizadas (DT-08)                                                  |
+| Infraestructura | Vercel Hobby (frontend); Railway (API Node.js 20 y MySQL 8.4); agente local AgenteLector (Node.js 20 + ws) | Publicación en la nube           | Railway mantiene la API siempre encendida (tarea diaria, WebSocket del agente) y ofrece MySQL en el mismo proyecto | Render + Aiven; Vercel para la API (descartado: funciones sin servidor persistente) | Prueba de Railway de 30 días (RT-004); internet en el portátil del lector (RT-005) |
 
 ## 6\. Vistas y diagramas de arquitectura
 
@@ -249,21 +249,21 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 ### 6.1 Catálogo de diagramas
 
-| **ID**  | **Vista**    | **Propósito**                                             | **Herramienta**                           | **Ubicación**           | **Versión** | **Estado**                                                   |
-| ------- | ------------ | --------------------------------------------------------- | ----------------------------------------- | ----------------------- | ----------- | ------------------------------------------------------------ |
-| DIA-001 | Contexto     | Actores y sistemas externos                               | Mermaid (contexto.mmd)                    | Figura 1                | 1.1         | Actualizado (CR-005)                                         |
-| DIA-002 | Contenedores | Aplicaciones, pantalla de ingreso, agente, base de datos y sensor | Mermaid (docs/diagramas/contenedores.mmd) | Figura 2                | 1.3         | Actualizado (agente del lector por WebSocket)                |
-| DIA-003 | Componentes  | Capas del frontend y backend                              | Mermaid (docs/diagramas/componentes.mmd)  | Figura 3                | 1.3         | Actualizado (adaptador remoto y canalAgente)                 |
-| DIA-004 | Secuencia    | Validar acceso (CU-004)                                   | Mermaid (secuencia.mmd)                   | Documento maestro, 5.10 | 1.0         | Borrador                                                     |
-| DIA-005 | Datos        | Entidad-relación de las 7 tablas                          | Mermaid (er.mmd)                          | Documento maestro, 5.10 | 1.0         | Borrador                                                     |
-| DIA-006 | Despliegue   | Nodos y protocolos                                        | Mermaid (docs/diagramas/despliegue.mmd)   | Figura 4                | 1.3         | Actualizado (Vercel, Railway y agente del lector)            |
+| **ID**  | **Vista**    | **Propósito**                                                     | **Herramienta**                           | **Ubicación**           | **Versión** | **Estado**                                        |
+| ------- | ------------ | ----------------------------------------------------------------- | ----------------------------------------- | ----------------------- | ----------- | ------------------------------------------------- |
+| DIA-001 | Contexto     | Actores y sistemas externos                                       | Mermaid (contexto.mmd)                    | Figura 1                | 1.1         | Actualizado (CR-005)                              |
+| DIA-002 | Contenedores | Aplicaciones, pantalla de ingreso, agente, base de datos y sensor | Mermaid (docs/diagramas/contenedores.mmd) | Figura 2                | 1.3         | Actualizado (agente del lector por WebSocket)     |
+| DIA-003 | Componentes  | Capas del frontend y backend                                      | Mermaid (docs/diagramas/componentes.mmd)  | Figura 3                | 1.3         | Actualizado (adaptador remoto y canalAgente)      |
+| DIA-004 | Secuencia    | Validar acceso (CU-004)                                           | Mermaid (secuencia.mmd)                   | Documento maestro, 5.10 | 1.0         | Borrador                                          |
+| DIA-005 | Datos        | Entidad-relación de las 7 tablas                                  | Mermaid (er.mmd)                          | Documento maestro, 5.10 | 1.0         | Borrador                                          |
+| DIA-006 | Despliegue   | Nodos y protocolos                                                | Mermaid (docs/diagramas/despliegue.mmd)   | Figura 4                | 1.3         | Actualizado (Vercel, Railway y agente del lector) |
 
 ### 6.2 Vista de contenedores
 
 <table>
 <tbody>
 <tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image2.png" style="width:6.29921in;height:1.65669in" /></p>
+<td><p><img src="img/04-arquitectura/media/image2.png" style="width:6.29921in;height:1.65515in" /></p>
 <p><em>Figura 2. Diagrama de contenedores (DIA-002).</em></p></td>
 </tr>
 </tbody>
@@ -274,7 +274,7 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 <table>
 <tbody>
 <tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image3.png" style="width:6.29921in;height:1.77008in" /></p>
+<td><p><img src="img/04-arquitectura/media/image3.png" style="width:6.29921in;height:1.76764in" /></p>
 <p><em>Figura 3. Diagrama de componentes (DIA-003).</em></p></td>
 </tr>
 </tbody>
@@ -553,10 +553,10 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 9.4 Integraciones externas
 
-| **ID**  | **Sistema**                          | **Propósito**       | **Protocolo**    | **Autenticación**                    | **Timeout** | **Reintentos**                      | **Fallback**                 | **Propietario** |
-| ------- | ------------------------------------ | ------------------- | ---------------- | ------------------------------------ | ----------- | ----------------------------------- | ---------------------------- | --------------- |
-| INT-001 | Sensor AS608 + CP2102 (vía AgenteLector) | Capturar, registrar y eliminar huellas | USB-serie (UART) al agente; WebSocket wss://…/agente al backend | AGENTE\_TOKEN (encabezado X-Agente-Token) | 90 s por orden; 15 s esperando el dedo | El agente se reconecta solo (1 a 30 s); el cliente vuelve a poner la huella | Validación manual por cédula; respuesta 503 «Lector desconectado» | Gimnasio        |
-| INT-002 | Vercel (frontend) y Railway (API y MySQL) | Publicar el sistema | HTTPS; MySQL por la red privada de Railway (TCP 3306) | Variables de entorno de Railway y Vercel | Healthcheck /api/salud | Railway reinicia el servicio si falla (hasta 10 veces) | Ambiente local (TIPO\_LECTOR=as608) | Equipo del proyecto |
+| **ID**  | **Sistema**                               | **Propósito**                          | **Protocolo**                                                   | **Autenticación**                         | **Timeout**                            | **Reintentos**                                                              | **Fallback**                                                      | **Propietario**     |
+| ------- | ----------------------------------------- | -------------------------------------- | --------------------------------------------------------------- | ----------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------- |
+| INT-001 | Sensor AS608 + CP2102 (vía AgenteLector)  | Capturar, registrar y eliminar huellas | USB-serie (UART) al agente; WebSocket wss://…/agente al backend | AGENTE\_TOKEN (encabezado X-Agente-Token) | 90 s por orden; 15 s esperando el dedo | El agente se reconecta solo (1 a 30 s); el cliente vuelve a poner la huella | Validación manual por cédula; respuesta 503 «Lector desconectado» | Gimnasio            |
+| INT-002 | Vercel (frontend) y Railway (API y MySQL) | Publicar el sistema                    | HTTPS; MySQL por la red privada de Railway (TCP 3306)           | Variables de entorno de Railway y Vercel  | Healthcheck /api/salud                 | Railway reinicia el servicio si falla (hasta 10 veces)                      | Ambiente local (TIPO\_LECTOR=as608)                               | Equipo del proyecto |
 
 ### 9.5 Eventos y mensajería
 
@@ -662,13 +662,13 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 11.3 Métricas y health checks
 
-| **ID**  | **Métrica / chequeo** | **Objetivo**                                | **Umbral** | **Fuente** | **Alerta** | **Responsable** |
-| ------- | --------------------- | ------------------------------------------- | ---------- | ---------- | ---------- | --------------- |
-| OBS-001 | Disponibilidad        | 99,9 % en horario de atención (RNF-004)     | /api/salud responde estado ok | Healthcheck de Railway | Estado del servicio en Railway | Juan Diego Mejía Llano |
-| OBS-002 | Latencia p95          | \< 2 s en la validación de acceso (RNF-003) |            |            |            |                 |
-| OBS-003 | Tasa de errores       |                                             |            |            |            |                 |
-| OBS-004 | Uso de recursos       | Mantener el consumo dentro del crédito del plan | ~$5 USD/mes (alerta en $5, límite en $10 con Hobby) | Railway: Metrics y Usage | Correo de Railway | Juan Diego Mejía Llano |
-| OBS-005 | Conexión del lector   | El agente conectado durante la operación    | /api/salud: lector conectado | Ruta /api/salud y logs `[agente]` | Pantalla: «Lector desconectado» | Personal del gimnasio |
+| **ID**  | **Métrica / chequeo** | **Objetivo**                                    | **Umbral**                                           | **Fuente**                        | **Alerta**                      | **Responsable**        |
+| ------- | --------------------- | ----------------------------------------------- | ---------------------------------------------------- | --------------------------------- | ------------------------------- | ---------------------- |
+| OBS-001 | Disponibilidad        | 99,9 % en horario de atención (RNF-004)         | /api/salud responde estado ok                        | Healthcheck de Railway            | Estado del servicio en Railway  | Juan Diego Mejía Llano |
+| OBS-002 | Latencia p95          | \< 2 s en la validación de acceso (RNF-003)     |                                                      |                                   |                                 |                        |
+| OBS-003 | Tasa de errores       |                                                 |                                                      |                                   |                                 |                        |
+| OBS-004 | Uso de recursos       | Mantener el consumo dentro del crédito del plan | \~$5 USD/mes (alerta en $5, límite en $10 con Hobby) | Railway: Metrics y Usage          | Correo de Railway               | Juan Diego Mejía Llano |
+| OBS-005 | Conexión del lector   | El agente conectado durante la operación        | /api/salud: lector conectado                         | Ruta /api/salud y logs \[agente\] | Pantalla: «Lector desconectado» | Personal del gimnasio  |
 
 ### 11.4 Trazas y auditoría
 
@@ -686,18 +686,18 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 12.1 Matriz de ambientes
 
-| **Ambiente** | **Propósito**      | **Datos**  | **Configuración**                   | **Acceso**          | **Despliegue**                   | **Responsable**                                                                 |
-| ------------ | ------------------ | ---------- | ----------------------------------- | ------------------- | -------------------------------- | ------------------------------------------------------------------------------- |
-| Desarrollo   | Construcción local | Sintéticos | Local / .env                        | Equipo              | Manual (npm start / npm run dev) | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla |
-| Pruebas      |                    |            |                                     |                     |                                  |                                                                                 |
-| Producción   | Uso del gimnasio y sustentación | Reales / demostración | Variables de Railway y Vercel | Personal autorizado; pantalla de ingreso con PANTALLA\_TOKEN | Automático al fusionar en main (Railway y Vercel) | Juan Diego Mejía Llano y Liliana Sofía Panesso Méndez |
+| **Ambiente** | **Propósito**                   | **Datos**             | **Configuración**             | **Acceso**                                                   | **Despliegue**                                    | **Responsable**                                                                 |
+| ------------ | ------------------------------- | --------------------- | ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Desarrollo   | Construcción local              | Sintéticos            | Local / .env                  | Equipo                                                       | Manual (npm start / npm run dev)                  | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla |
+| Pruebas      |                                 |                       |                               |                                                              |                                                   |                                                                                 |
+| Producción   | Uso del gimnasio y sustentación | Reales / demostración | Variables de Railway y Vercel | Personal autorizado; pantalla de ingreso con PANTALLA\_TOKEN | Automático al fusionar en main (Railway y Vercel) | Juan Diego Mejía Llano y Liliana Sofía Panesso Méndez                           |
 
 ### 12.2 Diagrama de despliegue
 
 <table>
 <tbody>
 <tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image4.png" style="width:5.11811in;height:5.06591in" /></p>
+<td><p><img src="img/04-arquitectura/media/image4.png" style="width:5.11811in;height:5.06588in" /></p>
 <p><em>Figura 4. Diagrama de despliegue en la nube (DIA-006).</em></p></td>
 </tr>
 </tbody>
@@ -705,24 +705,24 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 12.3 Configuración por ambiente
 
-| **Variable / grupo**                                 | **Desarrollo**                             | **Pruebas** | **Producción** | **Secreto**          | **Propietario**              |
-| ---------------------------------------------------- | ------------------------------------------ | ----------- | -------------- | -------------------- | ---------------------------- |
-| DB\_HOST, DB\_PORT, DB\_USER, DB\_PASSWORD, DB\_NAME | localhost, 3306, root, —, zonafitevolution |             | Referencias ${{MySQL.MYSQL…}} de Railway (base railway) | Sí (DB\_PASSWORD)    | Liliana Sofía Panesso Méndez |
-| JWT\_SECRET, JWT\_EXPIRES\_IN                        | Valor local (mínimo 32 caracteres), 8h     |             | 64 caracteres aleatorios, 8h | Sí (JWT\_SECRET)     | Liliana Sofía Panesso Méndez |
-| BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, as608 (PUERTO\_LECTOR=COM3)   |             | El mismo BIOMETRIA\_SALT de siempre; remoto | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
-| AGENTE\_TOKEN, PANTALLA\_TOKEN                       | Vacíos (modo local)                        |             | 64 caracteres aleatorios cada uno | Sí                   | Juan Diego Mejía Llano       |
-| ORIGEN\_FRONTEND, TZ                                 | http://localhost:5173, America/Bogota      |             | https://zona-fit-evolution03.vercel.app, America/Bogota | No | Juan Diego Mejía Llano       |
+| **Variable / grupo**                                 | **Desarrollo**                             | **Pruebas** | **Producción**                                                                   | **Secreto**          | **Propietario**              |
+| ---------------------------------------------------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------- | -------------------- | ---------------------------- |
+| DB\_HOST, DB\_PORT, DB\_USER, DB\_PASSWORD, DB\_NAME | localhost, 3306, root, —, zonafitevolution |             | Referencias ${{MySQL.MYSQL…}} de Railway (base railway)                          | Sí (DB\_PASSWORD)    | Liliana Sofía Panesso Méndez |
+| JWT\_SECRET, JWT\_EXPIRES\_IN                        | Valor local (mínimo 32 caracteres), 8h     |             | 64 caracteres aleatorios, 8h                                                     | Sí (JWT\_SECRET)     | Liliana Sofía Panesso Méndez |
+| BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, as608 (PUERTO\_LECTOR=COM3)   |             | El mismo BIOMETRIA\_SALT de siempre; remoto                                      | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
+| AGENTE\_TOKEN, PANTALLA\_TOKEN                       | Vacíos (modo local)                        |             | 64 caracteres aleatorios cada uno                                                | Sí                   | Juan Diego Mejía Llano       |
+| ORIGEN\_FRONTEND, TZ                                 | http://localhost:5173, America/Bogota      |             | https://zona-fit-evolution03.vercel.app, America/Bogota                          | No                   | Juan Diego Mejía Llano       |
 | VITE\_API\_URL                                       | http://localhost:3000/api                  |             | https://zonafitevolution03-production.up.railway.app/api (tipo Config en Vercel) | No                   | Juan Diego Mejía Llano       |
 
 ### 12.4 Despliegue y rollback
 
-| **Paso** | **Acción**   | **Herramienta**          | **Validación**      | **Rollback** |
-| -------- | ------------ | ------------------------ | ------------------- | ------------ |
-| 1        | Construcción | Vercel: npm run build (FrontendZonafitevolution); Railway: Railpack con npm ci (BackendZonafitevolution) | Build exitoso       | Volver a desplegar el despliegue anterior desde Vercel o Railway |
-| 2        | Esquema de datos | init.sql ejecutado una sola vez en MySQL de Railway (sin migraciones, DT-010) | 7 tablas, 2 roles y 8 planes | Recrear la base desde el respaldo (mysqldump) |
-| 3        | Despliegue   | Merge en main: Railway (Watch Paths /BackendZonafitevolution/\*\*) y Vercel se redespliegan solos | Healthcheck /api/salud | Railway mantiene la versión anterior si el healthcheck falla |
-| 4        | Smoke test   | Login, cliente, membresía, registro de huella y pantalla de ingreso | Flujos críticos     | Revertir el PR en GitHub |
-| 5        | Liberación   | Agente del lector conectado (`npm start` en AgenteLector) | /api/salud: lector conectado; logs de Railway | Modo local (TIPO\_LECTOR=as608) |
+| **Paso** | **Acción**       | **Herramienta**                                                                                          | **Validación**                                | **Rollback**                                                     |
+| -------- | ---------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
+| 1        | Construcción     | Vercel: npm run build (FrontendZonafitevolution); Railway: Railpack con npm ci (BackendZonafitevolution) | Build exitoso                                 | Volver a desplegar el despliegue anterior desde Vercel o Railway |
+| 2        | Esquema de datos | init.sql ejecutado una sola vez en MySQL de Railway (sin migraciones, DT-010)                            | 7 tablas, 2 roles y 8 planes                  | Recrear la base desde el respaldo (mysqldump)                    |
+| 3        | Despliegue       | Merge en main: Railway (Watch Paths /BackendZonafitevolution/\*\*) y Vercel se redespliegan solos        | Healthcheck /api/salud                        | Railway mantiene la versión anterior si el healthcheck falla     |
+| 4        | Smoke test       | Login, cliente, membresía, registro de huella y pantalla de ingreso                                      | Flujos críticos                               | Revertir el PR en GitHub                                         |
+| 5        | Liberación       | Agente del lector conectado (npm start en AgenteLector)                                                  | /api/salud: lector conectado; logs de Railway | Modo local (TIPO\_LECTOR=as608)                                  |
 
 ### 12.5 Continuidad y recuperación
 
@@ -766,20 +766,20 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 13.3 Deuda técnica
 
-| **ID** | **Descripción**                                                                        | **Origen**          | **Impacto**                                                    | **Prioridad** | **Plan**                                                                                       | **Fecha objetivo** | **Estado** |
-| ------ | -------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- | ------------------ | ---------- |
-| DT-001 | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               | Crear la tabla pagos (TT-005).                                                                 |                    | Abierto    |
-| DT-002 | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
-| DT-003 | Vencimiento marcado desde el frontend, no con tarea programada.                        | Revisión del código | Estado guardado desactualizado.                                |               | Tarea programada en el backend (TT-006).                                                       |                    | Abierto    |
-| DT-004 | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Revisión del código | Contradicción regla–API.                                       |               | Integrar TT-002.                                                                               |                    | Abierto    |
-| DT-005 | La regla del último administrador solo se valida en el frontend.                       | Revisión del código | Se puede saltar llamando la API.                               |               | Integrar TT-001.                                                                               |                    | Abierto    |
+| **ID** | **Descripción**                                                                                                                               | **Origen**          | **Impacto**                                                    | **Prioridad** | **Plan**                                                                                       | **Fecha objetivo** | **Estado** |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- | ------------------ | ---------- |
+| DT-001 | No existe tabla de pagos: el registro financiero estima con el precio actual del plan.                                                        | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               | Crear la tabla pagos (TT-005).                                                                 |                    | Abierto    |
+| DT-002 | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).                                                                 | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
+| DT-003 | Vencimiento marcado desde el frontend, no con tarea programada.                                                                               | Revisión del código | Estado guardado desactualizado.                                |               | Tarea programada en el backend (TT-006).                                                       |                    | Abierto    |
+| DT-004 | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                                                                           | Revisión del código | Contradicción regla–API.                                       |               | Integrar TT-002.                                                                               |                    | Abierto    |
+| DT-005 | La regla del último administrador solo se valida en el frontend.                                                                              | Revisión del código | Se puede saltar llamando la API.                               |               | Integrar TT-001.                                                                               |                    | Abierto    |
 | DT-006 | Resuelto: límite de intentos de inicio de sesión (limiteLogin) y CORS restringido a ORIGEN\_FRONTEND, con trust proxy para Railway (PR \#59). | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
-| DT-007 | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               | Evaluar cookies httpOnly.                                                                      |                    | Abierto    |
-| DT-008 | Sin pruebas automatizadas ni pipeline de integración continua.                         | Revisión del código | Regresiones dependen de pruebas manuales.                      |               | TT-007 y TT-008.                                                                               |                    | Abierto    |
-| DT-009 | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               | Incorporar React Router.                                                                       |                    | Abierto    |
-| DT-010 | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                    | Aceptado   |
-| DT-011 | Resuelto: frontend en Vercel, API y MySQL en Railway y agente local del lector (PR \#59 a \#62). | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
-| DT-012 | Archivos vacíos cd y npm en la raíz del backend.                                       | Revisión del código | Ruido en el repositorio.                                       |               | Eliminarlos con un commit chore.                                                               |                    | Abierto    |
+| DT-007 | Token JWT en localStorage sin revocación.                                                                                                     | Revisión del código | Exposición ante XSS.                                           |               | Evaluar cookies httpOnly.                                                                      |                    | Abierto    |
+| DT-008 | Sin pruebas automatizadas ni pipeline de integración continua.                                                                                | Revisión del código | Regresiones dependen de pruebas manuales.                      |               | TT-007 y TT-008.                                                                               |                    | Abierto    |
+| DT-009 | Navegación por estado, sin React Router.                                                                                                      | Revisión del código | Pantallas sin URL propia.                                      |               | Incorporar React Router.                                                                       |                    | Abierto    |
+| DT-010 | Esquema creado con init.sql, sin migraciones.                                                                                                 | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                    | Aceptado   |
+| DT-011 | Resuelto: frontend en Vercel, API y MySQL en Railway y agente local del lector (PR \#59 a \#62).                                              | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
+| DT-012 | Archivos vacíos cd y npm en la raíz del backend.                                                                                              | Revisión del código | Ruido en el repositorio.                                       |               | Eliminarlos con un commit chore.                                                               |                    | Abierto    |
 
 ### 13.4 Criterios de mantenibilidad
 
@@ -799,15 +799,15 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 
 ### 14.1 Registro de ADR
 
-| **ID**  | **Título**                                       | **Estado** | **Fecha** | **Driver** | **Decisión**                                                                                                                      | **Consecuencia**                                                                                            | **Ubicación**           |
-| ------- | ------------------------------------------------ | ---------- | --------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
-| ADR-001 | Monorepo con frontend y backend separados        | Aceptado   |           |            | Monorepo con BackendZonafitevolution y FrontendZonafitevolution, cada uno con su package.json.                                    | Un solo historial y flujo de Pull Requests; el frontend necesita VITE\_API\_URL.                            | Documento maestro, 5.12 |
-| ADR-002 | API REST con Express y MySQL sin ORM             | Aceptado   |           |            | Express 5 con mysql2 y consultas parametrizadas en repositorios.                                                                  | SQL explícito; sin migraciones automáticas (init.sql).                                                      | Documento maestro, 5.12 |
-| ADR-003 | JWT y autorización por rol en el backend         | Aceptado   |           |            | JWT de 8 horas, bcrypt y permitirRoles en cada ruta.                                                                              | El token no se revoca antes de expirar; se guarda en localStorage.                                          | Documento maestro, 5.12 |
-| ADR-004 | Lector biométrico detrás de un adaptador         | Aceptado   |           |            | Interfaz LectorBiometrico, adaptador del sensor AS608 y fábrica por TIPO\_LECTOR; otro sensor se integra como un adaptador nuevo. | Cambiar de sensor solo exige un adaptador; el AS608 compara en el propio sensor, no por igualdad de hashes. | Documento maestro, 5.12 |
-| ADR-005 | Patrón State y fachada para validar el acceso    | Aceptado   |           |            | Estados activo, vencido, cancelado y sin membresía; accesoFisico.service coordina.                                                | Todo intento queda en registros\_acceso.                                                                    | Documento maestro, 5.12 |
-| ADR-006 | Registro financiero calculado con las membresías | Aceptado   |           |            | Cálculo en el frontend con el precio actual del plan.                                                                             | Cifras estimadas; pendiente TT-005.                                                                         | Documento maestro, 5.12 |
-| ADR-007 | Marcado de vencidas al consultar                 | Aceptado   |           |            | El frontend hace PATCH del estado al listar.                                                                                      | Estado guardado puede quedar desactualizado; se moverá al servidor (TT-006).                                | Documento maestro, 5.12 |
+| **ID**  | **Título**                                       | **Estado** | **Fecha**  | **Driver**      | **Decisión**                                                                                                                                                                                                                                   | **Consecuencia**                                                                                                                           | **Ubicación**                |
+| ------- | ------------------------------------------------ | ---------- | ---------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| ADR-001 | Monorepo con frontend y backend separados        | Aceptado   |            |                 | Monorepo con BackendZonafitevolution y FrontendZonafitevolution, cada uno con su package.json.                                                                                                                                                 | Un solo historial y flujo de Pull Requests; el frontend necesita VITE\_API\_URL.                                                           | Documento maestro, 5.12      |
+| ADR-002 | API REST con Express y MySQL sin ORM             | Aceptado   |            |                 | Express 5 con mysql2 y consultas parametrizadas en repositorios.                                                                                                                                                                               | SQL explícito; sin migraciones automáticas (init.sql).                                                                                     | Documento maestro, 5.12      |
+| ADR-003 | JWT y autorización por rol en el backend         | Aceptado   |            |                 | JWT de 8 horas, bcrypt y permitirRoles en cada ruta.                                                                                                                                                                                           | El token no se revoca antes de expirar; se guarda en localStorage.                                                                         | Documento maestro, 5.12      |
+| ADR-004 | Lector biométrico detrás de un adaptador         | Aceptado   |            |                 | Interfaz LectorBiometrico, adaptador del sensor AS608 y fábrica por TIPO\_LECTOR; otro sensor se integra como un adaptador nuevo.                                                                                                              | Cambiar de sensor solo exige un adaptador; el AS608 compara en el propio sensor, no por igualdad de hashes.                                | Documento maestro, 5.12      |
+| ADR-005 | Patrón State y fachada para validar el acceso    | Aceptado   |            |                 | Estados activo, vencido, cancelado y sin membresía; accesoFisico.service coordina.                                                                                                                                                             | Todo intento queda en registros\_acceso.                                                                                                   | Documento maestro, 5.12      |
+| ADR-006 | Registro financiero calculado con las membresías | Aceptado   |            |                 | Cálculo en el frontend con el precio actual del plan.                                                                                                                                                                                          | Cifras estimadas; pendiente TT-005.                                                                                                        | Documento maestro, 5.12      |
+| ADR-007 | Marcado de vencidas al consultar                 | Aceptado   |            |                 | El frontend hace PATCH del estado al listar.                                                                                                                                                                                                   | Estado guardado puede quedar desactualizado; se moverá al servidor (TT-006).                                                               | Documento maestro, 5.12      |
 | ADR-008 | Lector remoto mediante un agente WebSocket       | Aceptado   | 11/11/2026 | INT-01, RNF-005 | Con TIPO\_LECTOR=remoto, el adaptador remoto envía las órdenes registrar, capturar y eliminar al agente AgenteLector por WebSocket (/agente), autenticado con AGENTE\_TOKEN; el agente reutiliza el adaptador AS608 en el portátil del lector. | La API puede estar en la nube sin acceso al USB; los servicios no cambian; el portátil del lector necesita internet y el agente encendido. | Este documento, 14.1; README |
 
 ### 14.2 Plantilla mínima de ADR
@@ -840,13 +840,13 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 
 ### 15.1 Registro de riesgos técnicos
 
-| **ID** | **Riesgo**                            | **Causa**                               | **Probabilidad** | **Impacto** | **Exposición** | **Respuesta** | **Responsable**              | **Estado** |
-| ------ | ------------------------------------- | --------------------------------------- | ---------------- | ----------- | -------------- | ------------- | ---------------------------- | ---------- |
-| RT-001 | Integración del AS608 fuera de tiempo | Comunicación serie probada con el AS608 | Media            | Alta        | Alta           | Mitigar       | Liliana Sofía Panesso Méndez | Cerrado    |
-| RT-002 | Despliegue tardío                     | Hosting por definir                     | Media            | Alta        | Alta           | Mitigar       | Liliana Sofía Panesso Méndez | Cerrado (desplegado el 11/11/2026) |
-| RT-004 | Vence la prueba de Railway            | Prueba de 30 días o $5 de crédito       | Alta             | Alta        | Alta           | Mitigar: pasar a Hobby antes del 10/12/2026 y respaldar la base | Juan Diego Mejía Llano | Abierto    |
-| RT-005 | Sin internet en el portátil del lector | Red de la sala de sustentación          | Media            | Alta        | Alta           | Mitigar: datos del celular como respaldo; validación manual por cédula | Juan Diego Mejía Llano | Abierto    |
-| RT-003 | Regresiones sin pruebas automatizadas | No hay pruebas ni CI                    | Alta             | Media       | Alta           | Mitigar       |                              | Abierto    |
+| **ID** | **Riesgo**                             | **Causa**                               | **Probabilidad** | **Impacto** | **Exposición** | **Respuesta**                                                          | **Responsable**              | **Estado**                         |
+| ------ | -------------------------------------- | --------------------------------------- | ---------------- | ----------- | -------------- | ---------------------------------------------------------------------- | ---------------------------- | ---------------------------------- |
+| RT-001 | Integración del AS608 fuera de tiempo  | Comunicación serie probada con el AS608 | Media            | Alta        | Alta           | Mitigar                                                                | Liliana Sofía Panesso Méndez | Cerrado                            |
+| RT-002 | Despliegue tardío                      | Hosting por definir                     | Media            | Alta        | Alta           | Mitigar                                                                | Liliana Sofía Panesso Méndez | Cerrado (desplegado el 11/11/2026) |
+| RT-004 | Vence la prueba de Railway             | Prueba de 30 días o $5 de crédito       | Alta             | Alta        | Alta           | Mitigar: pasar a Hobby antes del 10/12/2026 y respaldar la base        | Juan Diego Mejía Llano       | Abierto                            |
+| RT-005 | Sin internet en el portátil del lector | Red de la sala de sustentación          | Media            | Alta        | Alta           | Mitigar: datos del celular como respaldo; validación manual por cédula | Juan Diego Mejía Llano       | Abierto                            |
+| RT-003 | Regresiones sin pruebas automatizadas  | No hay pruebas ni CI                    | Alta             | Media       | Alta           | Mitigar                                                                |                              | Abierto                            |
 
 ### 15.2 Disparadores y contingencias
 

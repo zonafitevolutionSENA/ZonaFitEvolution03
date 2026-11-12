@@ -9,7 +9,7 @@
 | ----------- | ---------- | ---------------------------------------------------------------------------------------------------- | ------------------------ | ---------- | ---------- | ---------- |
 | 1.0         | 03/11/2026 | Borrador del manual con los módulos implementados en local                                           | Maileth Begambre Movilla |            |            | Borrador   |
 | 1.1         | 10/11/2026 | Huella desde Clientes, pantalla de ingreso, correo obligatorio, un ingreso por día y nuevos mensajes | Juan Diego Mejía Llano   |            |            | Borrador   |
-| 1.2         | 11/11/2026 | Acceso en la nube, pantalla de ingreso con token, agente del lector y mensaje «Lector desconectado» | Juan Diego Mejía Llano   |            |            | Borrador   |
+| 1.2         | 11/11/2026 | Acceso en la nube, pantalla de ingreso con token, agente del lector y mensaje «Lector desconectado»  | Juan Diego Mejía Llano   |            |            | Borrador   |
 
 ### Aprobaciones
 
@@ -55,16 +55,16 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 
 ## 2\. Identificación del sistema
 
-| **Campo**                         | **Información**                                           |
-| --------------------------------- | --------------------------------------------------------- |
-| Nombre del sistema                | Zona Fit Evolution                                        |
-| Versión                           | v1.0.0 (candidata)                                        |
+| **Campo**                         | **Información**                                                                                                                                     |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nombre del sistema                | Zona Fit Evolution                                                                                                                                  |
+| Versión                           | v1.0.0 (candidata)                                                                                                                                  |
 | URL o medio de acceso             | Producción: https://zona-fit-evolution03.vercel.app. Pantalla de ingreso: la misma dirección con ?pantalla=acceso. En local: http://localhost:5173. |
-| Tipo de aplicación                | Aplicación web (navegador)                                |
-| Organización responsable          | Gimnasio Zona Fit                                         |
-| Horario de disponibilidad         | Horario de atención del gimnasio                          |
-| Canal de soporte                  |                                                           |
-| Fecha de actualización del manual |                                                           |
+| Tipo de aplicación                | Aplicación web (navegador)                                                                                                                          |
+| Organización responsable          | Gimnasio Zona Fit                                                                                                                                   |
+| Horario de disponibilidad         | Horario de atención del gimnasio                                                                                                                    |
+| Canal de soporte                  |                                                                                                                                                     |
+| Fecha de actualización del manual |                                                                                                                                                     |
 
 ### 2.1 Descripción general
 
@@ -74,16 +74,16 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 
 ### 2.2 Módulos funcionales
 
-| **Código** | **Módulo**          | **Objetivo**                                                                                                      | **Perfiles con acceso**                      |
-| ---------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| MOD-01     | Inicio              | Acciones rápidas, actividad reciente y membresías por vencer.                                                     | Administrador, Empleado                      |
-| MOD-02     | Clientes            | Registrar, buscar y editar clientes, registrar su huella y ver el estado de su membresía.                         | Administrador, Empleado                      |
-| MOD-03     | Membresías          | Asignar y renovar por cédula.                                                                                     | Administrador, Empleado                      |
-| MOD-04     | Planes              | Consultar el catálogo (cada plan permite un ingreso por día); el Administrador crea, edita y desactiva.           | Administrador (gestión), Empleado (consulta) |
-| MOD-05     | Pantalla de ingreso | Validar el ingreso del socio con su huella en una ventana aparte, sin sesión; el resultado se muestra 2 segundos. La primera vez en cada navegador se abre con el token que entrega el administrador (?pantalla=acceso&token=…); después basta con ?pantalla=acceso. | Administrador, Empleado                      |
-| MOD-06     | Historial           | Consultar intentos de acceso con filtros.                                                                         | Administrador, Empleado                      |
-| MOD-07     | Personal            | Crear y eliminar usuarios del personal.                                                                           | Administrador                                |
-| MOD-08     | Registro financiero | Resumen de pagos por cliente (solo lectura).                                                                      | Administrador                                |
+| **Código** | **Módulo**          | **Objetivo**                                                                                                                                                                                                                                                          | **Perfiles con acceso**                      |
+| ---------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| MOD-01     | Inicio              | Acciones rápidas, actividad reciente y membresías por vencer.                                                                                                                                                                                                         | Administrador, Empleado                      |
+| MOD-02     | Clientes            | Registrar, buscar y editar clientes, registrar su huella y ver el estado de su membresía.                                                                                                                                                                             | Administrador, Empleado                      |
+| MOD-03     | Membresías          | Asignar y renovar por cédula.                                                                                                                                                                                                                                         | Administrador, Empleado                      |
+| MOD-04     | Planes              | Consultar el catálogo (cada plan permite un ingreso por día); el Administrador crea, edita y desactiva.                                                                                                                                                               | Administrador (gestión), Empleado (consulta) |
+| MOD-05     | Pantalla de ingreso | Validar el ingreso del socio con su huella en una ventana aparte, sin sesión; el resultado se muestra 2 segundos. La primera vez en cada navegador se abre con el token que entrega el administrador (?pantalla=acceso\&token=…); después basta con ?pantalla=acceso. | Administrador, Empleado                      |
+| MOD-06     | Historial           | Consultar intentos de acceso con filtros.                                                                                                                                                                                                                             | Administrador, Empleado                      |
+| MOD-07     | Personal            | Crear y eliminar usuarios del personal.                                                                                                                                                                                                                               | Administrador                                |
+| MOD-08     | Registro financiero | Resumen de pagos por cliente (solo lectura).                                                                                                                                                                                                                          | Administrador                                |
 
 ## 3\. Requisitos para el usuario
 
@@ -349,19 +349,19 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 
 ## 11\. Mensajes, estados y errores frecuentes
 
-| **Código** | **Mensaje o situación**                                               | **Significado**                             | **Acción recomendada**                        | **Escalar**                            |
-| ---------- | --------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------- | -------------------------------------- |
-| MSG-01     | No se pudo conectar con el servidor                                   | La aplicación no llega a la API.            | Revisar internet y reintentar.                | Si persiste                            |
-| MSG-02     | Tu sesión expiró. Inicia sesión nuevamente.                           | Pasaron más de 8 horas.                     | Iniciar sesión.                               | No                                     |
-| MSG-03     | No tienes permisos para realizar esta acción                          | El rol no permite la acción.                | Ingresar con un Administrador.                | No                                     |
-| MSG-04     | Este cliente ya tiene una membresía activa. Usa «Renovar por cédula». | Regla de una membresía activa.              | Usar Renovar por cédula.                      | No                                     |
-| MSG-05     | La fecha de inicio no puede ser anterior a hoy.                       | Fecha inválida.                             | Corregir la fecha.                            | No                                     |
-| MSG-06     | Acceso denegado (con el motivo)                                       | Membresía vencida, cancelada o inexistente. | Renovar o asignar membresía.                  | No                                     |
-| MSG-07     | Huella no reconocida                                                  | La huella no está registrada.               | Repetir o validar por cédula.                 | Si persiste                            |
-| MSG-08     | Esta huella ya está registrada para otro cliente                      | El mismo dedo ya pertenece a otro socio.    | Usar otro dedo o revisar el cliente.          | Si el socio no tiene huella registrada |
-| MSG-09     | El lector no detectó un dedo nuevo                                    | Huella residual o dedo sin retirar.         | Retirar el dedo, limpiar el lector y repetir. | Si persiste                            |
-| MSG-10     | Lector desconectado: inicia el agente en el portátil del lector       | El agente del lector no está encendido o el portátil no tiene internet. | Conectar el portátil a internet y ejecutar npm start en AgenteLector. | Si persiste                            |
-| MSG-11     | Pantalla de ingreso no autorizada                                     | El navegador no tiene guardado el token de la pantalla. | Abrir una vez la dirección con ?pantalla=acceso&token=… que entrega el administrador. | Si no se tiene el token                |
+| **Código** | **Mensaje o situación**                                               | **Significado**                                                         | **Acción recomendada**                                                                 | **Escalar**                            |
+| ---------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------- |
+| MSG-01     | No se pudo conectar con el servidor                                   | La aplicación no llega a la API.                                        | Revisar internet y reintentar.                                                         | Si persiste                            |
+| MSG-02     | Tu sesión expiró. Inicia sesión nuevamente.                           | Pasaron más de 8 horas.                                                 | Iniciar sesión.                                                                        | No                                     |
+| MSG-03     | No tienes permisos para realizar esta acción                          | El rol no permite la acción.                                            | Ingresar con un Administrador.                                                         | No                                     |
+| MSG-04     | Este cliente ya tiene una membresía activa. Usa «Renovar por cédula». | Regla de una membresía activa.                                          | Usar Renovar por cédula.                                                               | No                                     |
+| MSG-05     | La fecha de inicio no puede ser anterior a hoy.                       | Fecha inválida.                                                         | Corregir la fecha.                                                                     | No                                     |
+| MSG-06     | Acceso denegado (con el motivo)                                       | Membresía vencida, cancelada o inexistente.                             | Renovar o asignar membresía.                                                           | No                                     |
+| MSG-07     | Huella no reconocida                                                  | La huella no está registrada.                                           | Repetir o validar por cédula.                                                          | Si persiste                            |
+| MSG-08     | Esta huella ya está registrada para otro cliente                      | El mismo dedo ya pertenece a otro socio.                                | Usar otro dedo o revisar el cliente.                                                   | Si el socio no tiene huella registrada |
+| MSG-09     | El lector no detectó un dedo nuevo                                    | Huella residual o dedo sin retirar.                                     | Retirar el dedo, limpiar el lector y repetir.                                          | Si persiste                            |
+| MSG-10     | Lector desconectado: inicia el agente en el portátil del lector       | El agente del lector no está encendido o el portátil no tiene internet. | Conectar el portátil a internet y ejecutar npm start en AgenteLector.                  | Si persiste                            |
+| MSG-11     | Pantalla de ingreso no autorizada                                     | El navegador no tiene guardado el token de la pantalla.                 | Abrir una vez la dirección con ?pantalla=acceso\&token=… que entrega el administrador. | Si no se tiene el token                |
 
 ### 11.1 Cómo reportar un error
 
