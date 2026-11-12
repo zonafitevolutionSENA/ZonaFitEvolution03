@@ -38,21 +38,28 @@ $principal  = New-ScheduledTaskPrincipal -UserId $usuario -LogonType Interactive
 Register-ScheduledTask -TaskName $tarea -Action $accion -Trigger $disparador -Settings $ajustes -Principal $principal -Force | Out-Null
 Write-Host "Tarea '$tarea' creada para $usuario"
 
-Paso '5/6 Pantalla de ingreso y acceso directo de verificacion'
+Paso '5/6 Pantalla de ingreso y accesos directos'
 $frontend = if ($cfg['FRONTEND_URL']) { $cfg['FRONTEND_URL'].TrimEnd('/') } else { 'https://zona-fit-evolution03.vercel.app' }
 $url = "$frontend/?pantalla=acceso"
 if ($cfg['PANTALLA_TOKEN']) { $url += "&token=$($cfg['PANTALLA_TOKEN'])" }
 $chrome = @("$env:ProgramFiles\Google\Chrome\Application\chrome.exe",
             "${env:ProgramFiles(x86)}\Google\Chrome\Application\chrome.exe",
             "$env:LOCALAPPDATA\Google\Chrome\Application\chrome.exe") | Where-Object { Test-Path $_ } | Select-Object -First 1
-if ($chrome) { $programa = $chrome; $argumentos = "--kiosk `"$url`"" }
-else { $programa = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"; $argumentos = "--kiosk `"$url`" --edge-kiosk-type=fullscreen" }
+$programa = if ($chrome) { $chrome } else { "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe" }
+# Ventana normal maximizada (sin barra de direcciones): se puede minimizar y seguir usando el PC
+$argumentosPantalla = "--app=`"$url`" --start-maximized"
+$escritorio = [Environment]::GetFolderPath('Desktop')
 $shell = New-Object -ComObject WScript.Shell
-$inicio = $shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'Pantalla de ingreso ZonaFit.lnk'))
-$inicio.TargetPath = $programa; $inicio.Arguments = $argumentos; $inicio.Save()
-$verificar = $shell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Desktop')) 'Verificar lector ZonaFit.lnk'))
-$verificar.TargetPath = Join-Path $PSScriptRoot 'VERIFICAR-LECTOR.bat'; $verificar.Save()
+function AccesoDirecto($ruta, $destino, $argumentos) {
+  $acceso = $shell.CreateShortcut($ruta)
+  $acceso.TargetPath = $destino; $acceso.Arguments = $argumentos; $acceso.Save()
+}
+AccesoDirecto (Join-Path ([Environment]::GetFolderPath('Startup')) 'Pantalla de ingreso ZonaFit.lnk') $programa $argumentosPantalla
+AccesoDirecto (Join-Path $escritorio 'Pantalla de ingreso ZonaFit.lnk') $programa $argumentosPantalla
+AccesoDirecto (Join-Path $escritorio 'Administracion ZonaFit.lnk') $programa "--new-window `"$frontend`""
+AccesoDirecto (Join-Path $escritorio 'Verificar lector ZonaFit.lnk') (Join-Path $PSScriptRoot 'VERIFICAR-LECTOR.bat') ''
 Write-Host "Pantalla de ingreso: $frontend/?pantalla=acceso"
+Write-Host "Accesos en el escritorio: Pantalla de ingreso, Administracion y Verificar lector"
 
 Paso '6/6 Energia y prueba'
 powercfg /change standby-timeout-ac 0
