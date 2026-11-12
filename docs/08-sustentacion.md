@@ -9,6 +9,7 @@
 | ----------- | ---------- | ---------------------------------------------------------------------------- | ---------------------- | ---------- | ---------- | ---------- |
 | 0.1         | 03/11/2026 | Borrador de agenda, flujos de demostración y reparto por integrante          | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.2         | 10/11/2026 | Demostración con el sensor AS608 y prueba de huella duplicada; sin simulador | Juan Diego Mejía Llano |            |            | Borrador   |
+| 0.3         | 11/11/2026 | Demostración desde la nube (Vercel y Railway) con el agente del lector; lista previa y contingencias | Juan Diego Mejía Llano |            |            | Borrador   |
 
 ### Aprobaciones
 
@@ -87,7 +88,7 @@ La sustentación es una evaluación técnica y funcional de la solución entrega
 
 | **N.°** | **Verificación**                                                          | **Cumple** | **Evidencia / observación** |
 | ------- | ------------------------------------------------------------------------- | ---------- | --------------------------- |
-| 1       | Versión final etiquetada y desplegada.                                    | Sí / No    |                             |
+| 1       | Versión final etiquetada y desplegada.                                    | Sí / No    | Desplegada en Vercel y Railway; revisar /api/salud 30 min antes |
 | 2       | README y manuales actualizados.                                           | Sí / No    |                             |
 | 3       | Migraciones y datos semilla probados.                                     | Sí / No    |                             |
 | 4       | Flujos críticos ensayados con datos controlados.                          | Sí / No    |                             |
@@ -279,9 +280,11 @@ La demostración debe contar una historia de uso coherente. No debe consistir en
 
 | **Riesgo**             | **Prevención**                                      | **Contingencia permitida**               | **Evidencia de que no se oculta el fallo** |
 | ---------------------- | --------------------------------------------------- | ---------------------------------------- | ------------------------------------------ |
-| Falla de internet      | Instalación local verificada el día anterior        | Demostración en ambiente local           |                                            |
-| Servicio externo caído | Revisar el hosting antes de iniciar                 | Ambiente local con la misma versión      |                                            |
-| Datos corruptos        | Respaldo con mysqldump de los datos de demostración | Restaurar el respaldo                    |                                            |
+| Falla de internet      | Datos del celular para el portátil del lector; instalación local verificada el día anterior | Demostración en ambiente local (TIPO\_LECTOR=as608) | Mostrar «Lector desconectado» y /api/salud |
+| Agente del lector apagado | Arrancar AgenteLector (npm start) 30 min antes y comprobar «lector conectado» en /api/salud | Volver a abrir el agente; validación manual por cédula | Consola del agente |
+| Vence la prueba de Railway | Pasar a Railway Hobby antes del 10/12/2026 | Ambiente local con el respaldo de la base | Panel Usage de Railway |
+| Servicio externo caído | Revisar Vercel, Railway y /api/salud antes de iniciar | Ambiente local con la misma versión      |                                            |
+| Datos corruptos        | Respaldo con mysqldump de la base de Railway el 11/12/2026 | Restaurar el respaldo                    |                                            |
 | Proyector incompatible | Probar el equipo y adaptadores                      | Segundo portátil                         |                                            |
 | Pipeline lento         | No aplica (no hay pipeline)                         | —                                        |                                            |
 | Error inesperado       | Ensayo completo de DEM-01 a DEM-05                  | Mostrar el caso de prueba y la evidencia |                                            |

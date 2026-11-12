@@ -1,19 +1,21 @@
-%% DIA-002 · Vista de contenedores (v1.2). Fuente del diagrama de docs/04-arquitectura.md
+%% DIA-002 · Vista de contenedores (v1.3). Fuente del diagrama de docs/04-arquitectura.md
 flowchart LR
   personal(["Personal del gimnasio<br/>Administrador / Empleado"]):::actor
   socio(["Cliente del gimnasio"]):::actor
   sensor["Sensor AS608<br/>+ CP2102"]:::hw
   subgraph sistema["Sistema Zona Fit Evolution"]
     spa["<b>Frontend SPA</b><br/>React 19 + Vite<br/>FrontendZonafitevolution"]:::sis
-    ingreso["<b>Pantalla de ingreso</b><br/>misma SPA · <span style='white-space:nowrap'>?pantalla=acceso</span><br/>sin sesión"]:::sis
-    api["<b>API REST</b><br/>Node.js + Express 5<br/>BackendZonafitevolution · /api<br/>lee el sensor (serialport)"]:::sis
+    ingreso["<b>Pantalla de ingreso</b><br/>misma SPA · <span style='white-space:nowrap'>?pantalla=acceso</span><br/>sin sesión · con token"]:::sis
+    api["<b>API REST</b><br/>Node.js + Express 5<br/>BackendZonafitevolution · /api"]:::sis
+    agente["<b>Agente del lector</b><br/>AgenteLector · Node.js<br/>lee el sensor (serialport)"]:::sis
     db[("<b>MySQL</b><br/>7 tablas · init.sql")]:::sis
   end
   personal -- "HTTPS" --> spa
   socio -- "Presenta su huella" --> sensor
   spa -- "JSON + JWT" --> api
-  ingreso -- "POST /api/acceso-fisico/pantalla/validar<br/>(solo desde el mismo equipo)" --> api
-  sensor -- "USB-serie (UART)<br/>PUERTO_LECTOR" --> api
+  ingreso -- "POST /api/acceso-fisico/pantalla/validar<br/>X-Pantalla-Token" --> api
+  sensor -- "USB-serie (UART)" --> agente
+  agente -- "WebSocket /agente<br/>órdenes: registrar · capturar · eliminar" --> api
   api -- "SQL parametrizado (mysql2)" --> db
   classDef sis fill:#FFF2C4,stroke:#222,stroke-width:1px,color:#111
   classDef actor fill:#1A1A1A,stroke:#1A1A1A,color:#FFFFFF
