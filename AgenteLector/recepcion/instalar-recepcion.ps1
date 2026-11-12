@@ -32,7 +32,7 @@ Paso '4/6 Programando el agente al iniciar sesion'
 $bat = Join-Path $PSScriptRoot 'iniciar-agente.bat'
 $accion     = New-ScheduledTaskAction -Execute 'conhost.exe' -Argument "--headless `"$bat`""
 $disparador = New-ScheduledTaskTrigger -AtLogOn -User $usuario
-$disparador.Delay = 'PT30S'
+$disparador.Delay = 'PT10S'
 $ajustes    = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit ([TimeSpan]::Zero) -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1) -MultipleInstances IgnoreNew
 $principal  = New-ScheduledTaskPrincipal -UserId $usuario -LogonType Interactive -RunLevel Limited
 Register-ScheduledTask -TaskName $tarea -Action $accion -Trigger $disparador -Settings $ajustes -Principal $principal -Force | Out-Null
