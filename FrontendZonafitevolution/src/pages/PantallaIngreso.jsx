@@ -4,6 +4,9 @@ import "../PantallasGestion.css";
 const API_URL = import.meta.env.VITE_API_URL;
 // Tiempo que se muestra el resultado antes de volver a esperar la siguiente huella
 const TIEMPO_RESULTADO_MS = 2000;
+// Mientras el lector o el servidor no están disponibles (por ejemplo, al prender el portátil),
+// la pantalla vuelve a intentar sola cada 5 s, sin que nadie oprima un botón
+const ESPERA_RECONEXION_MS = 5000;
 
 // El token llega una vez en la URL (?pantalla=acceso&token=...), se guarda en el navegador
 // y se quita de la barra de direcciones para que no quede a la vista
@@ -39,6 +42,7 @@ async function consultarPantalla(ruta, opciones = {}) {
 function PantallaIngreso() {
   const [resultado, setResultado] = useState(null);
   const [error, setError] = useState("");
+  const [conectando, setConectando] = useState(false);
   const [intento, setIntento] = useState(0);
 
   useEffect(() => {
@@ -55,6 +59,7 @@ function PantallaIngreso() {
         });
         if (typeof datos.permitido !== "boolean") throw new Error("Respuesta inesperada al validar el acceso.");
         setError("");
+        setConectando(false);
         setResultado(datos);
         temporizador = setTimeout(() => {
           setResultado(null);
@@ -62,6 +67,14 @@ function PantallaIngreso() {
         }, TIEMPO_RESULTADO_MS);
       } catch (err) {
         if (err.name === "AbortError") return;
+        // 503 = el agente del lector aún no se conecta; TypeError = sin conexión con el servidor
+        if (err.status === 503 || err instanceof TypeError) {
+          setError("");
+          setConectando(true);
+          temporizador = setTimeout(leerSensor, ESPERA_RECONEXION_MS);
+          return;
+        }
+        setConectando(false);
         if (err.status === 404 && err.message === "Huella no reconocida") {
           setResultado({ permitido: false, motivo: err.message });
           temporizador = setTimeout(() => {
@@ -96,6 +109,11 @@ function PantallaIngreso() {
             {resultado.cliente?.nombre && <p className="acceso-resultado-cliente">Cliente: {resultado.cliente.nombre}</p>}
             <p className="acceso-resultado-motivo">{resultado.motivo}</p>
             {Number.isInteger(resultado.ingresos_restantes) && <p className="acceso-resultado-detalle">Ingresos restantes: {resultado.ingresos_restantes}</p>}
+          </>
+        ) : conectando ? (
+          <>
+            <h1>Conectando con el lector…</h1>
+            <p className="acceso-resultado-motivo">La pantalla se activará sola en unos segundos.</p>
           </>
         ) : <h1>Esperando lectura</h1>}
       </div>
