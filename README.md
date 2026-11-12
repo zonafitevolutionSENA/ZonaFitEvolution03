@@ -2,18 +2,25 @@
 
 Sistema web para la gestión de un gimnasio: personal, clientes (socios), planes, membresías, biometría y control de acceso.
 
-El repositorio es un **monorepo** con dos aplicaciones:
+El repositorio es un **monorepo** con dos aplicaciones y el agente del lector de huellas:
 
-| Carpeta                     | Qué es                   | Puerto por defecto |
-| --------------------------- | ------------------------ | ------------------ |
-| `BackendZonafitevolution/`  | API REST en Node.js      | 3000               |
-| `FrontendZonafitevolution/` | Frontend en React (Vite) | 5173               |
+| Carpeta                     | Qué es                                                   | Puerto por defecto |
+| --------------------------- | -------------------------------------------------------- | ------------------ |
+| `BackendZonafitevolution/`  | API REST en Node.js                                      | 3000               |
+| `FrontendZonafitevolution/` | Frontend en React (Vite)                                 | 5173               |
+| `AgenteLector/`             | Agente que conecta el lector AS608 con la API en la nube | —                  |
+
+**En línea:** frontend en [zona-fit-evolution03.vercel.app](https://zona-fit-evolution03.vercel.app) (Vercel) y API en `https://zonafitevolution03-production.up.railway.app/api` (Railway, con MySQL). Ver [Despliegue en la nube](#despliegue-en-la-nube).
 
 ```
 zonafitproyectocompleto/
 ├── README.md
 ├── .gitignore
 ├── docs/                documentación del proyecto y entregables SENA
+├── AgenteLector/        agente del lector de huellas (portátil con el AS608)
+│   ├── .env.example
+│   ├── index.js
+│   └── package.json
 ├── BackendZonafitevolution/
 │   ├── database/        script SQL de las tablas
 │   ├── scripts/         crear-admin.js
@@ -38,6 +45,7 @@ están en [`docs/`](docs/README.md). Este README cubre la instalación, la API y
 
 - **Backend:** Node.js, Express 5, MySQL (`mysql2`), JWT y bcrypt.
 - **Frontend:** React 19 con Vite, ESLint y CSS propio (tema negro y amarillo).
+- **Despliegue:** Vercel (frontend), Railway (API Node.js 20 y MySQL 8.4) y agente local del lector (Node.js 20 + `ws`).
 
 ## Puesta en marcha
 
@@ -59,7 +67,7 @@ Atención: `init.sql` elimina y vuelve a crear `roles`, `usuarios` y `membresias
 
 `init.sql` es el único script SQL del proyecto: no hay migraciones. Todo cambio de esquema se hace directamente en ese archivo. Como sus tablas usan `CREATE TABLE IF NOT EXISTS`, una base creada con una versión anterior no recibe los cambios: hay que recrearla (`DROP DATABASE zonafitevolution;` y volver a ejecutar los dos comandos de arriba).
 
-3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD`, `JWT_SECRET` y `BIOMETRIA_SALT`. 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
+3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD`, `JWT_SECRET` (al menos 32 caracteres: con menos, el servidor no arranca) y `BIOMETRIA_SALT`. 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
 (se ejecuta dentro de `BackendZonafitevolution/`, porque lee su `.env`). 5. Iniciar el servidor: `npm start` (por defecto en `http://localhost:3000`).
 
 Toda la API cuelga de `/api`. La raíz (`http://localhost:3000/`) responde `{ "error": "Ruta no encontrada" }`, y eso es normal: significa que el servidor está encendido.
@@ -84,9 +92,45 @@ Scripts disponibles: `npm run dev` (desarrollo), `npm run build` (versión de pr
 
 ### Pantalla de ingreso sin sesión
 
-En el equipo conectado al lector, abre `http://127.0.0.1:5173/?pantalla=acceso` en una ventana independiente. El cliente no necesita una cuenta: la pantalla espera la huella en el lector y muestra el resultado durante dos segundos antes de esperar la siguiente huella. El registro de huellas y las demás funciones administrativas siguen requiriendo sesión.
+El cliente no necesita una cuenta: la pantalla espera la huella en el lector y muestra el resultado durante dos segundos antes de esperar la siguiente huella. El registro de huellas y las demás funciones administrativas siguen requiriendo sesión.
 
-La ruta de ingreso solo acepta conexiones directas desde el mismo equipo y el origen `http://127.0.0.1:5173` o `http://localhost:5173`. Si el frontend local usa otro origen, configura `ORIGEN_PANTALLA_ACCESO` en el `.env` del backend y reinícialo. No expongas esta ruta a través de un proxy público. El lector físico debe estar conectado al equipo donde se ejecuta el backend.
+- **En la nube:** abre una vez `https://zona-fit-evolution03.vercel.app/?pantalla=acceso&token=<PANTALLA_TOKEN>` en el navegador que mostrará la pantalla. El token queda guardado en ese navegador y se quita de la barra de direcciones; desde entonces basta con `?pantalla=acceso`. Sin el token, la API responde «Pantalla de ingreso no autorizada». La pantalla puede estar en cualquier equipo con internet; el lector debe estar conectado al portátil donde corre el agente.
+- **En local** (`PANTALLA_TOKEN` vacío): abre `http://127.0.0.1:5173/?pantalla=acceso` en el mismo equipo de la API. La ruta solo acepta conexiones directas desde ese equipo y el origen `http://127.0.0.1:5173` o `http://localhost:5173`; para otro origen, configura `ORIGEN_PANTALLA_ACCESO` y reinicia el backend.
+
+## Despliegue en la nube
+
+| Pieza                     | Dónde                                         | Dirección                                                |
+| ------------------------- | --------------------------------------------- | -------------------------------------------------------- |
+| Frontend                  | Vercel (plan Hobby)                           | https://zona-fit-evolution03.vercel.app                  |
+| API                       | Railway (Node.js 20, siempre encendida)       | https://zonafitevolution03-production.up.railway.app/api |
+| Base de datos             | MySQL 8.4 en Railway, mismo proyecto          | Red privada de Railway (no expuesta)                     |
+| Agente del lector + AS608 | Portátil con el lector conectado por USB      | Se conecta a `wss://…/agente`                            |
+
+- Railway y Vercel despliegan solos al fusionar en `main`. Railway solo redespliega cuando cambia `BackendZonafitevolution/` (Watch Paths) y comprueba `GET /api/salud` antes de dar por bueno el despliegue.
+- `GET /api/salud` responde `{"estado":"ok","lector":"conectado"|"desconectado"}`: sirve para saber si la API está viva y si el agente del lector está conectado.
+- En Railway el backend usa `TIPO_LECTOR=remoto`: no abre el USB, sino que envía las órdenes `registrar`, `capturar` y `eliminar` al agente por WebSocket (ADR-008).
+- Las variables de producción viven en Railway (backend) y en Vercel (`VITE_API_URL`, de tipo **Config**). Los secretos nunca se suben al repositorio.
+- El esquema se cargó una sola vez con `database/init.sql`; si cambia, se recrea la base desde un respaldo (no hay migraciones).
+- Costo: Vercel Hobby es gratis; Railway usa la prueba de 30 días ($5 de crédito) y después el plan Hobby ($5 USD/mes).
+
+Procedimiento completo, variables y pruebas de humo: [`docs/manual-tecnico.md`](docs/manual-tecnico.md), sección 11.
+
+### Agente del lector
+
+En el portátil donde está conectado el AS608 (necesita Node.js 20 o superior e internet):
+
+```powershell
+cd BackendZonafitevolution
+npm install
+cd ..\AgenteLector
+npm install
+copy .env.example .env
+npm start
+```
+
+En `AgenteLector/.env`: `API_WS_URL=wss://zonafitevolution03-production.up.railway.app/agente`, el mismo `AGENTE_TOKEN` configurado en Railway, `PUERTO_LECTOR` (el COM del CP2102) y el mismo `BIOMETRIA_SALT` con el que se registraron las huellas. Debe aparecer `[agente] conectado al servidor, lector listo`. Mientras la pantalla de ingreso espera un dedo, el agente no imprime nada; solo muestra las huellas leídas, los registros y los errores reales. Si se cae internet, se reconecta solo.
+
+Sin el agente funcionan el login, los clientes, los planes, las membresías y el historial; registrar, eliminar y validar huellas responden «Lector desconectado». El backend local no debe estar encendido al mismo tiempo, porque también usaría el puerto COM del lector.
 
 ---
 
@@ -225,12 +269,15 @@ Estructura de la capa de hardware (`src/hardware/`):
 
 - `lectorBiometrico.interface.js` — contrato con `capturar()`, `registrar()`, `eliminar()` y `comparar(templateA, templateB)`.
 - `as608Lector.adapter.js` — adaptador del sensor AS608 por puerto serial (ver la sección del lector físico).
-- `lector.factory.js` — `obtenerLector()` crea el adaptador según `TIPO_LECTOR` (`as608`, el único disponible).
+- `remotoLector.adapter.js` — adaptador para la nube: reenvía las órdenes al agente del lector y compara los hashes en el servidor.
+- `canalAgente.js` — canal WebSocket `/agente`: autentica al agente con `AGENTE_TOKEN`, envía las órdenes con un tiempo máximo de 90 s y detecta desconexiones.
+- `lector.factory.js` — `obtenerLector()` crea el adaptador según `TIPO_LECTOR` (`as608` en local o `remoto` en la nube).
 
 Variables de entorno de esta épica:
 
-- `TIPO_LECTOR`: tipo de lector a usar (`as608` por defecto y único valor admitido).
-- `PUERTO_LECTOR`: puerto COM del lector (obligatorio).
+- `TIPO_LECTOR`: tipo de lector a usar (`as608` por defecto; `remoto` en la nube).
+- `PUERTO_LECTOR`: puerto COM del lector (obligatorio con `as608`; con `remoto` va en `AgenteLector/.env`).
+- `AGENTE_TOKEN`: token compartido con el agente del lector (obligatorio con `remoto`).
 - `BIOMETRIA_SALT`: obligatoria para generar los templates. No debe cambiarse cuando ya hay huellas
   registradas, porque los templates guardados dejarían de coincidir.
 
@@ -276,7 +323,7 @@ Funcionamiento:
 - La capacidad depende del sensor (el modelo de prueba guarda 300 huellas).
 - `DELETE /api/biometria/:cliente_id` borra la huella primero del sensor y después de la base de datos;
   si el sensor no responde, la base de datos no cambia y el cliente conserva su huella.
-- El lector debe estar conectado al mismo equipo donde corre el backend.
+- En local, el lector se conecta al mismo equipo donde corre el backend (`TIPO_LECTOR=as608`). En la nube se conecta al portátil del agente (`TIPO_LECTOR=remoto`), que reutiliza este mismo adaptador.
 
 Conexión AS608 → CP2102: `V+ → 3V3`, `TX → RXD`, `RX → TXD`, `GND → GND` (TCH, VA, D+ y D- sin conectar).
 
@@ -312,6 +359,8 @@ Reglas de decisión:
 | ------ | ---------------------------- | ---------------- |
 | POST   | /api/acceso-fisico/validar   | Admin, Empleado  |
 | GET    | /api/acceso-fisico/historial | Admin, Empleado  |
+| POST   | /api/acceso-fisico/pantalla/validar | Pantalla de ingreso (`X-Pantalla-Token` en la nube; mismo equipo en local) |
+| GET    | /api/salud                   | Pública (estado de la API y del lector) |
 
 `POST /api/acceso-fisico/validar` no recibe cuerpo: lee la huella del sensor y devuelve
 `{ "cliente": { "id", "nombre", "cedula" }, "permitido": true|false, "motivo": "..." }`.
@@ -329,12 +378,17 @@ Archivo `BackendZonafitevolution/.env` (no se sube a Git; la plantilla es `.env.
 | --------------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` | Conexión a MySQL                                                                       |
 | `PORT`                                                    | Puerto del servidor (3000 por defecto)                                                 |
-| `JWT_SECRET`                                              | Clave para firmar los tokens (obligatoria)                                             |
+| `JWT_SECRET`                                              | Clave para firmar los tokens (obligatoria, mínimo 32 caracteres)                       |
 | `JWT_EXPIRES_IN`                                          | Duración del token (`8h` por defecto)                                                  |
 | `BIOMETRIA_SALT`                                          | Sal para los templates biométricos (obligatoria; no cambiarla con huellas registradas) |
-| `TIPO_LECTOR`                                             | Adaptador del lector biométrico: `as608` (por defecto y único disponible)              |
+| `TIPO_LECTOR`                                             | Adaptador del lector biométrico: `as608` (por defecto, USB en este equipo) o `remoto` (agente) |
 | `PUERTO_LECTOR`                                           | Puerto serial del lector físico (por ejemplo, `COM3`); solo con `as608`                |
 | `LECTOR_BAUDIOS`                                          | Velocidad del lector físico (`57600` por defecto)                                      |
+| `AGENTE_TOKEN`                                            | Token del agente del lector; obligatorio con `remoto`                                  |
+| `PANTALLA_TOKEN`                                          | Token de la pantalla de ingreso en la nube; vacío = solo se acepta en el mismo equipo  |
+| `ORIGEN_PANTALLA_ACCESO`                                  | Origen adicional para la pantalla de ingreso local (opcional)                          |
+| `ORIGEN_FRONTEND`                                         | Orígenes permitidos por CORS, separados por comas (en la nube, la URL de Vercel)       |
+| `TZ`                                                      | Zona horaria del servidor (`America/Bogota`; obligatoria en la nube)                   |
 
 ---
 
@@ -372,7 +426,7 @@ Archivo `FrontendZonafitevolution/.env` (no se sube a Git):
 
 | Variable       | Descripción                    | Valor local                 |
 | -------------- | ------------------------------ | --------------------------- |
-| `VITE_API_URL` | URL base de la API del backend | `http://localhost:3000/api` |
+| `VITE_API_URL` | URL base de la API del backend | `http://localhost:3000/api` (en Vercel: `https://zonafitevolution03-production.up.railway.app/api`) |
 
 Solo las variables que empiezan con `VITE_` quedan disponibles en el navegador, mediante `import.meta.env`.
 

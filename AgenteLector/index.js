@@ -5,6 +5,9 @@ const As608Lector = require('../BackendZonafitevolution/src/hardware/as608Lector
 
 const ESPERA_INICIAL_MS = 1000;
 const ESPERA_MAXIMA_MS = 30000;
+// Respuestas normales del ciclo de lectura que no se imprimen: 408 = nadie puso el dedo en 15 s
+// (la pantalla de ingreso vuelve a pedir otra lectura) y 499 = lectura cancelada
+const ESTADOS_SILENCIOSOS = new Set([408, 499]);
 
 for (const variable of ['API_WS_URL', 'AGENTE_TOKEN', 'PUERTO_LECTOR', 'BIOMETRIA_SALT']) {
   if (!process.env[variable]) {
@@ -54,13 +57,21 @@ async function atender(socket, datos) {
   };
   const controlador = new AbortController();
   enCurso.set(orden.id, controlador);
-  console.log(`[agente] orden: ${orden.tipo}`);
+  // La captura de la pantalla de ingreso se repite cada 15 s: solo se imprime cuando hay lectura
+  if (orden.tipo !== 'capturar') console.log(`[agente] orden: ${orden.tipo}`);
 
   try {
     const resultado = await ejecutar(orden, etapa => responder({ tipo: 'etapa', etapa }), controlador.signal);
+    if (orden.tipo === 'capturar') {
+      console.log(`[agente] huella leída: ${resultado ? 'reconocida' : 'no registrada en el lector'}`);
+    } else {
+      console.log(`[agente] ${orden.tipo}: completado`);
+    }
     responder({ tipo: 'resultado', resultado });
   } catch (error) {
-    console.error(`[agente] ${orden.tipo}: ${error.message}`);
+    if (!ESTADOS_SILENCIOSOS.has(error.status)) {
+      console.error(`[agente] ${orden.tipo}: ${error.message}`);
+    }
     responder({ tipo: 'error', mensaje: error.message, status: error.status || 503 });
   } finally {
     enCurso.delete(orden.id);
