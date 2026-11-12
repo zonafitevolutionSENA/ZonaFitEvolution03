@@ -1,4 +1,5 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+const path = require('path');
 const WebSocket = require('ws');
 // Se reutiliza el adaptador del backend: mismo protocolo serial, mismos templates
 const As608Lector = require('../BackendZonafitevolution/src/hardware/as608Lector.adapter');
@@ -9,23 +10,58 @@ const ESPERA_MAXIMA_MS = 30000;
 // (la pantalla de ingreso vuelve a pedir otra lectura) y 499 = lectura cancelada
 const ESTADOS_SILENCIOSOS = new Set([408, 499]);
 
-for (const variable of ['API_WS_URL', 'AGENTE_TOKEN', 'PUERTO_LECTOR', 'BIOMETRIA_SALT']) {
+// Silicon Labs: fabricante del conversor CP2102 al que va conectado el AS608
+const VENDEDOR_CP210X = '10c4';
+
+for (const variable of ['API_WS_URL', 'AGENTE_TOKEN', 'BIOMETRIA_SALT']) {
   if (!process.env[variable]) {
     console.error(`[agente] falta la variable ${variable} en AgenteLector/.env`);
     process.exit(1);
   }
 }
 
-const lector = new As608Lector({
-  puerto: process.env.PUERTO_LECTOR,
-  baudios: Number(process.env.LECTOR_BAUDIOS) || 57600
-});
+// serialport está instalado en el backend (de ahí sale también el adaptador)
+const { SerialPort } = require(require.resolve('serialport', {
+  paths: [path.join(__dirname, '..', 'BackendZonafitevolution')]
+}));
+
+let lector = null;
+let puertoLector = null;
+
+// Con PUERTO_LECTOR vacío o en "auto", el agente busca el CP2102 entre los puertos COM.
+// Así no importa en qué puerto USB se conecte el lector.
+async function puertoConfigurado() {
+  const configurado = (process.env.PUERTO_LECTOR || '').trim();
+  if (configurado && configurado.toLowerCase() !== 'auto') return configurado;
+
+  const puertos = await SerialPort.list();
+  const lectorUsb = puertos.find(p => (p.vendorId || '').toLowerCase() === VENDEDOR_CP210X)
+    || puertos.find(p => /silicon labs|cp210/i.test(`${p.manufacturer || ''} ${p.friendlyName || ''}`));
+  if (!lectorUsb) {
+    const error = new Error('No se encontró el lector de huellas: revisa que esté conectado por USB y que el controlador CP210x esté instalado');
+    error.status = 503;
+    throw error;
+  }
+  return lectorUsb.path;
+}
+
+async function obtenerLector() {
+  const puerto = await puertoConfigurado();
+  if (!lector || puerto !== puertoLector) {
+    if (lector && puertoLector) console.log(`[agente] el lector cambió de ${puertoLector} a ${puerto}`);
+    else console.log(`[agente] lector en ${puerto}`);
+    lector = new As608Lector({ puerto, baudios: Number(process.env.LECTOR_BAUDIOS) || 57600 });
+    puertoLector = puerto;
+  }
+  return lector;
+}
 
 // Órdenes en curso, para poder cancelarlas (por ejemplo, si se cierra la pantalla de ingreso)
 const enCurso = new Map();
 let espera = ESPERA_INICIAL_MS;
 
 async function ejecutar(orden, avisarEtapa, signal) {
+  const lector = await obtenerLector();
   switch (orden.tipo) {
     case 'capturar':
       return lector.capturar(signal);
@@ -72,6 +108,8 @@ async function atender(socket, datos) {
     if (!ESTADOS_SILENCIOSOS.has(error.status)) {
       console.error(`[agente] ${orden.tipo}: ${error.message}`);
     }
+    // Si el puerto ya no abre (lector desconectado o movido a otro USB), se vuelve a buscar en la siguiente orden
+    if (/No se pudo abrir el lector/.test(error.message)) lector = null;
     responder({ tipo: 'error', mensaje: error.message, status: error.status || 503 });
   } finally {
     enCurso.delete(orden.id);

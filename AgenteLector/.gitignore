@@ -1,2 +1,4 @@
 node_modules/
 .env
+agente.log
+agente.anterior.log
