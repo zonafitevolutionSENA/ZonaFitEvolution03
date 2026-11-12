@@ -1,4 +1,4 @@
-%% DIA-003 · Vista de componentes (v1.2). Fuente del diagrama de docs/04-arquitectura.md
+%% DIA-003 · Vista de componentes (v1.3). Fuente del diagrama de docs/04-arquitectura.md
 flowchart LR
   subgraph front["FrontendZonafitevolution · React + Vite"]
     pages["pages/<br/>Login · Inicio · Planes<br/>Clientes (con registro de huella)<br/>Membresías · Historial<br/>Personal · Finanzas<br/>PantallaIngreso"]:::sis
@@ -18,7 +18,7 @@ flowchart LR
     bserv["services/<br/>reglas de negocio"]:::sis
     jobs["jobs/<br/>tarea diaria: vence y<br/>activa membresías"]:::sis
     estados["estadosAcceso/<br/>patrón State"]:::sis
-    hw["hardware/<br/>patrón Adapter · AS608"]:::sis
+    hw["hardware/<br/>patrón Adapter<br/>remoto (nube) · as608 (local)<br/>canalAgente: WebSocket /agente"]:::sis
     repos["repositories/<br/>SQL parametrizado"]:::sis
     cfg["config/database.js<br/>pool de conexiones"]:::sis
     routes --> mw --> ctrl --> bserv
@@ -28,9 +28,11 @@ flowchart LR
     bserv --> repos --> cfg
   end
   db[("MySQL<br/>7 tablas")]:::sis
+  agente["AgenteLector<br/>portátil del lector"]:::sis
   sensor["Sensor AS608<br/>+ CP2102"]:::hw
   front -- "HTTP JSON<br/>Authorization: Bearer" --> back
-  hw -- "USB-serie" --- sensor
+  hw -- "WebSocket" --- agente
+  agente -- "USB-serie" --- sensor
   back --> db
   classDef sis fill:#FFF2C4,stroke:#222,stroke-width:1px,color:#111
   classDef actor fill:#1A1A1A,stroke:#1A1A1A,color:#FFFFFF
