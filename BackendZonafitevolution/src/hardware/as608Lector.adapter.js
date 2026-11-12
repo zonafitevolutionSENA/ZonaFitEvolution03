@@ -167,7 +167,7 @@ class As608Lector extends LectorBiometrico {
       this.serial.open(error => {
         if (error) {
           this.serial = null;
-          reject(new ErrorDominio(`No se pudo abrir el lector en ${this.puerto}. Revisa que esté conectado.`));
+          reject(new ErrorDominio(`No se pudo abrir el lector en ${this.puerto} (${error.message}). Revisa que esté conectado.`));
         } else {
           resolve();
         }
