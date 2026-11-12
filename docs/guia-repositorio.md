@@ -56,6 +56,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 <tr class="odd">
 <td><p>ZonaFitEvolution03/</p>
 <p>├── README.md, .gitignore</p>
+<p>├── AgenteLector/ (index.js, .env.example, package.json: agente del lector AS608 para la nube)</p>
 <p>├── BackendZonafitevolution/ (database/init.sql, scripts/crear-admin.js, src/, .env.example, index.js, package.json)</p>
 <p>├── FrontendZonafitevolution/ (src/pages, components, services, utils; index.html; vite.config.js; package.json)</p>
 <p>└── docs/analisis/</p>
