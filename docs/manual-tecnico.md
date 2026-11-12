@@ -10,6 +10,7 @@
 | 0.1         | 20/10/2026 | Manual técnico inicial en el documento maestro (sección 10)                                                         | Liliana Sofía Panesso Méndez |            |            | Borrador    |
 | 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 y hosting por definir                                                         | Juan Diego Mejía Llano       |            |            | En revisión |
 | 1.1         | 10/11/2026 | Sensor AS608 integrado: variables PUERTO\_LECTOR, incidentes 0x17 y simulador eliminado; init.sql como único script | Juan Diego Mejía Llano       |            |            | En revisión |
+| 1.2         | 11/11/2026 | Despliegue en la nube (Vercel y Railway), agente del lector, variables nuevas, procedimiento, registro y pruebas de humo del despliegue | Juan Diego Mejía Llano       |            |            | En revisión |
 
 ### Aprobaciones
 
@@ -138,7 +139,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Memoria RAM              |            |                 |                                        |
 | Almacenamiento           |            |                 |                                        |
 | Sistema operativo        |            |                 | Windows (comandos del manual en CMD)   |
-| Conectividad             |            |                 | Internet para npm y la base en la nube |
+| Conectividad             |            |                 | Internet para npm; en producción, internet en el portátil del lector (wifi o datos del celular) |
 | Navegador / cliente      |            |                 | Chrome, Edge o Firefox actualizados    |
 | Resolución / dispositivo |            |                 | Desde 360 px de ancho                  |
 
@@ -149,29 +150,29 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Git                      |                                 | Sí                   | git-scm.com                  | git --version      |
 | Runtime / SDK            | Node.js LTS reciente            | Sí                   | nodejs.org                   | node -v            |
 | Gestor de paquetes       | npm (incluido con Node.js)      | Sí                   | nodejs.org                   | npm -v             |
-| Motor de base de datos   | MySQL o MariaDB (p. ej., XAMPP) | Sí                   | XAMPP o proveedor en la nube | mysql --version    |
+| Motor de base de datos   | MySQL o MariaDB (p. ej., XAMPP); MySQL 8.4 en Railway | Sí                   | XAMPP en local; Railway en producción | mysql --version    |
 | Docker / equivalente     | No aplica                       | No                   | —                            | —                  |
-| Herramientas adicionales | Controlador del CP2102          | Solo en la recepción | Fabricante del conversor     | Puerto COM visible |
+| Herramientas adicionales | Controlador del CP2102; Node.js 20 o superior para AgenteLector | Solo en el portátil del lector | Fabricante del conversor; nodejs.org | Puerto COM visible; node -v |
 
 ### 4.3 Puertos, protocolos y conectividad
 
 | **Servicio**     | **Puerto**        | **Protocolo**                    | **Origen permitido**         | **Destino**  | **Justificación**     |
 | ---------------- | ----------------- | -------------------------------- | ---------------------------- | ------------ | --------------------- |
-| Frontend         | 5173 (desarrollo) | HTTP local / HTTPS en producción | Navegador del personal       | API          | Servidor de Vite      |
-| Backend / API    | 3000              | HTTP local / HTTPS en producción | Frontend y agente del sensor | MySQL        | PORT en .env          |
-| Base de datos    | 3306              | TCP                              | Solo la API                  | —            | No exponer a internet |
-| Monitoreo        |                   |                                  |                              |              |                       |
-| Servicio externo | USB (COM)         | Serie (UART)                     | Sensor AS608                 | Agente local | CP2102                |
+| Frontend         | 5173 (desarrollo) / 443 (Vercel) | HTTP local / HTTPS en producción | Navegador del personal       | API          | Servidor de Vite; Vercel en producción |
+| Backend / API    | 3000 (local) / 8080 detrás del proxy de Railway (443) | HTTP local / HTTPS y WSS en producción | Frontend (ORIGEN\_FRONTEND) y agente del lector (/agente) | MySQL        | PORT lo asigna Railway |
+| Base de datos    | 3306              | TCP                              | Solo la API (red privada de Railway) | —            | No exponer a internet |
+| Monitoreo        | 443               | HTTPS                            | Railway (healthcheck)        | /api/salud   | Estado de la API y del lector |
+| Servicio externo | USB (COM)         | Serie (UART)                     | Sensor AS608                 | AgenteLector | CP2102; el agente sale a internet por WSS (sin abrir puertos) |
 
 ### 4.4 Cuentas y accesos requeridos
 
 | **Recurso**      | **Tipo de acceso**  | **Rol mínimo** | **Responsable de otorgar**                              | **Procedimiento** |
 | ---------------- | ------------------- | -------------- | ------------------------------------------------------- | ----------------- |
 | Repositorio      | Lectura / escritura |                | Administradores de la organización zonafitevolutionSENA |                   |
-| Servidor / nube  |                     |                |                                                         |                   |
-| Base de datos    |                     |                | Liliana Sofía Panesso Méndez                            |                   |
-| DNS / dominio    |                     |                |                                                         |                   |
-| Servicio externo |                     |                |                                                         |                   |
+| Servidor / nube  | Railway y Vercel (inicio de sesión con GitHub) | Dueño del proyecto | Juan Diego Mejía Llano | Invitar al miembro desde Railway y Vercel |
+| Base de datos    | Variables de MySQL en Railway; editor de consultas y consola del servicio | Dueño del proyecto | Liliana Sofía Panesso Méndez | Desde el proyecto de Railway; nunca compartir la contraseña por chat |
+| DNS / dominio    | Dominios gratuitos *.vercel.app y *.up.railway.app | — | — | No se usa dominio propio |
+| Servicio externo | AGENTE\_TOKEN y PANTALLA\_TOKEN | Personal autorizado | Juan Diego Mejía Llano | Entregar el token solo a quien opera el lector o la pantalla de ingreso |
 
 ## 5\. Estructura del repositorio
 
@@ -242,8 +243,14 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | PORT                             | Puerto de la API                        | Número         | No                  | 3000                          | No                   | Todos         |
 | JWT\_SECRET, JWT\_EXPIRES\_IN    | Firma y duración del token              | Texto          | Sí                  | \<valor largo aleatorio\>, 8h | Sí (JWT\_SECRET)     | Todos         |
 | BIOMETRIA\_SALT, TIPO\_LECTOR    | Sal de plantillas; adaptador del sensor | Texto          | Sí                  | \<valor aleatorio\>, as608    | Sí (BIOMETRIA\_SALT) | Todos         |
-| PUERTO\_LECTOR, LECTOR\_BAUDIOS  | Puerto COM y velocidad del sensor AS608 | Texto / número | Sí (PUERTO\_LECTOR) | COM3, 57600                   | No                   | Todos         |
-| VITE\_API\_URL                   | URL base de la API (frontend)           | URL            | Sí                  | http://localhost:3000/api     | No                   | Todos         |
+| PUERTO\_LECTOR, LECTOR\_BAUDIOS  | Puerto COM y velocidad del sensor AS608 | Texto / número | Sí con as608 (en AgenteLector/.env en producción) | COM3, 57600 | No | Todos |
+| TIPO\_LECTOR                     | as608 (USB en el equipo de la API) o remoto (agente) | Texto | No (as608 por defecto) | as608 en local; remoto en Railway | No | Todos |
+| AGENTE\_TOKEN                    | Token compartido entre el backend y AgenteLector | Texto | Sí con remoto | \<64 caracteres aleatorios\> | Sí | Producción |
+| PANTALLA\_TOKEN                  | Token de la pantalla de ingreso en la nube; vacío = solo el mismo equipo | Texto | Sí en producción | \<64 caracteres aleatorios\> | Sí | Producción |
+| ORIGEN\_FRONTEND                 | Orígenes permitidos por CORS, separados por comas | URL | Sí en producción | https://zona-fit-evolution03.vercel.app | No | Todos |
+| TZ                               | Zona horaria del servidor               | Texto          | Sí en producción    | America/Bogota                | No                   | Todos         |
+| API\_WS\_URL (AgenteLector)      | Dirección WebSocket del backend          | URL            | Sí                  | wss://zonafitevolution03-production.up.railway.app/agente | No | Producción |
+| VITE\_API\_URL                   | URL base de la API (frontend); en Vercel es de tipo Config | URL | Sí | http://localhost:3000/api; https://zonafitevolution03-production.up.railway.app/api | No | Todos |
 
 <table>
 <tbody>
@@ -258,13 +265,13 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 | **Aspecto**        | **Desarrollo**                                    | **Pruebas**              | **Producción**                           |
 | ------------------ | ------------------------------------------------- | ------------------------ | ---------------------------------------- |
-| Base de datos      | MySQL local, base zonafitevolution                |                          | MySQL gestionado (proveedor por definir) |
-| Nivel de logs      |                                                   |                          |                                          |
-| Dominio / URL      | Local (localhost)                                 |                          | Por definir                              |
-| Servicios externos | Sensor AS608 (TIPO\_LECTOR=as608, PUERTO\_LECTOR) |                          | Sensor AS608                             |
+| Base de datos      | MySQL local, base zonafitevolution                |                          | MySQL 8.4 en Railway, base railway (volumen persistente) |
+| Nivel de logs      | Consola del backend                               |                          | Deploy Logs de Railway; consola del agente |
+| Dominio / URL      | Local (localhost)                                 |                          | https://zona-fit-evolution03.vercel.app (frontend); https://zonafitevolution03-production.up.railway.app/api (API) |
+| Servicios externos | Sensor AS608 (TIPO\_LECTOR=as608, PUERTO\_LECTOR) |                          | Sensor AS608 vía AgenteLector (TIPO\_LECTOR=remoto) |
 | Datos permitidos   | Sintéticos                                        | Ficticios o anonimizados | Reales                                   |
 | Depuración         | Consola del backend                               | Limitada                 | Deshabilitada                            |
-| Secretos           | .env local (fuera de Git)                         | Gestor del ambiente      | Variables del hosting; secretos nuevos   |
+| Secretos           | .env local (fuera de Git)                         | Gestor del ambiente      | Variables de Railway y AgenteLector/.env; secretos nuevos |
 
 ### 6.3 Verificación de configuración
 
@@ -462,48 +469,50 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Desarrollo   | Construcción local | localhost:5173 / localhost:3000          | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla | Ficticios | Equipo              |
 | Pruebas      |                    |                                          |                                                                                 |           |                     |
 | Aceptación   |                    |                                          |                                                                                 |           |                     |
-| Producción   | Uso del gimnasio   | Por definir (hosting distinto de Render) | Liliana Sofía Panesso Méndez                                                    | Reales    | Personal autorizado |
+| Producción   | Uso del gimnasio y sustentación | https://zona-fit-evolution03.vercel.app (frontend, Vercel); https://zonafitevolution03-production.up.railway.app (API y MySQL, Railway) | Juan Diego Mejía Llano y Liliana Sofía Panesso Méndez | Reales / demostración | Personal autorizado |
 
 ### 11.2 Procedimiento de despliegue
 
-16. Confirmar aprobación de la versión y resultados de pruebas.
+El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se publican solos al fusionar en `main`: Railway redespliega el backend cuando cambia `BackendZonafitevolution/` y Vercel redespliega el frontend.
 
-17. Crear o verificar respaldo previo, cuando exista información persistente.
+**Primera instalación (una sola vez)**
 
-18. Validar variables, secretos y recursos del ambiente.
+1. **Vercel:** importar el repositorio con Root Directory `FrontendZonafitevolution`, preset Vite, Build Command `npm run build`, Output Directory `dist`, rama `main`. Crear `VITE_API_URL` como variable de tipo **Config** (no Secret, porque las variables `VITE_` quedan en el código del navegador).
+2. **Railway:** crear el proyecto desde el repositorio y agregar el servicio **MySQL** (Database → MySQL).
+3. **Railway, servicio del backend:** Root Directory `/BackendZonafitevolution`, rama `main`, Watch Paths `/BackendZonafitevolution/**`, Start Command `npm start`, Healthcheck Path `/api/salud`, dominio público generado en el puerto 8080.
+4. **Variables del backend (Raw Editor):** `DB_HOST=${{MySQL.MYSQLHOST}}`, `DB_PORT=${{MySQL.MYSQLPORT}}`, `DB_USER=${{MySQL.MYSQLUSER}}`, `DB_PASSWORD=${{MySQL.MYSQLPASSWORD}}`, `DB_NAME=${{MySQL.MYSQLDATABASE}}`, `JWT_SECRET`, `JWT_EXPIRES_IN=8h`, `BIOMETRIA_SALT` (el mismo de siempre), `TZ=America/Bogota`, `ORIGEN_FRONTEND`, `TIPO_LECTOR=remoto`, `AGENTE_TOKEN` y `PANTALLA_TOKEN`. Los tokens se generan con `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`.
+5. **Esquema:** ejecutar las sentencias de `database/init.sql` en el editor de consultas del servicio MySQL (Database → Data), una por una.
+6. **Administrador:** en la consola del backend (Console) cargar el entorno del contenedor y ejecutar `npm run crear-admin -- "Nombre" correo contraseña`. La consola no trae el PATH de Node; se carga con `set -a; . <(tr '\0' '\n' < /proc/1/environ | grep -E '^(PATH|DB_[A-Z]+|TZ)=' | sed "s/=/='/; s/\$/'/"); set +a`. Al terminar, borrar el historial con `history -c`.
+7. **Vercel:** actualizar `VITE_API_URL` con la URL de la API y redesplegar sin caché.
+8. **Agente del lector:** en el portátil, `AgenteLector/.env` con `API_WS_URL=wss://<api>/agente`, el mismo `AGENTE_TOKEN`, `PUERTO_LECTOR` y `BIOMETRIA_SALT`; luego `npm install` en `BackendZonafitevolution` y en `AgenteLector`, y `npm start` en `AgenteLector`.
+9. **Pantalla de ingreso:** abrir una vez `https://zona-fit-evolution03.vercel.app/?pantalla=acceso&token=<PANTALLA_TOKEN>` en el navegador que la mostrará.
 
-19. Publicar artefactos desde el pipeline o procedimiento autorizado.
+**Despliegues siguientes**
 
-20. Aplicar migraciones de manera controlada.
-
-21. Actualizar servicios en el orden definido.
-
-22. Ejecutar verificaciones de salud y pruebas de humo.
-
-23. Confirmar logs, métricas y disponibilidad.
-
-24. Registrar la versión desplegada, responsable y hora.
-
-25. Notificar el resultado del despliegue.
+1. Confirmar que el PR pasó a `main` con las pruebas (`npm test`) en verde.
+2. Esperar el despliegue automático de Railway y Vercel.
+3. Comprobar `/api/salud` y las pruebas de humo de la sección 11.4.
+4. Si un cambio toca `init.sql`, recrear la base desde un respaldo (DT-010): no hay migraciones.
+5. Registrar el despliegue en la sección 11.3.
 
 ### 11.3 Registro de despliegue
 
 | **Fecha / hora** | **Ambiente** | **Versión** | **Responsable** | **Migraciones** | **Resultado** | **Evidencia** |
 | ---------------- | ------------ | ----------- | --------------- | --------------- | ------------- | ------------- |
-|                  |              |             |                 |                 |               |               |
-|                  |              |             |                 |                 |               |               |
+| 11/11/2026 18:48 | Producción   | main · PR \#60 (despliegue en la nube) | Juan Diego Mejía Llano | init.sql cargado en MySQL de Railway (7 tablas, 2 roles, 8 planes) | Exitoso | /api/salud responde; healthcheck de Railway en verde |
+| 11/11/2026 19:05 | Producción   | Vercel con VITE\_API\_URL de Railway | Juan Diego Mejía Llano | — | Exitoso | Login, cliente, membresía, huella e ingreso permitido desde la nube |
 |                  |              |             |                 |                 |               |               |
 
 ### 11.4 Pruebas de humo posteriores
 
 | **ID** | **Verificación**               | **Resultado esperado**              | **Resultado real** | **Estado** |
 | ------ | ------------------------------ | ----------------------------------- | ------------------ | ---------- |
-| SMK-01 | API encendida (no hay /health) | Servicio saludable                  |                    |            |
-| SMK-02 | Iniciar sesión                 | Interfaz o API responde             |                    |            |
-| SMK-03 | Registrar cliente              | Acceso y cierre de sesión correctos |                    |            |
-| SMK-04 | Asignar membresía              | Flujo principal completado          |                    |            |
-| SMK-05 | Validar acceso                 | Datos guardados y consultados       |                    |            |
-| SMK-06 | Consultar historial            | Sin errores críticos                |                    |            |
+| SMK-01 | GET /api/salud                 | {"estado":"ok","lector":"conectado"} con el agente encendido | {"estado":"ok","lector":"conectado"} | Cumple |
+| SMK-02 | Iniciar sesión en Vercel       | Panel del Administrador             | Login correcto con el Admin creado en Railway | Cumple |
+| SMK-03 | Registrar cliente y su huella  | Cliente y huella guardados          | 1 cliente y 1 huella en MySQL de Railway | Cumple |
+| SMK-04 | Asignar membresía              | Membresía activa                    | 1 membresía activa | Cumple |
+| SMK-05 | Validar acceso en la pantalla de ingreso | Ingreso permitido con membresía vigente | Permitido: «Membresía activa y vigente» | Cumple |
+| SMK-06 | Consultar historial            | Hora de Colombia en los registros   | Registros con la hora local | Cumple |
 
 ## 12\. Reversión y recuperación ante despliegue fallido
 
