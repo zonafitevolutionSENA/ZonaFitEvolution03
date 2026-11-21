@@ -4,6 +4,8 @@ import "../PantallasGestion.css";
 const API_URL = import.meta.env.VITE_API_URL;
 // Tiempo que se muestra el resultado antes de volver a esperar la siguiente huella
 const TIEMPO_RESULTADO_MS = 2000;
+// El aviso de huella no registrada es una frase completa: se deja más tiempo para alcanzar a leerla
+const TIEMPO_NO_REGISTRADA_MS = 4000;
 // Mientras el lector o el servidor no están disponibles (por ejemplo, al prender el portátil),
 // la pantalla vuelve a intentar sola cada 5 s, sin que nadie oprima un botón
 const ESPERA_RECONEXION_MS = 5000;
@@ -76,11 +78,12 @@ function PantallaIngreso() {
         }
         setConectando(false);
         if (err.status === 404 && err.message === "Huella no reconocida") {
-          setResultado({ permitido: false, motivo: err.message });
+          // El socio no puede registrarse solo desde esta pantalla: el registro lo hace la recepción
+          setResultado({ permitido: false, noRegistrada: true });
           temporizador = setTimeout(() => {
             setResultado(null);
             leerSensor();
-          }, TIEMPO_RESULTADO_MS);
+          }, TIEMPO_NO_REGISTRADA_MS);
         } else if (err.status === 408 || err.status === 409) {
           temporizador = setTimeout(leerSensor, 1000);
         } else {
@@ -101,7 +104,12 @@ function PantallaIngreso() {
     <main className={`gestion-page acceso-resultado pantalla-ingreso ${resultado ? (resultado.permitido ? "acceso-permitido" : "acceso-denegado") : ""}`}>
       <div className="acceso-resultado-contenido" role="status" aria-live="polite">
         <p className="pantalla-ingreso-marca">ZONA FIT <span>EVOLUTION</span></p>
-        {resultado ? (
+        {resultado?.noRegistrada ? (
+          <>
+            <span className="acceso-resultado-indicador" aria-hidden="true">×</span>
+            <h1>Acércate a recepción para registrar tu huella</h1>
+          </>
+        ) : resultado ? (
           <>
             <span className="acceso-resultado-indicador" aria-hidden="true">{resultado.permitido ? "✓" : "×"}</span>
             <p className="acceso-resultado-etiqueta">{resultado.permitido ? "Bienvenido/a a Zona Fit" : "Control de acceso"}</p>
@@ -115,7 +123,12 @@ function PantallaIngreso() {
             <h1>Conectando con el lector…</h1>
             <p className="acceso-resultado-motivo">La pantalla se activará sola en unos segundos.</p>
           </>
-        ) : <h1>Esperando lectura</h1>}
+        ) : (
+          <>
+            <h1>Tu entrenamiento empieza aquí</h1>
+            <p className="acceso-resultado-motivo">Coloca tu dedo en el lector para ingresar</p>
+          </>
+        )}
       </div>
       {error && <p className="mensaje-error" role="alert">{error}</p>}
       {error && <button className="acceso-resultado-volver" type="button" onClick={() => { setError(""); setIntento((actual) => actual + 1); }}>Reintentar</button>}
