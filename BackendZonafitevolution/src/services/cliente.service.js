@@ -68,19 +68,9 @@ async function actualizarCliente(id, datos) {
   return obtenerCliente(id);
 }
 
-async function eliminarCliente(id) {
-  const cliente = await clienteRepository.obtenerPorId(id);
-  if (!cliente) {
-    throw new ErrorDominio('Cliente no encontrado', 404);
-  }
-  await clienteRepository.eliminar(id);
-  return { mensaje: 'Cliente eliminado correctamente' };
-}
-
 module.exports = {
   registrarCliente,
   listarClientes,
   obtenerCliente,
-  actualizarCliente,
-  eliminarCliente
+  actualizarCliente
 };

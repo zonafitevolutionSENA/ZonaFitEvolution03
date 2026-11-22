@@ -31,10 +31,16 @@ async function eliminar(id) {
   return resultado.affectedRows > 0;
 }
 
+async function contarPorRol(rolId) {
+  const [filas] = await pool.query('SELECT COUNT(*) AS total FROM usuarios WHERE rol_id = ?', [rolId]);
+  return Number(filas[0].total);
+}
+
 module.exports = {
   crear,
   obtenerTodos,
   obtenerPorId,
   obtenerPorCorreo,
-  eliminar
+  eliminar,
+  contarPorRol
 };
