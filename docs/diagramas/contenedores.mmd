@@ -1,22 +1,24 @@
-%% DIA-002 · Vista de contenedores (v1.3). Fuente del diagrama de docs/04-arquitectura.md
+---
+title: "DIA-002 · Vista de contenedores · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 6.2)
 flowchart LR
   personal(["Personal del gimnasio<br/>Administrador / Empleado"]):::actor
   socio(["Cliente del gimnasio"]):::actor
   sensor["Sensor AS608<br/>+ CP2102"]:::hw
   subgraph sistema["Sistema Zona Fit Evolution"]
-    spa["<b>Frontend SPA</b><br/>React 19 + Vite<br/>FrontendZonafitevolution"]:::sis
-    ingreso["<b>Pantalla de ingreso</b><br/>misma SPA · <span style='white-space:nowrap'>?pantalla=acceso</span><br/>sin sesión · con token"]:::sis
-    api["<b>API REST</b><br/>Node.js + Express 5<br/>BackendZonafitevolution · /api"]:::sis
-    agente["<b>Agente del lector</b><br/>AgenteLector · Node.js<br/>lee el sensor (serialport)"]:::sis
-    db[("<b>MySQL</b><br/>7 tablas · init.sql")]:::sis
+    spa["<b>Frontend SPA</b><br/>React 19 + Vite<br/>FrontendZonafitevolution"]
+    ingreso["<b>Pantalla de ingreso</b><br/>misma SPA · <span style='white-space:nowrap'>?pantalla=acceso</span><br/>sin sesión · con token"]
+    api["<b>API REST</b><br/>Node.js 20 + Express 5<br/>BackendZonafitevolution · /api"]
+    agente["<b>Agente del lector</b><br/>AgenteLector · Node.js 20<br/>lee el sensor (serialport)"]
+    db[("<b>MySQL 8.4</b><br/>7 tablas · init.sql")]
   end
   personal -- "HTTPS" --> spa
-  socio -- "Presenta su huella" --> sensor
+  socio -- "Pone el dedo" --> sensor
   spa -- "JSON + JWT" --> api
   ingreso -- "POST /api/acceso-fisico/pantalla/validar<br/>X-Pantalla-Token" --> api
   sensor -- "USB-serie (UART)" --> agente
-  agente -- "WebSocket /agente<br/>órdenes: registrar · capturar · eliminar" --> api
+  agente -- "WebSocket /agente · X-Agente-Token<br/>órdenes: registrar · capturar · eliminar" --> api
   api -- "SQL parametrizado (mysql2)" --> db
-  classDef sis fill:#FFF2C4,stroke:#222,stroke-width:1px,color:#111
-  classDef actor fill:#1A1A1A,stroke:#1A1A1A,color:#FFFFFF
-  classDef hw fill:#F2F2F2,stroke:#666,stroke-width:1px,stroke-dasharray:5 5,color:#111
+  classDef actor fill:#1F4E79,stroke:#16384F,color:#FFFFFF
+  classDef hw fill:#F5F9FC,stroke:#1F4E79,stroke-dasharray:5 4,color:#16384F

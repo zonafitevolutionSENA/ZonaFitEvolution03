@@ -1,0 +1,32 @@
+---
+title: "DIA-ACV-01 · Actividad: validar acceso · v2.0 · 22/11/2026"
+---
+%% EP-003 · CU-004 · HU-006, HU-007 · RN-002, RN-009, RN-010, RN-013, RN-016
+flowchart TB
+  i(( )):::ini --> a["La pantalla de ingreso pide una lectura<br/>(X-Pantalla-Token)"]
+  a --> c0{"¿El agente del lector<br/>está conectado?"}
+  c0 -- No --> e0["Mostrar: lector desconectado<br/>y reintentar en 5 s"] --> a
+  c0 -- Sí --> b["El socio pone el dedo en el sensor<br/>(espera hasta 15 s)"]
+  b --> c1{"¿Hubo lectura?"}
+  c1 -- No --> a
+  c1 -- Sí --> c2{"¿La huella está<br/>registrada?"}
+  c2 -- No --> r0["Registrar intento denegado"] --> m0["Mostrar: huella no registrada (4 s)"] --> f
+  c2 -- Sí --> d["Consultar la membresía más<br/>reciente del cliente"]
+  d --> c3{"¿Estado de la membresía?"}
+  c3 -- "pendiente" --> n1["Denegar: inicia el &lt;fecha&gt;"]
+  c3 -- "vencida, cancelada<br/>o sin membresía" --> n2["Denegar con el motivo"]
+  c3 -- activa --> c4{"¿Es tiquetera?"}
+  c4 -- No --> c5{"¿Fecha de fin<br/>≥ hoy?"}
+  c5 -- Sí --> p1["Permitir"]
+  c5 -- No --> n2
+  c4 -- Sí --> c6{"¿Le quedan ingresos<br/>y no está vencida?"}
+  c6 -- No --> n2
+  c6 -- Sí --> c7{"¿Ya ingresó hoy?"}
+  c7 -- Sí --> p1
+  c7 -- No --> p2["Descontar un ingreso<br/>(el primero fija el vencimiento)"] --> p1
+  n1 --> r1["Registrar el intento con<br/>resultado y motivo"]
+  n2 --> r1
+  p1 --> r1
+  r1 --> m1["Mostrar nombre, resultado y motivo<br/>(sin cédula) durante 2 s"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

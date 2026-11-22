@@ -1,0 +1,18 @@
+---
+title: "DIA-ACV-08 · Actividad: registrar pago y consultar finanzas · v2.0 · 22/11/2026"
+---
+%% EP-004 · CU-005, CU-007 · HU-008 · RF-006 · ADR-006
+flowchart TB
+  i(( )):::ini --> a["Elegir el cliente y un plan activo"]
+  a --> c1{"¿Fecha de inicio válida<br/>(no anterior a hoy)?"}
+  c1 -- No --> e1["Mostrar el error"] --> a
+  c1 -- Sí --> b["Guardar la membresía<br/>(cuenta como el pago)"]
+  b --> c2{"¿El usuario es<br/>Administrador?"}
+  c2 -- No --> f
+  c2 -- Sí --> d["Abrir Registro financiero"]
+  d --> e["Cargar membresías y planes"]
+  e --> g["Calcular cada pago con el<br/>precio actual del plan"]
+  g --> h["Aplicar filtros de periodo y cliente"]
+  h --> m["Mostrar resumen por cliente<br/>y detalle de pagos"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

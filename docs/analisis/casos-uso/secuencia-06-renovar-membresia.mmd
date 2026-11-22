@@ -1,0 +1,31 @@
+---
+title: "DIA-SEC-06 · Renovar membresía por cédula · v2.0 · 22/11/2026"
+---
+%% CU-005 · HU-004 · RF-005 · RN-003, RN-005, RN-014
+sequenceDiagram
+  participant U as Empleado
+  participant F as Frontend (Membresías)
+  participant A as API (membresías)
+  participant D as Base de datos
+  U->>F: Busca al cliente por cédula
+  F->>A: GET /api/membresias/buscar/:cedula
+  A->>D: Cliente y su membresía más reciente
+  A-->>F: Datos del cliente y de la membresía
+  U->>F: Elige el plan y confirma
+  F->>A: POST /api/membresias/renovar
+  A->>D: ¿Tiene una membresía pendiente?
+  alt Ya tiene una pendiente
+    A-->>F: 409 Solo se permite una pendiente
+  else Sin pendiente
+    alt Activa y vigente con fecha de fin
+      A->>A: Inicio = día siguiente al fin, estado pendiente
+    else Tiquetera activa sin usar
+      A->>A: Inicio hoy, la anterior pasa a cancelada
+    else Vencida, cancelada o sin membresía
+      A->>A: Inicio hoy, estado activa
+    end
+    A->>A: Fecha de fin = inicio + duración<br/>(tiquetera: se fija en el primer ingreso)
+    A->>D: Guarda la nueva (transacción)
+    A-->>F: 201 Membresía con fechas y estado
+    F-->>U: Muestra inicio, fin y estado
+  end

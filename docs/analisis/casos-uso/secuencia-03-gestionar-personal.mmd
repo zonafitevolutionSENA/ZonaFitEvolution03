@@ -1,0 +1,30 @@
+---
+title: "DIA-SEC-03 · Gestionar personal y roles · v2.0 · 22/11/2026"
+---
+%% CU-006 · HU-002 · RF-007 · RN-011, RN-012
+sequenceDiagram
+  participant U as Administrador
+  participant F as Frontend (Personal)
+  participant A as API (usuarios)
+  participant D as Base de datos
+  U->>F: Completa nombre, correo, contraseña y rol
+  F->>F: Valida los campos en JavaScript
+  F->>A: POST /api/usuarios con token
+  A->>A: Verifica el token y el rol Administrador
+  A->>D: ¿Existe el correo?
+  alt Correo ya registrado
+    A-->>F: 409 Ya existe un usuario con ese correo
+    F-->>U: Muestra el error
+  else Correo libre
+    A->>A: Cifra la contraseña (bcrypt)
+    A->>D: Guarda el usuario con su rol
+    A-->>F: 201 Creado
+    F-->>U: Muestra el nuevo usuario en la lista
+  end
+  U->>F: Pulsa Eliminar en un usuario
+  F->>F: Bloquea la propia cuenta y el último<br/>administrador (regla en el frontend)
+  F->>U: Pide confirmación
+  U->>F: Confirma
+  F->>A: DELETE /api/usuarios/:id
+  A->>D: Elimina el usuario
+  A-->>F: 200 Usuario eliminado

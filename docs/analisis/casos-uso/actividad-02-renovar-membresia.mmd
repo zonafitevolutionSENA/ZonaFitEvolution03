@@ -1,0 +1,26 @@
+---
+title: "DIA-ACV-02 · Actividad: renovar membresía por cédula · v2.0 · 22/11/2026"
+---
+%% EP-002 · CU-005 · HU-004 · RN-003, RN-005, RN-014
+flowchart TB
+  i(( )):::ini --> a["Ingresar la cédula del cliente"]
+  a --> c1{"¿El cliente existe?"}
+  c1 -- No --> e1["Mostrar error: cliente no encontrado"] --> f
+  c1 -- Sí --> b["Consultar su membresía más reciente"]
+  b --> c2{"¿Ya tiene una<br/>membresía pendiente?"}
+  c2 -- Sí --> e2["Mostrar error: solo se permite<br/>una pendiente"] --> f
+  c2 -- No --> c3{"¿Tiene una activa vigente?"}
+  c3 -- "Sí, con fecha de fin" --> s1["Inicio: día siguiente al vencimiento<br/>Estado: pendiente"]
+  c3 -- "Sí, tiquetera sin usar" --> s2["Inicio: hoy · la anterior<br/>pasa a cancelada"]
+  c3 -- No --> s3["Inicio: hoy · Estado: activa<br/>(la vencida se marca vencida)"]
+  s1 --> p["Elegir el plan a renovar"]
+  s2 --> p
+  s3 --> p
+  p --> c4{"¿Es tiquetera?"}
+  c4 -- Sí --> t["Fecha de fin vacía hasta<br/>el primer ingreso"]
+  c4 -- No --> q["Fecha de fin = inicio + duración"]
+  t --> g["Guardar en una transacción"]
+  q --> g
+  g --> m["Mostrar inicio, fin y estado"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

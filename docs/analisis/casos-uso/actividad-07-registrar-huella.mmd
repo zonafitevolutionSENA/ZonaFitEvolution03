@@ -1,0 +1,21 @@
+---
+title: "DIA-ACV-07 · Actividad: registrar huella · v2.0 · 22/11/2026"
+---
+%% EP-003 · CU-004 · HU-005 · RF-004 · RN-008
+flowchart TB
+  i(( )):::ini --> a["Buscar al cliente en Clientes"]
+  a --> c1{"¿Ya tiene huella?"}
+  c1 -- Sí --> e1["Mostrar: elimínala primero"] --> f
+  c1 -- No --> c2{"¿El agente del lector<br/>está conectado?"}
+  c2 -- No --> e2["Mostrar: lector desconectado"] --> f
+  c2 -- Sí --> b["Primera lectura del dedo"]
+  b --> c["Retirar y volver a poner el mismo dedo"]
+  c --> c3{"¿Las dos lecturas coinciden?"}
+  c3 -- No --> e3["Mostrar: usa el mismo dedo<br/>e inténtalo de nuevo"] --> f
+  c3 -- Sí --> d["El sensor guarda la huella<br/>en su memoria"]
+  d --> c4{"¿La huella ya es<br/>de otro cliente?"}
+  c4 -- Sí --> e4["Mostrar: huella ya registrada"] --> f
+  c4 -- No --> g["Guardar en la base solo el hash<br/>de la posición en el sensor"]
+  g --> m["Mostrar: huella registrada"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

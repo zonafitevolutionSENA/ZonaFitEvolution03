@@ -1,0 +1,20 @@
+---
+title: "DIA-ACV-05 · Actividad: gestionar personal · v2.0 · 22/11/2026"
+---
+%% EP-001 · CU-006 · HU-002 · RF-007 · RN-011, RN-012
+flowchart TB
+  i(( )):::ini --> a["Abrir Personal (solo Administrador)"]
+  a --> c0{"¿Qué acción?"}
+  c0 -- Crear --> b["Ingresar nombre, correo,<br/>contraseña y rol"]
+  b --> c1{"¿Datos válidos?<br/>(contraseña de 8 o más)"}
+  c1 -- No --> e1["Mostrar el error"] --> b
+  c1 -- Sí --> c2{"¿El correo ya existe?"}
+  c2 -- Sí --> e2["Responder 409"] --> f
+  c2 -- No --> g["Cifrar la contraseña (bcrypt)<br/>y guardar el usuario"] --> f
+  c0 -- Eliminar --> c3{"¿Es la propia cuenta o<br/>el último administrador?"}
+  c3 -- Sí --> e3["Botón deshabilitado con el motivo"] --> f
+  c3 -- No --> c4{"¿Confirma la eliminación?"}
+  c4 -- No --> f
+  c4 -- Sí --> d["Eliminar el usuario"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

@@ -1,26 +1,28 @@
-%% DIA-006 · Vista de despliegue (v1.3). Fuente del diagrama de docs/04-arquitectura.md
+---
+title: "DIA-006 · Despliegue en la nube · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 12.2)
 flowchart TB
+  subgraph equipo["Cualquier equipo con internet"]
+    nav["<b>Navegador web</b><br/>panel del personal<br/>pantalla de ingreso (<span style='white-space:nowrap'>?pantalla=acceso</span>)"]
+  end
+  subgraph portatil["Portátil de la recepción (Windows)"]
+    agente["<b>Agente del lector</b><br/>AgenteLector · Node.js 20<br/>tarea programada al iniciar Windows"]
+    sensor["<b>Sensor de huella AS608</b><br/>+ conversor USB CP2102<br/>puerto COM detectado solo"]:::hw
+  end
   subgraph nube["Nube"]
     subgraph vercel["Vercel · plan Hobby"]
-      front["<b>Frontend SPA</b><br/>React + Vite compilado (dist/)<br/><span style='white-space:nowrap'>zona-fit-evolution03.vercel.app</span>"]:::sis
+      front["<b>Frontend SPA</b><br/>React + Vite compilado (dist/)<br/>zona-fit-evolution03.vercel.app"]
     end
     subgraph railway["Railway · proyecto con 2 servicios"]
-      api["<b>API Node.js 20 + Express</b><br/>/api · /agente (WebSocket)<br/>healthcheck: /api/salud"]:::sis
-      db[("<b>MySQL 8.4</b><br/>volumen persistente<br/>red privada de Railway")]:::sis
+      api["<b>API Node.js 20 + Express 5</b><br/>/api · /agente (WebSocket)<br/>healthcheck: /api/salud"]
+      db[("<b>MySQL 8.4</b><br/>volumen persistente<br/>red privada de Railway")]
     end
-  end
-  subgraph equipo["Cualquier equipo con internet"]
-    nav["<b>Navegador web</b><br/>panel del personal y<br/>pantalla de ingreso (<span style='white-space:nowrap'>?pantalla=acceso</span>)"]:::sis
-  end
-  subgraph portatil["Portátil del lector"]
-    agente["<b>Agente del lector</b><br/>AgenteLector · Node.js 20"]:::sis
-    sensor["<b>Sensor de huella AS608</b><br/>+ conversor USB CP2102"]:::hw
   end
   nav -- "1 · HTTPS: descarga la aplicación" --> front
   nav -- "2 · HTTPS /api + JWT<br/>pantalla: X-Pantalla-Token" --> api
-  agente -- "3 · WSS /agente (saliente)<br/>X-Agente-Token" --> api
-  sensor -- "USB-serie (UART)<br/>PUERTO_LECTOR" --> agente
+  agente -- "3 · WSS /agente (conexión saliente)<br/>X-Agente-Token · latido cada 30 s" --> api
+  sensor -- "USB-serie (UART) · 57.600 baudios" --> agente
   api -- "4 · TCP 3306 (red privada)" --> db
-  classDef sis fill:#FFF2C4,stroke:#222,stroke-width:1px,color:#111
-  classDef actor fill:#1A1A1A,stroke:#1A1A1A,color:#FFFFFF
-  classDef hw fill:#F2F2F2,stroke:#666,stroke-width:1px,stroke-dasharray:5 5,color:#111
+  classDef actor fill:#1F4E79,stroke:#16384F,color:#FFFFFF
+  classDef hw fill:#F5F9FC,stroke:#1F4E79,stroke-dasharray:5 4,color:#16384F

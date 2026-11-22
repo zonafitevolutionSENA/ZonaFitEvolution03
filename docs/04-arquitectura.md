@@ -15,7 +15,7 @@
 | Revisor funcional        | Liliana Sofía Panesso Méndez (Product Owner)                                     |
 | Revisor técnico          | Juan Diego Mejía Llano                                                           |
 | Revisor académico        |                                                                                  |
-| Ubicación oficial        | Carpeta documentos\_proyecto; diagramas fuente en /docs/architecture (por crear) |
+| Ubicación oficial        | Carpeta documentos\_proyecto; diagramas fuente en docs/diagramas y docs/analisis/casos-uso |
 | Periodicidad de revisión | Con cada cambio arquitectónico o al cierre de sprint                             |
 
 ### Historial de versiones
@@ -28,6 +28,7 @@
 | 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; diccionario de datos con tiqueteras, estado pendiente y template\_hash único; DT-010 aceptada                                                                       | Juan Diego Mejía Llano       |                  |
 | 1.2         | 10/11/2026 | Diagramas de contenedores, componentes y despliegue actualizados: el sensor se conecta por USB al PC de la API (sin agente aparte), pantalla de ingreso y nuevos componentes                                      | Juan Diego Mejía Llano       |                  |
 | 1.3         | 11/11/2026 | Despliegue en la nube: frontend en Vercel, API y MySQL en Railway, agente local del lector por WebSocket (ADR-008), pantalla de ingreso con token, seguridad y zona horaria; diagramas DIA-002, DIA-003 y DIA-006 | Juan Diego Mejía Llano       |                  |
+| 2.0         | 22/11/2026 | Todos los diagramas rehechos con un solo estilo y fuente versionada: contexto, clases, paquetes, entidad-relación, estados de la membresía (nuevo), despliegue y diez secuencias; endpoints de la pantalla de ingreso, salud y fecha de fin; tarea diaria de membresías; puerto del lector automático | Juan Diego Mejía Llano       |                  |
 
 ### Registro de aprobaciones
 
@@ -136,7 +137,7 @@ Los drivers son las condiciones que realmente influyen en la arquitectura: requi
 | **Atributo**   | **Escenario**                                                 | **Fuente** | **Métrica / umbral**               | **Decisión asociada**        | **Evidencia** |
 | -------------- | ------------------------------------------------------------- | ---------- | ---------------------------------- | ---------------------------- | ------------- |
 | Rendimiento    | Validación de acceso con 400 clientes registrados             | RNF-003    | \< 2 s (p95)                       | ADR-005, pool Singleton      |               |
-| Disponibilidad | Uso durante el horario de atención                            | RNF-004    | 99,9 % mensual                     | Hosting por definir (CR-006) |               |
+| Disponibilidad | Uso durante el horario de atención                            | RNF-004    | 99,9 % mensual                     | Vercel y Railway con healthcheck /api/salud (CR-006) |               |
 | Seguridad      | Petición sin token o con rol Empleado a ruta de Administrador | RNF-001    | 401 / 403 en el 100 % de los casos | ADR-003                      |               |
 | Mantenibilidad | Agregar un estado de membresía o un sensor nuevo              | RNF-005    | 0 errores de lint y build          | ADR-001, ADR-002, ADR-005    |               |
 | Portabilidad   | Cambiar el AS608 por otro modelo de sensor                    | INT-01     | Solo un adaptador nuevo            | ADR-004                      |               |
@@ -176,14 +177,9 @@ Describa el sistema como una unidad, quién lo usa, con qué sistemas se relacio
 
 ### 4.3 Diagrama de contexto
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image1.png" style="width:6.29921in;height:1.10879in" /></p>
-<p><em>Figura 1. Diagrama de contexto (DIA-001).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 1. Diagrama de contexto (DIA-001).](diagramas/contexto.png)
+
+*Figura 1. Diagrama de contexto (DIA-001).*
 
 | **Elemento del diagrama** | **Identificador** | **Descripción**                               | **Documento fuente** |
 | ------------------------- | ----------------- | --------------------------------------------- | -------------------- |
@@ -232,6 +228,10 @@ Describa el sistema como una unidad, quién lo usa, con qué sistemas se relacio
 | Costos y limitaciones      | Dos aplicaciones que se despliegan por separado; sin migraciones automáticas. |
 | Condiciones para revisarlo | Crecimiento a varias sedes o integración con más dispositivos.                |
 
+![Figura 2. Clases de los patrones de diseño (DIA-CLA-02).](diagramas/clases-patrones.png)
+
+*Figura 2. Clases de los patrones de diseño (DIA-CLA-02).*
+
 ### 5.3 Stack tecnológico
 
 | **Categoría**   | **Tecnología / versión**                                                                                   | **Propósito**                    | **Justificación**                                                                                                  | **Alternativa considerada**                                                         | **Riesgo / dependencia**                                                           |
@@ -249,43 +249,45 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 ### 6.1 Catálogo de diagramas
 
-| **ID**  | **Vista**    | **Propósito**                                                     | **Herramienta**                           | **Ubicación**           | **Versión** | **Estado**                                        |
-| ------- | ------------ | ----------------------------------------------------------------- | ----------------------------------------- | ----------------------- | ----------- | ------------------------------------------------- |
-| DIA-001 | Contexto     | Actores y sistemas externos                                       | Mermaid (contexto.mmd)                    | Figura 1                | 1.1         | Actualizado (CR-005)                              |
-| DIA-002 | Contenedores | Aplicaciones, pantalla de ingreso, agente, base de datos y sensor | Mermaid (docs/diagramas/contenedores.mmd) | Figura 2                | 1.3         | Actualizado (agente del lector por WebSocket)     |
-| DIA-003 | Componentes  | Capas del frontend y backend                                      | Mermaid (docs/diagramas/componentes.mmd)  | Figura 3                | 1.3         | Actualizado (adaptador remoto y canalAgente)      |
-| DIA-004 | Secuencia    | Validar acceso (CU-004)                                           | Mermaid (secuencia.mmd)                   | Documento maestro, 5.10 | 1.0         | Borrador                                          |
-| DIA-005 | Datos        | Entidad-relación de las 7 tablas                                  | Mermaid (er.mmd)                          | Documento maestro, 5.10 | 1.0         | Borrador                                          |
-| DIA-006 | Despliegue   | Nodos y protocolos                                                | Mermaid (docs/diagramas/despliegue.mmd)   | Figura 4                | 1.3         | Actualizado (Vercel, Railway y agente del lector) |
+| **ID**     | **Vista**                 | **Propósito**                                                             | **Fuente**                                               | **Ubicación en este documento** | **Versión** | **Estado**                   |
+| ---------- | ------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------- | ----------- | ---------------------------- |
+| DIA-001    | Contexto                  | Actores y sistemas externos                                               | [contexto.mmd](diagramas/contexto.mmd)                   | 4.3 (Figura 1)                  | 2.0         | Actualizado (Vercel/Railway) |
+| DIA-CLA-02 | Clases (patrones)         | Facade, State, Adapter, Factory y Singleton                               | [clases-patrones.mmd](diagramas/clases-patrones.mmd)     | 5.2 (Figura 2)                  | 2.0         | Actualizado (lector remoto)  |
+| DIA-002    | Contenedores              | Aplicaciones, pantalla de ingreso, agente, base de datos y sensor         | [contenedores.mmd](diagramas/contenedores.mmd)           | 6.2 (Figura 3)                  | 2.0         | Actualizado                  |
+| DIA-003    | Componentes               | Capas del frontend y backend                                              | [componentes.mmd](diagramas/componentes.mmd)             | 6.3 (Figura 4)                  | 2.0         | Actualizado                  |
+| DIA-004    | Secuencia                 | Diez flujos (DIA-SEC-01 a DIA-SEC-10)                                     | [analisis/casos-uso/](analisis/casos-uso/)               | 6.4 (Figura 5 y enlaces)        | 2.0         | Actualizado                  |
+| DIA-PAQ-01 | Paquetes                  | Dependencias entre paquetes del frontend, el backend y el agente          | [paquetes.mmd](diagramas/paquetes.mmd)                   | 7.3 (Figura 6)                  | 2.0         | Actualizado                  |
+| DIA-CLA-01 | Clases (dominio)          | Modelo conceptual de las 7 entidades                                      | [clases-dominio.mmd](diagramas/clases-dominio.mmd)       | 8.2 (Figura 7)                  | 2.0         | Actualizado (tiqueteras)     |
+| DIA-005    | Datos                     | Entidad-relación de las 7 tablas de init.sql                              | [entidad-relacion.mmd](diagramas/entidad-relacion.mmd)   | 8.4 (Figura 8)                  | 2.0         | Actualizado                  |
+| DIA-EST-01 | Estados                   | Ciclo de vida de la membresía (pendiente, activa, vencida, cancelada)     | [estados-membresia.mmd](diagramas/estados-membresia.mmd) | 8.7 (Figura 9)                  | 2.0         | Nuevo                        |
+| DIA-006    | Despliegue                | Vercel, Railway y agente del lector                                       | [despliegue.mmd](diagramas/despliegue.mmd)               | 12.2 (Figura 10)                | 2.0         | Actualizado                  |
+
+Las fuentes de arquitectura y datos están en `docs/diagramas/` y las de análisis (casos de uso, secuencias y actividades) en `docs/analisis/casos-uso/`, cada una con su PNG al lado. Todas usan el mismo estilo; para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i <archivo>.mmd -o <archivo>.png -s 2 -b white`.
 
 ### 6.2 Vista de contenedores
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image2.png" style="width:6.29921in;height:1.65515in" /></p>
-<p><em>Figura 2. Diagrama de contenedores (DIA-002).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 3. Diagrama de contenedores (DIA-002).](diagramas/contenedores.png)
+
+*Figura 3. Diagrama de contenedores (DIA-002).*
 
 ### 6.3 Vista de componentes
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image3.png" style="width:6.29921in;height:1.76764in" /></p>
-<p><em>Figura 3. Diagrama de componentes (DIA-003).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 4. Diagrama de componentes (DIA-003).](diagramas/componentes.png)
+
+*Figura 4. Diagrama de componentes (DIA-003).*
 
 ### 6.4 Diagramas de secuencia
 
 | **ID**  | **Flujo**                    | **Caso de uso / HU** | **Participantes**                                                                                       | **Condición principal**                           | **Excepciones**                                                                |
 | ------- | ---------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
-| SEQ-001 | Validar acceso por huella    | CU-004 / HU-006      | Pantalla de ingreso, API, adaptador del sensor AS608, accesoFisico.service, estadosAcceso, repositorios | Membresía activa y vigente                        | Huella no reconocida (404); vencida/cancelada/sin membresía; error de conexión |
-| SEQ-002 | Renovar membresía por cédula | CU-005 / HU-004      | Frontend, membresia.service, repositorios                                                               | Membresía vigente se encadena; vencida inicia hoy | Cédula no encontrada; plan inactivo                                            |
+| SEQ-001 | Validar acceso por huella    | CU-004 / HU-006      | Pantalla de ingreso, API, adaptador del sensor AS608, accesoFisico.service, estadosAcceso, repositorios | Membresía activa y vigente o tiquetera con ingresos | Huella no reconocida (404); pendiente/vencida/cancelada/sin membresía; lector desconectado (503) |
+| SEQ-002 | Renovar membresía por cédula | CU-005 / HU-004      | Frontend, membresia.service, repositorios                                                               | Vigente: la nueva queda pendiente; vencida inicia hoy | Cédula no encontrada; plan inactivo; ya existe una pendiente (409); ya existe una pendiente (409) |
+
+Los diez diagramas de secuencia están en [`analisis/casos-uso/`](analisis/casos-uso/) y se describen en [Casos de uso, sección 10.3](analisis/casos-de-uso.md#103-diagramas-de-secuencia). El flujo principal del sistema es la validación de acceso:
+
+![Figura 5. Secuencia: validar acceso con la huella (DIA-SEC-08).](analisis/casos-uso/secuencia-08-validar-acceso.png)
+
+*Figura 5. Secuencia: validar acceso con la huella (DIA-SEC-08).*
 
 ### 6.5 Reglas de calidad de diagramas
 
@@ -324,11 +326,11 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 | Propósito                   | Decidir si un socio puede ingresar y auditar cada intento.                                                                     |
 | Responsabilidades           | Identificar la huella con el adaptador, consultar la membresía más reciente, evaluar el estado (State) y registrar el intento. |
 | Responsabilidades excluidas | Abrir la puerta (fuera del MVP, CR-005); registrar huellas (biometria.service).                                                |
-| Interfaces públicas         | POST /api/acceso-fisico/validar y GET /api/acceso-fisico/historial.                                                            |
-| Dependencias entrantes      | accesoFisico.controller (rutas con verificarToken y permitirRoles).                                                            |
+| Interfaces públicas         | POST /api/acceso-fisico/pantalla/validar (pantalla de ingreso con X-Pantalla-Token), POST /api/acceso-fisico/validar y GET /api/acceso-fisico/historial.                                                            |
+| Dependencias entrantes      | accesoFisico.controller (rutas con verificarToken y permitirRoles; la pantalla usa soloPantallaAutorizada y un límite de 30 lecturas por minuto).                                                            |
 | Dependencias salientes      | CMP-06 adaptador del lector, membresia.repository, registroAcceso.repository.                                                  |
 | Datos gestionados           | registros\_acceso (resultado, motivo, fecha\_hora).                                                                            |
-| Errores y excepciones       | 404 huella no reconocida (se registra); 400 cuerpo vacío; 401/403.                                                             |
+| Errores y excepciones       | 404 huella no reconocida (se registra); 408 sin dedo en 15 s; 503 lector desconectado; 400 cuerpo vacío; 401/403.                                                             |
 | Seguridad y permisos        | Admin y Empleado; nunca devuelve el hash de la plantilla.                                                                      |
 | Observabilidad              | Cada intento queda en registros\_acceso; errores 500 en consola.                                                               |
 | Pruebas asociadas           | CP-007 a CP-009, CP-019                                                                                                        |
@@ -347,6 +349,10 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
   - No duplicar reglas de negocio en frontend, backend y base de datos sin una estrategia explícita.
 
   - Definir puntos de extensión sin anticipar escenarios irreales.
+
+![Figura 6. Paquetes del frontend, el backend y el agente (DIA-PAQ-01). Las dependencias van en un solo sentido.](diagramas/paquetes.png)
+
+*Figura 6. Paquetes del frontend, el backend y el agente (DIA-PAQ-01). Las dependencias van en un solo sentido.*
 
 ### 7.4 Matriz de dependencias
 
@@ -367,9 +373,9 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 | Tipo de modelo          | Relacional                                                                      |
 | Tecnología              | MySQL (driver mysql2, pool Singleton)                                           |
 | Justificación           | Entidades relacionadas con llaves foráneas e integridad (ADR-002).              |
-| Consistencia requerida  | Fuerte: una sola membresía activa por cliente (transacción en la renovación).   |
+| Consistencia requerida  | Fuerte: una sola membresía activa y como máximo una pendiente por cliente (transacción en la renovación).   |
 | Volumen y crecimiento   | De 300 a 400 clientes; registros\_acceso crece con cada ingreso.                |
-| Disponibilidad          | Según el proveedor de MySQL en la nube (por definir).                           |
+| Disponibilidad          | MySQL 8.4 en Railway, en la red privada del mismo proyecto que la API.                           |
 | Respaldo y recuperación | mysqldump diario recomendado (sección de respaldo).                             |
 | Datos sensibles         | Contraseñas (bcrypt) y plantillas biométricas (solo hash).                      |
 | Limitaciones            | Esquema creado con init.sql, sin migraciones; no existe tabla de pagos (DT-01). |
@@ -378,6 +384,10 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 Identifique conceptos del dominio y relaciones sin detalles de implementación. Debe ser comprensible para usuarios del negocio.
 
+![Figura 7. Clases del dominio (DIA-CLA-01).](diagramas/clases-dominio.png)
+
+*Figura 7. Clases del dominio (DIA-CLA-01).*
+
 ### 8.3 Modelo lógico
 
 Defina entidades, atributos, relaciones, cardinalidades y restricciones lógicas. Para NoSQL, identifique agregados, documentos, referencias y patrones de acceso.
@@ -385,6 +395,10 @@ Defina entidades, atributos, relaciones, cardinalidades y restricciones lógicas
 ### 8.4 Modelo físico
 
 Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones y detalles de implementación.
+
+![Figura 8. Modelo entidad-relación de las 7 tablas de init.sql (DIA-005).](diagramas/entidad-relacion.png)
+
+*Figura 8. Modelo entidad-relación de las 7 tablas de init.sql (DIA-005).*
 
 ### 8.5 Catálogo de entidades / colecciones
 
@@ -453,6 +467,12 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | planes     | membresias              | 1:N              | membresias.plan\_id                 | Restringir (RN-006)  |                            | El plan se desactiva, no se borra. |
 | clientes   | plantillas\_biometricas | 1:1              | plantillas\_biometricas.cliente\_id |                      |                            | Una huella por cliente.            |
 | clientes   | registros\_acceso       | 1:N              | registros\_acceso.cliente\_id       |                      |                            | Auditoría por cliente.             |
+
+**Ciclo de vida de la membresía.** La columna `membresias.estado` solo admite las transiciones de la Figura 9. La tarea diaria (`src/jobs/membresias.job.js`, 00:05 y al arrancar) vence las activas expiradas y activa las pendientes; solo el Administrador reactiva.
+
+![Figura 9. Estados de la membresía (DIA-EST-01).](diagramas/estados-membresia.png)
+
+*Figura 9. Estados de la membresía (DIA-EST-01).*
 
 ### 8.8 Índices y patrones de consulta
 
@@ -533,12 +553,16 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | API-11 | POST, GET         | /api/membresias                                      | Asignar y listar membresías                               | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
 | API-12 | GET               | /api/membresias/buscar/:cedula                       | Buscar membresía por cédula                               | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
 | API-13 | POST              | /api/membresias/renovar                              | Renovar por cédula                                        | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
-| API-14 | GET, PATCH        | /api/membresias/:id, /api/membresias/:id/estado      | Consultar y cambiar estado                                | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
+| API-14 | GET, PATCH        | /api/membresias/:id, /api/membresias/:id/estado      | Consultar y cambiar estado (solo el Administrador reactiva)                                | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
 | API-15 | DELETE            | /api/membresias/:id                                  | Eliminar membresía                                        | Sí (JWT)          | Admin           | JSON        | JSON / { "error": "mensaje" } |             |
 | API-16 | POST              | /api/biometria/registrar, /api/biometria/identificar | Registrar e identificar huella                            | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
 | API-17 | DELETE            | /api/biometria/:cliente\_id                          | Eliminar huella                                           | Sí (JWT)          | Admin           | JSON        | JSON / { "error": "mensaje" } |             |
 | API-18 | POST              | /api/acceso-fisico/validar                           | Validar el ingreso                                        | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
 | API-19 | GET               | /api/acceso-fisico/historial                         | Consultar el historial de accesos                         | Sí (JWT)          | Admin, Empleado | JSON        | JSON / { "error": "mensaje" } |             |
+| API-20 | PATCH | /api/membresias/:id/fecha-fin | Corregir la fecha de fin de una membresía | Sí (JWT) | Admin | JSON | JSON / { "error": "mensaje" } |  |
+| API-21 | GET | /api/biometria/registro/estado/:capturaId | Consultar el avance del registro de huella | Sí (JWT) | Admin, Empleado | — | JSON / { "error": "mensaje" } |  |
+| API-22 | POST | /api/acceso-fisico/pantalla/validar | Validar el ingreso desde la pantalla de ingreso | X-Pantalla-Token (PANTALLA\_TOKEN) | Pantalla autorizada | — | JSON / { "error": "mensaje" } |  |
+| API-23 | GET | /api/salud | Estado del servicio y del lector (healthcheck) | No | Público | — | { "estado": "ok", "lector": "conectado" \| "desconectado" } |  |
 
 ### 9.3 Contrato de respuesta y error
 
@@ -575,7 +599,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | SEC-003 | Base de datos                               | Inyección SQL                     | Media            | Alta        | Consultas parametrizadas                                                  | Liliana Sofía Panesso Méndez | Mitigado   |
 | SEC-004 | Rutas de Administrador                      | Escalamiento de privilegios       | Media            | Alta        | permitirRoles en cada ruta; regla del último admin en el backend (TT-001) | Liliana Sofía Panesso Méndez | Abierto    |
 | SEC-005 | Secretos (JWT\_SECRET, BD, BIOMETRIA\_SALT) | Exposición en Git                 | Baja             | Alta        | .env fuera de Git; .env.example                                           | Liliana Sofía Panesso Méndez | Mitigado   |
-| SEC-006 | API pública                                 | Peticiones desde cualquier origen | Media            | Media       | Restringir CORS (TT-004)                                                  | Liliana Sofía Panesso Méndez | Abierto    |
+| SEC-006 | API pública                                 | Peticiones desde cualquier origen | Media            | Media       | CORS restringido a ORIGEN_FRONTEND con trust proxy (TT-004, PR #59)                                                  | Liliana Sofía Panesso Méndez | Mitigado    |
 
 ### 10.2 Autenticación y sesión
 
@@ -628,7 +652,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 | **Control**                         | **Aplica**                         | **Implementación**                                  | **Prueba** | **Estado**   |
 | ----------------------------------- | ---------------------------------- | --------------------------------------------------- | ---------- | ------------ |
-| HTTPS en ambientes públicos         | Sí                                 | Lo provee el hosting (por definir)                  | CP-\_\_\_  | Pendiente    |
+| HTTPS en ambientes públicos         | Sí                                 | Certificados TLS de Vercel y Railway                  | CP-\_\_\_  | Implementado    |
 | Prevención de inyección             | Sí                                 | Consultas parametrizadas con mysql2                 |            | Implementado |
 | Protección XSS                      | Sí                                 | React escapa el contenido por defecto               |            | Implementado |
 | CSRF, si aplica                     | No (token en cabecera, no cookies) | —                                                   |            | No aplica    |
@@ -694,14 +718,9 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 12.2 Diagrama de despliegue
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image4.png" style="width:5.11811in;height:5.06588in" /></p>
-<p><em>Figura 4. Diagrama de despliegue en la nube (DIA-006).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 10. Diagrama de despliegue en la nube (DIA-006).](diagramas/despliegue.png)
+
+*Figura 10. Diagrama de despliegue en la nube (DIA-006).*
 
 ### 12.3 Configuración por ambiente
 
@@ -709,7 +728,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | ---------------------------------------------------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------- | -------------------- | ---------------------------- |
 | DB\_HOST, DB\_PORT, DB\_USER, DB\_PASSWORD, DB\_NAME | localhost, 3306, root, —, zonafitevolution |             | Referencias ${{MySQL.MYSQL…}} de Railway (base railway)                          | Sí (DB\_PASSWORD)    | Liliana Sofía Panesso Méndez |
 | JWT\_SECRET, JWT\_EXPIRES\_IN                        | Valor local (mínimo 32 caracteres), 8h     |             | 64 caracteres aleatorios, 8h                                                     | Sí (JWT\_SECRET)     | Liliana Sofía Panesso Méndez |
-| BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, as608 (PUERTO\_LECTOR=COM3)   |             | El mismo BIOMETRIA\_SALT de siempre; remoto                                      | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
+| BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, as608 (PUERTO\_LECTOR=auto o un puerto fijo como COM3)   |             | El mismo BIOMETRIA\_SALT de siempre; remoto                                      | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
 | AGENTE\_TOKEN, PANTALLA\_TOKEN                       | Vacíos (modo local)                        |             | 64 caracteres aleatorios cada uno                                                | Sí                   | Juan Diego Mejía Llano       |
 | ORIGEN\_FRONTEND, TZ                                 | http://localhost:5173, America/Bogota      |             | https://zona-fit-evolution03.vercel.app, America/Bogota                          | No                   | Juan Diego Mejía Llano       |
 | VITE\_API\_URL                                       | http://localhost:3000/api                  |             | https://zonafitevolution03-production.up.railway.app/api (tipo Config en Vercel) | No                   | Juan Diego Mejía Llano       |
@@ -722,7 +741,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | 2        | Esquema de datos | init.sql ejecutado una sola vez en MySQL de Railway (sin migraciones, DT-010)                            | 7 tablas, 2 roles y 8 planes                  | Recrear la base desde el respaldo (mysqldump)                    |
 | 3        | Despliegue       | Merge en main: Railway (Watch Paths /BackendZonafitevolution/\*\*) y Vercel se redespliegan solos        | Healthcheck /api/salud                        | Railway mantiene la versión anterior si el healthcheck falla     |
 | 4        | Smoke test       | Login, cliente, membresía, registro de huella y pantalla de ingreso                                      | Flujos críticos                               | Revertir el PR en GitHub                                         |
-| 5        | Liberación       | Agente del lector conectado (npm start en AgenteLector)                                                  | /api/salud: lector conectado; logs de Railway | Modo local (TIPO\_LECTOR=as608)                                  |
+| 5        | Liberación       | Agente del lector conectado (tarea programada que instala INSTALAR-RECEPCION.bat)                                                  | /api/salud: lector conectado; logs de Railway | Modo local (TIPO\_LECTOR=as608)                                  |
 
 ### 12.5 Continuidad y recuperación
 
@@ -770,7 +789,7 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | ------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- | ------------------ | ---------- |
 | DT-001 | No existe tabla de pagos: el registro financiero estima con el precio actual del plan.                                                        | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               | Crear la tabla pagos (TT-005).                                                                 |                    | Abierto    |
 | DT-002 | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).                                                                 | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
-| DT-003 | Vencimiento marcado desde el frontend, no con tarea programada.                                                                               | Revisión del código | Estado guardado desactualizado.                                |               | Tarea programada en el backend (TT-006).                                                       |                    | Abierto    |
+| DT-003 | Resuelto: tarea diaria en el backend (src/jobs/membresias.job.js, a las 00:05 y al arrancar) que vence las activas expiradas y activa las pendientes; el frontend conserva el marcado al listar como respaldo.                                                                               | Revisión del código | —                                |               | TT-006 terminada.                                                       |                    | Cerrado    |
 | DT-004 | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                                                                           | Revisión del código | Contradicción regla–API.                                       |               | Integrar TT-002.                                                                               |                    | Abierto    |
 | DT-005 | La regla del último administrador solo se valida en el frontend.                                                                              | Revisión del código | Se puede saltar llamando la API.                               |               | Integrar TT-001.                                                                               |                    | Abierto    |
 | DT-006 | Resuelto: límite de intentos de inicio de sesión (limiteLogin) y CORS restringido a ORIGEN\_FRONTEND, con trust proxy para Railway (PR \#59). | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
@@ -805,9 +824,9 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 | ADR-002 | API REST con Express y MySQL sin ORM             | Aceptado   |            |                 | Express 5 con mysql2 y consultas parametrizadas en repositorios.                                                                                                                                                                               | SQL explícito; sin migraciones automáticas (init.sql).                                                                                     | Documento maestro, 5.12      |
 | ADR-003 | JWT y autorización por rol en el backend         | Aceptado   |            |                 | JWT de 8 horas, bcrypt y permitirRoles en cada ruta.                                                                                                                                                                                           | El token no se revoca antes de expirar; se guarda en localStorage.                                                                         | Documento maestro, 5.12      |
 | ADR-004 | Lector biométrico detrás de un adaptador         | Aceptado   |            |                 | Interfaz LectorBiometrico, adaptador del sensor AS608 y fábrica por TIPO\_LECTOR; otro sensor se integra como un adaptador nuevo.                                                                                                              | Cambiar de sensor solo exige un adaptador; el AS608 compara en el propio sensor, no por igualdad de hashes.                                | Documento maestro, 5.12      |
-| ADR-005 | Patrón State y fachada para validar el acceso    | Aceptado   |            |                 | Estados activo, vencido, cancelado y sin membresía; accesoFisico.service coordina.                                                                                                                                                             | Todo intento queda en registros\_acceso.                                                                                                   | Documento maestro, 5.12      |
+| ADR-005 | Patrón State y fachada para validar el acceso    | Aceptado   |            |                 | Estados activo, pendiente, vencido, cancelado y sin membresía; accesoFisico.service coordina.                                                                                                                                                             | Todo intento queda en registros\_acceso.                                                                                                   | Documento maestro, 5.12      |
 | ADR-006 | Registro financiero calculado con las membresías | Aceptado   |            |                 | Cálculo en el frontend con el precio actual del plan.                                                                                                                                                                                          | Cifras estimadas; pendiente TT-005.                                                                                                        | Documento maestro, 5.12      |
-| ADR-007 | Marcado de vencidas al consultar                 | Aceptado   |            |                 | El frontend hace PATCH del estado al listar.                                                                                                                                                                                                   | Estado guardado puede quedar desactualizado; se moverá al servidor (TT-006).                                                               | Documento maestro, 5.12      |
+| ADR-007 | Marcado de vencidas al consultar (reemplazado por la tarea diaria)                 | Reemplazado   |            |                 | El frontend hace PATCH del estado al listar.                                                                                                                                                                                                   | Desde el 09/11/2026 la tarea diaria del backend (TT-006) vence las activas y activa las pendientes; el marcado al listar queda como respaldo.                                                               | Documento maestro, 5.12      |
 | ADR-008 | Lector remoto mediante un agente WebSocket       | Aceptado   | 11/11/2026 | INT-01, RNF-005 | Con TIPO\_LECTOR=remoto, el adaptador remoto envía las órdenes registrar, capturar y eliminar al agente AgenteLector por WebSocket (/agente), autenticado con AGENTE\_TOKEN; el agente reutiliza el adaptador AS608 en el portátil del lector. | La API puede estar en la nube sin acceso al USB; los servicios no cambian; el portátil del lector necesita internet y el agente encendido. | Este documento, 14.1; README |
 
 ### 14.2 Plantilla mínima de ADR

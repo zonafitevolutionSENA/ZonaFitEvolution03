@@ -27,6 +27,7 @@
 | 1.2         | 26/06/2026 | Prototipos navegables                                                                                                                 | Maileth Begambre Movilla     |                  |
 | 2.0         | 03/11/2026 | Plantilla institucional con pantallas React implementadas, estados, tokens y mensajes reales                                          | Juan Diego Mejía Llano       |                  |
 | 2.1         | 10/11/2026 | Control de acceso fuera del menú: huella desde Clientes y pantalla de ingreso aparte con resultado de 2 segundos; simulador eliminado | Juan Diego Mejía Llano       |                  |
+| 2.2 | 22/11/2026 | Pantalla de ingreso: textos de espera, aviso de huella no registrada (4 s) y reconexión automática con el lector | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -223,9 +224,9 @@ Incluya el mapa del sitio o arquitectura de información en una herramienta edit
 | Precondiciones         | Sesión iniciada; huella registrada.                                                                        |
 | Camino feliz           | Huella → identificación → membresía activa y vigente → «Acceso permitido» → registro en el historial.      |
 | Alternativas           | Membresía vencida, cancelada o inexistente → «Acceso denegado» con el motivo.                              |
-| Errores y recuperación | Huella no reconocida o sin conexión → mensaje y validación manual por cédula.                              |
+| Errores y recuperación | Huella no registrada → «Acércate a recepción para registrar tu huella»; sin conexión con el lector → «Conectando con el lector…» y reintento cada 5 s; validación manual por cédula como respaldo.                              |
 | Permisos               | Administrador y Empleado.                                                                                  |
-| Datos requeridos       | Huella leída por el sensor AS608. El resultado se muestra 2 segundos antes de esperar la siguiente huella. |
+| Datos requeridos       | Huella leída por el sensor AS608. El resultado se muestra 2 segundos (4 segundos si la huella no está registrada) antes de volver a la espera. |
 | Pantallas relacionadas | UI-06, UI-07                                                                                               |
 | Historias / casos      | HU-005, HU-006, HU-007 / CU-004                                                                            |
 | Criterios de éxito     | Respuesta en menos de 2 s (RNF-003).                                                                       |
@@ -563,6 +564,9 @@ El sistema de diseño reúne reglas, tokens, componentes, patrones, documentaci�
 | MSG-002 | Dato inválido          | Validación  | La cédula solo puede tener números.                                   | Corregir el campo | UI-03                     |
 | MSG-003 | Regla de negocio       | Advertencia | Este cliente ya tiene una membresía activa. Usa «Renovar por cédula». | Renovar           | UI-05                     |
 | MSG-004 | Credenciales inválidas | Error       | Credenciales incorrectas o error en el servidor. Inténtalo de nuevo.  | Reintentar        | UI-01                     |
+| MSG-005 | Pantalla de ingreso en espera | Información | Tu entrenamiento empieza aquí. Coloca tu dedo en el lector para ingresar | — | UI-06 |
+| MSG-006 | Huella no registrada | Advertencia | Acércate a recepción para registrar tu huella (4 segundos) | Ir a recepción | UI-06 |
+| MSG-007 | Lector sin conexión | Información | Conectando con el lector… La pantalla se activará sola en unos segundos. | Esperar (reintenta cada 5 s) | UI-06 |
 
 ### 14.3 Reglas de contenido
 

@@ -1,0 +1,37 @@
+// DIA-CU-01 · Diagrama general de casos de uso · v2.0 · 22/11/2026
+// CU-001 a CU-007 · ACT-01 a ACT-04. Mismo estilo que los diagramas Mermaid de docs/diagramas.
+// Regenerar: dot -Tpng -Gdpi=150 casos-de-uso.dot -o casos-de-uso.png
+digraph CasosDeUso {
+  graph [rankdir=LR, fontname="Arial", fontsize=18, fontcolor="#16384F", labelloc=t, nodesep=0.35, ranksep=0.9,
+         label="DIA-CU-01 · Diagrama general de casos de uso · v2.0 · 22/11/2026\n ", bgcolor="white"];
+  node  [fontname="Arial", fontsize=13, fontcolor="#16384F", color="#1F4E79", style=filled, fillcolor="#DCE9F5", penwidth=1.2];
+  edge  [fontname="Arial", fontsize=11, fontcolor="#16384F", color="#333333", arrowhead=none];
+
+  admin [label="Administrador\n(ACT-01)", shape=box, style="rounded,filled", fillcolor="#1F4E79", fontcolor="white"];
+  emp   [label="Empleado /\nrecepcionista\n(ACT-02)", shape=box, style="rounded,filled", fillcolor="#1F4E79", fontcolor="white"];
+  cli   [label="Cliente\n(ACT-03)", shape=box, style="rounded,filled", fillcolor="#1F4E79", fontcolor="white"];
+  sensor [label="Sensor AS608 +\nagente del lector\n(ACT-04)", shape=box, style="dashed,filled", fillcolor="#F5F9FC"];
+
+  subgraph cluster_sis {
+    label="Sistema Zona Fit Evolution"; fontsize=14; color="#1F4E79"; style=filled; fillcolor="#F5F9FC";
+    cu1 [label="CU-001\nIniciar sesión", shape=ellipse];
+    cu6 [label="CU-006\nGestionar personal\ny roles", shape=ellipse];
+    cu3 [label="CU-003\nGestionar planes", shape=ellipse];
+    cu7 [label="CU-007\nConsultar registro\nfinanciero", shape=ellipse];
+    cu5 [label="CU-005\nRegistrar pago\nde membresía", shape=ellipse];
+    ren [label="Renovar membresía\npor cédula", shape=ellipse];
+    cu2 [label="CU-002\nRegistrar cliente", shape=ellipse];
+    hue [label="Registrar huella", shape=ellipse];
+    cu4 [label="CU-004\nValidar acceso", shape=ellipse];
+    reg [label="Registrar intento\nde acceso", shape=ellipse];
+  }
+
+  admin -> cu1; admin -> cu6; admin -> cu3; admin -> cu7; admin -> cu5; admin -> cu2;
+  emp -> cu1; emp -> cu5; emp -> cu2;
+  cu4 -> cli [dir=none];
+  hue -> sensor; cu4 -> sensor;
+  ren -> cu5 [style=dashed, arrowhead=vee, label="«extend»"];
+  hue -> cu2 [style=dashed, arrowhead=vee, label="«extend»"];
+  cu4 -> reg [style=dashed, arrowhead=vee, label="«include»"];
+  {rank=same; cli; sensor}
+}

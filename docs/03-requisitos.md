@@ -25,6 +25,7 @@
 | 0.1         | 20/10/2026 | Creación inicial a partir del documento maestro integrado (v2.3)                                               | Juan Diego Mejía Llano |                  |
 | 1.0         | 03/11/2026 | Versión para revisión: alcance, requisitos, reglas, permisos, datos, interfaces, priorización y trazabilidad   | Juan Diego Mejía Llano |                  |
 | 1.1         | 10/11/2026 | AS608 integrado, catálogo de planes 2026, correo obligatorio, reglas RN-013 a RN-015 y cambios CR-007 y CR-008 | Juan Diego Mejía Llano |                  |
+| 1.2 | 22/11/2026 | Despliegue en Vercel y Railway (RSD-07, INT-02 y CR-006) y tarea diaria de vencimiento y activación de membresías | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -173,7 +174,7 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | Diseño                       | Wireframes, mockups y prototipos (UI-01 a UI-09), modelo de datos y arquitectura por capas (sprint 2).               |
 | Construcción                 | API REST en Node.js con Express y MySQL, y frontend en React con Vite (sprints 3 a 12).                              |
 | Pruebas                      | Plan de calidad, pruebas funcionales, de API, de extremo a extremo y de seguridad (sprints 12 y 13).                 |
-| Despliegue                   | Publicación de la API en un hosting por definir (distinto de Render) y base de datos MySQL en la nube (sprint 13).   |
+| Despliegue                   | Publicación del frontend en Vercel y de la API y la base MySQL en Railway (desplegado el 11/11/2026).   |
 | Documentación                | Documento maestro, alcance y requisitos, backlog e historias, manual técnico, manual de usuario e informe de cierre. |
 | Transferencia o capacitación | Capacitación práctica a la recepción y al propietario con el manual de usuario.                                      |
 
@@ -212,7 +213,7 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | RSD-04 | Restricción | Tecnologías definidas: Node.js, Express, MySQL y React.                                             | Medio       | Liliana Sofía Panesso Méndez   | Vigente     |
 | RSD-05 | Supuesto    | La recepción cuenta con computador y conexión a internet.                                           | Alto        | Juan Diego Mejía Llano         | Por validar |
 | RSD-06 | Supuesto    | El sensor AS608 y el conversor CP2102 están disponibles en la recepción.                            | Alto        | Liliana Sofía Panesso Méndez   | Por validar |
-| RSD-07 | Dependencia | Servicio de hosting para la API (proveedor por definir, no Render) y proveedor de MySQL en la nube. | Medio       | Liliana Sofía Panesso Méndez   | Pendiente   |
+| RSD-07 | Dependencia | Hosting en la nube: Railway (API y MySQL) y Vercel (frontend); el lector se conecta con un agente local. | Medio       | Liliana Sofía Panesso Méndez   | Resuelto   |
 | RSD-08 | Dependencia | Biblioteca de comunicación serie para el sensor AS608 y controlador del CP2102.                     | Alto        | Liliana Sofía Panesso Méndez   | Pendiente   |
 
 ### 4.7 Criterios de aceptación del alcance
@@ -560,7 +561,7 @@ Los criterios pueden expresarse como lista verificable o en formato Given/When/T
 | Responsable             | Liliana Sofía Panesso Méndez                                        |
 | Prioridad               | Alta                                                                |
 | Versión objetivo        | MVP                                                                 |
-| Estado                  | Planificado (despliegue en el sprint 13)                            |
+| Estado                  | Desplegado en Railway y Vercel el 11/11/2026; healthcheck /api/salud                            |
 
 **RNF-005 – Mantenibilidad del código**
 
@@ -803,7 +804,7 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | Unicidad      | Cédula, correo del personal, nombre del plan y huella son únicos.                     | Restricciones UNIQUE y respuesta 409.                           |
 | Consistencia  | Un cliente tiene una sola membresía activa; las llaves foráneas se respetan.          | Transacción en la renovación; llaves foráneas en MySQL.         |
 | Validez       | Cédula de 6 a 15 dígitos; correo con formato válido; teléfono de 7 a 15 dígitos.      | Expresiones regulares en el navegador y en el servidor.         |
-| Actualidad    | Las membresías activas con fecha de fin pasada se marcan como vencidas.               | Marcado al consultar; tarea programada en el servidor (TT-006). |
+| Actualidad    | Las membresías activas con fecha de fin pasada se marcan como vencidas.               | Tarea diaria del backend (a las 00:05 y al arrancar) que vence las activas y activa las pendientes (TT-006). |
 
 ### 9.3 Privacidad y ciclo de vida
 
@@ -821,7 +822,7 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | **ID** | **Sistema / interfaz**                             | **Tipo**                                    | **Propósito**                                            | **Datos intercambiados**          | **Disponibilidad esperada** | **Responsable**              |
 | ------ | -------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------- | --------------------------------- | --------------------------- | ---------------------------- |
 | INT-01 | Sensor de huella AS608 con conversor USB CP2102    | Dispositivo                                 | Capturar la huella para registrarla y validar el ingreso | Plantilla biométrica (hash)       | Horario de atención         | Liliana Sofía Panesso Méndez |
-| INT-02 | Hosting de la API y base de datos MySQL en la nube | Servicio en la nube (proveedor por definir) | Publicar la API y la base de datos                       | Peticiones HTTPS y conexión MySQL | Permanente                  | Liliana Sofía Panesso Méndez |
+| INT-02 | Railway (API y MySQL) y Vercel (frontend) | Servicios en la nube Railway y Vercel | Publicar la API y la base de datos                       | Peticiones HTTPS y conexión MySQL | Permanente                  | Liliana Sofía Panesso Méndez |
 
 ### 10.2 Ficha de integración
 
@@ -912,7 +913,7 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | CR-003 | Sprint 9 (oct. 2026)  | El frontend pasa a React (Vite) en un monorepo con el backend.                                                                                      | Arquitectura, UI-01 a UI-09            | Aprobado                         | Juan Diego Mejía Llano | MVP         |
 | CR-004 | Sprint 10 (oct. 2026) | El registro financiero se calcula con las membresías mientras se crea la tabla de pagos.                                                            | RF-006, HU-008                         | Aprobado (temporal)              | Juan Diego Mejía Llano | MVP         |
 | CR-005 |                       | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02 | Aprobado                         | Juan Diego Mejía Llano | MVP         |
-| CR-006 |                       | El backend se publicará en un hosting distinto de Render; el proveedor está por definir.                                                            | TT-009, INT-02, RSD-07                 | Aprobado (proveedor por definir) | Juan Diego Mejía Llano | MVP         |
+| CR-006 |                       | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            | TT-009, INT-02, RSD-07                 | Aprobado e implementado | Juan Diego Mejía Llano | MVP         |
 | CR-007 | 10/11/2026            | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                         | RF-004, INT-01, UI-06                  | Aprobado                         | Juan Diego Mejía Llano | MVP         |
 | CR-008 | 10/11/2026            | Regla de un ingreso por día en todos los planes; el frontend la muestra y la validación del backend queda pendiente.                                | RF-002, RF-003, RN-015                 | Aprobado (backend pendiente)     | Juan Diego Mejía Llano | MVP         |
 

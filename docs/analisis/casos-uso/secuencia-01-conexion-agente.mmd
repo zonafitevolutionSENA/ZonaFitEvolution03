@@ -1,0 +1,26 @@
+---
+title: "DIA-SEC-01 · Conexión del agente del lector · v2.0 · 22/11/2026"
+---
+%% CU-004 · HU-005, HU-006 · ADR-008. Fuente del diagrama de docs/04-arquitectura.md (sección 6.4)
+sequenceDiagram
+  participant G as Agente del lector<br/>(portátil de la recepción)
+  participant C as API · canalAgente<br/>(Railway)
+  participant S as API · /api/salud
+  participant P as VERIFICAR-LECTOR.bat<br/>y healthcheck de Railway
+  G->>G: Busca el CP2102 entre los puertos COM
+  G->>C: Abre WSS /agente con X-Agente-Token
+  alt Token inválido
+    C-->>G: Cierra la conexión (4001)
+  else Token válido
+    C->>C: Guarda el agente (uno solo a la vez,<br/>si había otro, lo desconecta)
+    loop Cada 30 segundos
+      C->>G: ping
+      G-->>C: pong
+    end
+    P->>S: GET /api/salud
+    S-->>P: { lector: "conectado" }
+  end
+  opt El portátil se suspende o pierde internet
+    C->>C: Sin pong: termina la conexión y<br/>falla las órdenes pendientes (503)
+    G->>C: Reintenta la conexión al volver
+  end

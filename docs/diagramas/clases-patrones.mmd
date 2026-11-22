@@ -1,0 +1,64 @@
+---
+title: "DIA-CLA-02 · Clases de los patrones de diseño · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 5.2)
+classDiagram
+  direction TB
+  class AccesoFisicoService {
+    <<Facade>>
+    validarAcceso(signal)
+    historial(filtros)
+  }
+  class EstadoAccesoFactory {
+    obtenerEstado(membresia)
+  }
+  class EstadoAcceso {
+    <<interface>>
+    evaluar(membresia)
+  }
+  class EstadoActivo {
+    evaluar() incluye tiqueteras
+  }
+  class EstadoPendiente
+  class EstadoVencido
+  class EstadoCancelado
+  class EstadoSinMembresia
+  class LectorFactory {
+    obtenerLector() según TIPO_LECTOR
+  }
+  class LectorBiometrico {
+    <<interface>>
+    capturar(signal)
+    registrar(alCambiarEtapa)
+    eliminar(template)
+    comparar(a, b)
+  }
+  class As608Lector {
+    puerto serie (serialport)
+  }
+  class RemotoLector {
+    órdenes por WebSocket
+  }
+  class CanalAgente {
+    <<Singleton>>
+    iniciarCanalAgente(servidor)
+    enviarOrden(tipo, datos)
+    lectorConectado()
+  }
+  class PoolMySQL {
+    <<Singleton>>
+    query(sql, parametros)
+  }
+  AccesoFisicoService --> EstadoAccesoFactory : usa
+  AccesoFisicoService --> LectorFactory : usa
+  EstadoAccesoFactory ..> EstadoAcceso : crea
+  EstadoAcceso <|.. EstadoActivo
+  EstadoAcceso <|.. EstadoPendiente
+  EstadoAcceso <|.. EstadoVencido
+  EstadoAcceso <|.. EstadoCancelado
+  EstadoAcceso <|.. EstadoSinMembresia
+  LectorFactory ..> LectorBiometrico : crea
+  LectorBiometrico <|.. As608Lector
+  LectorBiometrico <|.. RemotoLector
+  RemotoLector --> CanalAgente : envía órdenes
+  AccesoFisicoService --> PoolMySQL : vía repositorios

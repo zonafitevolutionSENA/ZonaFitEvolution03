@@ -1,0 +1,17 @@
+---
+title: "DIA-001 · Diagrama de contexto · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 4.3)
+flowchart TB
+  admin(["Administrador"]):::actor
+  emp(["Empleado / recepcionista"]):::actor
+  sis["<b>Sistema Zona Fit Evolution</b><br/>Aplicación web (Vercel)<br/>API REST y MySQL (Railway)"]
+  sensor["Sensor de huella AS608<br/>+ conversor USB CP2102<br/>(portátil de la recepción)"]:::hw
+  socio(["Cliente del gimnasio"]):::actor
+  admin -- "Gestiona personal, planes,<br/>membresías y finanzas" --> sis
+  emp -- "Registra clientes y huellas,<br/>asigna y renueva membresías" --> sis
+  sensor -- "Huella leída<br/>(agente del lector · WebSocket)" --> sis
+  socio -- "Pone el dedo en el sensor" --> sensor
+  sis -. "Acceso permitido o denegado con el motivo<br/>(pantalla de ingreso)" .-> socio
+  classDef actor fill:#1F4E79,stroke:#16384F,color:#FFFFFF
+  classDef hw fill:#F5F9FC,stroke:#1F4E79,stroke-dasharray:5 4,color:#16384F
