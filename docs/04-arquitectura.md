@@ -15,7 +15,7 @@
 | Revisor funcional        | Liliana Sofía Panesso Méndez (Product Owner)                                     |
 | Revisor técnico          | Juan Diego Mejía Llano                                                           |
 | Revisor académico        |                                                                                  |
-| Ubicación oficial        | Carpeta documentos\_proyecto; diagramas fuente en /docs/architecture (por crear) |
+| Ubicación oficial        | Carpeta documentos\_proyecto; diagramas fuente en docs/diagramas y docs/analisis/casos-uso |
 | Periodicidad de revisión | Con cada cambio arquitectónico o al cierre de sprint                             |
 
 ### Historial de versiones
@@ -28,6 +28,7 @@
 | 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; diccionario de datos con tiqueteras, estado pendiente y template\_hash único; DT-010 aceptada                                                                       | Juan Diego Mejía Llano       |                  |
 | 1.2         | 10/11/2026 | Diagramas de contenedores, componentes y despliegue actualizados: el sensor se conecta por USB al PC de la API (sin agente aparte), pantalla de ingreso y nuevos componentes                                      | Juan Diego Mejía Llano       |                  |
 | 1.3         | 11/11/2026 | Despliegue en la nube: frontend en Vercel, API y MySQL en Railway, agente local del lector por WebSocket (ADR-008), pantalla de ingreso con token, seguridad y zona horaria; diagramas DIA-002, DIA-003 y DIA-006 | Juan Diego Mejía Llano       |                  |
+| 2.0         | 22/11/2026 | Todos los diagramas rehechos con un solo estilo y fuente versionada: contexto, clases, paquetes, entidad-relación, estados de la membresía (nuevo), despliegue y diez secuencias | Juan Diego Mejía Llano       |                  |
 
 ### Registro de aprobaciones
 
@@ -176,14 +177,9 @@ Describa el sistema como una unidad, quién lo usa, con qué sistemas se relacio
 
 ### 4.3 Diagrama de contexto
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image1.png" style="width:6.29921in;height:1.10879in" /></p>
-<p><em>Figura 1. Diagrama de contexto (DIA-001).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 1. Diagrama de contexto (DIA-001).](diagramas/contexto.png)
+
+*Figura 1. Diagrama de contexto (DIA-001).*
 
 | **Elemento del diagrama** | **Identificador** | **Descripción**                               | **Documento fuente** |
 | ------------------------- | ----------------- | --------------------------------------------- | -------------------- |
@@ -232,6 +228,10 @@ Describa el sistema como una unidad, quién lo usa, con qué sistemas se relacio
 | Costos y limitaciones      | Dos aplicaciones que se despliegan por separado; sin migraciones automáticas. |
 | Condiciones para revisarlo | Crecimiento a varias sedes o integración con más dispositivos.                |
 
+![Figura 2. Clases de los patrones de diseño (DIA-CLA-02).](diagramas/clases-patrones.png)
+
+*Figura 2. Clases de los patrones de diseño (DIA-CLA-02).*
+
 ### 5.3 Stack tecnológico
 
 | **Categoría**   | **Tecnología / versión**                                                                                   | **Propósito**                    | **Justificación**                                                                                                  | **Alternativa considerada**                                                         | **Riesgo / dependencia**                                                           |
@@ -249,43 +249,45 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 ### 6.1 Catálogo de diagramas
 
-| **ID**  | **Vista**    | **Propósito**                                                     | **Herramienta**                           | **Ubicación**           | **Versión** | **Estado**                                        |
-| ------- | ------------ | ----------------------------------------------------------------- | ----------------------------------------- | ----------------------- | ----------- | ------------------------------------------------- |
-| DIA-001 | Contexto     | Actores y sistemas externos                                       | Mermaid (contexto.mmd)                    | Figura 1                | 1.1         | Actualizado (CR-005)                              |
-| DIA-002 | Contenedores | Aplicaciones, pantalla de ingreso, agente, base de datos y sensor | Mermaid (docs/diagramas/contenedores.mmd) | Figura 2                | 1.3         | Actualizado (agente del lector por WebSocket)     |
-| DIA-003 | Componentes  | Capas del frontend y backend                                      | Mermaid (docs/diagramas/componentes.mmd)  | Figura 3                | 1.3         | Actualizado (adaptador remoto y canalAgente)      |
-| DIA-004 | Secuencia    | Validar acceso (CU-004)                                           | Mermaid (secuencia.mmd)                   | Documento maestro, 5.10 | 1.0         | Borrador                                          |
-| DIA-005 | Datos        | Entidad-relación de las 7 tablas                                  | Mermaid (er.mmd)                          | Documento maestro, 5.10 | 1.0         | Borrador                                          |
-| DIA-006 | Despliegue   | Nodos y protocolos                                                | Mermaid (docs/diagramas/despliegue.mmd)   | Figura 4                | 1.3         | Actualizado (Vercel, Railway y agente del lector) |
+| **ID**     | **Vista**                 | **Propósito**                                                             | **Fuente**                                               | **Ubicación en este documento** | **Versión** | **Estado**                   |
+| ---------- | ------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------- | ----------- | ---------------------------- |
+| DIA-001    | Contexto                  | Actores y sistemas externos                                               | [contexto.mmd](diagramas/contexto.mmd)                   | 4.3 (Figura 1)                  | 2.0         | Actualizado (Vercel/Railway) |
+| DIA-CLA-02 | Clases (patrones)         | Facade, State, Adapter, Factory y Singleton                               | [clases-patrones.mmd](diagramas/clases-patrones.mmd)     | 5.2 (Figura 2)                  | 2.0         | Actualizado (lector remoto)  |
+| DIA-002    | Contenedores              | Aplicaciones, pantalla de ingreso, agente, base de datos y sensor         | [contenedores.mmd](diagramas/contenedores.mmd)           | 6.2 (Figura 3)                  | 2.0         | Actualizado                  |
+| DIA-003    | Componentes               | Capas del frontend y backend                                              | [componentes.mmd](diagramas/componentes.mmd)             | 6.3 (Figura 4)                  | 2.0         | Actualizado                  |
+| DIA-004    | Secuencia                 | Diez flujos (DIA-SEC-01 a DIA-SEC-10)                                     | [analisis/casos-uso/](analisis/casos-uso/)               | 6.4 (Figura 5 y enlaces)        | 2.0         | Actualizado                  |
+| DIA-PAQ-01 | Paquetes                  | Dependencias entre paquetes del frontend, el backend y el agente          | [paquetes.mmd](diagramas/paquetes.mmd)                   | 7.3 (Figura 6)                  | 2.0         | Actualizado                  |
+| DIA-CLA-01 | Clases (dominio)          | Modelo conceptual de las 7 entidades                                      | [clases-dominio.mmd](diagramas/clases-dominio.mmd)       | 8.2 (Figura 7)                  | 2.0         | Actualizado (tiqueteras)     |
+| DIA-005    | Datos                     | Entidad-relación de las 7 tablas de init.sql                              | [entidad-relacion.mmd](diagramas/entidad-relacion.mmd)   | 8.4 (Figura 8)                  | 2.0         | Actualizado                  |
+| DIA-EST-01 | Estados                   | Ciclo de vida de la membresía (pendiente, activa, vencida, cancelada)     | [estados-membresia.mmd](diagramas/estados-membresia.mmd) | 8.7 (Figura 9)                  | 2.0         | Nuevo                        |
+| DIA-006    | Despliegue                | Vercel, Railway y agente del lector                                       | [despliegue.mmd](diagramas/despliegue.mmd)               | 12.2 (Figura 10)                | 2.0         | Actualizado                  |
+
+Las fuentes de arquitectura y datos están en `docs/diagramas/` y las de análisis (casos de uso, secuencias y actividades) en `docs/analisis/casos-uso/`, cada una con su PNG al lado. Todas usan el mismo estilo; para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i <archivo>.mmd -o <archivo>.png -s 2 -b white`.
 
 ### 6.2 Vista de contenedores
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image2.png" style="width:6.29921in;height:1.65515in" /></p>
-<p><em>Figura 2. Diagrama de contenedores (DIA-002).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 3. Diagrama de contenedores (DIA-002).](diagramas/contenedores.png)
+
+*Figura 3. Diagrama de contenedores (DIA-002).*
 
 ### 6.3 Vista de componentes
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image3.png" style="width:6.29921in;height:1.76764in" /></p>
-<p><em>Figura 3. Diagrama de componentes (DIA-003).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 4. Diagrama de componentes (DIA-003).](diagramas/componentes.png)
+
+*Figura 4. Diagrama de componentes (DIA-003).*
 
 ### 6.4 Diagramas de secuencia
 
 | **ID**  | **Flujo**                    | **Caso de uso / HU** | **Participantes**                                                                                       | **Condición principal**                           | **Excepciones**                                                                |
 | ------- | ---------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
-| SEQ-001 | Validar acceso por huella    | CU-004 / HU-006      | Pantalla de ingreso, API, adaptador del sensor AS608, accesoFisico.service, estadosAcceso, repositorios | Membresía activa y vigente                        | Huella no reconocida (404); vencida/cancelada/sin membresía; error de conexión |
-| SEQ-002 | Renovar membresía por cédula | CU-005 / HU-004      | Frontend, membresia.service, repositorios                                                               | Membresía vigente se encadena; vencida inicia hoy | Cédula no encontrada; plan inactivo                                            |
+| SEQ-001 | Validar acceso por huella    | CU-004 / HU-006      | Pantalla de ingreso, API, adaptador del sensor AS608, accesoFisico.service, estadosAcceso, repositorios | Membresía activa y vigente o tiquetera con ingresos | Huella no reconocida (404); pendiente/vencida/cancelada/sin membresía; lector desconectado (503) |
+| SEQ-002 | Renovar membresía por cédula | CU-005 / HU-004      | Frontend, membresia.service, repositorios                                                               | Vigente: la nueva queda pendiente; vencida inicia hoy | Cédula no encontrada; plan inactivo; ya existe una pendiente (409) |
+
+Los diez diagramas de secuencia están en [`analisis/casos-uso/`](analisis/casos-uso/) y se describen en [Casos de uso, sección 10.3](analisis/casos-de-uso.md#103-diagramas-de-secuencia). El flujo principal del sistema es la validación de acceso:
+
+![Figura 5. Secuencia: validar acceso con la huella (DIA-SEC-08).](analisis/casos-uso/secuencia-08-validar-acceso.png)
+
+*Figura 5. Secuencia: validar acceso con la huella (DIA-SEC-08).*
 
 ### 6.5 Reglas de calidad de diagramas
 
@@ -348,6 +350,10 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
   - Definir puntos de extensión sin anticipar escenarios irreales.
 
+![Figura 6. Paquetes del frontend, el backend y el agente (DIA-PAQ-01). Las dependencias van en un solo sentido.](diagramas/paquetes.png)
+
+*Figura 6. Paquetes del frontend, el backend y el agente (DIA-PAQ-01). Las dependencias van en un solo sentido.*
+
 ### 7.4 Matriz de dependencias
 
 | **Componente origen** | **Componente destino** | **Tipo de dependencia** | **Permitida** | **Justificación**                                            | **Riesgo**        |
@@ -378,6 +384,10 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 
 Identifique conceptos del dominio y relaciones sin detalles de implementación. Debe ser comprensible para usuarios del negocio.
 
+![Figura 7. Clases del dominio (DIA-CLA-01).](diagramas/clases-dominio.png)
+
+*Figura 7. Clases del dominio (DIA-CLA-01).*
+
 ### 8.3 Modelo lógico
 
 Defina entidades, atributos, relaciones, cardinalidades y restricciones lógicas. Para NoSQL, identifique agregados, documentos, referencias y patrones de acceso.
@@ -385,6 +395,10 @@ Defina entidades, atributos, relaciones, cardinalidades y restricciones lógicas
 ### 8.4 Modelo físico
 
 Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones y detalles de implementación.
+
+![Figura 8. Modelo entidad-relación de las 7 tablas de init.sql (DIA-005).](diagramas/entidad-relacion.png)
+
+*Figura 8. Modelo entidad-relación de las 7 tablas de init.sql (DIA-005).*
 
 ### 8.5 Catálogo de entidades / colecciones
 
@@ -453,6 +467,12 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 | planes     | membresias              | 1:N              | membresias.plan\_id                 | Restringir (RN-006)  |                            | El plan se desactiva, no se borra. |
 | clientes   | plantillas\_biometricas | 1:1              | plantillas\_biometricas.cliente\_id |                      |                            | Una huella por cliente.            |
 | clientes   | registros\_acceso       | 1:N              | registros\_acceso.cliente\_id       |                      |                            | Auditoría por cliente.             |
+
+**Ciclo de vida de la membresía.** La columna `membresias.estado` solo admite las transiciones de la Figura 9. La tarea diaria (`src/jobs/membresias.job.js`, 00:05 y al arrancar) vence las activas expiradas y activa las pendientes; solo el Administrador reactiva.
+
+![Figura 9. Estados de la membresía (DIA-EST-01).](diagramas/estados-membresia.png)
+
+*Figura 9. Estados de la membresía (DIA-EST-01).*
 
 ### 8.8 Índices y patrones de consulta
 
@@ -694,14 +714,9 @@ Defina tablas, colecciones, tipos, índices, claves, restricciones, particiones 
 
 ### 12.2 Diagrama de despliegue
 
-<table>
-<tbody>
-<tr class="odd">
-<td><p><img src="img/04-arquitectura/media/image4.png" style="width:5.11811in;height:5.06588in" /></p>
-<p><em>Figura 4. Diagrama de despliegue en la nube (DIA-006).</em></p></td>
-</tr>
-</tbody>
-</table>
+![Figura 10. Diagrama de despliegue en la nube (DIA-006).](diagramas/despliegue.png)
+
+*Figura 10. Diagrama de despliegue en la nube (DIA-006).*
 
 ### 12.3 Configuración por ambiente
 

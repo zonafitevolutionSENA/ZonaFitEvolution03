@@ -1,0 +1,35 @@
+---
+title: "DIA-SEC-08 · Validar acceso con la huella · v2.0 · 22/11/2026"
+---
+%% CU-004 · HU-006, HU-007 · RF-003, RF-008 · RN-002, RN-009, RN-010, RN-013, RN-016
+sequenceDiagram
+  participant S as Socio
+  participant P as Pantalla de ingreso<br/>(?pantalla=acceso)
+  participant A as API · accesoFisico<br/>(Facade)
+  participant G as Agente del lector
+  participant H as Sensor AS608
+  participant E as estadosAcceso<br/>(State)
+  participant D as Base de datos
+  P->>A: POST /api/acceso-fisico/pantalla/validar<br/>X-Pantalla-Token · máx. 30 por minuto
+  A->>G: Orden "capturar"
+  G->>H: Espera el dedo (hasta 15 s)
+  S->>H: Pone el dedo
+  alt Nadie puso el dedo
+    G-->>A: 408
+    A-->>P: 408 Sin lectura, la pantalla vuelve a pedirla
+  else Huella no guardada en el sensor
+    G-->>A: Sin coincidencia
+    A->>D: registros_acceso (denegado)
+    A-->>P: 404 Huella no registrada
+  else Huella reconocida
+    G-->>A: template
+    A->>D: Plantilla coincidente y membresía más reciente
+    A->>E: obtenerEstado(membresía).evaluar()
+    E-->>A: permitido o denegado y motivo
+    opt Tiquetera y primer ingreso del día
+      A->>D: Descuenta un ingreso (el primero fija el vencimiento)
+    end
+    A->>D: registros_acceso (resultado y motivo)
+    A-->>P: 200 nombre, resultado y motivo (sin cédula)
+  end
+  P-->>S: Muestra el resultado 2 s (huella no registrada: 4 s)<br/>y vuelve a pedir el dedo

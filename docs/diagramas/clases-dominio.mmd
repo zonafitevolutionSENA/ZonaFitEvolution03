@@ -1,0 +1,56 @@
+---
+title: "DIA-CLA-01 · Clases del dominio · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 8.2)
+classDiagram
+  direction LR
+  class Rol {
+    id
+    nombre : admin | empleado
+  }
+  class Usuario {
+    id
+    nombre
+    correo
+    contrasena_hash
+  }
+  class Cliente {
+    id
+    nombre
+    cedula
+    correo
+    telefono
+  }
+  class Plan {
+    id
+    nombre
+    duracion_dias
+    precio
+    max_ingresos : null = por tiempo
+    activo
+  }
+  class Membresia {
+    id
+    fecha_inicio
+    fecha_fin : null en tiquetera sin usar
+    estado : pendiente | activa | vencida | cancelada
+    ingresos_totales
+    ingresos_usados
+    fecha_primer_uso
+    fecha_ultimo_ingreso
+  }
+  class PlantillaBiometrica {
+    id
+    template_hash : hash de la posición en el sensor
+  }
+  class RegistroAcceso {
+    id
+    resultado : permitido | denegado
+    motivo
+    fecha_hora
+  }
+  Rol "1" --> "*" Usuario : tiene
+  Plan "1" --> "*" Membresia : define
+  Cliente "1" --> "*" Membresia : adquiere
+  Cliente "1" --> "0..1" PlantillaBiometrica : se identifica con
+  Cliente "1" --> "*" RegistroAcceso : genera

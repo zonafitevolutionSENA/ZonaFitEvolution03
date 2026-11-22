@@ -39,8 +39,9 @@ La documentación se maneja en dos capas:
 Otros:
 
 - [`analisis/`](analisis/): historias de usuario con sus criterios de aceptación y casos de uso con sus diagramas.
-- `img/`: figuras y diagramas extraídos de los formatos.
-- [`diagramas/`](diagramas/): fuentes Mermaid (`.mmd`) de los diagramas de contenedores, componentes y despliegue. Para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i diagramas/<archivo>.mmd -o <archivo>.png`.
+- [`diagramas/`](diagramas/): diagramas de arquitectura y datos (contexto, contenedores, componentes, paquetes, clases, entidad-relación, estados de la membresía y despliegue), cada uno con su fuente Mermaid (`.mmd`) y su PNG.
+- [`analisis/casos-uso/`](analisis/casos-uso/): diagramas de análisis (casos de uso, diez secuencias y nueve actividades), con su fuente y su PNG.
+- Todos los diagramas usan el mismo estilo. Para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i <archivo>.mmd -o <archivo>.png -s 2 -b white` (casos de uso: `dot -Tpng -Gdpi=150 casos-de-uso.dot -o casos-de-uso.png`).
 - Las épicas, historias y sprints se gestionan en **Jira** (tablero SCRUM); aquí se enlazan, no se copian.
 
 ## Cambios de alcance registrados

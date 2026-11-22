@@ -1,0 +1,32 @@
+---
+title: "DIA-SEC-05 · Gestionar planes de membresía · v2.0 · 22/11/2026"
+---
+%% CU-003 · HU-003 · RF-002 · RN-006 · RN-013 (tiqueteras)
+sequenceDiagram
+  participant U as Administrador
+  participant F as Frontend (Planes)
+  participant A as API (planes)
+  participant D as Base de datos
+  U->>F: Ingresa nombre, duración, precio<br/>y, si es tiquetera, cantidad de ingresos
+  F->>F: Valida los campos en JavaScript
+  F->>A: POST /api/planes con token
+  A->>A: Verifica el rol Administrador
+  alt Nombre repetido
+    A-->>F: 409 Ya existe un plan con ese nombre
+  else Nombre nuevo
+    A->>D: Guarda el plan
+    A-->>F: 201 Creado
+  end
+  U->>F: Pulsa Eliminar en un plan
+  F->>A: DELETE /api/planes/:id
+  A->>D: Cuenta las membresías activas del plan
+  alt Tiene membresías activas
+    A-->>F: 409 Desactívalo en su lugar
+    U->>F: Pulsa Desactivar
+    F->>A: PATCH /api/planes/:id/desactivar
+    A->>D: activo = false
+    A-->>F: 200 Plan desactivado
+  else Sin membresías activas
+    A->>D: Elimina el plan
+    A-->>F: 200 Eliminado
+  end

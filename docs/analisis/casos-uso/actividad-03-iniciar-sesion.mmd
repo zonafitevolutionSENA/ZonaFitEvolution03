@@ -1,0 +1,17 @@
+---
+title: "DIA-ACV-03 · Actividad: iniciar sesión · v2.0 · 22/11/2026"
+---
+%% EP-001 · CU-001 · HU-002 · RF-007
+flowchart TB
+  i(( )):::ini --> a["Ingresar correo y contraseña"]
+  a --> c1{"¿Campos válidos?"}
+  c1 -- No --> e1["Mostrar error de validación"] --> a
+  c1 -- Sí --> b["Enviar las credenciales a la API"]
+  b --> c2{"¿Superó 5 intentos fallidos<br/>en 15 minutos?"}
+  c2 -- Sí --> e2["Mostrar: demasiados intentos,<br/>inténtalo más tarde"] --> f
+  c2 -- No --> c3{"¿Credenciales correctas?"}
+  c3 -- No --> e3["Mostrar error genérico"] --> a
+  c3 -- Sí --> g["Guardar el token (8 h) y el rol"]
+  g --> m["Mostrar el Inicio con el menú del rol"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

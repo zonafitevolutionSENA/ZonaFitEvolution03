@@ -1,0 +1,35 @@
+---
+title: "DIA-SEC-07 · Registrar huella del cliente · v2.0 · 22/11/2026"
+---
+%% CU-004 · HU-005 · RF-004 · RN-008
+sequenceDiagram
+  participant U as Empleado
+  participant F as Frontend<br/>(Clientes · RegistrarHuella)
+  participant A as API (biometria)
+  participant G as Agente del lector
+  participant H as Sensor AS608
+  participant D as Base de datos
+  U->>F: Pulsa Registrar huella del cliente
+  F->>A: POST /api/biometria/registrar (cliente_id, captura_id)
+  A->>D: ¿El cliente ya tiene huella?
+  alt Ya tiene huella
+    A-->>F: 409 Elimínala primero
+  else Sin huella
+    A->>G: Orden "registrar" por WebSocket
+    G->>H: Primera lectura del dedo
+    G-->>A: etapa
+    loop Mientras dura el registro
+      F->>A: GET /api/biometria/registro/estado/:capturaId
+      A-->>F: Etapa actual (poner o retirar el dedo)
+    end
+    G->>H: Segunda lectura y guardado en la memoria del sensor
+    G-->>A: Resultado: template (hash de la posición)
+    A->>D: ¿La huella ya pertenece a otro cliente?
+    alt Huella repetida
+      A-->>F: 409 La huella ya está registrada
+    else Huella nueva
+      A->>D: Guarda cliente_id y template_hash
+      A-->>F: 201 Huella registrada
+      F-->>U: Muestra la confirmación
+    end
+  end

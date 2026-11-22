@@ -1,0 +1,21 @@
+---
+title: "DIA-ACV-09 · Actividad: proteger una petición · v2.0 · 22/11/2026"
+---
+%% EP-005 · HU-009, HU-010 · RNF-001
+flowchart TB
+  i(( )):::ini --> a["Recibir la petición en /api"]
+  a --> c0{"¿El origen está en<br/>ORIGEN_FRONTEND?"}
+  c0 -- No --> r0["Bloquear por CORS"] --> f
+  c0 -- Sí --> c1{"¿Trae un token válido<br/>y vigente?"}
+  c1 -- No --> r1["Responder 401"] --> f
+  c1 -- Sí --> c2{"¿El rol tiene permiso<br/>para la ruta?"}
+  c2 -- No --> r2["Responder 403"] --> f
+  c2 -- Sí --> c3{"¿El cuerpo trae datos?<br/>(POST, PUT, PATCH)"}
+  c3 -- No --> r3["Responder 400"] --> f
+  c3 -- Sí --> b["Ejecutar la regla de negocio<br/>con SQL parametrizado"]
+  b --> c4{"¿Hubo error?"}
+  c4 -- "De dominio" --> r4["Responder 4xx con el mensaje"] --> f
+  c4 -- Inesperado --> r5["Responder 500 genérico"] --> f
+  c4 -- No --> ok["Responder 200 / 201 con JSON"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

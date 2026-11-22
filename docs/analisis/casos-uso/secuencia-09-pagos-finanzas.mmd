@@ -1,0 +1,24 @@
+---
+title: "DIA-SEC-09 · Registrar pago y consultar el registro financiero · v2.0 · 22/11/2026"
+---
+%% CU-005, CU-007 · HU-008 · RF-006 · ADR-006 (cada membresía cuenta como un pago)
+sequenceDiagram
+  participant E as Empleado
+  participant U as Administrador
+  participant F as Frontend
+  participant A as API
+  participant D as Base de datos
+  E->>F: Asigna una membresía al cliente (cobro en recepción)
+  F->>A: POST /api/membresias con token
+  A->>D: Guarda la membresía con el plan y sus fechas
+  A-->>F: 201 Creada
+  U->>F: Abre Registro financiero
+  F->>F: Verifica que el rol sea Administrador
+  F->>A: GET /api/membresias y GET /api/planes
+  A->>A: Verifica token y rol
+  A->>D: Consulta membresías y planes
+  A-->>F: Listas
+  F->>F: Calcula los pagos: cada membresía<br/>al precio de su plan
+  F->>F: Aplica filtros de periodo y cliente
+  F-->>U: Resumen por cliente y detalle de pagos
+  Note over F,D: No existe tabla de pagos (DT-01):<br/>las cifras usan el precio actual del plan

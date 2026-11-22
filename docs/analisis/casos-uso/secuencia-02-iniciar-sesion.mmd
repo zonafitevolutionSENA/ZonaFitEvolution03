@@ -1,0 +1,28 @@
+---
+title: "DIA-SEC-02 · Iniciar sesión · v2.0 · 22/11/2026"
+---
+%% CU-001 · HU-002 · RF-007
+sequenceDiagram
+  participant U as Administrador / Empleado
+  participant F as Frontend (Login)
+  participant A as API (auth)
+  participant D as Base de datos
+  U->>F: Ingresa correo y contraseña
+  F->>F: Valida los campos en JavaScript
+  F->>A: POST /api/auth/login
+  A->>A: limiteLogin: máx. 5 intentos fallidos<br/>por IP y correo en 15 min
+  alt Límite superado
+    A-->>F: 429 Demasiados intentos
+    F-->>U: Muestra el aviso de espera
+  else Dentro del límite
+    A->>D: Busca el usuario por correo
+    D-->>A: Usuario y contraseña cifrada
+    A->>A: Compara la contraseña (bcrypt)
+    alt Credenciales válidas
+      A-->>F: Token JWT (8 h) y rol
+      F-->>U: Muestra el Inicio con el menú de su rol
+    else Credenciales inválidas
+      A-->>F: 401 con mensaje genérico
+      F-->>U: Muestra el error
+    end
+  end
