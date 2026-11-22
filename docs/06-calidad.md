@@ -26,6 +26,7 @@
 | 0.2         | 10/11/2026 | Pruebas con el sensor AS608 (CP-010, CP-011 y nuevo CP-022) y simulador eliminado                    | Juan Diego Mejía Llano |                  |
 | 0.3 | 22/11/2026 | Ambiente de producción en Vercel y Railway y pruebas de humo del despliegue | Juan Diego Mejía Llano |  |
 | 0.4 | 22/11/2026 | Ciclo CIC-01 ejecutado el 22/11/2026: 24 de 24 casos aprobados (CP-001 a CP-022, RN-001 y RNF-003), ambiente de pruebas, evidencias, métricas y pipeline local | Juan Diego Mejía Llano |  |
+| 0.5 | 22/11/2026 | Pipeline de integración continua en GitHub Actions, 39 pruebas unitarias (53 % de líneas) y logs estructurados | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -442,7 +443,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ---------------------------- | ---------------------------- | ---------------------- | ---------------------------- | ------------- |
 | Requisitos críticos          | 100 % con prueba y evidencia | Matriz de trazabilidad |                              | RF-001 a RF-008 con al menos un caso aprobado en CIC-01 |
 | Reglas de negocio críticas   | 100 % (RN-002 a RN-012)      | Casos / unitarias      |                              | RN-001, RN-002, RN-003, RN-005, RN-008 a RN-012 cubiertas en CIC-01 |
-| Cobertura de código          |                              | Herramienta            |                              | 44 % de líneas (pruebas unitarias del backend) |
+| Cobertura de código          |                              | Herramienta            |                              | 53 % de líneas (pruebas unitarias del backend) |
 | Ramas / condiciones críticas |                              |                        |                              |               |
 | Flujos E2E críticos          | 100 % (FLU-001 a FLU-005)    |                        |                              |               |
 
@@ -461,11 +462,11 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ------------------------ | -------------------------------- | ---------------------------------------- | ---------------------- |
 | Instalación reproducible | npm install (backend y frontend) | Sin errores                              | npm ci sin errores (22/11/2026) |
 | Lint / formato           | npm run lint                     | Sin errores críticos                     | Sin errores |
-| Pruebas unitarias        | npm test (node --test) | Aprobadas | 24 pruebas aprobadas |
-| Pruebas integración      | npm run pruebas-cp | Aprobadas | docs/pruebas/CIC-01-resultados.md (24 de 24) |
+| Pruebas unitarias        | npm test (node --test) | Aprobadas | 39 pruebas aprobadas |
+| Pruebas integración      | npm run pruebas-cp | Aprobadas | docs/pruebas/CIC-01-resultados.md (24 de 24); también en cada pull request (GitHub Actions (.github/workflows/ci.yml)) |
 | Build                    | npm run build                    | Exitoso                                  | dist/ generado sin errores |
 | Auditoría dependencias   | npm audit                        | Sin vulnerabilidades críticas sin tratar | 0 vulnerabilidades |
-| Reporte cobertura        | node --test --experimental-test-coverage | Meta evaluada | 44 % de líneas con las pruebas unitarias |
+| Reporte cobertura        | node --test --experimental-test-coverage | Meta evaluada | 53 % de líneas con las pruebas unitarias |
 
 ## 10\. Pruebas funcionales y de integración
 
@@ -703,7 +704,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | Densidad de defectos            | Defectos / módulo o tamaño             |                     |                |               |
 | Reapertura                      | Defectos reabiertos / cerrados         |                     |                |               |
 | Tiempo medio de corrección      | Promedio desde registro a cierre       |                     |                |               |
-| Cobertura de código             | Herramienta                            | Informativa |                | 44 % de líneas (unitarias) |
+| Cobertura de código             | Herramienta                            | Informativa |                | 53 % de líneas (unitarias) |
 
 ### 15.4 Reporte de ejecución
 

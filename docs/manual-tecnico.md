@@ -13,6 +13,7 @@
 | 1.2         | 11/11/2026 | Despliegue en la nube (Vercel y Railway), agente del lector, variables nuevas, procedimiento, registro y pruebas de humo del despliegue | Juan Diego Mejía Llano       |            |            | En revisión |
 | 1.3 | 22/11/2026 | Puerto del lector automático (PUERTO_LECTOR=auto), instalación de recepción con INSTALAR-RECEPCION.bat, healthcheck /api/salud e incidente de reconexión | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.4 | 22/11/2026 | Pruebas automáticas (npm test y npm run pruebas-cp), DT-04 y DT-05 resueltas e incidente al eliminar usuarios | Juan Diego Mejía Llano |  |  | En revisión |
+| 1.5 | 22/11/2026 | Integración continua en GitHub Actions, logs con fecha, nivel, módulo y contexto (NIVEL_LOG) y DT-08 resuelta | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -89,7 +90,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | README                                 | README.md (raíz del monorepo)            | main (26/10/2026) | Inicio rápido y comandos principales            |
 | Contrato de API                        | No existe (por crear: OpenAPI)           |                   | Operación e integración                         |
 | Migraciones                            | No existe (esquema en database/init.sql) |                   | Creación y evolución de base de datos           |
-| Pipeline CI/CD                         | No existe (TT-008)                       |                   | Automatización de build y despliegue            |
+| Pipeline CI/CD                         | GitHub Actions (.github/workflows/ci.yml): pruebas, lint, build, npm audit e integración con MySQL                       |                   | Automatización de build y despliegue            |
 | CHANGELOG                              | No existe                                |                   | Historial de versiones y cambios                |
 | ADR                                    | Documento maestro, sección 5.12; ARQ-01  | 1.0               | Decisiones técnicas relevantes                  |
 
@@ -118,7 +119,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Servidor web / proxy |                                                                           |                            |                                   |                                                                      |
 | Runtime              | Node.js                                                                   | LTS reciente               | Ejecución del backend y del build | README                                                               |
 | Contenedores         | No aplica                                                                 |                            |                                   |                                                                      |
-| CI/CD                | No existe (TT-008)                                                        |                            |                                   |                                                                      |
+| CI/CD                | GitHub Actions (.github/workflows/ci.yml)                                                        |                            |                                   |                                                                      |
 | Monitoreo            |                                                                           |                            |                                   |                                                                      |
 | Servicios externos   | Sensor AS608 + CP2102; Railway y Vercel                                |                            | Captura de huella; publicación    |                                                                      |
 
@@ -222,7 +223,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | /scripts                     | Utilidades del backend                  | Liliana Sofía Panesso Méndez | crear-admin.js                                          |
 | /config                      | Conexión a la base (src/config)         | Liliana Sofía Panesso Méndez | database.js (pool)                                      |
 | /infra                       | No existe                               |                              |                                                         |
-| /.github/workflows           | No existe (TT-008)                      |                              |                                                         |
+| /.github/workflows           | ci.yml: integración continua en cada pull request y en cada push a develop y main                      |                              |                                                         |
 
 ### 5.3 Archivos fundamentales
 
@@ -268,7 +269,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Aspecto**        | **Desarrollo**                                    | **Pruebas**              | **Producción**                                                                                                     |
 | ------------------ | ------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------ |
 | Base de datos      | MySQL local, base zonafitevolution                |                          | MySQL 8.4 en Railway, base railway (volumen persistente)                                                           |
-| Nivel de logs      | Consola del backend                               |                          | Deploy Logs de Railway; consola del agente                                                                         |
+| Nivel de logs      | NIVEL_LOG (info por defecto; debug, warn o error)                               |                          | Deploy Logs de Railway; consola del agente                                                                         |
 | Dominio / URL      | Local (localhost)                                 |                          | https://zona-fit-evolution03.vercel.app (frontend); https://zonafitevolution03-production.up.railway.app/api (API) |
 | Servicios externos | Sensor AS608 (TIPO\_LECTOR=as608, PUERTO\_LECTOR) |                          | Sensor AS608 vía AgenteLector (TIPO\_LECTOR=remoto)                                                                |
 | Datos permitidos   | Sintéticos                                        | Ficticios o anonimizados | Reales                                                                                                             |
@@ -344,7 +345,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Health check               | GET /api/salud responde { "estado": "ok", "lector": "conectado" } | Estado saludable                 | Sí / No        |
 | Inicio de sesión de prueba | Usuario creado con scripts/crear-admin.js                                      | Acceso según rol                 | Sí / No / N.A. |
 | Flujo crítico              | Registrar cliente, asignar membresía y validar acceso                          | Se completa sin bloqueo          | Sí / No        |
-| Logs                       | Consola del backend                                                            | Sin errores críticos ni secretos | Sí / No        |
+| Logs                       | Deploy Logs de Railway (formato fecha, nivel, módulo y contexto)                                                            | Sin errores críticos ni secretos | Sí / No        |
 
 ## 8\. Base de datos, migraciones y datos semilla
 
@@ -608,7 +609,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Fuente**    | **Ubicación**                       | **Formato** | **Nivel**         | **Retención** | **Datos prohibidos**                 |
 | ------------- | ----------------------------------- | ----------- | ----------------- | ------------- | ------------------------------------ |
-| Aplicación    | Consola del backend (console.error) | Texto       | info, warn, error |               | Contraseñas, tokens, datos sensibles |
+| Aplicación    | src/utils/logger.js: una línea por evento en la consola (Deploy Logs de Railway) | Fecha ISO, NIVEL, [módulo], mensaje y contexto en JSON       | info, warn, error |               | Contraseñas, tokens, datos sensibles |
 | Servidor web  |                                     |             |                   |               |                                      |
 | Base de datos | Servidor MySQL                      |             |                   |               |                                      |
 | Pipeline      | No existe                           |             |                   |               |                                      |
@@ -808,7 +809,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | —                               |            |               | TT-001.                                                                               |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                                                                      |                      |
-| DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Regresiones dependen de pruebas manuales.                      |            |               | TT-007 y TT-008.                                                                               |                      |
+| DT-08  | Resuelto: 39 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                                                                       |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | —                                        |            |               | TT-009.                                                                                        |                      |

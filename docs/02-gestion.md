@@ -26,6 +26,7 @@
 | 1.1         | 10/11/2026 | AS608 integrado (BLQ-01 y RSK-06 cerrados), límite de intentos integrado y nuevos pendientes  | Juan Diego Mejía Llano |                  |
 | 1.2 | 22/11/2026 | Despliegue en Vercel y Railway: BLQ-02 cerrado, CHG-06 implementado y semáforo del cronograma actualizado | Juan Diego Mejía Llano |  |
 | 1.3 | 22/11/2026 | Estado de los sprints 10 a 12 y pendientes PEN-04 y PEN-05 resueltos | Juan Diego Mejía Llano |  |
+| 1.4 | 22/11/2026 | Semáforo de calidad en verde: pruebas automáticas e integración continua | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -691,7 +692,7 @@ También deben registrarse eventos inciertos positivos que puedan mejorar costo,
 | ---------------------- | ---------- | ----------------------------------------------------------------- | ----------------------- | ----------------------------------- |
 | Alcance                | Verde      | MVP implementado en local (README, estado actual)                 |                         | Congelar alcance desde el sprint 12 |
 | Cronograma             | Amarillo   | Sprints 11 a 13 concentran seguridad, pagos, pruebas y despliegue | Despliegue listo el 11/11/2026; faltan pruebas y cierre     | Ejecutar el plan de pruebas                     |
-| Calidad                | Amarillo   | Sin pruebas automatizadas ni pipeline                             | DT-08                   | TT-007 y TT-008                     |
+| Calidad                | Verde   | Pruebas automáticas e integración continua en GitHub Actions                             | —                   | TT-008 terminada; TT-007 en progreso (frontend)                     |
 | Riesgos                | Amarillo   | BLQ-01 a BLQ-03 abiertos                                          | RSK-06, RSK-07          | Integrar ramas de seguridad         |
 | Equipo                 | Verde      | Commits de los tres integrantes en GitHub                         |                         |                                     |
 | Validación del cliente | Amarillo   | Reviews por registrar en actas                                    |                         | Registrar actas de review           |

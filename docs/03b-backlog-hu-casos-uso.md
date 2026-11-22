@@ -27,6 +27,7 @@
 | 1.1         | 10/11/2026 | TT-010 y TT-003 terminadas, CU-004 con el sensor AS608, planes con tiqueteras y cambios CR-007 y CR-008                 | Juan Diego Mejía Llano |                  |
 | 1.2 | 22/11/2026 | Diagramas de casos de uso, diez secuencias y nueve actividades con un solo estilo (sección 10); despliegue en Vercel y Railway, TT-004, TT-006 y TT-009 terminadas y BLQ-002 cerrado | Juan Diego Mejía Llano |  |
 | 1.3 | 22/11/2026 | TT-001 y TT-002 terminadas; alcance real de CR-008 | Juan Diego Mejía Llano |  |
+| 1.4 | 22/11/2026 | TT-008 terminada (integración continua) y TT-007 con las pruebas del backend listas | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -192,12 +193,12 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | 3         | HU-010 | Historia | Protección de datos                                                   | EP-005             | Alto      | Must          | 8 pts          | HU-002                 | En progreso                                       | MVP         |
 | 4         | HU-011 | Historia | Disponibilidad en horario                                             | EP-005             | Alto      | Must          | 8 pts          | TT-009                 | Terminada                                       | MVP         |
 | 5         | TT-005 | Técnica  | Crear la tabla de pagos con monto y método                            | EP-004             | Alto      | Must          | 5 pts          | HU-008                 | Planificada                                       | MVP         |
-| 6         | TT-007 | Técnica  | Pruebas automatizadas de backend y frontend                           | EP-005             | Alto      | Must          | 8 pts          | —                      | Planificada                                       | MVP         |
+| 6         | TT-007 | Técnica  | Pruebas automatizadas de backend y frontend                           | EP-005             | Alto      | Must          | 8 pts          | —                      | En progreso (backend listo: 39 pruebas; faltan las del frontend)                                       | MVP         |
 | 7         | TT-009 | Técnica  | Despliegue: frontend en Vercel, API y MySQL en Railway | EP-005             | Alto      | Must          | 5 pts          | —                      | Planificada                                       | MVP         |
 | 8         | TT-010 | Técnica  | Adaptador del sensor AS608 (CP2102) en la capa hardware               | EP-003             | Alto      | Must          | 8 pts          | INT-01                 | Terminada                                         | MVP         |
 | 9         | TT-004 | Técnica  | Restringir CORS al dominio del frontend                               | EP-005             | Medio     | Should        | 1 pts          | TT-009                 | Terminada                                       | MVP         |
 | 10        | TT-006 | Técnica  | Tarea programada de vencimiento en el servidor                        | EP-002             | Medio     | Should        | 3 pts          | HU-006                 | Terminada                                       | MVP         |
-| 11        | TT-008 | Técnica  | Pipeline de integración continua                                      | EP-005             | Medio     | Should        | 3 pts          | TT-007                 | Planificada                                       | MVP         |
+| 11        | TT-008 | Técnica  | Pipeline de integración continua                                      | EP-005             | Medio     | Should        | 3 pts          | TT-007                 | Terminada                                       | MVP         |
 | 12        | HU-009 | Historia | Comprobante digital de pago                                           | EP-004             | Bajo      | Could         | 3 pts          | HU-008, TT-005         | Planificada                                       | MVP         |
 | 13        | HU-001 | Historia | Registrar clientes                                                    | EP-001             | Alto      | Must          | 3 pts          | HU-002                 | En validación                                     | MVP         |
 | 14        | HU-002 | Historia | Asignar roles al personal                                             | EP-001             | Alto      | Must          | 5 pts          | —                      | En validación                                     | MVP         |
@@ -262,8 +263,8 @@ Se mantienen en [`analisis/historias-de-usuario.md`](analisis/historias-de-usuar
 | ------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------- |
 | 1       | Código implementado y revisado.                    | Sí / No        | Pull Request revisado por otro integrante.                                   |
 | 2       | Criterios de aceptación cumplidos.                 | Sí / No        | Demostración en la sprint review.                                            |
-| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | Pruebas manuales hoy; automatizadas en el sprint 12 (TT-007).                |
-| 4       | Lint, compilación y pipeline sin errores críticos. | Sí / No        | npm run lint y npm run build sin errores; pipeline en el sprint 12 (TT-008). |
+| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 39 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
+| 4       | Lint, compilación y pipeline sin errores críticos. | Sí / No        | npm run lint y npm run build sin errores; pipeline de GitHub Actions en cada pull request (TT-008). |
 | 5       | Seguridad y permisos revisados.                    | Sí / No / N.A. | Rutas protegidas con permitirRoles en el backend.                            |
 | 6       | Migraciones o cambios de datos incluidos.          | Sí / No / N.A. | Cambios en database/init.sql documentados en el README.                      |
 | 7       | Documentación y trazabilidad actualizadas.         | Sí / No        | README, documento maestro y matriz de trazabilidad.                          |

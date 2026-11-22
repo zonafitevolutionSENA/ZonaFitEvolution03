@@ -27,6 +27,7 @@
 | 1.1         | 10/11/2026 | AS608 integrado, catálogo de planes 2026, correo obligatorio, reglas RN-013 a RN-015 y cambios CR-007 y CR-008 | Juan Diego Mejía Llano |                  |
 | 1.2 | 22/11/2026 | Despliegue en Vercel y Railway (RSD-07, INT-02 y CR-006) y tarea diaria de vencimiento y activación de membresías | Juan Diego Mejía Llano |  |
 | 1.3 | 22/11/2026 | Observaciones OBS-001 y OBS-002 cerradas (RN-001 y RN-012 validadas en el backend) y alcance real de CR-008 | Juan Diego Mejía Llano |  |
+| 1.4 | 22/11/2026 | Observaciones OBS-003 y OBS-005 cerradas (CORS restringido y tarea diaria de membresías) | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -976,9 +977,9 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | ------- | ----------------------- | -------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------------- | ---------------- | ---------- |
 | OBS-001 | RN-001 / RF-001         | El backend mantiene la ruta DELETE /api/clientes/:id, que contradice RN-001.                                   | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Cerrada (TT-002, 22/11/2026)    |
 | OBS-002 | RN-012 / RF-007         | La regla de no eliminar la propia cuenta ni al último administrador solo se valida en el frontend.             | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Cerrada (TT-001, 22/11/2026)    |
-| OBS-003 | RNF-001                 | El límite de intentos de inicio de sesión ya está implementado (5 cada 15 minutos); CORS sigue sin restringir. | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | En curso   |
+| OBS-003 | RNF-001                 | El límite de intentos de inicio de sesión ya está implementado (5 cada 15 minutos); CORS sigue sin restringir. | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Cerrada (CORS restringido a ORIGEN_FRONTEND, PR #59)   |
 | OBS-004 | RF-006                  | Los pagos se estiman con el precio actual del plan; falta la tabla de pagos.                                   | Mayor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |
-| OBS-005 | RN-002                  | El vencimiento se marca al consultar, no con una tarea programada.                                             | Menor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |
+| OBS-005 | RN-002                  | El vencimiento se marca al consultar, no con una tarea programada.                                             | Menor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Cerrada (tarea diaria del backend a las 00:05, TT-006)    |
 
 ### 14.3 Acta de aprobación
 
