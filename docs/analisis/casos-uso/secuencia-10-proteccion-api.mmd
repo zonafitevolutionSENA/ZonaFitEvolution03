@@ -1,0 +1,39 @@
+---
+title: "DIA-SEC-10 · Protección de las rutas de la API · v2.0 · 22/11/2026"
+---
+%% HU-009, HU-010 · RNF-001 · ADR-003
+sequenceDiagram
+  participant N as Navegador (Vercel)
+  participant C as Express<br/>(CORS y JSON)
+  participant T as verificarToken
+  participant R as permitirRoles
+  participant B as validarBody
+  participant K as Controlador y servicio
+  participant M as manejarErrores
+  N->>C: Petición a /api con Authorization: Bearer
+  alt Origen fuera de ORIGEN_FRONTEND
+    C-->>N: Bloqueada por CORS
+  else Origen autorizado
+    C->>T: Continúa
+    alt Sin token, inválido o vencido
+      T-->>N: 401 Token requerido, inválido o expirado
+    else Token válido
+      T->>R: Usuario y rol en la petición
+      alt Rol sin permiso
+        R-->>N: 403 No tienes permisos
+      else Rol permitido
+        R->>B: Continúa
+        alt Cuerpo vacío
+          B-->>N: 400 El cuerpo no puede estar vacío
+        else Cuerpo con datos
+          B->>K: Ejecuta la regla de negocio
+          alt Error de dominio o inesperado
+            K->>M: next(error)
+            M-->>N: 4xx con mensaje o 500 genérico
+          else Correcto
+            K-->>N: 200 / 201 con JSON
+          end
+        end
+      end
+    end
+  end

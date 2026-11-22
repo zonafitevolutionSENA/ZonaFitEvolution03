@@ -1,0 +1,17 @@
+---
+title: "DIA-ACV-06 · Actividad: gestionar planes · v2.0 · 22/11/2026"
+---
+%% EP-002 · CU-003 · HU-003 · RF-002 · RN-006
+flowchart TB
+  i(( )):::ini --> a["Abrir Planes"]
+  a --> c0{"¿Qué acción?<br/>(el Empleado solo consulta)"}
+  c0 -- "Crear o editar" --> b["Ingresar nombre, duración, precio<br/>y, si es tiquetera, ingresos"]
+  b --> c1{"¿Datos válidos y<br/>nombre no repetido?"}
+  c1 -- No --> e1["Mostrar el error"] --> b
+  c1 -- Sí --> g["Guardar el plan"] --> f
+  c0 -- Desactivar --> d["Marcar el plan como inactivo<br/>(no se puede asignar)"] --> f
+  c0 -- Eliminar --> c2{"¿Tiene membresías<br/>activas asociadas?"}
+  c2 -- Sí --> e2["Sugerir desactivarlo"] --> f
+  c2 -- No --> x["Eliminar el plan"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

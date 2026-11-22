@@ -334,7 +334,7 @@
 
 Incluya un diagrama legible con actores externos y casos de uso de alto nivel. No convierta el diagrama en una lista de cada botón o pantalla.
 
-![](../img/03b-backlog-hu-casos-uso/media/image1.png)
+![Figura 1. Diagrama general de casos de uso (DIA-CU-01).](casos-uso/casos-de-uso.png)
 
 *Figura 1. Diagrama general de casos de uso (DIA-CU-01).*
 
@@ -350,8 +350,150 @@ Incluya un diagrama legible con actores externos y casos de uso de alto nivel. N
 
 ### 10.2 Registro de diagramas
 
-| **ID**     | **Nombre**                             | **Herramienta / fuente**         | **Versión** | **Ubicación**                   | **Artefactos relacionados**      |
-| ---------- | -------------------------------------- | -------------------------------- | ----------- | ------------------------------- | -------------------------------- |
-| DIA-CU-01  | Diagrama general de casos de uso       | Graphviz (fuente casos\_uso.dot) | 1.0         | /docs/analisis/casos-uso/       | CU-001 a CU-007, ACT-01 a ACT-04 |
-| DIA-ACT-01 | Actores y sistemas externos (contexto) | Mermaid (fuente contexto.mmd)    | 1.0         | Documento maestro, sección 5.10 | ACT-01 a ACT-04, INT-01, INT-02  |
-| DIA-SEC-01 | Secuencia: validar acceso              | Mermaid (fuente secuencia.mmd)   | 1.0         | Documento maestro, sección 5.10 | CU-004, RF-003                   |
+Fuentes y PNG en [`casos-uso/`](casos-uso/). Los diagramas de arquitectura y datos (contexto, clases, paquetes, entidad-relación, estados y despliegue) están en [`../diagramas/`](../diagramas/) y se registran en [Arquitectura, sección 6.1](../04-arquitectura.md#61-catálogo-de-diagramas).
+
+| **ID** | **Nombre** | **Fuente** | **Versión** | **Artefactos relacionados** |
+| --- | --- | --- | --- | --- |
+| DIA-CU-01 | Diagrama general de casos de uso | [casos-de-uso.dot](casos-uso/casos-de-uso.dot) (Graphviz) | 2.0 | CU-001 a CU-007, ACT-01 a ACT-04 |
+| DIA-SEC-01 | Secuencia: conexión del agente del lector | [secuencia-01-conexion-agente.mmd](casos-uso/secuencia-01-conexion-agente.mmd) | 2.0 | CU-004 · ADR-008 |
+| DIA-SEC-02 | Secuencia: iniciar sesión | [secuencia-02-iniciar-sesion.mmd](casos-uso/secuencia-02-iniciar-sesion.mmd) | 2.0 | CU-001 · HU-002 |
+| DIA-SEC-03 | Secuencia: gestionar personal y roles | [secuencia-03-gestionar-personal.mmd](casos-uso/secuencia-03-gestionar-personal.mmd) | 2.0 | CU-006 · HU-002 |
+| DIA-SEC-04 | Secuencia: registrar cliente | [secuencia-04-registrar-cliente.mmd](casos-uso/secuencia-04-registrar-cliente.mmd) | 2.0 | CU-002 · HU-001 |
+| DIA-SEC-05 | Secuencia: gestionar planes de membresía | [secuencia-05-gestionar-planes.mmd](casos-uso/secuencia-05-gestionar-planes.mmd) | 2.0 | CU-003 · HU-003 |
+| DIA-SEC-06 | Secuencia: renovar membresía por cédula | [secuencia-06-renovar-membresia.mmd](casos-uso/secuencia-06-renovar-membresia.mmd) | 2.0 | CU-005 · HU-004 |
+| DIA-SEC-07 | Secuencia: registrar huella del cliente | [secuencia-07-registrar-huella.mmd](casos-uso/secuencia-07-registrar-huella.mmd) | 2.0 | CU-004 · HU-005 |
+| DIA-SEC-08 | Secuencia: validar acceso con la huella | [secuencia-08-validar-acceso.mmd](casos-uso/secuencia-08-validar-acceso.mmd) | 2.0 | CU-004 · HU-006, HU-007 |
+| DIA-SEC-09 | Secuencia: registrar pago y consultar el registro financiero | [secuencia-09-pagos-finanzas.mmd](casos-uso/secuencia-09-pagos-finanzas.mmd) | 2.0 | CU-005, CU-007 · HU-008 |
+| DIA-SEC-10 | Secuencia: protección de las rutas de la API | [secuencia-10-proteccion-api.mmd](casos-uso/secuencia-10-proteccion-api.mmd) | 2.0 | HU-009, HU-010 |
+| DIA-ACV-01 | Actividad: validar acceso | [actividad-01-validar-acceso.mmd](casos-uso/actividad-01-validar-acceso.mmd) | 2.0 | EP-003 · CU-004 |
+| DIA-ACV-02 | Actividad: renovar membresía por cédula | [actividad-02-renovar-membresia.mmd](casos-uso/actividad-02-renovar-membresia.mmd) | 2.0 | EP-002 · CU-005 |
+| DIA-ACV-03 | Actividad: iniciar sesión | [actividad-03-iniciar-sesion.mmd](casos-uso/actividad-03-iniciar-sesion.mmd) | 2.0 | EP-001 · CU-001 |
+| DIA-ACV-04 | Actividad: registrar cliente | [actividad-04-registrar-cliente.mmd](casos-uso/actividad-04-registrar-cliente.mmd) | 2.0 | EP-001 · CU-002 |
+| DIA-ACV-05 | Actividad: gestionar personal | [actividad-05-gestionar-personal.mmd](casos-uso/actividad-05-gestionar-personal.mmd) | 2.0 | EP-001 · CU-006 |
+| DIA-ACV-06 | Actividad: gestionar planes | [actividad-06-gestionar-planes.mmd](casos-uso/actividad-06-gestionar-planes.mmd) | 2.0 | EP-002 · CU-003 |
+| DIA-ACV-07 | Actividad: registrar huella | [actividad-07-registrar-huella.mmd](casos-uso/actividad-07-registrar-huella.mmd) | 2.0 | EP-003 · CU-004 |
+| DIA-ACV-08 | Actividad: registrar pago y consultar finanzas | [actividad-08-pagos-finanzas.mmd](casos-uso/actividad-08-pagos-finanzas.mmd) | 2.0 | EP-004 · CU-005, CU-007 |
+| DIA-ACV-09 | Actividad: proteger una petición | [actividad-09-proteger-peticion.mmd](casos-uso/actividad-09-proteger-peticion.mmd) | 2.0 | EP-005 · HU-009, HU-010 |
+
+### 10.3 Diagramas de secuencia
+
+Cada diagrama numera los mensajes en orden; los bloques «alt» marcan los caminos alternos o de error.
+
+**DIA-SEC-01 – Conexión del agente del lector** (CU-004 · ADR-008)
+
+![Figura 2. Secuencia: Conexión del agente del lector (DIA-SEC-01).](casos-uso/secuencia-01-conexion-agente.png)
+
+*Figura 2. Secuencia: Conexión del agente del lector (DIA-SEC-01).*
+
+**DIA-SEC-02 – Iniciar sesión** (CU-001 · HU-002)
+
+![Figura 3. Secuencia: Iniciar sesión (DIA-SEC-02).](casos-uso/secuencia-02-iniciar-sesion.png)
+
+*Figura 3. Secuencia: Iniciar sesión (DIA-SEC-02).*
+
+**DIA-SEC-03 – Gestionar personal y roles** (CU-006 · HU-002)
+
+![Figura 4. Secuencia: Gestionar personal y roles (DIA-SEC-03).](casos-uso/secuencia-03-gestionar-personal.png)
+
+*Figura 4. Secuencia: Gestionar personal y roles (DIA-SEC-03).*
+
+**DIA-SEC-04 – Registrar cliente** (CU-002 · HU-001)
+
+![Figura 5. Secuencia: Registrar cliente (DIA-SEC-04).](casos-uso/secuencia-04-registrar-cliente.png)
+
+*Figura 5. Secuencia: Registrar cliente (DIA-SEC-04).*
+
+**DIA-SEC-05 – Gestionar planes de membresía** (CU-003 · HU-003)
+
+![Figura 6. Secuencia: Gestionar planes de membresía (DIA-SEC-05).](casos-uso/secuencia-05-gestionar-planes.png)
+
+*Figura 6. Secuencia: Gestionar planes de membresía (DIA-SEC-05).*
+
+**DIA-SEC-06 – Renovar membresía por cédula** (CU-005 · HU-004)
+
+![Figura 7. Secuencia: Renovar membresía por cédula (DIA-SEC-06).](casos-uso/secuencia-06-renovar-membresia.png)
+
+*Figura 7. Secuencia: Renovar membresía por cédula (DIA-SEC-06).*
+
+**DIA-SEC-07 – Registrar huella del cliente** (CU-004 · HU-005)
+
+![Figura 8. Secuencia: Registrar huella del cliente (DIA-SEC-07).](casos-uso/secuencia-07-registrar-huella.png)
+
+*Figura 8. Secuencia: Registrar huella del cliente (DIA-SEC-07).*
+
+**DIA-SEC-08 – Validar acceso con la huella** (CU-004 · HU-006, HU-007)
+
+![Figura 9. Secuencia: Validar acceso con la huella (DIA-SEC-08).](casos-uso/secuencia-08-validar-acceso.png)
+
+*Figura 9. Secuencia: Validar acceso con la huella (DIA-SEC-08).*
+
+**DIA-SEC-09 – Registrar pago y consultar el registro financiero** (CU-005, CU-007 · HU-008)
+
+![Figura 10. Secuencia: Registrar pago y consultar el registro financiero (DIA-SEC-09).](casos-uso/secuencia-09-pagos-finanzas.png)
+
+*Figura 10. Secuencia: Registrar pago y consultar el registro financiero (DIA-SEC-09).*
+
+**DIA-SEC-10 – Protección de las rutas de la API** (HU-009, HU-010)
+
+![Figura 11. Secuencia: Protección de las rutas de la API (DIA-SEC-10).](casos-uso/secuencia-10-proteccion-api.png)
+
+*Figura 11. Secuencia: Protección de las rutas de la API (DIA-SEC-10).*
+
+### 10.4 Diagramas de actividades
+
+Cada diagrama empieza en el círculo relleno y termina en el doble círculo; los rombos son decisiones con sus salidas rotuladas.
+
+**DIA-ACV-01 – Validar acceso** (EP-003 · CU-004)
+
+![Figura 12. Actividad: Validar acceso (DIA-ACV-01).](casos-uso/actividad-01-validar-acceso.png)
+
+*Figura 12. Actividad: Validar acceso (DIA-ACV-01).*
+
+**DIA-ACV-02 – Renovar membresía por cédula** (EP-002 · CU-005)
+
+![Figura 13. Actividad: Renovar membresía por cédula (DIA-ACV-02).](casos-uso/actividad-02-renovar-membresia.png)
+
+*Figura 13. Actividad: Renovar membresía por cédula (DIA-ACV-02).*
+
+**DIA-ACV-03 – Iniciar sesión** (EP-001 · CU-001)
+
+![Figura 14. Actividad: Iniciar sesión (DIA-ACV-03).](casos-uso/actividad-03-iniciar-sesion.png)
+
+*Figura 14. Actividad: Iniciar sesión (DIA-ACV-03).*
+
+**DIA-ACV-04 – Registrar cliente** (EP-001 · CU-002)
+
+![Figura 15. Actividad: Registrar cliente (DIA-ACV-04).](casos-uso/actividad-04-registrar-cliente.png)
+
+*Figura 15. Actividad: Registrar cliente (DIA-ACV-04).*
+
+**DIA-ACV-05 – Gestionar personal** (EP-001 · CU-006)
+
+![Figura 16. Actividad: Gestionar personal (DIA-ACV-05).](casos-uso/actividad-05-gestionar-personal.png)
+
+*Figura 16. Actividad: Gestionar personal (DIA-ACV-05).*
+
+**DIA-ACV-06 – Gestionar planes** (EP-002 · CU-003)
+
+![Figura 17. Actividad: Gestionar planes (DIA-ACV-06).](casos-uso/actividad-06-gestionar-planes.png)
+
+*Figura 17. Actividad: Gestionar planes (DIA-ACV-06).*
+
+**DIA-ACV-07 – Registrar huella** (EP-003 · CU-004)
+
+![Figura 18. Actividad: Registrar huella (DIA-ACV-07).](casos-uso/actividad-07-registrar-huella.png)
+
+*Figura 18. Actividad: Registrar huella (DIA-ACV-07).*
+
+**DIA-ACV-08 – Registrar pago y consultar finanzas** (EP-004 · CU-005, CU-007)
+
+![Figura 19. Actividad: Registrar pago y consultar finanzas (DIA-ACV-08).](casos-uso/actividad-08-pagos-finanzas.png)
+
+*Figura 19. Actividad: Registrar pago y consultar finanzas (DIA-ACV-08).*
+
+**DIA-ACV-09 – Proteger una petición** (EP-005 · HU-009, HU-010)
+
+![Figura 20. Actividad: Proteger una petición (DIA-ACV-09).](casos-uso/actividad-09-proteger-peticion.png)
+
+*Figura 20. Actividad: Proteger una petición (DIA-ACV-09).*
+

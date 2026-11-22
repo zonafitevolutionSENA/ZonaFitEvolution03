@@ -1,0 +1,26 @@
+---
+title: "DIA-SEC-04 · Registrar cliente · v2.0 · 22/11/2026"
+---
+%% CU-002 · HU-001 · RF-001 · RN-007
+sequenceDiagram
+  participant U as Empleado
+  participant F as Frontend (Clientes)
+  participant A as API (clientes)
+  participant D as Base de datos
+  U->>F: Ingresa nombre, cédula, correo y teléfono
+  F->>F: Valida los datos (cédula de 6 a 15 dígitos,<br/>correo obligatorio)
+  alt Datos inválidos
+    F-->>U: Muestra el error junto al campo
+  else Datos válidos
+    F->>A: POST /api/clientes con token
+    A->>A: Verifica el token y el rol
+    A->>D: ¿Existe la cédula?
+    alt Cédula repetida
+      A-->>F: 409 Ya existe un cliente registrado con esa cédula
+      F-->>U: Muestra el error
+    else Cédula nueva
+      A->>D: Guarda el cliente
+      A-->>F: 201 Creado
+      F-->>U: Muestra el cliente en la tabla y ofrece<br/>registrar su huella y asignar membresía
+    end
+  end

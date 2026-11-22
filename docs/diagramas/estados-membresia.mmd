@@ -1,0 +1,30 @@
+---
+title: "DIA-EST-01 · Estados de la membresía · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 8.7). Reglas RN-002, RN-003, RN-005, RN-013, RN-014 y RN-015
+stateDiagram-v2
+  direction TB
+  state "Pendiente" as Pendiente
+  state "Activa" as Activa
+  state "Vencida" as Vencida
+  state "Cancelada" as Cancelada
+  [*] --> Activa : se crea con inicio hoy y sin otra activa vigente
+  [*] --> Pendiente : hay una activa vigente o el inicio es futuro
+  Pendiente --> Activa : tarea diaria 00:05 (llega la fecha de inicio)
+  Pendiente --> Cancelada : Administrador o Empleado la cancela
+  Activa --> Vencida : tarea diaria (fecha de fin pasada), último ingreso de la tiquetera o marcada a mano
+  Activa --> Cancelada : cancelada a mano o reemplazada (tiquetera sin usar)
+  Vencida --> Activa : solo el Administrador reactiva
+  Cancelada --> Activa : solo el Administrador reactiva
+  Vencida --> [*]
+  Cancelada --> [*]
+  note right of Activa
+    Tiquetera: fecha de fin vacía hasta el primer
+    ingreso; descuenta máximo un ingreso por día.
+    Reactivar exige que no haya otra activa
+    ni una pendiente que se cruce.
+  end note
+  note right of Pendiente
+    Solo una pendiente por cliente.
+    Niega el ingreso e informa su fecha de inicio.
+  end note

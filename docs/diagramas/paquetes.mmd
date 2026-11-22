@@ -1,0 +1,31 @@
+---
+title: "DIA-PAQ-01 · Paquetes del frontend, el backend y el agente · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 7.3)
+flowchart TB
+  subgraph F["Frontend (React)"]
+    direction TB
+    fp["pages"] --> fc["components"]
+    fp --> fs["services"]
+    fp --> fu["utils"]
+    fc --> fs
+    fc --> fu
+    fs --> fa["api.js"]
+  end
+  subgraph B["Backend (Express)"]
+    direction TB
+    br["routes"] --> bm["middlewares"] --> bc["controllers"] --> bs["services"]
+    bj["jobs"] --> bs
+    bs --> be["estadosAcceso"]
+    bs --> bh["hardware"]
+    bs --> bp["repositories"] --> bg["config (base de datos)"]
+    bu["utils (errores, fechas, roles)"]
+    bs --> bu
+  end
+  subgraph G["AgenteLector (Node.js)"]
+    direction TB
+    gi["index.js<br/>conexión WebSocket y órdenes"] --> ga["hardware/as608Lector<br/>(reutilizado del backend)"]
+    gr["recepcion/<br/>instalar · verificar · desinstalar"]
+  end
+  fa -- "HTTPS · JSON · JWT" --> br
+  gi -- "WSS /agente" --> bh

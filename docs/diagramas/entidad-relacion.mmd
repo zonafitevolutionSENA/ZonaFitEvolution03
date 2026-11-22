@@ -1,0 +1,65 @@
+---
+title: "DIA-005 · Modelo entidad-relación (7 tablas) · v2.0 · 22/11/2026"
+---
+%% Fuente del diagrama de docs/04-arquitectura.md (sección 8.4). Esquema: BackendZonafitevolution/database/init.sql
+erDiagram
+  roles ||--o{ usuarios : "rol_id"
+  clientes ||--o{ membresias : "cliente_id"
+  planes ||--o{ membresias : "plan_id"
+  clientes ||--o| plantillas_biometricas : "cliente_id"
+  clientes |o--o{ registros_acceso : "cliente_id"
+  roles {
+    INT id PK
+    VARCHAR nombre UK
+  }
+  usuarios {
+    INT id PK
+    VARCHAR nombre
+    VARCHAR correo UK
+    VARCHAR contrasena "bcrypt"
+    INT rol_id FK
+    TIMESTAMP fecha_creacion
+  }
+  clientes {
+    INT id PK
+    VARCHAR nombre
+    VARCHAR cedula UK
+    VARCHAR correo
+    VARCHAR telefono
+    TIMESTAMP fecha_registro
+  }
+  planes {
+    INT id PK
+    VARCHAR nombre UK
+    INT duracion_dias
+    DECIMAL precio
+    INT max_ingresos "NULL = plan por tiempo"
+    BOOLEAN activo
+    TIMESTAMP fecha_creacion
+  }
+  membresias {
+    INT id PK
+    DATE fecha_inicio
+    DATE fecha_fin "NULL en tiquetera sin usar"
+    ENUM estado "pendiente, activa, vencida, cancelada"
+    INT cliente_id FK
+    INT plan_id FK
+    INT ingresos_totales
+    INT ingresos_usados
+    DATE fecha_primer_uso
+    DATE fecha_ultimo_ingreso
+    TIMESTAMP fecha_creacion
+  }
+  plantillas_biometricas {
+    INT id PK
+    INT cliente_id FK "UNIQUE"
+    VARCHAR template_hash UK
+    TIMESTAMP fecha_registro
+  }
+  registros_acceso {
+    INT id PK
+    INT cliente_id FK "NULL si no se reconoció"
+    ENUM resultado "permitido, denegado"
+    VARCHAR motivo
+    TIMESTAMP fecha_hora
+  }
