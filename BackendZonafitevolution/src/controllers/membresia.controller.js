@@ -72,6 +72,5 @@ async function renovar(req, res, next) {
   }
 }
 
-// ANTERIOR: module.exports = { crear, listar, obtenerPorId, actualizarEstado, eliminar, buscarPorCedula, renovar };
-// NUEVO: se expone actualizarFechaFin para reprogramar la membresía pendiente cuando cambia el fin de la activa.
+// Se expone actualizarFechaFin para reprogramar la membresía pendiente cuando cambia el fin de la activa.
 module.exports = { crear, listar, obtenerPorId, actualizarEstado, actualizarFechaFin, eliminar, buscarPorCedula, renovar };

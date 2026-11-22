@@ -67,9 +67,7 @@ async function crearMembresia({ plan_id, fecha_inicio, cliente_id }) {
     throw new ErrorDominio('El plan indicado no existe o no está disponible', 404);
   }
 
-  // ANTERIOR: si el cliente tenía una membresía activa se lanzaba un error 409
-  // ('El cliente ya tiene una membresía activa. No se puede duplicar.') y no se creaba nada.
-  // NUEVO: la activa conserva su estado y la nueva se registra como 'pendiente', siempre que
+  // La activa conserva su estado y la nueva se registra como 'pendiente', siempre que
   // empiece después del fin de la activa y no exista otra pendiente. Una activa que ya no se
   // puede usar se marca como vencida en la misma transacción. Una tiquetera sin usar no tiene
   // fecha de fin, así que todavía no se puede programar otra membresía a continuación.
@@ -100,8 +98,7 @@ async function crearMembresia({ plan_id, fecha_inicio, cliente_id }) {
   const ingresos_totales = plan.max_ingresos ?? null;
   const fecha_fin = ingresos_totales === null ? calcularFechaFin(fecha_inicio, plan.duracion_dias) : null;
 
-  // ANTERIOR: membresiaRepository.crear({ plan_id, fecha_inicio, fecha_fin, cliente_id, ingresos_totales })
-  // NUEVO: se usa la versión transaccional para validar activas y pendientes con el cliente bloqueado.
+  // Se usa la versión transaccional para validar activas y pendientes con el cliente bloqueado.
   const nuevoId = await membresiaRepository.crearReemplazando({
     plan_id,
     fecha_inicio,
@@ -156,9 +153,7 @@ async function renovarMembresia({ cedula, plan_id }) {
     // Tiquetera sin usar: no tiene fecha de fin y sigue vigente
     const finActual = membresiaActiva.fecha_fin ? fechaATexto(membresiaActiva.fecha_fin) : null;
     const vigente = !sinIngresos && (finActual === null || finActual >= hoy);
-    // ANTERIOR: if (vigente) { fechaInicio = finActual ? calcularFechaFin(finActual, 1) : hoy;
-    //   anterior = { id: membresiaActiva.id, estado: 'cancelada' }; }
-    // NUEVO: si la vigente tiene fecha de fin, conserva su estado 'activa' y la renovación queda
+    // Si la vigente tiene fecha de fin, conserva su estado 'activa' y la renovación queda
     // 'pendiente' desde el día siguiente; antes se cancelaba la vigente y la nueva figuraba activa
     // sin haber iniciado. Una tiquetera sin usar (sin fecha de fin) mantiene el comportamiento anterior.
     if (vigente && finActual) {
@@ -183,8 +178,7 @@ async function renovarMembresia({ cedula, plan_id }) {
     fecha_fin,
     cliente_id: cliente.id,
     ingresos_totales,
-    // ANTERIOR: anterior
-    // NUEVO: se envía también el estado calculado ('activa' o 'pendiente').
+    // Se envía también el estado calculado ('activa' o 'pendiente').
     anterior,
     estado
   });
@@ -216,8 +210,7 @@ async function cambiarEstado(id, estado, rolId) {
   if (estado === 'activa' && rolId !== ROLES.ADMIN) {
     throw new ErrorDominio('Solo el Administrador puede reactivar una membresía', 403);
   }
-  // ANTERIOR: await obtenerMembresia(id);
-  // NUEVO: se usa la membresía actual para impedir cambios que dejen dos activas o periodos
+  // Se usa la membresía actual para impedir cambios que dejen dos activas o periodos
   // solapados: una pendiente solo se cancela (se activa sola en su fecha) y una reactivación
   // no puede convivir con otra activa ni con una pendiente que empiece antes de su fin.
   const actual = await obtenerMembresia(id);
