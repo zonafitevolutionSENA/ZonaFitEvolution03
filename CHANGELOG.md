@@ -5,6 +5,10 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 ## [Sin publicar]
 
 ### Added
+- Integración continua en GitHub Actions: pruebas, lint, build, `npm audit` y ciclo de casos con MySQL en cada pull request.
+- Logs del backend con fecha, nivel, módulo y contexto (`NIVEL_LOG`).
+- Pruebas unitarias de los estados de acceso y de las reglas de renovación y cambio de estado de membresías.
+- Sección de autores en el README y formato de autorización de datos biométricos en `docs/legal`.
 - Pruebas automáticas de las reglas de seguridad (`npm test`) y ciclo de integración CP-001 a CP-022 contra una base MySQL de pruebas (`npm run pruebas-cp`), con el reporte en `docs/pruebas/`.
 - Diagramas con un solo estilo en `docs/diagramas/` y `docs/analisis/casos-uso/`, incluido el de estados de la membresía.
 - Procedimientos del Manual de usuario con capturas, `LICENSE` y este `CHANGELOG.md`.

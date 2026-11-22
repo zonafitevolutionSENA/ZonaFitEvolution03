@@ -12,6 +12,7 @@
 | 1.2         | 11/11/2026 | Acceso en la nube, pantalla de ingreso con token, agente del lector y mensaje «Lector desconectado»  | Juan Diego Mejía Llano   |            |            | Borrador   |
 | 1.3 | 22/11/2026 | Pantalla de ingreso: apertura automática en recepción, textos de espera, aviso de huella no registrada y reconexión; mensajes nuevos | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.4 | 22/11/2026 | Procedimientos PRU-02 a PRU-09 redactados con capturas de la aplicación (datos ficticios); inicio, recuperación de acceso y cierre de sesión ajustados a la interfaz real | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.5 | 22/11/2026 | PRU-02 y MSG-04 ajustados a la regla actual: con una membresía activa la nueva queda pendiente; solo se permite una pendiente | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -202,7 +203,7 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 | **Convención** | **Significado**                            | **Ejemplo de uso**                                     |
 | -------------- | ------------------------------------------ | ------------------------------------------------------ |
 | Éxito          | La operación terminó correctamente         | «Cliente registrado correctamente.»                    |
-| Advertencia    | Existe una condición que requiere atención | «Este cliente ya tiene una membresía activa.»          |
+| Advertencia    | Existe una condición que requiere atención | «Este cliente ya tiene una membresía pendiente…»          |
 | Error          | La operación no pudo completarse           | «La cédula solo puede tener números.»                  |
 | Información    | Mensaje de orientación                     | «No hay membresías por vencer en los próximos 7 días.» |
 | Deshabilitado  | La acción no está disponible               | Botón mientras guarda                                  |
@@ -268,7 +269,7 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 2. En «Cliente *» escriba al menos 2 caracteres del nombre o de la cédula y elija al cliente de la lista.
 3. Elija el «Plan *» y la «Fecha de inicio *» (no puede ser anterior a hoy).
 4. Pulse «Asignar membresía». El sistema muestra «Membresía asignada correctamente a <cliente>.»
-5. Si el cliente ya tiene una membresía activa aparece «Este cliente ya tiene una membresía activa. Usa «Renovar por cédula».»
+5. Si el cliente ya tiene una membresía activa, la fecha de inicio pasa al día siguiente de su fin y la nueva queda pendiente. Si ya tiene una pendiente aparece «Este cliente ya tiene una membresía pendiente que inicia el <fecha>.»
 
 ![Figura 1. Asignar membresía (PRU-02).](capturas/05-asignar.png)
 
@@ -456,7 +457,7 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 | MSG-01     | No se pudo conectar con el servidor                                   | La aplicación no llega a la API.                                        | Revisar internet y reintentar.                                                         | Si persiste                            |
 | MSG-02     | Tu sesión expiró. Inicia sesión nuevamente.                           | Pasaron más de 8 horas.                                                 | Iniciar sesión.                                                                        | No                                     |
 | MSG-03     | No tienes permisos para realizar esta acción                          | El rol no permite la acción.                                            | Ingresar con un Administrador.                                                         | No                                     |
-| MSG-04     | Este cliente ya tiene una membresía activa. Usa «Renovar por cédula». | Regla de una membresía activa.                                          | Usar Renovar por cédula.                                                               | No                                     |
+| MSG-04     | Este cliente ya tiene una membresía pendiente que inicia el <fecha>. | Solo se permite una membresía pendiente por cliente.                                          | Esperar a que se active o cancelar la pendiente.                                                               | No                                     |
 | MSG-05     | La fecha de inicio no puede ser anterior a hoy.                       | Fecha inválida.                                                         | Corregir la fecha.                                                                     | No                                     |
 | MSG-06     | Acceso denegado (con el motivo)                                       | Membresía vencida, cancelada o inexistente.                             | Renovar o asignar membresía.                                                           | No                                     |
 | MSG-07     | Huella no reconocida                                                  | La huella no está registrada.                                           | Repetir o validar por cédula.                                                          | Si persiste                            |

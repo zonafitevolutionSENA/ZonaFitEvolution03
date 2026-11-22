@@ -15,7 +15,10 @@ El repositorio es un **monorepo** con dos aplicaciones y el agente del lector de
 ```
 zonafitproyectocompleto/
 ├── README.md
+├── LICENSE          licencia ISC
+├── CHANGELOG.md     historial de cambios
 ├── .gitignore
+├── .github/workflows/ integración continua (lint, pruebas y build)
 ├── docs/                documentación del proyecto y entregables SENA
 ├── AgenteLector/        agente del lector de huellas (portátil con el AS608)
 │   ├── .env.example
@@ -23,7 +26,8 @@ zonafitproyectocompleto/
 │   └── package.json
 ├── BackendZonafitevolution/
 │   ├── database/        script SQL de las tablas
-│   ├── scripts/         crear-admin.js
+│   ├── scripts/         crear-admin.js y pruebas-cp.js
+│   ├── test/            pruebas automáticas (node --test)
 │   ├── src/             API: rutas, controladores, servicios, repositorios, modelos
 │   ├── .env.example
 │   ├── index.js
@@ -150,6 +154,20 @@ DB_NAME=zonafitevolution_pruebas npm run pruebas-cp -- ../docs/pruebas/CIC-01-re
 ```
 
 El script levanta la API con un agente de prueba que habla el mismo protocolo que `AgenteLector`, así se recorre el flujo de huellas sin el sensor. El último reporte está en [`docs/pruebas/CIC-01-resultados.md`](docs/pruebas/CIC-01-resultados.md). En el frontend: `npm run lint` y `npm run build`.
+
+**Integración continua:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) ejecuta en cada pull request y en cada push a `develop` y `main` las pruebas del backend, el lint y el build del frontend, la revisión de sintaxis del agente, `npm audit` y el ciclo de casos con una base MySQL 8.4 temporal. El resultado se ve en la pestaña **Actions** de GitHub.
+
+## Autores
+
+Proyecto formativo del programa Análisis y Desarrollo de Software (ADSO) del SENA, Regional Antioquia, ficha 3223873.
+
+| Integrante | Rol en el proyecto |
+| --- | --- |
+| Juan Diego Mejía Llano | Desarrollo del frontend y Scrum Master |
+| Liliana Sofía Panesso Méndez | Desarrollo del backend y Product Owner |
+| Maileth Begambre Movilla | Diseño UX/UI |
+
+Licencia: [ISC](LICENSE). Historial de cambios: [CHANGELOG.md](CHANGELOG.md).
 
 # Backend: API REST
 
@@ -405,6 +423,7 @@ Archivo `BackendZonafitevolution/.env` (no se sube a Git; la plantilla es `.env.
 | `ORIGEN_PANTALLA_ACCESO`                                  | Origen adicional para la pantalla de ingreso local (opcional)                          |
 | `ORIGEN_FRONTEND`                                         | Orígenes permitidos por CORS, separados por comas (en la nube, la URL de Vercel)       |
 | `TZ`                                                      | Zona horaria del servidor (`America/Bogota`; obligatoria en la nube)                   |
+| `NIVEL_LOG`                                               | Nivel mínimo de los logs: `debug`, `info` (por defecto), `warn` o `error`. Cada línea lleva fecha, nivel, módulo y contexto |
 
 ---
 

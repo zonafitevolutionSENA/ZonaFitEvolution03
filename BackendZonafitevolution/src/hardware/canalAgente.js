@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const { WebSocketServer, WebSocket } = require('ws');
 const ErrorDominio = require('../utils/errores');
+const log = require('../utils/logger')('agente');
 
 // El registro pide el dedo dos veces (hasta 15 s cada una), por eso el margen es amplio
 const TIEMPO_MAXIMO_MS = 90000;
@@ -45,14 +46,14 @@ function iniciarCanalAgente(servidor) {
     if (agente) agente.terminate();
     agente = socket;
     socket.vivo = true;
-    console.log('[agente] lector conectado');
+    log.info('lector conectado', { ip: req.socket.remoteAddress });
 
     socket.on('pong', () => { socket.vivo = true; });
     socket.on('message', recibirMensaje);
     socket.on('close', () => {
       if (agente !== socket) return;
       agente = null;
-      console.log('[agente] lector desconectado');
+      log.warn('lector desconectado');
       for (const pendiente of pendientes.values()) {
         pendiente.terminar(new ErrorDominio('El lector se desconectó durante la operación', 503));
       }

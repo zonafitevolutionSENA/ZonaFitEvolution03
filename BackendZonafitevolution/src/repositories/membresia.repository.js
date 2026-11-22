@@ -4,8 +4,7 @@ const Membresia = require('../models/membresia.model');
 // Crea una membresía y, en la misma transacción, cambia el estado de la anterior (si la hay).
 // Si algo falla, no se cambia nada. Devuelve null si la anterior ya no estaba activa
 // (otra renovación se adelantó), para que el servicio pueda avisar sin dejar datos a medias.
-// ANTERIOR: async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin = null, cliente_id, ingresos_totales = null, anterior })
-// NUEVO: recibe el estado con el que nace la membresía ('activa' o 'pendiente') para que una compra
+// Recibe el estado con el que nace la membresía ('activa' o 'pendiente') para que una compra
 // hecha con otra membresía activa no genere dos activas al mismo tiempo.
 async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin = null, cliente_id, ingresos_totales = null, anterior, estado = 'activa' }) {
   const conexion = await pool.getConnection();
@@ -26,9 +25,7 @@ async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin = null, clie
       }
     }
 
-    // ANTERIOR: solo cuando no había "anterior" se contaban las activas del cliente y,
-    // si había alguna, se cancelaba la operación.
-    // NUEVO: las validaciones se hacen siempre bajo el bloqueo del cliente: no puede existir otra
+    // Las validaciones se hacen siempre bajo el bloqueo del cliente: no puede existir otra
     // pendiente, una nueva activa exige que no haya otra activa, y una pendiente debe empezar
     // después del fin de la activa (una tiquetera sin usar no tiene fin, así que también bloquea).
     const [pendientes] = await conexion.query(
@@ -44,8 +41,7 @@ async function crearReemplazando({ plan_id, fecha_inicio, fecha_fin = null, clie
       return null;
     }
 
-    // ANTERIOR: INSERT sin la columna estado (quedaba con el DEFAULT 'activa')
-    // NUEVO: el estado se inserta de forma explícita.
+    // El estado se inserta de forma explícita.
     const [resultado] = await conexion.query(
       'INSERT INTO membresias (plan_id, fecha_inicio, fecha_fin, cliente_id, ingresos_totales, estado) VALUES (?, ?, ?, ?, ?, ?)',
       [plan_id, fecha_inicio, fecha_fin, cliente_id, ingresos_totales, estado]
@@ -96,8 +92,7 @@ async function obtenerConCliente(id) {
 }
 
 async function obtenerUltimaPorCliente(cliente_id) {
-  // ANTERIOR: ORDER BY m.id DESC
-  // NUEVO: la activa va primero y luego la pendiente. Con solo m.id DESC se elegía la pendiente
+  // La activa va primero y luego la pendiente. Con solo m.id DESC se elegía la pendiente
   // (se crea después) y el control de acceso le negaba la entrada a un cliente con membresía vigente.
   const [filas] = await pool.query(
     `SELECT m.*, p.nombre AS nombre_plan, p.duracion_dias

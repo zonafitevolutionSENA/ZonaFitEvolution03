@@ -43,8 +43,7 @@ async function actualizar(id, { nombre, correo, telefono }) {
 }
 
 async function obtenerPorCedulaConMembresia(cedula) {
-  // ANTERIOR: ORDER BY m.id DESC
-  // NUEVO: se muestra primero la membresía activa; si no, la búsqueda para renovar
+  // Se muestra primero la membresía activa; si no, la búsqueda para renovar
   // mostraría la pendiente (creada después) como si fuera la membresía actual del cliente.
   const [filas] = await pool.query(
     `SELECT c.*, m.id AS membresia_id, m.estado, m.fecha_fin, m.ingresos_totales, m.ingresos_usados, p.nombre AS nombre_plan

@@ -38,9 +38,7 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
     if (errorGeneral) setErrorGeneral("");
   }
 
-  // ANTERIOR: al elegir un cliente se avisaba de inmediato si ya tenía una membresía activa
-  // y solo se guardaba el cliente: setValores((v) => ({ ...v, cliente: id }));
-  // NUEVO: si tiene una activa, la fecha de inicio se mueve al día siguiente de su fin para que
+  // Si tiene una activa, la fecha de inicio se mueve al día siguiente de su fin para que
   // la nueva quede pendiente sin solaparse.
   function elegirCliente(id) {
     const minimo = id ? inicioMinimoTrasActiva(Number(id), membresias) : null;
@@ -132,12 +130,11 @@ function FormularioMembresia({ clientes, planes, membresias, alGuardar, alCancel
           plan?.max_ingresos ? (
             <small>
               Incluye {plan.max_ingresos} ingresos, uno por día. Los {plan.duracion_dias} días cuentan desde el primer ingreso.
-              {/* NUEVO: aviso cuando la tiquetera quedará pendiente hasta su fecha de inicio */}
+              {/* Aviso cuando la tiquetera quedará pendiente hasta su fecha de inicio */}
               {quedaraPendiente && ` Quedará pendiente y se activará automáticamente el ${valores.fecha}.`}
             </small>
           ) : (
-            // ANTERIOR: fin && <small>Vencerá el {fin}.</small>
-            // NUEVO: se informa cuando la membresía quedará pendiente hasta su fecha de inicio.
+            // Se informa cuando la membresía quedará pendiente hasta su fecha de inicio.
             fin && (
               <small>
                 Vencerá el {fin}.

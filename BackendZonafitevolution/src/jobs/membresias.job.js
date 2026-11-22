@@ -1,4 +1,5 @@
 const membresiaService = require('../services/membresia.service');
+const log = require('../utils/logger')('membresias');
 
 const HORA_EJECUCION = 0;
 const MINUTO_EJECUCION = 5;
@@ -13,9 +14,9 @@ function milisegundosHastaProximaEjecucion(ahora = new Date()) {
 async function ejecutarActivacionDiaria() {
   try {
     const { vencidas, activadas, omitidas } = await membresiaService.activarMembresiasPendientes();
-    console.log(`[membresias] vencidas: ${vencidas}, activadas: ${activadas}, pendientes en espera: ${omitidas}`);
+    log.info('activación diaria', { vencidas, activadas, pendientesEnEspera: omitidas });
   } catch (error) {
-    console.error('[membresias] error en la activación diaria:', error.message);
+    log.error('error en la activación diaria', { error: error.message });
   }
 }
 

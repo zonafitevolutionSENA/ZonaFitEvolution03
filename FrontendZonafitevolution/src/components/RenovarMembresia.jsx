@@ -120,8 +120,7 @@ function RenovarMembresia({ planes, alBuscar, alRenovar, alCancelar }) {
             {errorPlan ? (
               <p className="mensaje-error" role="alert">{errorPlan}</p>
             ) : (
-              // ANTERIOR: <small>La nueva membresía empezará el {inicioRenovacion(cliente, hoyLocal())}.</small>
-              // NUEVO: si empieza después de hoy se avisa que queda pendiente (la actual sigue activa).
+              // Si empieza después de hoy se avisa que queda pendiente (la actual sigue activa).
               <small>
                 La nueva membresía empezará el {inicioRenovacion(cliente, hoyLocal())}.
                 {inicioRenovacion(cliente, hoyLocal()) > hoyLocal() && " Quedará pendiente y la actual seguirá activa hasta su vencimiento."}
