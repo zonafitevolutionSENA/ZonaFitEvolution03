@@ -8,6 +8,7 @@
 | **Versión** | **Fecha**  | **Cambio**                                               | **Elaboró**            | **Revisó** | **Aprobó** | **Estado** |
 | ----------- | ---------- | -------------------------------------------------------- | ---------------------- | ---------- | ---------- | ---------- |
 | 0.1         | 03/11/2026 | Estado actual del repositorio y brechas frente a la guía | Juan Diego Mejía Llano |            |            | Borrador   |
+| 0.2 | 22/11/2026 | Carpetas AgenteLector/recepcion y docs (diagramas, analisis/casos-uso y entregables) | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -56,10 +57,10 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 <tr class="odd">
 <td><p>ZonaFitEvolution03/</p>
 <p>├── README.md, .gitignore</p>
-<p>├── AgenteLector/ (index.js, .env.example, package.json: agente del lector AS608 para la nube)</p>
+<p>├── AgenteLector/ (index.js, .env.example, package.json y recepcion/ con los scripts de instalación: agente del lector AS608 para la nube)</p>
 <p>├── BackendZonafitevolution/ (database/init.sql, scripts/crear-admin.js, src/, .env.example, index.js, package.json)</p>
 <p>├── FrontendZonafitevolution/ (src/pages, components, services, utils; index.html; vite.config.js; package.json)</p>
-<p>└── docs/analisis/</p>
+<p>└── docs/ (Markdown vivos, diagramas/, analisis/casos-uso/ y entregables/)</p>
 <p>Faltan: /tests, /docs/adr, /docs/architecture, /docs/api, /docs/testing, /docs/evidence y /.github/workflows.</p></td>
 </tr>
 </tbody>
@@ -71,7 +72,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | --------------------- | ------------------------------------------------------------------------------ | ----------------------------------- | -------------------------------------- |
 | /src                  | Backend y frontend (BackendZonafitevolution/src, FrontendZonafitevolution/src) | Módulos, capas, componentes         | Backups, secretos, archivos temporales |
 | /tests                | No existe (TT-007)                                                             | Unitarias, integración, E2E         | Evidencia manual sin contexto          |
-| /docs                 | Solo docs/analisis                                                             | ADR, diagramas, API, guías          | Copias desactualizadas sin versión     |
+| /docs                 | docs/: Markdown vivos, diagramas/, analisis/casos-uso/ y entregables/                                                             | ADR, diagramas, API, guías          | Copias desactualizadas sin versión     |
 | /migrations           | No existe (init.sql)                                                           | Migraciones ordenadas y reversibles | SQL manual sin control                 |
 | /scripts              | BackendZonafitevolution/scripts                                                | Setup, build, seed, backup          | Scripts destructivos sin advertencia   |
 | /infra                | No existe                                                                      | Contenedores, proxy, manifests      | Credenciales reales                    |

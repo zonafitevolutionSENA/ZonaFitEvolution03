@@ -24,6 +24,7 @@
 | 0.1         | 20/10/2026 | Creación inicial a partir del documento maestro (secciones 2.1 a 2.7)                         | Juan Diego Mejía Llano |                  |
 | 1.0         | 03/11/2026 | Versión para revisión: interesados, equipo, Scrum, cronograma, riesgos, cambios y entregables | Juan Diego Mejía Llano |                  |
 | 1.1         | 10/11/2026 | AS608 integrado (BLQ-01 y RSK-06 cerrados), límite de intentos integrado y nuevos pendientes  | Juan Diego Mejía Llano |                  |
+| 1.2 | 22/11/2026 | Despliegue en Vercel y Railway: BLQ-02 cerrado, CHG-06 implementado y semáforo del cronograma actualizado | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -478,7 +479,7 @@ R = Responsable de ejecutar; A = Responsable final de aprobar o rendir cuentas; 
 | **ID** | **Dependencia o bloqueo**                                                                 | **Tipo** | **Impacto**                    | **Fecha necesaria** | **Responsable externo** | **Plan de respuesta**                                               | **Estado** |
 | ------ | ----------------------------------------------------------------------------------------- | -------- | ------------------------------ | ------------------- | ----------------------- | ------------------------------------------------------------------- | ---------- |
 | BLQ-01 | Sensor AS608 no integrado con la API (TT-010)                                             | Técnica  | —                              |                     |                         | Integrado en el sprint 11; probado con el lector real el 10/11/2026 | Cerrada    |
-| BLQ-02 | Hosting de la API (no Render) y proveedor de MySQL por definir                            | Externa  | Retrasa el despliegue (TT-009) | 26/11/2026          |                         | Definir proveedor antes del sprint 13                               | Abierta    |
+| BLQ-02 | Hosting de la API (no Render) y proveedor de MySQL: resuelto con Railway y Vercel                            | Externa  | Retrasa el despliegue (TT-009) | 26/11/2026          |                         | Desplegado el 11/11/2026                               | Cerrada    |
 | BLQ-03 | Ramas feature/correcciones-seguridad y feature/limite-intentos-login sin integrar en main | Interna  | —                              | 11/11/2026          |                         | Integradas en main por PR \#41 y \#42                               | Cerrada    |
 
 ### 8.4 Control de compromisos
@@ -559,7 +560,7 @@ Exposición sugerida = Probabilidad × Impacto. Valores 6–9 requieren tratamie
 | RSK-04 | Seguridad     | Manipulación de precios desde el cliente          | El frontend enviaría montos                        | Registro financiero falso                           | 3     | 4     | 12 – Alto    | Precio y duración tomados del plan en el servidor                     | Liliana Sofía Panesso Méndez |           | Abierto    |
 | RSK-05 | Técnico       | Indisponibilidad del sistema                      | Caída del hosting o de la base                     | No se puede validar el ingreso                      | 3     | 4     | 12 – Alto    | Hosting con monitoreo, validación manual por cédula como contingencia | Liliana Sofía Panesso Méndez |           | Abierto    |
 | RSK-06 | Técnico       | Integración del sensor AS608 fuera de tiempo      | Comunicación serie con el CP2102 probada           | Demostración solo con simulador                     | 3     | 4     | 12 – Alto    | AS608 integrado en el sprint 11; simulador eliminado                  | Liliana Sofía Panesso Méndez |           | Cerrado    |
-| RSK-07 | Gestión       | Cronograma insuficiente para pruebas y despliegue | Equipo con dedicación parcial; hosting por definir | Entrega incompleta el 12/12/2026                    | 3     | 4     | 12 – Alto    | Priorizar Must, congelar alcance desde el sprint 12                   | Juan Diego Mejía Llano       |           | Abierto    |
+| RSK-07 | Gestión       | Cronograma insuficiente para pruebas y despliegue | Equipo con dedicación parcial | Entrega incompleta el 12/12/2026                    | 3     | 4     | 12 – Alto    | Priorizar Must, congelar alcance desde el sprint 12                   | Juan Diego Mejía Llano       |           | Abierto    |
 | RSK-08 | Seguridad     | Robo de credenciales y claves secretas            | Secretos expuestos en el código o en Git           | Acceso indebido a la API y a la base                | 2     | 5     | 10 – Alto    | Variables de entorno fuera de Git; rotar secretos en producción       | Liliana Sofía Panesso Méndez |           | Abierto    |
 
 ### 10.3 Seguimiento de riesgos
@@ -636,7 +637,7 @@ También deben registrarse eventos inciertos positivos que puedan mejorar costo,
 | CHG-03 | El frontend pasa a React (Vite) en un monorepo con el backend.                                                                                      | Arquitectura, UI-01 a UI-09            | MVP                  | Juan Diego Mejía Llano | Aprobado                         | CR-003        |
 | CHG-04 | El registro financiero se calcula con las membresías mientras se crea la tabla de pagos.                                                            | RF-006, HU-008                         | MVP                  | Juan Diego Mejía Llano | Aprobado (temporal)              | CR-004        |
 | CHG-05 | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02 | MVP                  | Juan Diego Mejía Llano | Aprobado                         | CR-005        |
-| CHG-06 | El backend se publicará en un hosting distinto de Render; el proveedor está por definir.                                                            | TT-009, INT-02, RSD-07                 | MVP                  | Juan Diego Mejía Llano | Aprobado (proveedor por definir) | CR-006        |
+| CHG-06 | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            | TT-009, INT-02, RSD-07                 | MVP                  | Juan Diego Mejía Llano | Aprobado e implementado | CR-006        |
 
 ## 12\. Seguimiento de entregables y calidad
 
@@ -688,7 +689,7 @@ También deben registrarse eventos inciertos positivos que puedan mejorar costo,
 | **Dimensión**          | **Estado** | **Evidencia**                                                     | **Riesgo / desviación** | **Acción siguiente**                |
 | ---------------------- | ---------- | ----------------------------------------------------------------- | ----------------------- | ----------------------------------- |
 | Alcance                | Verde      | MVP implementado en local (README, estado actual)                 |                         | Congelar alcance desde el sprint 12 |
-| Cronograma             | Amarillo   | Sprints 11 a 13 concentran seguridad, pagos, pruebas y despliegue | Hosting por definir     | Definir hosting                     |
+| Cronograma             | Amarillo   | Sprints 11 a 13 concentran seguridad, pagos, pruebas y despliegue | Despliegue listo el 11/11/2026; faltan pruebas y cierre     | Ejecutar el plan de pruebas                     |
 | Calidad                | Amarillo   | Sin pruebas automatizadas ni pipeline                             | DT-08                   | TT-007 y TT-008                     |
 | Riesgos                | Amarillo   | BLQ-01 a BLQ-03 abiertos                                          | RSK-06, RSK-07          | Integrar ramas de seguridad         |
 | Equipo                 | Verde      | Commits de los tres integrantes en GitHub                         |                         |                                     |
