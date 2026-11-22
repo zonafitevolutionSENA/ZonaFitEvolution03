@@ -12,6 +12,7 @@
 | 1.1         | 10/11/2026 | Sensor AS608 integrado: variables PUERTO\_LECTOR, incidentes 0x17 y simulador eliminado; init.sql como único script                     | Juan Diego Mejía Llano       |            |            | En revisión |
 | 1.2         | 11/11/2026 | Despliegue en la nube (Vercel y Railway), agente del lector, variables nuevas, procedimiento, registro y pruebas de humo del despliegue | Juan Diego Mejía Llano       |            |            | En revisión |
 | 1.3 | 22/11/2026 | Puerto del lector automático (PUERTO_LECTOR=auto), instalación de recepción con INSTALAR-RECEPCION.bat, healthcheck /api/salud e incidente de reconexión | Juan Diego Mejía Llano |  |  | En revisión |
+| 1.4 | 22/11/2026 | Pruebas automáticas (npm test y npm run pruebas-cp), DT-04 y DT-05 resueltas e incidente al eliminar usuarios | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -331,7 +332,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Instalar dependencias  | cd BackendZonafitevolution && npm install; cd ..\\FrontendZonafitevolution && npm install                                       | node\_modules creados            | Sin errores de npm                                    |
 | Crear configuración    | copy .env.example .env (backend); echo VITE\_API\_URL=http://localhost:3000/api\> .env (frontend)                               | .env completos                   | DB\_PASSWORD, JWT\_SECRET y BIOMETRIA\_SALT definidos |
 | Preparar base de datos | mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS zonafitevolution;" y mysql -u root -p zonafitevolution \< database\\init.sql | 7 tablas creadas                 | SHOW TABLES                                           |
-| Ejecutar pruebas       | No hay pruebas automatizadas (TT-007)                                                                                           |                                  |                                                       |
+| Ejecutar pruebas       | npm test (unitarias); con una base vacía llamada zonafitevolution_pruebas: npm run pruebas-cp -- ../docs/pruebas/CIC-01-resultados.md                                                                                           | Todas aprobadas y reporte del ciclo generado |                                                       |
 | Iniciar aplicación     | npm start (backend); npm run dev (frontend)                                                                                     | API en :3000 y frontend en :5173 | Abrir http://localhost:5173                           |
 
 ### 7.3 Verificación inicial
@@ -803,8 +804,8 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | DT-01  | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Histórico financiero inexacto; no se guarda el método de pago. |            |               | Crear la tabla pagos (TT-005).                                                                 |                      |
 | DT-02  | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | —                                                              |            |               | —                                                                                              |                      |
 | DT-03  | Vencimiento marcado desde el frontend, no con tarea programada.                        | Estado guardado desactualizado.                                |            |               | Tarea programada en el backend (TT-006).                                                       |                      |
-| DT-04  | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Contradicción regla–API.                                       |            |               | Integrar TT-002.                                                                               |                      |
-| DT-05  | La regla del último administrador solo se valida en el frontend.                       | Se puede saltar llamando la API.                               |            |               | Integrar TT-001.                                                                               |                      |
+| DT-04  | Resuelto: se retiró la ruta DELETE /api/clientes/:id (TT-002).                    | —                                       |            |               | TT-002.                                                                               |                      |
+| DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | —                               |            |               | TT-001.                                                                               |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                                                                      |                      |
 | DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Regresiones dependen de pruebas manuales.                      |            |               | TT-007 y TT-008.                                                                               |                      |
@@ -846,6 +847,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | INC-09     | «El lector no detectó un dedo nuevo» (código 0x17)             | Huella residual o dedo sin retirar          | —                            | Retirar el dedo, limpiar el lector y repetir                   | Persiste con el lector limpio |
 | INC-10     | Tipo de lector no soportado: simulador                         | .env antiguo con TIPO\_LECTOR=simulador     | Revisar .env                 | Cambiar a TIPO\_LECTOR=as608 y definir PUERTO\_LECTOR          | —                             |
 | INC-11 | La pantalla de ingreso se queda en «Conectando con el lector…» o muestra «Lector desconectado» | El agente no ha arrancado, el cable USB está suelto o el portátil no tiene internet | Acceso «Verificar lector ZonaFit» del escritorio; AgenteLector/agente.log | Revisar el cable USB e internet y reiniciar el portátil; la tarea programada vuelve a abrir el agente | Persiste tras reiniciar |
+| INC-12 | «No puedes eliminar tu propia cuenta» o «No se puede eliminar el último administrador» | Regla RN-012 validada en el backend (409) | Usuario con sesión y cantidad de administradores | Iniciar sesión con otro Administrador o crear uno nuevo antes de eliminar | — |
 
 ### 18.3 Información mínima para escalar
 

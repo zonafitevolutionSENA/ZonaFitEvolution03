@@ -11,6 +11,7 @@
 | 1.1         | 10/11/2026 | Huella desde Clientes, pantalla de ingreso, correo obligatorio, un ingreso por día y nuevos mensajes | Juan Diego Mejía Llano   |            |            | Borrador   |
 | 1.2         | 11/11/2026 | Acceso en la nube, pantalla de ingreso con token, agente del lector y mensaje «Lector desconectado»  | Juan Diego Mejía Llano   |            |            | Borrador   |
 | 1.3 | 22/11/2026 | Pantalla de ingreso: apertura automática en recepción, textos de espera, aviso de huella no registrada y reconexión; mensajes nuevos | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.4 | 22/11/2026 | Procedimientos PRU-02 a PRU-09 redactados con capturas de la aplicación (datos ficticios); inicio, recuperación de acceso y cierre de sesión ajustados a la interfaz real | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -130,9 +131,9 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 
 ### 5.1 Inicio de sesión
 
-1.  Abra la URL o aplicación oficial.
+1.  Abra https://zona-fit-evolution03.vercel.app en Chrome o Edge.
 
-2.  Ingrese el usuario, correo o identificador solicitado.
+2.  Escriba su correo en «Correo».
 
 3.  Escriba la contraseña.
 
@@ -149,27 +150,27 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 
 ### 5.2 Recuperación de acceso
 
-6.  Seleccione «¿Olvidó su contraseña?» o la opción equivalente.
+6.  Pida al Administrador que restablezca su acceso: el sistema no tiene recuperación de contraseña por correo.
 
-7.  Ingrese el dato solicitado.
+7.  El Administrador abre «Personal», elimina el usuario y lo crea de nuevo con el mismo correo y una contraseña temporal.
 
-8.  Revise el canal de recuperación configurado.
+8.  El Administrador le entrega la contraseña temporal por un medio privado.
 
-9.  Use el enlace o código dentro del tiempo permitido.
+9.  Inicie sesión con esa contraseña.
 
-10. Defina una nueva contraseña que cumpla la política.
+10. Si un Administrador olvida su contraseña, otro Administrador hace el mismo proceso.
 
-11. Inicie sesión nuevamente.
+11. Si no queda ningún Administrador con acceso, el responsable técnico crea uno con npm run crear-admin (Manual técnico).
 
 |                                                                |
 | -------------------------------------------------------------- |
-| *\[Incluya capturas o instrucciones específicas del sistema\]* |
+| *No hay opción «¿Olvidó su contraseña?»: el restablecimiento lo hace un Administrador desde «Personal».* |
 
 ### 5.3 Cierre de sesión
 
-12. Abra el menú del perfil.
+12. Ubique el botón «Cerrar sesión» al final del menú lateral.
 
-13. Seleccione «Cerrar sesión».
+13. Pulse «Cerrar sesión».
 
 14. Confirme que el sistema regresa a la pantalla de acceso.
 
@@ -247,15 +248,115 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 
 | **ID** | **Módulo**          | **Procedimiento**                 | **Rol**                 | **Prioridad** | **Estado**   |
 | ------ | ------------------- | --------------------------------- | ----------------------- | ------------- | ------------ |
-| PRU-01 | Clientes            | Registrar cliente                 | Administrador, Empleado | Alta          | Borrador     |
-| PRU-02 | Membresías          | Asignar membresía                 | Administrador, Empleado | Alta          | Por redactar |
-| PRU-03 | Membresías          | Renovar por cédula                | Administrador, Empleado | Alta          | Por redactar |
-| PRU-04 | Clientes            | Registrar huella                  | Administrador, Empleado | Alta          | Por redactar |
-| PRU-05 | Pantalla de ingreso | Validar acceso                    | Administrador, Empleado | Alta          | Por redactar |
-| PRU-06 | Historial           | Filtrar accesos                   | Administrador, Empleado | Media         | Por redactar |
-| PRU-07 | Planes              | Crear, editar y desactivar planes | Administrador           | Media         | Por redactar |
-| PRU-08 | Personal            | Crear y eliminar usuarios         | Administrador           | Media         | Por redactar |
-| PRU-09 | Registro financiero | Consultar pagos por cliente       | Administrador           | Media         | Por redactar |
+| PRU-01 | Clientes            | Registrar cliente                 | Administrador, Empleado | Alta          | Redactado (7.5) |
+| PRU-02 | Membresías          | Asignar membresía                 | Administrador, Empleado | Alta          | Redactado (7.5) |
+| PRU-03 | Membresías          | Renovar por cédula                | Administrador, Empleado | Alta          | Redactado (7.5) |
+| PRU-04 | Clientes            | Registrar huella                  | Administrador, Empleado | Alta          | Redactado (7.5) |
+| PRU-05 | Pantalla de ingreso | Validar acceso                    | Administrador, Empleado | Alta          | Redactado (7.5) |
+| PRU-06 | Historial           | Filtrar accesos                   | Administrador, Empleado | Media         | Redactado (7.5) |
+| PRU-07 | Planes              | Crear, editar y desactivar planes | Administrador           | Media         | Redactado (7.5) |
+| PRU-08 | Personal            | Crear y eliminar usuarios         | Administrador           | Media         | Redactado (7.5) |
+| PRU-09 | Registro financiero | Consultar pagos por cliente       | Administrador           | Media         | Redactado (7.5) |
+
+### 7.5 Procedimientos por módulo
+
+Las capturas se tomaron de la aplicación con datos ficticios; los nombres de botones y mensajes coinciden con la interfaz.
+
+**PRU-02 – Asignar membresía** · Rol autorizado: Administrador, Empleado.
+
+1. Abra «Membresías» en el menú lateral y pulse «Asignar membresía».
+2. En «Cliente *» escriba al menos 2 caracteres del nombre o de la cédula y elija al cliente de la lista.
+3. Elija el «Plan *» y la «Fecha de inicio *» (no puede ser anterior a hoy).
+4. Pulse «Asignar membresía». El sistema muestra «Membresía asignada correctamente a <cliente>.»
+5. Si el cliente ya tiene una membresía activa aparece «Este cliente ya tiene una membresía activa. Usa «Renovar por cédula».»
+
+![Figura 1. Asignar membresía (PRU-02).](capturas/05-asignar.png)
+
+*Figura 1. Asignar membresía (PRU-02).*
+
+**PRU-03 – Renovar por cédula** · Rol autorizado: Administrador, Empleado.
+
+1. En «Membresías» pulse «Renovar por cédula».
+2. Escriba la «Cédula del cliente *» y pulse «Buscar cliente»: aparecen el cliente y su membresía actual.
+3. Elija el «Plan para la renovación *». El sistema indica la fecha en que empezará la nueva membresía: si la actual sigue vigente, la nueva queda pendiente hasta que la actual venza.
+4. Pulse «Renovar membresía». El sistema muestra «Membresía renovada correctamente para <cliente>.»
+5. Si el cliente ya tiene una membresía pendiente, el sistema lo impide: solo se permite una pendiente.
+
+![Figura 2. Renovar por cédula (PRU-03).](capturas/06-renovar.png)
+
+*Figura 2. Renovar por cédula (PRU-03).*
+
+**PRU-04 – Registrar huella** · Rol autorizado: Administrador, Empleado.
+
+1. Abra «Clientes». La columna «Huella» indica «Registrada» o «Pendiente».
+2. En la fila del cliente pulse «Registrar huella».
+3. Pida al socio que ponga el dedo en el lector y lo mantenga hasta que la pantalla indique retirarlo.
+4. Cuando aparezca «Vuelve a colocar el mismo dedo en el lector», pida que lo ponga otra vez.
+5. El sistema muestra «Huella registrada correctamente para <cliente>.» Si ese dedo ya pertenece a otro socio aparece «Esta huella ya está registrada para otro cliente».
+
+![Figura 3. Registrar huella (PRU-04).](capturas/03-clientes.png)
+
+*Figura 3. Registrar huella (PRU-04).*
+
+**PRU-05 – Validar acceso en la pantalla de ingreso** · Rol autorizado: Socio (la pantalla no requiere sesión).
+
+1. En el portátil de recepción la pantalla de ingreso se abre sola al encender el equipo; también se abre con el acceso «Pantalla de ingreso ZonaFit» del escritorio.
+2. Con la pantalla en «Tu entrenamiento empieza aquí», el socio pone el dedo en el lector.
+3. La pantalla muestra durante 2 segundos «Acceso permitido» o «Acceso denegado» con el motivo, y vuelve a la espera.
+4. Si la huella no está registrada aparece «Acércate a recepción para registrar tu huella» durante 4 segundos.
+5. Si aparece «Conectando con el lector…», la pantalla reintenta sola cada 5 segundos; si no cambia, revise internet y el cable del lector.
+
+![Figura 4. Validar acceso en la pantalla de ingreso (PRU-05).](capturas/11-pantalla.png)
+
+*Figura 4. Validar acceso en la pantalla de ingreso (PRU-05).*
+
+**PRU-06 – Filtrar el historial de accesos** · Rol autorizado: Administrador, Empleado.
+
+1. Abra «Historial». Se muestran los 50 eventos más recientes.
+2. Elija el «Resultado»: «Todos», «Acceso permitido» o «Acceso denegado».
+3. En «Buscar» escriba el nombre del cliente o una parte del motivo.
+4. Si lo necesita, limite las fechas con «Desde» y «Hasta» (no pueden ser futuras).
+5. Pulse «Limpiar filtros» para volver a ver todos los eventos.
+
+![Figura 5. Filtrar el historial de accesos (PRU-06).](capturas/08-historial.png)
+
+*Figura 5. Filtrar el historial de accesos (PRU-06).*
+
+**PRU-07 – Crear, editar y desactivar planes** · Rol autorizado: Administrador (el Empleado solo consulta).
+
+1. Abra «Planes» y pulse «Crear plan».
+2. Escriba «Nombre del plan *», «Duración en días *» y «Precio (COP) *». Para una tiquetera, llene «Ingresos incluidos (solo tiqueteras)»; déjelo vacío si el plan es por tiempo.
+3. Pulse «Crear plan». El sistema muestra «Plan "<nombre>" creado correctamente.»
+4. Para cambiar un plan pulse «Editar» en su fila, corrija los datos y pulse «Guardar cambios».
+5. Para dejar de ofrecerlo pulse «Desactivar» y confirme; las membresías existentes no cambian. «Activar» lo vuelve a ofrecer.
+
+![Figura 6. Crear, editar y desactivar planes (PRU-07).](capturas/07-planes.png)
+
+*Figura 6. Crear, editar y desactivar planes (PRU-07).*
+
+**PRU-08 – Crear y eliminar usuarios del personal** · Rol autorizado: Administrador.
+
+1. Abra «Personal» y pulse «Crear usuario».
+2. Escriba nombre, correo y contraseña (8 o más caracteres, con letras y números), confírmela y elija el «Rol *».
+3. Pulse «Crear usuario». El sistema muestra «Usuario "<nombre>" creado correctamente.»
+4. Para eliminar a alguien pulse «Eliminar» en su fila y confirme; la acción no se puede deshacer.
+5. No se puede eliminar la propia cuenta ni al último Administrador: el botón aparece deshabilitado y el servidor también lo impide.
+
+![Figura 7. Crear y eliminar usuarios del personal (PRU-08).](capturas/10-personal.png)
+
+*Figura 7. Crear y eliminar usuarios del personal (PRU-08).*
+
+**PRU-09 – Consultar pagos por cliente** · Rol autorizado: Administrador.
+
+1. Abra «Registro financiero». Arriba se ven «Total recaudado», «Pagos registrados» y «Clientes con pagos».
+2. Filtre con «Buscar cliente», «Estado de la membresía», «Desde» y «Hasta», y ordene con «Ordenar por».
+3. Pulse «Ver pagos» en la fila de un cliente para ver cada pago con su plan, monto y vigencia.
+4. Tenga en cuenta que cada membresía cuenta como un pago por el precio actual de su plan (el sistema aún no guarda el monto pagado).
+
+![Figura 8. Consultar pagos por cliente (PRU-09).](capturas/09-finanzas.png)
+
+*Figura 8. Consultar pagos por cliente (PRU-09).*
+
 
 ## 8\. Formularios y gestión de registros
 

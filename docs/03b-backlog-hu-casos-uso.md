@@ -26,6 +26,7 @@
 | 1.0         | 03/11/2026 | Versión para revisión: épicas, backlog, historias detalladas, criterios, casos de uso, plan de iteración y trazabilidad | Juan Diego Mejía Llano |                  |
 | 1.1         | 10/11/2026 | TT-010 y TT-003 terminadas, CU-004 con el sensor AS608, planes con tiqueteras y cambios CR-007 y CR-008                 | Juan Diego Mejía Llano |                  |
 | 1.2 | 22/11/2026 | Diagramas de casos de uso, diez secuencias y nueve actividades con un solo estilo (sección 10); despliegue en Vercel y Railway, TT-004, TT-006 y TT-009 terminadas y BLQ-002 cerrado | Juan Diego Mejía Llano |  |
+| 1.3 | 22/11/2026 | TT-001 y TT-002 terminadas; alcance real de CR-008 | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -206,8 +207,8 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | 18        | HU-007 | Historia | Validación inmediata                                                  | EP-003             | Medio     | Should        | 5 pts          | HU-006                 | En validación                                     | MVP         |
 | 19        | HU-012 | Historia | Interfaz sencilla                                                     | EP-005             | Medio     | Should        | 3 pts          | —                      | En validación                                     | MVP         |
 | 20        | HU-013 | Historia | Código con patrones de diseño                                         | EP-005             | Bajo      | Could         | 5 pts          | —                      | En validación                                     | MVP         |
-| 21        | TT-001 | Técnica  | Validar en el backend la regla del último administrador               | EP-005             | Alto      | Must          | 2 pts          | HU-002                 | En progreso (rama feature/correcciones-seguridad) | MVP         |
-| 22        | TT-002 | Técnica  | Quitar la ruta de borrado de clientes                                 | EP-001             | Alto      | Must          | 1 pts          | HU-001                 | En progreso (rama feature/correcciones-seguridad) | MVP         |
+| 21        | TT-001 | Técnica  | Validar en el backend la regla del último administrador               | EP-005             | Alto      | Must          | 2 pts          | HU-002                 | Terminada | MVP         |
+| 22        | TT-002 | Técnica  | Quitar la ruta de borrado de clientes                                 | EP-001             | Alto      | Must          | 1 pts          | HU-001                 | Terminada | MVP         |
 | 23        | TT-003 | Técnica  | Límite de intentos de inicio de sesión                                | EP-005             | Alto      | Must          | 3 pts          | HU-002                 | Terminada (PR \#41)                               | MVP         |
 
 ### 5.2 Estados recomendados
@@ -319,8 +320,8 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 
 | **ID** | **Historia / tarea**                                        | **Estimación** | **Responsable**              | **Dependencias** | **Estado**  | **Evidencia**               |
 | ------ | ----------------------------------------------------------- | -------------- | ---------------------------- | ---------------- | ----------- | --------------------------- |
-| TT-001 | Validar en el backend la regla del último administrador     | 2 pts          | Liliana Sofía Panesso Méndez | HU-002           | Planificada | Pull Request                |
-| TT-002 | Quitar la ruta de borrado de clientes                       | 1 pt           | Liliana Sofía Panesso Méndez | HU-001           | Planificada | Pull Request                |
+| TT-001 | Validar en el backend la regla del último administrador     | 2 pts          | Liliana Sofía Panesso Méndez | HU-002           | Terminada | Pull Request                |
+| TT-002 | Quitar la ruta de borrado de clientes                       | 1 pt           | Liliana Sofía Panesso Méndez | HU-001           | Terminada | Pull Request                |
 | TT-003 | Límite de intentos de inicio de sesión                      | 3 pts          | Liliana Sofía Panesso Méndez | HU-002           | Planificada | Pull Request y prueba       |
 | TT-004 | Restringir CORS al dominio del frontend                     | 1 pt           | Liliana Sofía Panesso Méndez | TT-009           | Planificada | Pull Request                |
 | TT-005 | Crear la tabla de pagos con monto y método                  | 5 pts          | Liliana Sofía Panesso Méndez | HU-008           | Planificada | Pull Request y migración    |
@@ -347,7 +348,7 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | CR-005        | STK-01 Propietario   | Usar el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02, CU-004 | Alcance          | Aprobado                         | Juan Diego Mejía Llano |            |
 | CR-006        | Equipo de desarrollo | Publicar el backend en un hosting distinto de Render: API y MySQL en Railway, frontend en Vercel.                                                            | TT-009, INT-02                                 | Tiempo y riesgo  | Aprobado e implementado (11/11/2026) | Juan Diego Mejía Llano |            |
 | CR-007        | Equipo de desarrollo | Eliminar la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                | RF-004, INT-01, CU-004                         | Alcance          | Aprobado                         | Juan Diego Mejía Llano | 10/11/2026 |
-| CR-008        | STK-01 Propietario   | Un solo ingreso por día en todos los planes (frontend listo; validación del backend pendiente).                                          | RF-002, RF-003, CU-004                         | Alcance          | Aprobado (backend pendiente)     | Juan Diego Mejía Llano | 10/11/2026 |
+| CR-008        | STK-01 Propietario   | Un solo ingreso por día en todos los planes (frontend listo; el backend la aplica a las tiqueteras).                                          | RF-002, RF-003, CU-004                         | Alcance          | Aprobado; el backend la aplica a las tiqueteras (un descuento por día); para los planes por tiempo falta confirmarla con el propietario     | Juan Diego Mejía Llano | 10/11/2026 |
 
 ### 13.2 Reglas de actualización
 

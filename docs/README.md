@@ -42,6 +42,8 @@ Otros:
 - [`diagramas/`](diagramas/): diagramas de arquitectura y datos (contexto, contenedores, componentes, paquetes, clases, entidad-relación, estados de la membresía y despliegue), cada uno con su fuente Mermaid (`.mmd`) y su PNG.
 - [`analisis/casos-uso/`](analisis/casos-uso/): diagramas de análisis (casos de uso, diez secuencias y nueve actividades), con su fuente y su PNG.
 - Todos los diagramas usan el mismo estilo. Para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i <archivo>.mmd -o <archivo>.png -s 2 -b white` (casos de uso: `dot -Tpng -Gdpi=150 casos-de-uso.dot -o casos-de-uso.png`).
+- [`pruebas/`](pruebas/): resultados de los ciclos de prueba generados con `npm run pruebas-cp` (CIC-01).
+- [`capturas/`](capturas/): capturas de la aplicación con datos ficticios usadas en el Manual de usuario.
 - Las épicas, historias y sprints se gestionan en **Jira** (tablero SCRUM); aquí se enlazan, no se copian.
 
 ## Cambios de alcance registrados
