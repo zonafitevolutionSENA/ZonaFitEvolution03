@@ -24,6 +24,7 @@
 | ----------- | ---------- | ---------------------------------------------------------------------------------------------------- | ---------------------- | ---------------- |
 | 0.1         | 03/11/2026 | Estrategia inicial, riesgos, ambientes y catálogo de casos CP-001 a CP-021 (diseñados, sin ejecutar) | Juan Diego Mejía Llano |                  |
 | 0.2         | 10/11/2026 | Pruebas con el sensor AS608 (CP-010, CP-011 y nuevo CP-022) y simulador eliminado                    | Juan Diego Mejía Llano |                  |
+| 0.3 | 22/11/2026 | Ambiente de producción en Vercel y Railway y pruebas de humo del despliegue | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -64,7 +65,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | Integraciones             | Sensor AS608 (CP2102) y API REST.                                                                                       | Relé y electroimán (CR-005).                                  |                   |
 | Requisitos no funcionales | RNF-001 a RNF-007.                                                                                                      |                                                               |                   |
 | Datos y migraciones       | init.sql y datos semilla (planes iniciales y administrador).                                                            | Migraciones incrementales (no existen).                       |                   |
-| Despliegue / operación    | Prueba de humo en el hosting (por definir).                                                                             |                                                               |                   |
+| Despliegue / operación    | Pruebas de humo en Railway y Vercel (SMK-01 a SMK-05 cumplidas el 11/11/2026, ver Manual técnico).                                                                             |                                                               |                   |
 
 ### 1.3 Principios de calidad
 
@@ -229,7 +230,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | AMB-DEV  | Desarrollo   | Construcción y pruebas del desarrollador    | http://localhost:5173 / http://localhost:3000/api | develop     | Sintéticos | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla | Local               |
 | AMB-QA   | Pruebas      | Ejecución de los ciclos de prueba           |                                                   |             | Sintéticos |                                                                                 |                     |
 | AMB-UAT  | Aceptación   | Validación del Product Owner y la recepción |                                                   |             | Sintéticos | Liliana Sofía Panesso Méndez (Product Owner)                                    |                     |
-| AMB-PROD | Producción   | Operación del gimnasio                      | Hosting por definir                               | v1.0.0      | Reales     | Liliana Sofía Panesso Méndez                                                    | Horario de atención |
+| AMB-PROD | Producción   | Operación del gimnasio                      | https://zona-fit-evolution03.vercel.app (frontend) y API en Railway                               | v1.0.0      | Reales     | Liliana Sofía Panesso Méndez                                                    | Horario de atención |
 
 ### 6.2 Configuración de ambiente
 

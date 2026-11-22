@@ -10,6 +10,7 @@
 | 0.1         | 03/11/2026 | Borrador de agenda, flujos de demostración y reparto por integrante                                  | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.2         | 10/11/2026 | Demostración con el sensor AS608 y prueba de huella duplicada; sin simulador                         | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.3         | 11/11/2026 | Demostración desde la nube (Vercel y Railway) con el agente del lector; lista previa y contingencias | Juan Diego Mejía Llano |            |            | Borrador   |
+| 0.4 | 22/11/2026 | Portátil de recepción con arranque automático del agente y la pantalla; verificación con «Verificar lector ZonaFit» | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -281,7 +282,7 @@ La demostración debe contar una historia de uso coherente. No debe consistir en
 | **Riesgo**                 | **Prevención**                                                                              | **Contingencia permitida**                             | **Evidencia de que no se oculta el fallo** |
 | -------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------ |
 | Falla de internet          | Datos del celular para el portátil del lector; instalación local verificada el día anterior | Demostración en ambiente local (TIPO\_LECTOR=as608)    | Mostrar «Lector desconectado» y /api/salud |
-| Agente del lector apagado  | Arrancar AgenteLector (npm start) 30 min antes y comprobar «lector conectado» en /api/salud | Volver a abrir el agente; validación manual por cédula | Consola del agente                         |
+| Agente del lector apagado  | Encender el portátil de recepción 30 min antes (el agente y la pantalla arrancan solos) y comprobar con «Verificar lector ZonaFit» que el lector está conectado | Reiniciar el portátil; validación manual por cédula | AgenteLector/agente.log                         |
 | Vence la prueba de Railway | Pasar a Railway Hobby antes del 10/12/2026                                                  | Ambiente local con el respaldo de la base              | Panel Usage de Railway                     |
 | Servicio externo caído     | Revisar Vercel, Railway y /api/salud antes de iniciar                                       | Ambiente local con la misma versión                    |                                            |
 | Datos corruptos            | Respaldo con mysqldump de la base de Railway el 11/12/2026                                  | Restaurar el respaldo                                  |                                            |
@@ -409,7 +410,7 @@ La demostración debe contar una historia de uso coherente. No debe consistir en
 | ID del flujo                    | DEM-03 – Registrar huella y validar acceso                                                                                                                                                                                                              |
 | Necesidad que demuestra         | Cero ingresos con membresía vencida (OBJ-04).                                                                                                                                                                                                           |
 | Rol                             | Empleado                                                                                                                                                                                                                                                |
-| Precondiciones                  | Backend y frontend encendidos; sensor AS608 conectado al equipo del backend (PUERTO\_LECTOR).                                                                                                                                                           |
+| Precondiciones                  | Frontend en Vercel y API en Railway; sensor AS608 conectado al portátil de recepción con el agente en marcha.                                                                                                                                                           |
 | Datos                           | Cliente A con membresía activa; cliente B con membresía vencida.                                                                                                                                                                                        |
 | Pasos                           | 1\. Registrar la huella del cliente A desde Clientes. 2. Intentar registrar el mismo dedo para el cliente B (debe rechazarse). 3. Validar el acceso del cliente A en la pantalla de ingreso. 4. Validar el acceso del cliente B. 5. Abrir el historial. |
 | Escenario negativo              | Cliente B: «Acceso denegado – Membresía vencida»; huella no registrada: «Huella no reconocida».                                                                                                                                                         |
@@ -417,7 +418,7 @@ La demostración debe contar una historia de uso coherente. No debe consistir en
 | Requisito y prueba relacionados | RF-003, RF-004 / CP-007 a CP-011, CP-022                                                                                                                                                                                                                |
 | Tiempo máximo                   |                                                                                                                                                                                                                                                         |
 | Responsable                     | Liliana Sofía Panesso Méndez                                                                                                                                                                                                                            |
-| Contingencia                    | Si el sensor falla, revisar la conexión del CP2102 y el puerto COM y reiniciar el backend (no existe modo simulador).                                                                                                                                   |
+| Contingencia                    | Si el sensor falla, revisar el cable del CP2102, abrir «Verificar lector ZonaFit» y reiniciar el portátil (no existe modo simulador).                                                                                                                                   |
 
 ## Anexo B. Plantilla de pregunta individual
 

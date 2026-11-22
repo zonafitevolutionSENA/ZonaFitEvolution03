@@ -23,6 +23,7 @@
 | 0.1         | 20/10/2026 | Creación inicial a partir del documento maestro integrado (v2.3)                               | Juan Diego Mejía Llano |            |            |
 | 1.0         | 03/11/2026 | Versión para revisión: problema, objetivos, alcance, entregables, recursos, riesgos y gobierno | Juan Diego Mejía Llano |            |            |
 | 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; supuestos y dependencias actualizados            | Juan Diego Mejía Llano |            |            |
+| 1.2 | 22/11/2026 | Hosting definido y en uso: frontend en Vercel, API y MySQL en Railway; viabilidad económica, dependencias y pendientes actualizados | Juan Diego Mejía Llano |  |  |
 
 ### Aprobaciones
 
@@ -246,7 +247,7 @@ Redacte una frase que indique el tipo de solución, el proceso que apoya y los u
 | Nivel de madurez esperado       | MVP funcional desplegado en la nube                                                                 |                                                                   |
 | Existencia de cliente real      | Sí: gimnasio Zona Fit (propietario STK-01)                                                          |                                                                   |
 | Tratamiento de datos personales | Sí: datos personales y biométricos (Ley 1581 de 2012)                                               | Solo se guarda el hash de la plantilla, nunca la imagen.          |
-| Integraciones externas          | Sensor de huella AS608 con conversor USB CP2102; hosting de la API y MySQL en la nube (por definir) | La apertura automática de la puerta queda fuera del MVP (CR-005). |
+| Integraciones externas          | Sensor de huella AS608 con conversor USB CP2102; frontend en Vercel; API y MySQL en Railway | La apertura automática de la puerta queda fuera del MVP (CR-005). |
 
 ## 3\. Contexto y antecedentes
 
@@ -350,7 +351,7 @@ Explique por qué el proyecto merece realizarse. La justificación debe conectar
 | Valor organizacional      | ¿Qué mejora en control, tiempo, calidad o información?      | El propietario obtiene control del personal (roles) y del registro de pagos.                                          |
 | Viabilidad técnica        | ¿Existen tecnologías, conocimientos y recursos disponibles? | Stack conocido por el equipo (Node.js, Express, MySQL y React) y arquitectura por capas ya implementada.              |
 | Viabilidad operativa      | ¿La organización puede adoptar y utilizar la solución?      | La recepción ya cuenta con computador; el sistema se usa desde el navegador.                                          |
-| Viabilidad económica      | ¿Los beneficios justifican el esfuerzo y costos estimados?  | Herramientas de software libre; el sensor AS608 con conversor CP2102 es de bajo costo. Costo del hosting por definir. |
+| Viabilidad económica      | ¿Los beneficios justifican el esfuerzo y costos estimados?  | Herramientas de software libre; el sensor AS608 con conversor CP2102 es de bajo costo. Hosting en Railway (plan Hobby, unos 5 USD al mes) y Vercel (plan gratuito). |
 | Pertinencia formativa     | ¿Qué competencias ADSO permite demostrar?                   | Aplica las competencias del programa ADSO: análisis, diseño, desarrollo, pruebas y despliegue.                        |
 | Aspectos legales y éticos | ¿Existen condiciones de privacidad, licencias o inclusión?  | Solo se guarda el hash de la plantilla biométrica (Ley 1581 de 2012); se requiere autorización del titular.           |
 
@@ -570,7 +571,7 @@ Limitaciones o excepciones a esta autoridad:
 | Talento humano               | Tres aprendices ADSO                                                       | Parcial                     |                    | Juan Diego Mejía Llano       |                 |
 | Hardware                     | Computadores del aula y de la recepción; sensor AS608 con conversor CP2102 | Disponible                  |                    | Liliana Sofía Panesso Méndez |                 |
 | Software / licencias         | Visual Studio Code, Node.js, React, MySQL, Figma, Git, GitHub y Jira       | Disponible                  |                    | Juan Diego Mejía Llano       |                 |
-| Infraestructura / hosting    | Hosting de la API y MySQL en la nube (por definir)                         | No disponible (por definir) |                    | Liliana Sofía Panesso Méndez |                 |
+| Infraestructura / hosting    | Frontend en Vercel; API y MySQL en Railway                         | Disponible desde el 11/11/2026 |                    | Liliana Sofía Panesso Méndez |                 |
 | Datos / acceso a información | Información del gimnasio provista por el propietario                       | Disponible                  |                    | Liliana Sofía Panesso Méndez |                 |
 | Tiempo                       | 33 semanas (25/04/2026 – 12/12/2026), 13 sprints                           | Disponible                  |                    | Juan Diego Mejía Llano       |                 |
 | Asesoría especializada       | Instructores técnicos y metodológicos del centro                           | Disponible                  |                    | Juan Diego Mejía Llano       |                 |
@@ -581,7 +582,7 @@ Limitaciones o excepciones a esta autoridad:
 | ------------- | ------------ | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------- | ---------------- |
 | Técnica       | Viable       | Stack conocido y arquitectura implementada.                                                                |                                               |                              |                  |
 | Operativa     | Viable       | La recepción usa el sistema desde el navegador.                                                            |                                               |                              |                  |
-| Económica     | Condicionada | Costo del hosting por definir.                                                                             | Definir proveedor y costo del hosting.        | Liliana Sofía Panesso Méndez |                  |
+| Económica     | Viable | Hosting en Railway (plan Hobby, unos 5 USD al mes) y Vercel (plan gratuito).                                                                             | Pasar Railway al plan Hobby antes de que venza la prueba (10/12/2026).        | Liliana Sofía Panesso Méndez |                  |
 | Temporal      | Condicionada | Pruebas y despliegue concentrados en los sprints 12 y 13; el sensor AS608 quedó integrado en el sprint 11. | Congelar alcance desde el sprint 12.          | Juan Diego Mejía Llano       |                  |
 | Legal y ética | Viable       | Solo se guarda el hash de la huella.                                                                       | Formato de autorización de datos biométricos. | Liliana Sofía Panesso Méndez |                  |
 | Formativa     | Viable       | Cubre análisis, diseño, desarrollo, pruebas y despliegue.                                                  |                                               |                              |                  |
@@ -628,9 +629,9 @@ Limitaciones o excepciones a esta autoridad:
 
 | **ID** | **Dependencia**                                           | **Tipo** | **Responsable externo** | **Fecha requerida** | **Plan alternativo**                                                                       |
 | ------ | --------------------------------------------------------- | -------- | ----------------------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| DEP-01 | Hosting de la API y del frontend (no Render, por definir) | Servicio |                         |                     | Demostración en ambiente local.                                                            |
+| DEP-01 | Hosting de la API y del frontend: Railway y Vercel (no Render) | Servicio |                         |                     | Demostración en ambiente local.                                                            |
 | DEP-02 | Proveedor de MySQL en la nube                             | Servicio |                         |                     | Base MySQL local.                                                                          |
-| DEP-03 | Controlador del CP2102 y comunicación serie con el AS608  | Servicio |                         |                     | Revisar el controlador del CP2102 y el puerto COM (PUERTO\_LECTOR); no hay modo simulador. |
+| DEP-03 | Controlador del CP2102 y comunicación serie con el AS608  | Servicio |                         |                     | Revisar el controlador del CP2102; el agente busca solo el puerto COM (PUERTO\_LECTOR=auto); no hay modo simulador. |
 
 <table>
 <tbody>
@@ -779,7 +780,7 @@ La aprobación no implica aceptación automática de cambios futuros ni compromi
 | ------ | ------------------------------------------------------------------------- | ---------------------------- | ---------------- | ----------- | ---------- |
 | PEN-01 | Evidencias del problema (EVI): registros, entrevista o datos del gimnasio | Juan Diego Mejía Llano       |                  | Alto        | Abierto    |
 | PEN-02 | Línea base de los indicadores IND-01 a IND-04                             | Liliana Sofía Panesso Méndez |                  | Medio       | Abierto    |
-| PEN-03 | Costos estimados de recursos y proveedor de hosting                       | Liliana Sofía Panesso Méndez |                  | Medio       | Abierto    |
+| PEN-03 | Costo final del hosting (proveedor definido: Railway y Vercel)                       | Liliana Sofía Panesso Méndez |                  | Medio       | Abierto    |
 | PEN-04 | Firmas de autorización del proyecto                                       | Juan Diego Mejía Llano       |                  | Alto        | Abierto    |
 
 ## Anexo D. Guía breve para el instructor o evaluador

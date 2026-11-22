@@ -9,6 +9,7 @@
 | ----------- | ---------- | ----------------------------------------------------------------------- | ---------------------- | ---------- | ---------- | ---------- |
 | 0.1         | 03/11/2026 | Borrador con el estado al sprint 11; resultados por completar al cierre | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.2         | 10/11/2026 | Estado al 10/11/2026: sensor AS608 integrado y simulador eliminado      | Juan Diego Mejía Llano |            |            | Borrador   |
+| 0.3 | 22/11/2026 | Estado al 22/11/2026: sistema desplegado en Vercel y Railway, healthcheck y custodia de la infraestructura | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -93,7 +94,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | ALC-02 | Gestión del personal                 | Sí               | Implementado en local     |            |                                                                                        |
 | ALC-03 | Gestión de clientes                  | Sí               | Implementado en local     |            | Ruta DELETE /api/clientes/:id por retirar (TT-002)                                     |
 | ALC-04 | Catálogo de planes                   | Sí               | Implementado en local     |            |                                                                                        |
-| ALC-05 | Membresías                           | Sí               | Implementado en local     |            | Vencimiento marcado desde el frontend (TT-006)                                         |
+| ALC-05 | Membresías                           | Sí               | Implementado y desplegado     |            | Tarea diaria de vencimiento y activación en el backend (TT-006)                                         |
 | ALC-06 | Control de acceso biométrico (AS608) | Sí               | Sí (sensor AS608)         | Cumplido   | Registro, validación, huellas duplicadas y borrado probados con el lector (10/11/2026) |
 | ALC-07 | Historial de accesos                 | Sí               | Implementado en local     |            |                                                                                        |
 | ALC-08 | Registro financiero                  | Sí               | Parcial (pagos estimados) |            | Tabla de pagos pendiente (TT-005)                                                      |
@@ -115,7 +116,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | CHG-03        | El frontend pasa a React (Vite) en un monorepo con el backend.                                                                                      | Sprint 9 (oct. 2026)  | Equipo          | Arquitectura, UI-01 a UI-09            | Aprobado                         |
 | CHG-04        | El registro financiero se calcula con las membresías mientras se crea la tabla de pagos.                                                            | Sprint 10 (oct. 2026) | Equipo          | RF-006, HU-008                         | Aprobado (temporal)              |
 | CHG-05        | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. |                       | Equipo          | OBJ-04, RF-003, RF-004, INT-01, INT-02 | Aprobado                         |
-| CHG-06        | El backend se publicará en un hosting distinto de Render; el proveedor está por definir.                                                            |                       | Equipo          | TT-009, INT-02, RSD-07                 | Aprobado (proveedor por definir) |
+| CHG-06        | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            |                       | Equipo          | TT-009, INT-02, RSD-07                 | Aprobado e implementado |
 
 ## 5\. Estado de requisitos y trazabilidad
 
@@ -183,8 +184,8 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Base de datos                | MySQL (mysql2)                  | Implementado                | 7 tablas (init.sql)                      |               |
 | Autenticación / autorización | JWT 8 h + bcrypt; permitirRoles | Implementado con pendientes | TT-001, TT-003 en progreso               |               |
 | Integraciones                | Sensor AS608 + CP2102           | Integrado                   | Registro y validación con el lector real |               |
-| Infraestructura / despliegue | Hosting por definir             | Pendiente                   |                                          |               |
-| Observabilidad               | Consola + registros\_acceso     | Parcial                     | Sin /health ni monitoreo                 |               |
+| Infraestructura / despliegue | Vercel (frontend); Railway (API Node.js 20 y MySQL 8.4); agente local del lector             | Implementado                   |                                          |               |
+| Observabilidad               | Consola + registros\_acceso     | Parcial                     | GET /api/salud con el estado del lector; métricas y logs de Railway                 |               |
 
 ### 7.1 Coherencia arquitectónica
 
@@ -241,7 +242,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Secretos fuera del repositorio | .env excluido; .env.example versionado                                 |               |                      |
 | Contraseñas protegidas         | bcrypt                                                                 |               |                      |
 | Autorización en servidor       | permitirRoles en cada ruta; regla del último admin solo en el frontend |               | DT-05                |
-| HTTPS en ambiente público      |                                                                        |               | Hosting por definir  |
+| HTTPS en ambiente público      | Certificados de Vercel y Railway |               | —  |
 | Dependencias auditadas         |                                                                        |               |                      |
 | Datos personales controlados   | Solo hash de la huella; la API no devuelve el hash                     |               |                      |
 | Licencias y atribuciones       |                                                                        |               | No existe LICENSE    |
@@ -263,13 +264,13 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Desarrollo                | localhost:5173 / localhost:3000 | main        | Activo     |           | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla |
 | Pruebas                   |                                 |             |            |           |                                                                                 |
 | Aceptación                |                                 |             |            |           |                                                                                 |
-| Producción / demostración |                                 |             |            |           |                                                                                 |
+| Producción / demostración | https://zona-fit-evolution03.vercel.app · API en Railway | main | Activo | 11/11/2026 | Juan Diego Mejía Llano |
 
 ### 10.1 Verificación posterior al despliegue
 
 | **Control**      | **Resultado esperado**                                | **Resultado real** | **Estado** | **Evidencia** |
 | ---------------- | ----------------------------------------------------- | ------------------ | ---------- | ------------- |
-| Health check     | No existe /health (pendiente)                         |                    |            |               |
+| Health check     | GET /api/salud responde {"estado":"ok","lector":"conectado"}                         |                    |            |               |
 | Acceso principal | Pantalla de inicio de sesión                          |                    |            |               |
 | Autenticación    | Token JWT y menú por rol                              |                    |            |               |
 | Flujo crítico    | Registrar cliente, asignar membresía y validar acceso |                    |            |               |
@@ -336,7 +337,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Revisión del código | Regresiones dependen de pruebas manuales.                      |               |              |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               |              |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               |              |                      |
-| DT-11  | Sistema no desplegado; hosting de la API por definir.                                  | Revisión del código | Solo funciona en local.                                        |               |              |                      |
+| DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | Revisión del código | —                                        |               |              |                      |
 | DT-12  | Archivos vacíos cd y npm en la raíz del backend.                                       | Revisión del código | Ruido en el repositorio.                                       |               |              |                      |
 
 ### 13.1 Criterio de aceptación de deuda
@@ -369,8 +370,8 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 | --------------- | ---------------------------------------------------------- | --------------------------------- | ---------------------- | ----------------- |
 | Repositorio     | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 | Organización zonafitevolutionSENA |                        |                   |
 | Dominio / DNS   |                                                            |                                   |                        |                   |
-| Infraestructura | Hosting por definir                                        |                                   |                        |                   |
-| Base de datos   | MySQL en la nube (por definir)                             |                                   |                        |                   |
+| Infraestructura | Vercel (frontend) y Railway (API y MySQL)                                        |                                   |                        |                   |
+| Base de datos   | MySQL 8.4 en Railway (red privada)                             |                                   |                        |                   |
 | Figma / diseño  |                                                            | Maileth Begambre Movilla          |                        |                   |
 | Documentación   | documentos\_proyecto                                       | Juan Diego Mejía Llano            |                        |                   |
 

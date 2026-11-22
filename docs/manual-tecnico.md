@@ -11,6 +11,7 @@
 | 1.0         | 03/11/2026 | Plantilla institucional; sensor AS608 y hosting por definir                                                                             | Juan Diego Mejía Llano       |            |            | En revisión |
 | 1.1         | 10/11/2026 | Sensor AS608 integrado: variables PUERTO\_LECTOR, incidentes 0x17 y simulador eliminado; init.sql como único script                     | Juan Diego Mejía Llano       |            |            | En revisión |
 | 1.2         | 11/11/2026 | Despliegue en la nube (Vercel y Railway), agente del lector, variables nuevas, procedimiento, registro y pruebas de humo del despliegue | Juan Diego Mejía Llano       |            |            | En revisión |
+| 1.3 | 22/11/2026 | Puerto del lector automático (PUERTO_LECTOR=auto), instalación de recepción con INSTALAR-RECEPCION.bat, healthcheck /api/salud e incidente de reconexión | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -75,7 +76,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 |                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| No cubre: capacitación de usuarios finales (ver Manual de Usuario), apertura automática de la puerta (fuera del MVP, CR-005), pagos en línea ni facturación electrónica, ni la administración del proveedor de hosting (por definir). |
+| No cubre: capacitación de usuarios finales (ver Manual de Usuario), apertura automática de la puerta (fuera del MVP, CR-005), pagos en línea ni facturación electrónica, ni la administración de las cuentas de Railway y Vercel. |
 
 ## 2\. Documentos y artefactos relacionados
 
@@ -118,7 +119,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Contenedores         | No aplica                                                                 |                            |                                   |                                                                      |
 | CI/CD                | No existe (TT-008)                                                        |                            |                                   |                                                                      |
 | Monitoreo            |                                                                           |                            |                                   |                                                                      |
-| Servicios externos   | Sensor AS608 + CP2102; hosting por definir                                |                            | Captura de huella; publicación    |                                                                      |
+| Servicios externos   | Sensor AS608 + CP2102; Railway y Vercel                                |                            | Captura de huella; publicación    |                                                                      |
 
 ### 3.2 Componentes desplegables
 
@@ -243,7 +244,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | PORT                             | Puerto de la API                                                         | Número         | No                                                | 3000                                                                                | No                   | Todos         |
 | JWT\_SECRET, JWT\_EXPIRES\_IN    | Firma y duración del token                                               | Texto          | Sí                                                | \<valor largo aleatorio\>, 8h                                                       | Sí (JWT\_SECRET)     | Todos         |
 | BIOMETRIA\_SALT, TIPO\_LECTOR    | Sal de plantillas; adaptador del sensor                                  | Texto          | Sí                                                | \<valor aleatorio\>, as608                                                          | Sí (BIOMETRIA\_SALT) | Todos         |
-| PUERTO\_LECTOR, LECTOR\_BAUDIOS  | Puerto COM y velocidad del sensor AS608                                  | Texto / número | Sí con as608 (en AgenteLector/.env en producción) | COM3, 57600                                                                         | No                   | Todos         |
+| PUERTO\_LECTOR, LECTOR\_BAUDIOS  | Puerto COM y velocidad del sensor AS608                                  | Texto / número | Sí con as608 (en AgenteLector/.env en producción) | auto (o un puerto fijo como COM3), 57600                                                                         | No                   | Todos         |
 | TIPO\_LECTOR                     | as608 (USB en el equipo de la API) o remoto (agente)                     | Texto          | No (as608 por defecto)                            | as608 en local; remoto en Railway                                                   | No                   | Todos         |
 | AGENTE\_TOKEN                    | Token compartido entre el backend y AgenteLector                         | Texto          | Sí con remoto                                     | \<64 caracteres aleatorios\>                                                        | Sí                   | Producción    |
 | PANTALLA\_TOKEN                  | Token de la pantalla de ingreso en la nube; vacío = solo el mismo equipo | Texto          | Sí en producción                                  | \<64 caracteres aleatorios\>                                                        | Sí                   | Producción    |
@@ -339,7 +340,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | -------------------------- | ------------------------------------------------------------------------------ | -------------------------------- | -------------- |
 | Compilación / build        | npm run build (frontend)                                                       | Finaliza sin errores             | Sí / No        |
 | Conexión a base de datos   | Iniciar el backend y abrir una pantalla con datos                              | Conexión exitosa                 | Sí / No        |
-| Health check               | No existe endpoint /health; la raíz responde { "error": "Ruta no encontrada" } | Estado saludable                 | Sí / No        |
+| Health check               | GET /api/salud responde { "estado": "ok", "lector": "conectado" } | Estado saludable                 | Sí / No        |
 | Inicio de sesión de prueba | Usuario creado con scripts/crear-admin.js                                      | Acceso según rol                 | Sí / No / N.A. |
 | Flujo crítico              | Registrar cliente, asignar membresía y validar acceso                          | Se completa sin bloqueo          | Sí / No        |
 | Logs                       | Consola del backend                                                            | Sin errores críticos ni secretos | Sí / No        |
@@ -431,8 +432,8 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 | **Artefacto**        | **Ruta de generación**        | **Comando**            | **Contenido**                | **Destino**                        |
 | -------------------- | ----------------------------- | ---------------------- | ---------------------------- | ---------------------------------- |
-| Frontend compilado   | FrontendZonafitevolution/dist | npm run build          | HTML, JS y CSS estáticos     | Hosting del frontend (por definir) |
-| Backend empaquetado  | BackendZonafitevolution       | npm install --omit=dev | Código fuente y dependencias | Hosting de la API (por definir)    |
+| Frontend compilado   | FrontendZonafitevolution/dist | npm run build          | HTML, JS y CSS estáticos     | Vercel |
+| Backend empaquetado  | BackendZonafitevolution       | npm install --omit=dev | Código fuente y dependencias | Railway    |
 | Imagen de contenedor | No aplica                     |                        |                              |                                    |
 | Migraciones          | database/init.sql             |                        | Esquema completo             | Base vacía                         |
 | Documentación API    | README (tablas de endpoints)  |                        |                              |                                    |
@@ -491,7 +492,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 7\. Vercel: actualizar VITE\_API\_URL con la URL de la API y redesplegar sin caché.
 
-8\. Agente del lector: en el portátil, AgenteLector/.env con API\_WS\_URL=wss://\<api\>/agente, el mismo AGENTE\_TOKEN, PUERTO\_LECTOR y BIOMETRIA\_SALT; luego npm install en BackendZonafitevolution y en AgenteLector, y npm start en AgenteLector.
+8\. Agente del lector: en el portátil, AgenteLector/.env con API\_WS\_URL=wss://\<api\>/agente, el mismo AGENTE\_TOKEN, PUERTO\_LECTOR=auto y BIOMETRIA\_SALT; luego doble clic en AgenteLector/recepcion/INSTALAR-RECEPCION.bat. El script instala las dependencias, crea la tarea programada «ZonaFit - Agente del lector» (arranca 10 s después de iniciar sesión y vuelve a abrir el agente si se cierra), abre la pantalla de ingreso al encender el portátil, deja en el escritorio los accesos Pantalla de ingreso, Administración y Verificar lector, y comprueba /api/salud. DESINSTALAR-RECEPCION.bat quita el arranque automático.
 
 9\. Pantalla de ingreso: abrir una vez https://zona-fit-evolution03.vercel.app/?pantalla=acceso\&token=\<PANTALLA\_TOKEN\> en el navegador que la mostrará.
 
@@ -629,7 +630,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Endpoint / mecanismo** | **Verifica**        | **Respuesta esperada** | **Frecuencia** | **Consumidor** |
 | ------------------------ | ------------------- | ---------------------- | -------------- | -------------- |
-| /health (no existe)      | Proceso principal   | 200 / estado healthy   |                |                |
+| /api/salud      | Proceso principal   | 200 / estado healthy   |                |                |
 | /ready (no existe)       | Dependencias listas | 200 / ready            |                |                |
 | /live (no existe)        | Proceso vivo        | 200 / alive            |                |                |
 |                          |                     |                        |                |                |
@@ -809,7 +810,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Regresiones dependen de pruebas manuales.                      |            |               | TT-007 y TT-008.                                                                               |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                                                                       |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                      |
-| DT-11  | Sistema no desplegado; hosting de la API por definir.                                  | Solo funciona en local.                                        |            |               | TT-009.                                                                                        |                      |
+| DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | —                                        |            |               | TT-009.                                                                                        |                      |
 | DT-12  | Archivos vacíos cd y npm en la raíz del backend.                                       | Ruido en el repositorio.                                       |            |               | Eliminarlos con un commit chore.                                                               |                      |
 
 ## 18\. Diagnóstico y solución de problemas
@@ -844,6 +845,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | INC-08     | «No tienes permisos para realizar esta acción»                 | El rol no tiene acceso                      | Rol del usuario              | Ingresar con un Administrador                                  | —                             |
 | INC-09     | «El lector no detectó un dedo nuevo» (código 0x17)             | Huella residual o dedo sin retirar          | —                            | Retirar el dedo, limpiar el lector y repetir                   | Persiste con el lector limpio |
 | INC-10     | Tipo de lector no soportado: simulador                         | .env antiguo con TIPO\_LECTOR=simulador     | Revisar .env                 | Cambiar a TIPO\_LECTOR=as608 y definir PUERTO\_LECTOR          | —                             |
+| INC-11 | La pantalla de ingreso se queda en «Conectando con el lector…» o muestra «Lector desconectado» | El agente no ha arrancado, el cable USB está suelto o el portátil no tiene internet | Acceso «Verificar lector ZonaFit» del escritorio; AgenteLector/agente.log | Revisar el cable USB e internet y reiniciar el portátil; la tarea programada vuelve a abrir el agente | Persiste tras reiniciar |
 
 ### 18.3 Información mínima para escalar
 

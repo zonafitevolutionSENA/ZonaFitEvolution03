@@ -166,7 +166,7 @@
 | Prioridad                    | Should                                                                                                                                  |
 | Estimación                   | 5 puntos de historia                                                                                                                    |
 | Dependencias                 | HU-006                                                                                                                                  |
-| Riesgos                      | Latencia del hosting (proveedor por definir).                                                                                           |
+| Riesgos                      | Latencia de Railway y de la conexión del agente del lector.                                                                                           |
 | Prototipo relacionado        | UI-06                                                                                                                                   |
 | Criterios de aceptación      | CA-HU-007-01                                                                                                                            |
 | Casos de prueba              | Medición RNF-003                                                                                                                        |

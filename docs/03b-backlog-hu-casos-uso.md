@@ -15,7 +15,7 @@
 | Revisor funcional        | Liliana Sofía Panesso Méndez (Product Owner, en representación del propietario)                          |
 | Revisor técnico          | Liliana Sofía Panesso Méndez (desarrollo backend)                                                        |
 | Revisor académico        | Instructor(a) responsable                                                                                |
-| Ubicación oficial        | Repositorio ZonaFitEvolution03, carpeta /docs/analisis (por crear), y tablero de Jira del proyecto SCRUM |
+| Ubicación oficial        | Repositorio ZonaFitEvolution03, carpeta docs/analisis (diagramas en docs/analisis/casos-uso), y tablero de Jira del proyecto SCRUM |
 | Periodicidad de revisión | En cada refinamiento, iteración o cambio aprobado                                                        |
 
 ### Historial de versiones
@@ -25,6 +25,7 @@
 | 0.1         | 20/10/2026 | Estructura y backlog inicial a partir del documento maestro integrado (v2.3) y de Jira                                  | Juan Diego Mejía Llano |                  |
 | 1.0         | 03/11/2026 | Versión para revisión: épicas, backlog, historias detalladas, criterios, casos de uso, plan de iteración y trazabilidad | Juan Diego Mejía Llano |                  |
 | 1.1         | 10/11/2026 | TT-010 y TT-003 terminadas, CU-004 con el sensor AS608, planes con tiqueteras y cambios CR-007 y CR-008                 | Juan Diego Mejía Llano |                  |
+| 1.2 | 22/11/2026 | Diagramas de casos de uso, diez secuencias y nueve actividades con un solo estilo (sección 10); despliegue en Vercel y Railway, TT-004, TT-006 y TT-009 terminadas y BLQ-002 cerrado | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -188,13 +189,13 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | 1         | HU-005 | Historia | Registrar huella del cliente                                          | EP-003             | Alto      | Must          | 13 pts         | HU-001, INT-01         | En progreso                                       | MVP         |
 | 2         | HU-008 | Historia | Registrar pagos y ver resumen                                         | EP-004             | Alto      | Must          | 5 pts          | HU-003, HU-004, TT-005 | En progreso                                       | MVP         |
 | 3         | HU-010 | Historia | Protección de datos                                                   | EP-005             | Alto      | Must          | 8 pts          | HU-002                 | En progreso                                       | MVP         |
-| 4         | HU-011 | Historia | Disponibilidad en horario                                             | EP-005             | Alto      | Must          | 8 pts          | TT-009                 | Planificada                                       | MVP         |
+| 4         | HU-011 | Historia | Disponibilidad en horario                                             | EP-005             | Alto      | Must          | 8 pts          | TT-009                 | Terminada                                       | MVP         |
 | 5         | TT-005 | Técnica  | Crear la tabla de pagos con monto y método                            | EP-004             | Alto      | Must          | 5 pts          | HU-008                 | Planificada                                       | MVP         |
 | 6         | TT-007 | Técnica  | Pruebas automatizadas de backend y frontend                           | EP-005             | Alto      | Must          | 8 pts          | —                      | Planificada                                       | MVP         |
-| 7         | TT-009 | Técnica  | Despliegue de la API en hosting (por definir) y base MySQL en la nube | EP-005             | Alto      | Must          | 5 pts          | —                      | Planificada                                       | MVP         |
+| 7         | TT-009 | Técnica  | Despliegue: frontend en Vercel, API y MySQL en Railway | EP-005             | Alto      | Must          | 5 pts          | —                      | Planificada                                       | MVP         |
 | 8         | TT-010 | Técnica  | Adaptador del sensor AS608 (CP2102) en la capa hardware               | EP-003             | Alto      | Must          | 8 pts          | INT-01                 | Terminada                                         | MVP         |
-| 9         | TT-004 | Técnica  | Restringir CORS al dominio del frontend                               | EP-005             | Medio     | Should        | 1 pts          | TT-009                 | Planificada                                       | MVP         |
-| 10        | TT-006 | Técnica  | Tarea programada de vencimiento en el servidor                        | EP-002             | Medio     | Should        | 3 pts          | HU-006                 | Planificada                                       | MVP         |
+| 9         | TT-004 | Técnica  | Restringir CORS al dominio del frontend                               | EP-005             | Medio     | Should        | 1 pts          | TT-009                 | Terminada                                       | MVP         |
+| 10        | TT-006 | Técnica  | Tarea programada de vencimiento en el servidor                        | EP-002             | Medio     | Should        | 3 pts          | HU-006                 | Terminada                                       | MVP         |
 | 11        | TT-008 | Técnica  | Pipeline de integración continua                                      | EP-005             | Medio     | Should        | 3 pts          | TT-007                 | Planificada                                       | MVP         |
 | 12        | HU-009 | Historia | Comprobante digital de pago                                           | EP-004             | Bajo      | Could         | 3 pts          | HU-008, TT-005         | Planificada                                       | MVP         |
 | 13        | HU-001 | Historia | Registrar clientes                                                    | EP-001             | Alto      | Must          | 3 pts          | HU-002                 | En validación                                     | MVP         |
@@ -266,7 +267,7 @@ Se mantienen en [`analisis/historias-de-usuario.md`](analisis/historias-de-usuar
 | 6       | Migraciones o cambios de datos incluidos.          | Sí / No / N.A. | Cambios en database/init.sql documentados en el README.                      |
 | 7       | Documentación y trazabilidad actualizadas.         | Sí / No        | README, documento maestro y matriz de trazabilidad.                          |
 | 8       | Integrada mediante el flujo Git definido.          | Sí / No        | Rama feature → develop → main por Pull Request.                              |
-| 9       | Desplegada o disponible en ambiente de prueba.     | Sí / No / N.A. | Ambiente local; despliegue en un hosting por definir en el sprint 13.        |
+| 9       | Desplegada o disponible en ambiente de prueba.     | Sí / No / N.A. | Desplegado en producción desde el 11/11/2026: frontend en Vercel, API y MySQL en Railway.        |
 | 10      | Validada por responsable funcional.                | Sí / No        | Aceptación del Product Owner en la sprint review.                            |
 
 ## 9\. Casos de uso y 10. Diagramas UML
@@ -331,7 +332,7 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | **ID**  | **Elemento afectado** | **Impedimento**                                                                    | **Impacto**            | **Responsable de resolver**  | **Fecha límite** | **Estado** |
 | ------- | --------------------- | ---------------------------------------------------------------------------------- | ---------------------- | ---------------------------- | ---------------- | ---------- |
 | BLQ-001 | HU-005, TT-010        | El sensor AS608 no estaba integrado con la API (TT-010).                           | —                      | Liliana Sofía Panesso Méndez | 10/11/2026       | Cerrado    |
-| BLQ-002 | HU-011, TT-009        | Falta definir el hosting de la API (no Render) y el proveedor de MySQL en la nube. | Retrasa el despliegue. | Liliana Sofía Panesso Méndez |                  | Abierto    |
+| BLQ-002 | HU-011, TT-009        | Faltaba definir el hosting de la API; se resolvió con Railway (API y MySQL) y Vercel (frontend) el 11/11/2026. | — | Liliana Sofía Panesso Méndez |                  | Cerrado    |
 
 ## 13\. Gestión de cambios
 
@@ -344,7 +345,7 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | CR-003        | Equipo de desarrollo | Migrar el frontend a React en un monorepo.                                                                                               | UI-01 a UI-09                                  | Tiempo y riesgo  | Aprobado                         | Juan Diego Mejía Llano | Sprint 9   |
 | CR-004        | Equipo de desarrollo | Calcular el registro financiero desde las membresías hasta tener la tabla de pagos.                                                      | HU-008, RF-006                                 | Alcance          | Aprobado (temporal)              | Juan Diego Mejía Llano | Sprint 10  |
 | CR-005        | STK-01 Propietario   | Usar el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02, CU-004 | Alcance          | Aprobado                         | Juan Diego Mejía Llano |            |
-| CR-006        | Equipo de desarrollo | Publicar el backend en un hosting distinto de Render (proveedor por definir).                                                            | TT-009, INT-02                                 | Tiempo y riesgo  | Aprobado (proveedor por definir) | Juan Diego Mejía Llano |            |
+| CR-006        | Equipo de desarrollo | Publicar el backend en un hosting distinto de Render: API y MySQL en Railway, frontend en Vercel.                                                            | TT-009, INT-02                                 | Tiempo y riesgo  | Aprobado e implementado (11/11/2026) | Juan Diego Mejía Llano |            |
 | CR-007        | Equipo de desarrollo | Eliminar la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                | RF-004, INT-01, CU-004                         | Alcance          | Aprobado                         | Juan Diego Mejía Llano | 10/11/2026 |
 | CR-008        | STK-01 Propietario   | Un solo ingreso por día en todos los planes (frontend listo; validación del backend pendiente).                                          | RF-002, RF-003, CU-004                         | Alcance          | Aprobado (backend pendiente)     | Juan Diego Mejía Llano | 10/11/2026 |
 
