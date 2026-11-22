@@ -42,11 +42,6 @@ async function actualizar(id, { nombre, correo, telefono }) {
   return resultado.affectedRows > 0;
 }
 
-async function eliminar(id) {
-  const [resultado] = await pool.query('DELETE FROM clientes WHERE id = ?', [id]);
-  return resultado.affectedRows > 0;
-}
-
 async function obtenerPorCedulaConMembresia(cedula) {
   // ANTERIOR: ORDER BY m.id DESC
   // NUEVO: se muestra primero la membresía activa; si no, la búsqueda para renovar
@@ -71,6 +66,5 @@ module.exports = {
   obtenerPorId,
   obtenerPorCedula,
   actualizar,
-  eliminar,
   obtenerPorCedulaConMembresia
 };

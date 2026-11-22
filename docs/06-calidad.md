@@ -25,6 +25,7 @@
 | 0.1         | 03/11/2026 | Estrategia inicial, riesgos, ambientes y catálogo de casos CP-001 a CP-021 (diseñados, sin ejecutar) | Juan Diego Mejía Llano |                  |
 | 0.2         | 10/11/2026 | Pruebas con el sensor AS608 (CP-010, CP-011 y nuevo CP-022) y simulador eliminado                    | Juan Diego Mejía Llano |                  |
 | 0.3 | 22/11/2026 | Ambiente de producción en Vercel y Railway y pruebas de humo del despliegue | Juan Diego Mejía Llano |  |
+| 0.4 | 22/11/2026 | Ciclo CIC-01 ejecutado el 22/11/2026: 24 de 24 casos aprobados (CP-001 a CP-022, RN-001 y RNF-003), ambiente de pruebas, evidencias, métricas y pipeline local | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -228,7 +229,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | **ID**   | **Ambiente** | **Propósito**                               | **URL / acceso**                                  | **Versión** | **Datos**  | **Responsable**                                                                 | **Disponibilidad**  |
 | -------- | ------------ | ------------------------------------------- | ------------------------------------------------- | ----------- | ---------- | ------------------------------------------------------------------------------- | ------------------- |
 | AMB-DEV  | Desarrollo   | Construcción y pruebas del desarrollador    | http://localhost:5173 / http://localhost:3000/api | develop     | Sintéticos | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla | Local               |
-| AMB-QA   | Pruebas      | Ejecución de los ciclos de prueba           |                                                   |             | Sintéticos |                                                                                 |                     |
+| AMB-QA   | Pruebas      | Ejecución de los ciclos de prueba           | API local (Node 22) y base MySQL de pruebas creada con init.sql | fix/reglas-seguridad-y-documentacion | Sintéticos (scripts/pruebas-cp.js) | Juan Diego Mejía Llano | Bajo demanda |
 | AMB-UAT  | Aceptación   | Validación del Product Owner y la recepción |                                                   |             | Sintéticos | Liliana Sofía Panesso Méndez (Product Owner)                                    |                     |
 | AMB-PROD | Producción   | Operación del gimnasio                      | https://zona-fit-evolution03.vercel.app (frontend) y API en Railway                               | v1.0.0      | Reales     | Liliana Sofía Panesso Méndez                                                    | Horario de atención |
 
@@ -240,9 +241,9 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | Runtime / SDK              | Node.js LTS reciente                                                                         |                                   |                  |
 | Base de datos              | MySQL local (XAMPP) o en la nube                                                             | init.sql + scripts/crear-admin.js |                  |
 | Navegadores / dispositivos | Chrome, Edge y Firefox; computador, tablet y celular                                         |                                   |                  |
-| Servicios externos / mocks | Sensor AS608 + CP2102 (sin simulador); en pruebas automatizadas se reemplazan sus respuestas | src/hardware                      |                  |
+| Servicios externos / mocks | Sensor AS608 + CP2102 (sin simulador); en CIC-01 un agente de prueba responde por WebSocket igual que AgenteLector | src/hardware                      |                  |
 | Variables de entorno       | .env.example del backend y VITE\_API\_URL del frontend                                       | Repositorio                       |                  |
-| Build / commit             |                                                                                              |                                   |                  |
+| Build / commit             | Rama fix/reglas-seguridad-y-documentacion (CIC-01) | GitHub | docs/pruebas/CIC-01-resultados.md |
 
 ### 6.3 Herramientas de prueba
 
@@ -302,28 +303,28 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **ID** | **Título**                                                  | **Requisito / HU / CU** | **Prioridad** | **Tipo**    | **Estado**                                   | **Automatizada** | **Responsable** |
 | ------ | ----------------------------------------------------------- | ----------------------- | ------------- | ----------- | -------------------------------------------- | ---------------- | --------------- |
-| CP-001 | Registro de cliente válido                                  | RF-001 / HU-001         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-002 | Cédula duplicada                                            | RF-001 / HU-001         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-003 | Campos inválidos                                            | RF-001 / HU-001         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-004 | Crear plan                                                  | RF-002 / HU-003         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-005 | Eliminar plan con membresías                                | RF-002 / HU-003         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-006 | Empleado intenta crear plan                                 | RF-002 / HU-003         | P1            | Seguridad   | Diseñado                                     |                  |                 |
-| CP-007 | Acceso con membresía activa                                 | RF-003 / HU-006         | P0            | Integración | Diseñado                                     |                  |                 |
-| CP-008 | Acceso con membresía vencida                                | RF-003 / HU-006         | P0            | Integración | Diseñado                                     |                  |                 |
-| CP-009 | Huella no reconocida                                        | RF-003 / HU-006         | P0            | Integración | Diseñado                                     |                  |                 |
-| CP-010 | Registrar huella                                            | RF-004 / HU-005         | P1            | Integración | Ejecutado manualmente (10/11/2026): aprobado |                  |                 |
-| CP-011 | Huella ya registrada (mismo dedo, también en otra posición) | RF-004 / HU-005         | P1            | Integración | Ejecutado manualmente (10/11/2026): aprobado |                  |                 |
-| CP-012 | Renovar vigente                                             | RF-005 / HU-004         | P0            | Integración | Diseñado                                     |                  |                 |
-| CP-013 | Renovar vencida                                             | RF-005 / HU-004         | P0            | Integración | Diseñado                                     |                  |                 |
-| CP-014 | Resumen de pagos                                            | RF-006 / HU-008         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-015 | Empleado sin registro financiero                            | RF-006 / HU-008         | P1            | Seguridad   | Diseñado                                     |                  |                 |
-| CP-016 | Inicio de sesión válido                                     | RF-007 / HU-002         | P0            | Integración | Diseñado                                     |                  |                 |
-| CP-017 | Credenciales inválidas                                      | RF-007 / HU-002         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-018 | Eliminar último administrador                               | RF-007 / HU-002         | P0            | Seguridad   | Diseñado                                     |                  |                 |
-| CP-019 | Filtrar historial                                           | RF-008 / HU-006         | P1            | Integración | Diseñado                                     |                  |                 |
-| CP-020 | Petición sin token                                          | RNF-001 / HU-010        | P0            | Seguridad   | Diseñado                                     |                  |                 |
-| CP-021 | Empleado en ruta de Administrador                           | RNF-001 / HU-010        | P0            | Seguridad   | Diseñado                                     |                  |                 |
-| CP-022 | Eliminar huella (se borra del sensor y de la base de datos) | RF-004 / HU-005         | P1            | Integración | Ejecutado manualmente (10/11/2026): aprobado |                  |                 |
+| CP-001 | Registro de cliente válido                                  | RF-001 / HU-001         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-002 | Cédula duplicada                                            | RF-001 / HU-001         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-003 | Campos inválidos                                            | RF-001 / HU-001         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-004 | Crear plan                                                  | RF-002 / HU-003         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-005 | Eliminar plan con membresías                                | RF-002 / HU-003         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-006 | Empleado intenta crear plan                                 | RF-002 / HU-003         | P1            | Seguridad   | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-007 | Acceso con membresía activa                                 | RF-003 / HU-006         | P0            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-008 | Acceso con membresía vencida                                | RF-003 / HU-006         | P0            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-009 | Huella no reconocida                                        | RF-003 / HU-006         | P0            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-010 | Registrar huella                                            | RF-004 / HU-005         | P1            | Integración | Ejecutado con el sensor (10/11/2026) y en CIC-01 (22/11/2026): aprobado | Sí (agente de prueba en pruebas-cp) |                 |
+| CP-011 | Huella ya registrada (mismo dedo, también en otra posición) | RF-004 / HU-005         | P1            | Integración | Ejecutado con el sensor (10/11/2026) y en CIC-01 (22/11/2026): aprobado | Sí (agente de prueba en pruebas-cp) |                 |
+| CP-012 | Renovar vigente                                             | RF-005 / HU-004         | P0            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-013 | Renovar vencida                                             | RF-005 / HU-004         | P0            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-014 | Resumen de pagos                                            | RF-006 / HU-008         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-015 | Empleado sin registro financiero                            | RF-006 / HU-008         | P1            | Seguridad   | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-016 | Inicio de sesión válido                                     | RF-007 / HU-002         | P0            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-017 | Credenciales inválidas                                      | RF-007 / HU-002         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-018 | Eliminar último administrador                               | RF-007 / HU-002         | P0            | Seguridad   | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm test y pruebas-cp) |                 |
+| CP-019 | Filtrar historial                                           | RF-008 / HU-006         | P1            | Integración | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm run pruebas-cp) |                 |
+| CP-020 | Petición sin token                                          | RNF-001 / HU-010        | P0            | Seguridad   | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm test y pruebas-cp) |                 |
+| CP-021 | Empleado en ruta de Administrador                           | RNF-001 / HU-010        | P0            | Seguridad   | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm test y pruebas-cp) |                 |
+| CP-022 | Eliminar huella (se borra del sensor y de la base de datos) | RF-004 / HU-005         | P1            | Integración | Ejecutado con el sensor (10/11/2026) y en CIC-01 (22/11/2026): aprobado | Sí (agente de prueba en pruebas-cp) |                 |
 
 ### 8.2 Ficha detallada de caso de prueba
 
@@ -370,19 +371,19 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 </tr>
 <tr class="odd">
 <td>Resultado obtenido</td>
-<td></td>
+<td>Denegado «Membresía vencida»; el intento quedó en el historial.</td>
 </tr>
 <tr class="even">
 <td>Ambiente / versión</td>
-<td></td>
+<td>AMB-QA: API local y MySQL de pruebas; rama fix/reglas-seguridad-y-documentacion</td>
 </tr>
 <tr class="odd">
 <td>Evidencia</td>
-<td></td>
+<td>docs/pruebas/CIC-01-resultados.md</td>
 </tr>
 <tr class="even">
 <td>Estado</td>
-<td>Diseñado</td>
+<td>Aprobado</td>
 </tr>
 <tr class="odd">
 <td>Defecto asociado</td>
@@ -390,7 +391,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 </tr>
 <tr class="even">
 <td>Responsable y fecha</td>
-<td></td>
+<td>Juan Diego Mejía Llano, 22/11/2026</td>
 </tr>
 </tbody>
 </table>
@@ -439,9 +440,9 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Dimensión**                | **Meta**                     | **Método**             | **Exclusiones justificadas** | **Resultado** |
 | ---------------------------- | ---------------------------- | ---------------------- | ---------------------------- | ------------- |
-| Requisitos críticos          | 100 % con prueba y evidencia | Matriz de trazabilidad |                              |               |
-| Reglas de negocio críticas   | 100 % (RN-002 a RN-012)      | Casos / unitarias      |                              |               |
-| Cobertura de código          |                              | Herramienta            |                              |               |
+| Requisitos críticos          | 100 % con prueba y evidencia | Matriz de trazabilidad |                              | RF-001 a RF-008 con al menos un caso aprobado en CIC-01 |
+| Reglas de negocio críticas   | 100 % (RN-002 a RN-012)      | Casos / unitarias      |                              | RN-001, RN-002, RN-003, RN-005, RN-008 a RN-012 cubiertas en CIC-01 |
+| Cobertura de código          |                              | Herramienta            |                              | 44 % de líneas (pruebas unitarias del backend) |
 | Ramas / condiciones críticas |                              |                        |                              |               |
 | Flujos E2E críticos          | 100 % (FLU-001 a FLU-005)    |                        |                              |               |
 
@@ -458,13 +459,13 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Etapa**                | **Comando / herramienta**        | **Condición de aprobación**              | **Artefacto generado** |
 | ------------------------ | -------------------------------- | ---------------------------------------- | ---------------------- |
-| Instalación reproducible | npm install (backend y frontend) | Sin errores                              |                        |
-| Lint / formato           | npm run lint                     | Sin errores críticos                     |                        |
-| Pruebas unitarias        |                                  | Aprobadas                                |                        |
-| Pruebas integración      |                                  | Aprobadas                                |                        |
-| Build                    | npm run build                    | Exitoso                                  |                        |
-| Auditoría dependencias   | npm audit                        | Sin vulnerabilidades críticas sin tratar |                        |
-| Reporte cobertura        |                                  | Meta evaluada                            |                        |
+| Instalación reproducible | npm install (backend y frontend) | Sin errores                              | npm ci sin errores (22/11/2026) |
+| Lint / formato           | npm run lint                     | Sin errores críticos                     | Sin errores |
+| Pruebas unitarias        | npm test (node --test) | Aprobadas | 24 pruebas aprobadas |
+| Pruebas integración      | npm run pruebas-cp | Aprobadas | docs/pruebas/CIC-01-resultados.md (24 de 24) |
+| Build                    | npm run build                    | Exitoso                                  | dist/ generado sin errores |
+| Auditoría dependencias   | npm audit                        | Sin vulnerabilidades críticas sin tratar | 0 vulnerabilidades |
+| Reporte cobertura        | node --test --experimental-test-coverage | Meta evaluada | 44 % de líneas con las pruebas unitarias |
 
 ## 10\. Pruebas funcionales y de integración
 
@@ -472,9 +473,9 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Módulo**         | **Flujo crítico**                     | **RF / HU**                     | **Reglas**              | **Casos**                       | **Resultado** | **Evidencia** |
 | ------------------ | ------------------------------------- | ------------------------------- | ----------------------- | ------------------------------- | ------------- | ------------- |
-| Autenticación      | Iniciar sesión y acceder según el rol | RF-007 / HU-002                 | RN-011, RN-012          | CP-016 a CP-018, CP-020, CP-021 |               |               |
-| Control de acceso  | Validar ingreso por huella            | RF-003, RF-004 / HU-005, HU-006 | RN-002, RN-008 a RN-010 | CP-007 a CP-011, CP-019         |               |               |
-| Membresías y pagos | Asignar, renovar y consultar pagos    | RF-005, RF-006 / HU-004, HU-008 | RN-003 a RN-005, RN-011 | CP-012 a CP-015                 |               |               |
+| Autenticación      | Iniciar sesión y acceder según el rol | RF-007 / HU-002                 | RN-011, RN-012          | CP-016 a CP-018, CP-020, CP-021 | Aprobado (CIC-01) | docs/pruebas/CIC-01-resultados.md |
+| Control de acceso  | Validar ingreso por huella            | RF-003, RF-004 / HU-005, HU-006 | RN-002, RN-008 a RN-010 | CP-007 a CP-011, CP-019         | Aprobado (CIC-01) | docs/pruebas/CIC-01-resultados.md |
+| Membresías y pagos | Asignar, renovar y consultar pagos    | RF-005, RF-006 / HU-004, HU-008 | RN-003 a RN-005, RN-011 | CP-012 a CP-015                 | Aprobado (CIC-01) | docs/pruebas/CIC-01-resultados.md |
 
 ### 10.2 Pruebas de API
 
@@ -505,14 +506,14 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Control**           | **Aplica** | **Prueba prevista**                   | **Criterio de aceptación**                | **Evidencia** |
 | --------------------- | ---------- | ------------------------------------- | ----------------------------------------- | ------------- |
-| Autenticación         | Sí         | CP-016, CP-017                        | No revela información sensible            |               |
-| Autorización servidor | Sí         | CP-018, CP-021                        | No se eluden permisos modificando cliente |               |
-| Sesión / tokens       | Sí         | CP-020 (token vencido o ausente)      | Expiración y revocación definidas         |               |
+| Autenticación         | Sí         | CP-016, CP-017                        | No revela información sensible            | CIC-01: CP-016 y CP-017 aprobados |
+| Autorización servidor | Sí         | CP-018, CP-021                        | No se eluden permisos modificando cliente | CIC-01: CP-018 y CP-021 aprobados |
+| Sesión / tokens       | Sí         | CP-020 (token vencido o ausente)      | Expiración y revocación definidas         | CIC-01: CP-020 aprobado |
 | Inyección             | Sí         | Revisión de repositorios              | Entradas tratadas correctamente           |               |
 | XSS / CSRF            | Sí         | Revisión de salidas en React          | Control acorde a tecnología               |               |
 | Secretos              | Sí         | Revisión de .gitignore y .env.example | Sin credenciales reales                   |               |
-| Dependencias          | Sí         | npm audit                             | Sin críticas sin tratamiento              |               |
-| Datos personales      | Sí         | Respuestas sin template\_hash         | Acceso y minimización controlados         |               |
+| Dependencias          | Sí         | npm audit                             | Sin críticas sin tratamiento              | npm audit: 0 vulnerabilidades (22/11/2026) |
+| Datos personales      | Sí         | Respuestas sin template\_hash         | Acceso y minimización controlados         | CIC-01: CP-010 comprueba que la respuesta no expone el hash |
 
 ### 11.2 Matriz de autorización
 
@@ -677,7 +678,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **ID** | **Tipo**                | **Descripción** | **Caso / defecto** | **Ubicación** | **Versión** | **Responsable** |
 | ------ | ----------------------- | --------------- | ------------------ | ------------- | ----------- | --------------- |
-| EV-001 | Reporte / captura / log |                 | CP-\_\_\_          |               |             |                 |
+| EV-001 | Reporte | Resultados del ciclo CIC-01 | CP-001 a CP-022, RN-001, RNF-003 | docs/pruebas/CIC-01-resultados.md | fix/reglas-seguridad-y-documentacion | Juan Diego Mejía Llano |
 | EV-002 |                         |                 | DEF-\_\_\_         |               |             |                 |
 
 ### 15.2 Reglas de evidencia
@@ -696,19 +697,19 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Indicador**                   | **Fórmula / método**                   | **Meta**            | **Frecuencia** | **Resultado** |
 | ------------------------------- | -------------------------------------- | ------------------- | -------------- | ------------- |
-| Cobertura de requisitos         | Requisitos con prueba aprobada / total | 100 % críticos      |                |               |
-| Tasa de aprobación              | Casos aprobados / ejecutados           |                     |                |               |
-| Defectos abiertos por severidad | Conteo                                 | 0 críticos abiertos |                |               |
+| Cobertura de requisitos         | Requisitos con prueba aprobada / total | 100 % críticos      |                | 100 % (RF-001 a RF-008) |
+| Tasa de aprobación              | Casos aprobados / ejecutados           | 100 % |                | 24 de 24 (100 %) |
+| Defectos abiertos por severidad | Conteo                                 | 0 críticos abiertos |                | 0 críticos |
 | Densidad de defectos            | Defectos / módulo o tamaño             |                     |                |               |
 | Reapertura                      | Defectos reabiertos / cerrados         |                     |                |               |
 | Tiempo medio de corrección      | Promedio desde registro a cierre       |                     |                |               |
-| Cobertura de código             | Herramienta                            |                     |                |               |
+| Cobertura de código             | Herramienta                            | Informativa |                | 44 % de líneas (unitarias) |
 
 ### 15.4 Reporte de ejecución
 
 | **Ciclo** | **Fecha** | **Versión** | **Planificados** | **Ejecutados** | **Aprobados** | **Fallidos** | **Bloqueados** | **Conclusión** |
 | --------- | --------- | ----------- | ---------------- | -------------- | ------------- | ------------ | -------------- | -------------- |
-| CIC-01    |           |             |                  |                |               |              |                |                |
+| CIC-01    | 22/11/2026 | fix/reglas-seguridad-y-documentacion | 24 | 24 | 24 | 0 | 0 | Aprobado en el ambiente de pruebas local. Falta repetir CP-007 a CP-011 en producción con el sensor físico (CIC-02). |
 | CIC-02    |           |             |                  |                |               |              |                |                |
 
 ## 16\. Pruebas de aceptación y decisión de liberación

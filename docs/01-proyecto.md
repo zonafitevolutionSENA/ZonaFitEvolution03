@@ -24,6 +24,7 @@
 | 1.0         | 03/11/2026 | Versión para revisión: problema, objetivos, alcance, entregables, recursos, riesgos y gobierno | Juan Diego Mejía Llano |            |            |
 | 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; supuestos y dependencias actualizados            | Juan Diego Mejía Llano |            |            |
 | 1.2 | 22/11/2026 | Hosting definido y en uso: frontend en Vercel, API y MySQL en Railway; viabilidad económica, dependencias y pendientes actualizados | Juan Diego Mejía Llano |  |  |
+| 1.3 | 22/11/2026 | Introducciones propias en contexto, justificación, beneficios, alcance y MVP en lugar de las instrucciones de la plantilla | Juan Diego Mejía Llano |  |  |
 
 ### Aprobaciones
 
@@ -251,7 +252,7 @@ Redacte una frase que indique el tipo de solución, el proceso que apoya y los u
 
 ## 3\. Contexto y antecedentes
 
-Describa el entorno en el que se presenta la necesidad. Incluya el proceso actual, las personas involucradas, las herramientas utilizadas, los antecedentes relevantes y las condiciones institucionales, organizacionales o técnicas que ayudan a comprender la situación.
+El gimnasio Zona Fit Evolution controla hoy el ingreso de 300 a 400 clientes registrados (150 a 200 socios activos) con revisión manual en la recepción, sin un registro confiable de quién entra ni de qué membresías están vigentes. La tabla siguiente resume el proceso actual, las personas que intervienen y las condiciones del entorno.
 
 ### 3.1 Contexto organizacional o sectorial
 
@@ -340,7 +341,7 @@ El problema debe describir una situación negativa, necesidad insatisfecha u opo
 
 ## 5\. Justificación
 
-Explique por qué el proyecto merece realizarse. La justificación debe conectar el problema con el valor esperado y considerar viabilidad técnica, operativa, económica, académica, social, legal y ambiental cuando corresponda.
+El proyecto se justifica porque el control manual permite ingresos con membresías vencidas y no deja historial; un sistema web con validación por huella resuelve ambos problemas con herramientas libres y un sensor de bajo costo. La tabla analiza cada dimensión de la justificación.
 
 ### 5.1 Dimensiones de justificación
 
@@ -412,7 +413,7 @@ Estructura recomendada: verbo en infinitivo + producto o capacidad principal + p
 
 ## 7\. Beneficios y valor esperado
 
-Registre los beneficios esperados y diferencie los resultados directamente controlables por el proyecto de los impactos que dependen de adopción, operación u otros factores externos.
+Los beneficios directos dependen del sistema (validar la vigencia, registrar cada intento); los impactos como la reducción de pérdidas dependen de que la recepción use el sistema todos los días.
 
 | **ID** | **Beneficio esperado**                       | **Beneficiario**                     | **Tipo** | **Indicador** | **Horizonte** | **Responsable de medición**  |
 | ------ | -------------------------------------------- | ------------------------------------ | -------- | ------------- | ------------- | ---------------------------- |
@@ -464,7 +465,7 @@ Los indicadores permiten verificar si el proyecto logró lo que prometió. Deben
 
 ## 9\. Alcance preliminar
 
-Defina a alto nivel qué incluye y qué excluye el proyecto. El detalle completo se desarrollará posteriormente en el Documento de Alcance y Especificación de Requisitos.
+El proyecto incluye la gestión de clientes, planes, membresías, personal y el control de acceso por huella con su historial; excluye la apertura física de la puerta, los pagos en línea y la facturación electrónica. El detalle está en el documento de Alcance y Especificación de Requisitos.
 
 ### 9.1 Capacidades o módulos incluidos
 
@@ -485,7 +486,7 @@ Defina a alto nivel qué incluye y qué excluye el proyecto. El detalle completo
 
 ### 9.3 Producto mínimo viable (MVP)
 
-Describa la versión mínima que permite comprobar el valor principal del proyecto sin incorporar funcionalidades accesorias.
+El MVP es el recorrido completo de la recepción: registrar al cliente, asignar o renovar su membresía, registrar su huella y validar su ingreso en la pantalla, con el historial de cada intento.
 
 | **Flujo crítico**                     | **Resultado mínimo esperado**                                    | **Usuario**       | **Evidencia de funcionamiento** |
 | ------------------------------------- | ---------------------------------------------------------------- | ----------------- | ------------------------------- |

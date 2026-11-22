@@ -26,6 +26,7 @@
 | 1.0         | 03/11/2026 | Versión para revisión: alcance, requisitos, reglas, permisos, datos, interfaces, priorización y trazabilidad   | Juan Diego Mejía Llano |                  |
 | 1.1         | 10/11/2026 | AS608 integrado, catálogo de planes 2026, correo obligatorio, reglas RN-013 a RN-015 y cambios CR-007 y CR-008 | Juan Diego Mejía Llano |                  |
 | 1.2 | 22/11/2026 | Despliegue en Vercel y Railway (RSD-07, INT-02 y CR-006) y tarea diaria de vencimiento y activación de membresías | Juan Diego Mejía Llano |  |
+| 1.3 | 22/11/2026 | Observaciones OBS-001 y OBS-002 cerradas (RN-001 y RN-012 validadas en el backend) y alcance real de CR-008 | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -915,7 +916,7 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | CR-005 |                       | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02 | Aprobado                         | Juan Diego Mejía Llano | MVP         |
 | CR-006 |                       | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            | TT-009, INT-02, RSD-07                 | Aprobado e implementado | Juan Diego Mejía Llano | MVP         |
 | CR-007 | 10/11/2026            | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                         | RF-004, INT-01, UI-06                  | Aprobado                         | Juan Diego Mejía Llano | MVP         |
-| CR-008 | 10/11/2026            | Regla de un ingreso por día en todos los planes; el frontend la muestra y la validación del backend queda pendiente.                                | RF-002, RF-003, RN-015                 | Aprobado (backend pendiente)     | Juan Diego Mejía Llano | MVP         |
+| CR-008 | 10/11/2026            | Regla de un ingreso por día en todos los planes; el frontend la muestra y el backend la aplica a las tiqueteras.                                | RF-002, RF-003, RN-015                 | Aprobado; el backend la aplica a las tiqueteras (un descuento por día); para los planes por tiempo falta confirmarla con el propietario     | Juan Diego Mejía Llano | MVP         |
 
 ## 13\. Trazabilidad y cobertura
 
@@ -973,8 +974,8 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 
 | **ID**  | **Sección / requisito** | **Observación**                                                                                                | **Severidad** | **Responsable**              | **Fecha límite** | **Estado** |
 | ------- | ----------------------- | -------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------------- | ---------------- | ---------- |
-| OBS-001 | RN-001 / RF-001         | El backend mantiene la ruta DELETE /api/clientes/:id, que contradice RN-001.                                   | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Abierta    |
-| OBS-002 | RN-012 / RF-007         | La regla de no eliminar la propia cuenta ni al último administrador solo se valida en el frontend.             | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Abierta    |
+| OBS-001 | RN-001 / RF-001         | El backend mantiene la ruta DELETE /api/clientes/:id, que contradice RN-001.                                   | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Cerrada (TT-002, 22/11/2026)    |
+| OBS-002 | RN-012 / RF-007         | La regla de no eliminar la propia cuenta ni al último administrador solo se valida en el frontend.             | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | Cerrada (TT-001, 22/11/2026)    |
 | OBS-003 | RNF-001                 | El límite de intentos de inicio de sesión ya está implementado (5 cada 15 minutos); CORS sigue sin restringir. | Mayor         | Liliana Sofía Panesso Méndez | 11/11/2026       | En curso   |
 | OBS-004 | RF-006                  | Los pagos se estiman con el precio actual del plan; falta la tabla de pagos.                                   | Mayor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |
 | OBS-005 | RN-002                  | El vencimiento se marca al consultar, no con una tarea programada.                                             | Menor         | Liliana Sofía Panesso Méndez | 25/11/2026       | Abierta    |

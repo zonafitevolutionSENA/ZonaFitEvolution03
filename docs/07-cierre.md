@@ -10,6 +10,7 @@
 | 0.1         | 03/11/2026 | Borrador con el estado al sprint 11; resultados por completar al cierre | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.2         | 10/11/2026 | Estado al 10/11/2026: sensor AS608 integrado y simulador eliminado      | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.3 | 22/11/2026 | Estado al 22/11/2026: sistema desplegado en Vercel y Railway, healthcheck y custodia de la infraestructura | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.4 | 22/11/2026 | Estado al 22/11/2026: reglas de seguridad en el backend, ciclo CIC-01 aprobado, resumen ejecutivo, coherencia arquitectónica y condiciones de operación | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -66,7 +67,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 |                                                                                                                                               |
 | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| *\[Presente en máximo una página el problema, la solución, los usuarios, el alcance entregado, los resultados y la conclusión del proyecto\]* |
+| *El gimnasio Zona Fit Evolution controlaba el ingreso de sus socios de forma manual, sin historial y con riesgo de ingresos con membresías vencidas. El equipo construyó una aplicación web (React en Vercel, API Node.js con MySQL en Railway) que usan el Administrador y los Empleados para gestionar clientes, planes, membresías y personal, y una pantalla de ingreso donde el socio valida su acceso con la huella en un sensor AS608 conectado al portátil de recepción. Se entregó el alcance del MVP, salvo la tabla de pagos reales (el registro financiero estima con el precio del plan). El ciclo de pruebas CIC-01 aprobó 24 de 24 casos y la validación responde en milisegundos en el servidor. Queda pendiente repetir las pruebas de acceso con el sensor en producción, la aceptación del Product Owner y la etiqueta v1.0.0.* |
 
 ## 3\. Cumplimiento de objetivos
 
@@ -90,13 +91,13 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **ID** | **Módulo / capacidad**               | **Comprometido** | **Entregado**             | **Estado** | **Justificación / evidencia**                                                          |
 | ------ | ------------------------------------ | ---------------- | ------------------------- | ---------- | -------------------------------------------------------------------------------------- |
-| ALC-01 | Autenticación y roles                | Sí               | Implementado en local     |            | Regla del último administrador por integrar en el backend (TT-001)                     |
-| ALC-02 | Gestión del personal                 | Sí               | Implementado en local     |            |                                                                                        |
-| ALC-03 | Gestión de clientes                  | Sí               | Implementado en local     |            | Ruta DELETE /api/clientes/:id por retirar (TT-002)                                     |
-| ALC-04 | Catálogo de planes                   | Sí               | Implementado en local     |            |                                                                                        |
-| ALC-05 | Membresías                           | Sí               | Implementado y desplegado     |            | Tarea diaria de vencimiento y activación en el backend (TT-006)                                         |
+| ALC-01 | Autenticación y roles                | Sí               | Implementado y desplegado     | Cumplido | Regla del último administrador validada en el backend (TT-001); CP-016 a CP-021 aprobados                     |
+| ALC-02 | Gestión del personal                 | Sí               | Implementado y desplegado     | Cumplido |                                                                                        |
+| ALC-03 | Gestión de clientes                  | Sí               | Implementado y desplegado     | Cumplido | Los clientes no se eliminan: ruta retirada (TT-002)                                     |
+| ALC-04 | Catálogo de planes                   | Sí               | Implementado y desplegado     | Cumplido |                                                                                        |
+| ALC-05 | Membresías                           | Sí               | Implementado y desplegado     | Cumplido | Tarea diaria de vencimiento y activación en el backend (TT-006)                                         |
 | ALC-06 | Control de acceso biométrico (AS608) | Sí               | Sí (sensor AS608)         | Cumplido   | Registro, validación, huellas duplicadas y borrado probados con el lector (10/11/2026) |
-| ALC-07 | Historial de accesos                 | Sí               | Implementado en local     |            |                                                                                        |
+| ALC-07 | Historial de accesos                 | Sí               | Implementado y desplegado     | Cumplido |                                                                                        |
 | ALC-08 | Registro financiero                  | Sí               | Parcial (pagos estimados) |            | Tabla de pagos pendiente (TT-005)                                                      |
 | ALC-09 | Comprobante digital de pago          | Could            |                           |            |                                                                                        |
 | ALC-10 | Inicio (dashboard)                   | Sí               | Implementado en local     |            |                                                                                        |
@@ -182,7 +183,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Frontend                     | React 19 + Vite                 | Implementado                | 9 pantallas (UI-01 a UI-09)              |               |
 | Backend / API                | Node.js + Express 5             | Implementado                | 19 grupos de endpoints bajo /api         |               |
 | Base de datos                | MySQL (mysql2)                  | Implementado                | 7 tablas (init.sql)                      |               |
-| Autenticación / autorización | JWT 8 h + bcrypt; permitirRoles | Implementado con pendientes | TT-001, TT-003 en progreso               |               |
+| Autenticación / autorización | JWT 8 h + bcrypt; permitirRoles | Implementado | TT-001 y TT-003 terminadas; CP-016 a CP-021 aprobados               |               |
 | Integraciones                | Sensor AS608 + CP2102           | Integrado                   | Registro y validación con el lector real |               |
 | Infraestructura / despliegue | Vercel (frontend); Railway (API Node.js 20 y MySQL 8.4); agente local del lector             | Implementado                   |                                          |               |
 | Observabilidad               | Consola + registros\_acceso     | Parcial                     | GET /api/salud con el estado del lector; métricas y logs de Railway                 |               |
@@ -191,7 +192,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 |                                                                                                                          |
 | ------------------------------------------------------------------------------------------------------------------------ |
-| *\[Explique si la arquitectura implementada coincide con los diagramas y decisiones aprobadas; documente desviaciones\]* |
+| *La arquitectura implementada coincide con los diagramas v2.0 (docs/diagramas) y con los ADR vigentes: cliente-servidor con backend en capas, fachada y patrón State para el acceso, adaptador del lector con fábrica por TIPO\_LECTOR y agente remoto por WebSocket (ADR-008). La única desviación registrada es el registro financiero calculado en el frontend (ADR-006), mientras se crea la tabla de pagos (TT-005); el marcado de vencidas al consultar (ADR-007) fue reemplazado por la tarea diaria del backend.* |
 
 ### 7.2 Estado de datos y migraciones
 
@@ -207,13 +208,13 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Tipo de prueba** | **Planificadas** | **Ejecutadas** | **Aprobadas** | **Fallidas** | **Bloqueadas** | **Cobertura** |
 | ------------------ | ---------------- | -------------- | ------------- | ------------ | -------------- | ------------- |
-| Unitarias          |                  |                |               |              |                |               |
-| Integración        |                  |                |               |              |                |               |
+| Unitarias          | 24 | 24 | 24 | 0 | 0 | 44 % de líneas |
+| Integración        | 22 | 22 | 22 | 0 | 0 | CP-001 a CP-022 (CIC-01) |
 | End-to-End         |                  |                |               |              |                |               |
 | API                |                  |                |               |              |                |               |
-| Seguridad          |                  |                |               |              |                |               |
+| Seguridad          | 5 | 5 | 5 | 0 | 0 | CP-018, CP-020, CP-021, RN-001 y npm audit |
 | Accesibilidad      |                  |                |               |              |                |               |
-| Rendimiento        |                  |                |               |              |                |               |
+| Rendimiento        | 1 | 1 | 1 | 0 | 0 | RNF-003 en el servidor (p95 6,4 ms) |
 | Aceptación         |                  |                |               |              |                |               |
 
 ### 8.1 Defectos al cierre
@@ -228,10 +229,10 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Indicador**                      | **Meta** | **Resultado** | **Cumple** | **Fuente** |
 | ---------------------------------- | -------- | ------------- | ---------- | ---------- |
-| Cobertura de pruebas               |          |               |            |            |
-| Defectos críticos abiertos         | 0        |               |            |            |
-| Build / pipeline exitoso           | Sí       |               |            |            |
-| Tiempo de respuesta crítico        |          |               |            |            |
+| Cobertura de pruebas               | RF críticos con caso aprobado | 100 % de RF-001 a RF-008; 44 % de líneas | Sí | docs/pruebas/CIC-01-resultados.md |
+| Defectos críticos abiertos         | 0        | 0 | Sí | docs/pruebas/CIC-01-resultados.md |
+| Build / pipeline exitoso           | Sí       | Build y lint sin errores; sin pipeline de CI (TT-008) | Parcial | npm run build, npm run lint |
+| Tiempo de respuesta crítico        | < 2 s (RNF-003) | p95 6,4 ms en el servidor | Sí (falta medir con el sensor) | docs/pruebas/CIC-01-resultados.md |
 | Accesibilidad básica               |          |               |            |            |
 | Vulnerabilidades críticas abiertas | 0        |               |            |            |
 
@@ -241,9 +242,9 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | ------------------------------ | ---------------------------------------------------------------------- | ------------- | -------------------- |
 | Secretos fuera del repositorio | .env excluido; .env.example versionado                                 |               |                      |
 | Contraseñas protegidas         | bcrypt                                                                 |               |                      |
-| Autorización en servidor       | permitirRoles en cada ruta; regla del último admin solo en el frontend |               | DT-05                |
+| Autorización en servidor       | permitirRoles en cada ruta; regla del último administrador también en el backend |               | —                |
 | HTTPS en ambiente público      | Certificados de Vercel y Railway |               | —  |
-| Dependencias auditadas         |                                                                        |               |                      |
+| Dependencias auditadas         | npm audit: 0 vulnerabilidades (22/11/2026) |               |                      |
 | Datos personales controlados   | Solo hash de la huella; la API no devuelve el hash                     |               |                      |
 | Licencias y atribuciones       |                                                                        |               | No existe LICENSE    |
 | Declaración de uso de IA       |                                                                        |               |                      |
@@ -281,7 +282,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 |                                                                                                                |
 | -------------------------------------------------------------------------------------------------------------- |
-| *\[Documente horarios, limitaciones, dependencias externas, capacidad y condiciones especiales de operación\]* |
+| *El sistema opera en el horario de atención del gimnasio. Depende de Vercel, Railway (prueba hasta el 10/12/2026, luego plan Hobby) y del internet del portátil de recepción, donde corren el agente del lector y la pantalla de ingreso. El sensor guarda hasta 300 huellas. Si falla internet en recepción, solo se detiene la validación por huella y se valida por cédula.* |
 
 ## 11\. Aceptación del producto
 
@@ -321,7 +322,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 |                                                                                                       |
 | ----------------------------------------------------------------------------------------------------- |
-| *\[Indique navegadores, dispositivos, volúmenes, horarios, dependencias o escenarios no soportados\]* |
+| *Navegadores Chrome y Edge actuales en computador; la pantalla de ingreso necesita el portátil de recepción con el sensor AS608 por USB. Capacidad prevista: 400 clientes y unas 200 validaciones por día. No se soportan pagos en línea, apertura automática de la puerta ni varias sedes.* |
 
 ## 13\. Deuda técnica
 
@@ -330,8 +331,8 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | DT-01  | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               |              |                      |
 | DT-02  | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | Revisión del código | —                                                              |               |              |                      |
 | DT-03  | Vencimiento marcado desde el frontend, no con tarea programada.                        | Revisión del código | Estado guardado desactualizado.                                |               |              |                      |
-| DT-04  | La ruta DELETE /api/clientes/:id sigue en main (contradice RN-001).                    | Revisión del código | Contradicción regla–API.                                       |               |              |                      |
-| DT-05  | La regla del último administrador solo se valida en el frontend.                       | Revisión del código | Se puede saltar llamando la API.                               |               |              |                      |
+| DT-04  | Resuelto: se retiró la ruta DELETE /api/clientes/:id (TT-002).                    | Revisión del código | —                                       |               |              |                      |
+| DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | Revisión del código | —                               |               |              |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               |              |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               |              |                      |
 | DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Revisión del código | Regresiones dependen de pruebas manuales.                      |               |              |                      |

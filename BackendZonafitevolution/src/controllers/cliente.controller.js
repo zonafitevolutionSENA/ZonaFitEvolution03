@@ -36,13 +36,5 @@ async function actualizar(req, res, next) {
   }
 }
 
-async function eliminar(req, res, next) {
-  try {
-    const resultado = await clienteService.eliminarCliente(req.params.id);
-    res.status(200).json(resultado);
-  } catch (error) {
-    next(error);
-  }
-}
 
-module.exports = { registrar, listar, obtenerPorId, actualizar, eliminar };
+module.exports = { registrar, listar, obtenerPorId, actualizar };
