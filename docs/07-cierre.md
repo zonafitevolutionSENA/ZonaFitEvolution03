@@ -11,6 +11,7 @@
 | 0.2         | 10/11/2026 | Estado al 10/11/2026: sensor AS608 integrado y simulador eliminado      | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.3 | 22/11/2026 | Estado al 22/11/2026: sistema desplegado en Vercel y Railway, healthcheck y custodia de la infraestructura | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.4 | 22/11/2026 | Estado al 22/11/2026: reglas de seguridad en el backend, ciclo CIC-01 aprobado, resumen ejecutivo, coherencia arquitectónica y condiciones de operación | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.5 | 22/11/2026 | Identificación de la entrega (URL, ambiente, licencia, versión), licencia ISC y matriz de trazabilidad con 89 % de cobertura completa | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -57,10 +58,10 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Fecha de inicio          | 25/04/2026                                                                                                                                                                                                                                                                                                                         |
 | Fecha de cierre          | 12/12/2026                                                                                                                                                                                                                                                                                                                         |
 | Repositorio              | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03                                                                                                                                                                                                                                                                         |
-| Etiqueta / commit final  |                                                                                                                                                                                                                                                                                                                                    |
-| URL desplegada           |                                                                                                                                                                                                                                                                                                                                    |
-| Ambiente de demostración |                                                                                                                                                                                                                                                                                                                                    |
-| Licencia                 |                                                                                                                                                                                                                                                                                                                                    |
+| Etiqueta / commit final  | Sin etiqueta todavía: la v1.0.0 se crea al cierre en main (último commit integrado: 073dcf9, 22/11/2026) |
+| URL desplegada           | https://zona-fit-evolution03.vercel.app (API: https://zonafitevolution03-production.up.railway.app/api) |
+| Ambiente de demostración | Producción en Vercel y Railway, con el portátil de recepción, el agente del lector y el sensor AS608 |
+| Licencia                 | ISC (archivo LICENSE en la raíz del repositorio) |
 | Responsable de custodia  |                                                                                                                                                                                                                                                                                                                                    |
 
 ### 2.1 Resumen ejecutivo
@@ -246,7 +247,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | HTTPS en ambiente público      | Certificados de Vercel y Railway |               | —  |
 | Dependencias auditadas         | npm audit: 0 vulnerabilidades (22/11/2026) |               |                      |
 | Datos personales controlados   | Solo hash de la huella; la API no devuelve el hash                     |               |                      |
-| Licencias y atribuciones       |                                                                        |               | No existe LICENSE    |
+| Licencias y atribuciones       | Archivo LICENSE (ISC) en la raíz del repositorio |               | Resuelto    |
 | Declaración de uso de IA       |                                                                        |               |                      |
 
 <table>
