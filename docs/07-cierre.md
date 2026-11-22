@@ -12,6 +12,7 @@
 | 0.3 | 22/11/2026 | Estado al 22/11/2026: sistema desplegado en Vercel y Railway, healthcheck y custodia de la infraestructura | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.4 | 22/11/2026 | Estado al 22/11/2026: reglas de seguridad en el backend, ciclo CIC-01 aprobado, resumen ejecutivo, coherencia arquitectónica y condiciones de operación | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.5 | 22/11/2026 | Identificación de la entrega (URL, ambiente, licencia, versión), licencia ISC y matriz de trazabilidad con 89 % de cobertura completa | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.6 | 22/11/2026 | Integración continua, logs estructurados, 39 pruebas unitarias y lista de chequeo final diligenciada | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -209,7 +210,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Tipo de prueba** | **Planificadas** | **Ejecutadas** | **Aprobadas** | **Fallidas** | **Bloqueadas** | **Cobertura** |
 | ------------------ | ---------------- | -------------- | ------------- | ------------ | -------------- | ------------- |
-| Unitarias          | 24 | 24 | 24 | 0 | 0 | 44 % de líneas |
+| Unitarias          | 39 | 39 | 39 | 0 | 0 | 53 % de líneas |
 | Integración        | 22 | 22 | 22 | 0 | 0 | CP-001 a CP-022 (CIC-01) |
 | End-to-End         |                  |                |               |              |                |               |
 | API                |                  |                |               |              |                |               |
@@ -230,9 +231,9 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Indicador**                      | **Meta** | **Resultado** | **Cumple** | **Fuente** |
 | ---------------------------------- | -------- | ------------- | ---------- | ---------- |
-| Cobertura de pruebas               | RF críticos con caso aprobado | 100 % de RF-001 a RF-008; 44 % de líneas | Sí | docs/pruebas/CIC-01-resultados.md |
+| Cobertura de pruebas               | RF críticos con caso aprobado | 100 % de RF-001 a RF-008; 53 % de líneas | Sí | docs/pruebas/CIC-01-resultados.md |
 | Defectos críticos abiertos         | 0        | 0 | Sí | docs/pruebas/CIC-01-resultados.md |
-| Build / pipeline exitoso           | Sí       | Build y lint sin errores; sin pipeline de CI (TT-008) | Parcial | npm run build, npm run lint |
+| Build / pipeline exitoso           | Sí       | Pruebas, lint, build, audit e integración en GitHub Actions (.github/workflows/ci.yml) | Sí | Pestaña Actions del repositorio |
 | Tiempo de respuesta crítico        | < 2 s (RNF-003) | p95 6,4 ms en el servidor | Sí (falta medir con el sensor) | docs/pruebas/CIC-01-resultados.md |
 | Accesibilidad básica               |          |               |            |            |
 | Vulnerabilidades críticas abiertas | 0        |               |            |            |
@@ -277,7 +278,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Autenticación    | Token JWT y menú por rol                              |                    |            |               |
 | Flujo crítico    | Registrar cliente, asignar membresía y validar acceso |                    |            |               |
 | Persistencia     | Datos guardados en MySQL                              |                    |            |               |
-| Logs             | Errores en la consola del backend                     |                    |            |               |
+| Logs             | Logs con fecha, nivel, módulo y contexto (src/utils/logger.js)                     |                    |            |               |
 
 ### 10.2 Condiciones de operación
 
@@ -336,7 +337,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | Revisión del código | —                               |               |              |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               |              |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               |              |                      |
-| DT-08  | Sin pruebas automatizadas ni pipeline de integración continua.                         | Revisión del código | Regresiones dependen de pruebas manuales.                      |               |              |                      |
+| DT-08  | Resuelto: 39 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               |              |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               |              |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | Revisión del código | —                                        |               |              |                      |

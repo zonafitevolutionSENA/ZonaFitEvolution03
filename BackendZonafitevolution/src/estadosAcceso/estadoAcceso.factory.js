@@ -16,7 +16,7 @@ function obtenerEstado(membresia) {
       return new EstadoVencido();
     case 'cancelada':
       return new EstadoCancelado();
-    // NUEVO: antes una membresía 'pendiente' caía en default y se informaba "sin membresía".
+    // Antes una membresía 'pendiente' caía en default y se informaba "sin membresía".
     case 'pendiente':
       return new EstadoPendiente();
     default:

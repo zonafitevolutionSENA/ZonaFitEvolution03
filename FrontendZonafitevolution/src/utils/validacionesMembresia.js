@@ -51,9 +51,7 @@ export function validarClienteMembresia(valor, clientes, membresias, hoy = hoyLo
   if (!valor) return "Selecciona un cliente.";
   const id = Number(valor);
   if (!Number.isInteger(id) || !clientes.some((c) => c.id === id)) return "El cliente seleccionado no existe.";
-  // ANTERIOR: si el cliente tenía una membresía activa y vigente se devolvía
-  // "Este cliente ya tiene una membresía activa. Usa «Renovar por cédula»." y no se podía asignar.
-  // NUEVO: con una activa se permite asignar (quedará pendiente). Se bloquea si ya hay una pendiente
+  // Con una activa se permite asignar (quedará pendiente). Se bloquea si ya hay una pendiente
   // (el servidor admite una sola) o si la activa es una tiquetera sin usar (aún no tiene fecha de fin).
   const pendiente = membresiaPendienteDe(id, membresias);
   if (pendiente) {
@@ -90,8 +88,7 @@ export function validarAsignacion(valores, { clientes, planes, membresias, hoy =
   return {
     cliente: validarClienteMembresia(valores.cliente, clientes, membresias, hoy),
     plan: validarPlanMembresia(valores.plan, planes),
-    // ANTERIOR: fecha: validarFechaInicio(valores.fecha, hoy),
-    // NUEVO: además, si el cliente tiene una activa, la fecha debe ser posterior a su fin (evita periodos solapados).
+    // Además, si el cliente tiene una activa, la fecha debe ser posterior a su fin (evita periodos solapados).
     fecha: validarFechaInicio(valores.fecha, hoy) || validarInicioTrasActiva(valores.cliente, valores.fecha, membresias, hoy),
   };
 }

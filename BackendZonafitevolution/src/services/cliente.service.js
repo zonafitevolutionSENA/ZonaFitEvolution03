@@ -19,9 +19,7 @@ function normalizarCorreo(correo) {
   return texto;
 }
 
-// ANTERIOR: async function registrarCliente({ nombre, cedula, correo, telefono }) {
-//   if (!nombre || !cedula) throw new ErrorDominio('Nombre y cédula son obligatorios');
-// NUEVO: el correo pasa a ser obligatorio; se valida su formato y se guarda en minúsculas y sin
+// El correo pasa a ser obligatorio; se valida su formato y se guarda en minúsculas y sin
 // espacios para que no se registren clientes sin un medio de contacto por correo.
 async function registrarCliente({ nombre, cedula, correo: correoRecibido, telefono }) {
   if (!nombre || !cedula) {
@@ -60,8 +58,7 @@ async function actualizarCliente(id, datos) {
   if (!cliente) {
     throw new ErrorDominio('Cliente no encontrado', 404);
   }
-  // ANTERIOR: await clienteRepository.actualizar(id, datos);
-  // NUEVO: al editar también se exige un correo válido; sin esto un cliente registrado con correo
+  // Al editar también se exige un correo válido; sin esto un cliente registrado con correo
   // podía quedar sin él al guardar el formulario de edición con el campo vacío.
   const correo = normalizarCorreo(datos.correo);
   await clienteRepository.actualizar(id, { ...datos, correo });
