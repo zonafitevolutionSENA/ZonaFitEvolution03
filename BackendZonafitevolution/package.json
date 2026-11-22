@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --test",
     "start": "node index.js",
-    "crear-admin": "node scripts/crear-admin.js"
+    "crear-admin": "node scripts/crear-admin.js",
+    "pruebas-cp": "node scripts/pruebas-cp.js"
   },
   "engines": {
     "node": ">=20"

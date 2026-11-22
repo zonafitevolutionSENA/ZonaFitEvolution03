@@ -81,7 +81,7 @@ function Personal({ usuario }) {
   }
 
   async function eliminar(u) {
-    // Un solo borrado a la vez y con las salvaguardas del frontend (el backend no las exige)
+    // Un solo borrado a la vez; el backend también impide borrar la propia cuenta o el último administrador
     if (eliminandoId !== null || motivoNoEliminable(u, usuario, usuarios)) return;
     if (!window.confirm(`¿Eliminar al usuario "${u.nombre}" (${u.correo})? Esta acción no se puede deshacer.`)) return;
 

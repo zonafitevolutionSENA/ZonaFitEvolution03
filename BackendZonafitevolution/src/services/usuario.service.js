@@ -51,8 +51,16 @@ async function obtenerUsuario(id) {
   return usuario;
 }
 
-async function eliminarUsuario(id) {
-  await obtenerUsuario(id);
+// La regla se valida aquí y no solo en el frontend: llamando la API directamente
+// tampoco se puede borrar la propia cuenta ni dejar el sistema sin Administrador (RN-012)
+async function eliminarUsuario(id, solicitanteId) {
+  const usuario = await obtenerUsuario(id);
+  if (Number(id) === Number(solicitanteId)) {
+    throw new ErrorDominio('No puedes eliminar tu propia cuenta', 409);
+  }
+  if (Number(usuario.rol_id) === ROLES.ADMIN && await usuarioRepository.contarPorRol(ROLES.ADMIN) <= 1) {
+    throw new ErrorDominio('No se puede eliminar el último administrador', 409);
+  }
   await usuarioRepository.eliminar(id);
   return { mensaje: 'Usuario eliminado correctamente' };
 }

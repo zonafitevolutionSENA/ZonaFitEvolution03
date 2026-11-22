@@ -29,7 +29,7 @@ async function obtenerPorId(req, res, next) {
 
 async function eliminar(req, res, next) {
   try {
-    const resultado = await usuarioService.eliminarUsuario(req.params.id);
+    const resultado = await usuarioService.eliminarUsuario(req.params.id, req.usuario.id);
     res.status(200).json(resultado);
   } catch (error) {
     next(error);

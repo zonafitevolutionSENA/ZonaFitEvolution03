@@ -9,6 +9,7 @@
 | ----------- | ---------- | -------------------------------------------------------- | ---------------------- | ---------- | ---------- | ---------- |
 | 0.1         | 03/11/2026 | Estado actual del repositorio y brechas frente a la guía | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.2 | 22/11/2026 | Carpetas AgenteLector/recepcion y docs (diagramas, analisis/casos-uso y entregables) | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.3 | 22/11/2026 | LICENSE y CHANGELOG.md creados, registro de liberaciones al 22/11/2026 y evidencias EV-003 y EV-004 disponibles | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -84,8 +85,8 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | **Archivo**     | **Obligatorio**                  | **Propósito**                     | **Criterio mínimo**                                    |
 | --------------- | -------------------------------- | --------------------------------- | ------------------------------------------------------ |
 | README.md       | Sí – existe                      | Entrada principal al proyecto     | Descripción, instalación, ejecución, pruebas y enlaces |
-| LICENSE         | No existe                        | Condiciones de uso y distribución | Licencia compatible y atribuciones                     |
-| CHANGELOG.md    | No existe                        | Historial legible de cambios      | Versiones, fecha y categorías de cambio                |
+| LICENSE         | Sí – existe (ISC, igual que package.json)                        | Condiciones de uso y distribución | Licencia compatible y atribuciones                     |
+| CHANGELOG.md    | Sí – existe                        | Historial legible de cambios      | Versiones, fecha y categorías de cambio                |
 | .gitignore      | Sí – existe                      | Excluir archivos no versionables  | Secretos, dependencias, builds y temporales            |
 | .env.example    | Sí – existe (backend)            | Declarar variables requeridas     | Nombres completos y valores ficticios                  |
 | Lockfile        | Sí – existe (backend y frontend) | Reproducibilidad de dependencias  | Generado por el gestor y versionado                    |
@@ -142,7 +143,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 
 | **Versión** | **Fecha** | **Commit / etiqueta** | **Ambiente** | **Responsable** | **Notas**                                                      |
 | ----------- | --------- | --------------------- | ------------ | --------------- | -------------------------------------------------------------- |
-|             |           |                       |              |                 | Sin etiquetas; última integración en main el 26/10/2026 (docs) |
+|             |           |                       |              |                 | Sin etiqueta todavía; última integración en main el 22/11/2026 (diagramas, entregables, reglas de seguridad y pruebas). La etiqueta v1.0.0 se crea al cierre. |
 
 ## 6\. Gobierno de Git y colaboración
 
@@ -229,8 +230,8 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | ------ | ---------------------------------- | --------------------- | ---------------------------------------------------------- | ----------- | ---------------------------- | ---------- |
 | EV-001 | Commits por integrante             | Historial de Git      | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 | main        | Juan Diego Mejía Llano       | Disponible |
 | EV-002 | Backlog e historias                | Tablero               | Tablero de Jira del proyecto SCRUM                         |             | Liliana Sofía Panesso Méndez | Disponible |
-| EV-003 | Ejecución de casos CP-001 a CP-021 | Reporte de pruebas    |                                                            |             |                              | Pendiente  |
-| EV-004 | Despliegue v1.0.0                  | URL y prueba de humo  |                                                            |             | Liliana Sofía Panesso Méndez | Pendiente  |
+| EV-003 | Ejecución de casos CP-001 a CP-021 | Reporte de pruebas    | docs/pruebas/CIC-01-resultados.md |             |                              | Disponible  |
+| EV-004 | Despliegue v1.0.0                  | URL y prueba de humo  | https://zona-fit-evolution03.vercel.app; pruebas de humo en el Manual técnico |             | Liliana Sofía Panesso Méndez | Disponible  |
 
 <table>
 <tbody>

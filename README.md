@@ -134,6 +134,23 @@ Sin el agente funcionan el login, los clientes, los planes, las membresías y el
 
 ---
 
+## Pruebas
+
+```bash
+cd BackendZonafitevolution
+npm test                      # pruebas automáticas (node --test)
+```
+
+Ciclo completo de casos CP-001 a CP-022 contra una base de **pruebas** (nunca la de producción; el nombre debe terminar en `_pruebas`):
+
+```bash
+mysql -u root -p -e "CREATE DATABASE zonafitevolution_pruebas;"
+mysql -u root -p zonafitevolution_pruebas < database/init.sql
+DB_NAME=zonafitevolution_pruebas npm run pruebas-cp -- ../docs/pruebas/CIC-01-resultados.md
+```
+
+El script levanta la API con un agente de prueba que habla el mismo protocolo que `AgenteLector`, así se recorre el flujo de huellas sin el sensor. El último reporte está en [`docs/pruebas/CIC-01-resultados.md`](docs/pruebas/CIC-01-resultados.md). En el frontend: `npm run lint` y `npm run build`.
+
 # Backend: API REST
 
 ## Corrección de modelo — Épica 1
@@ -158,16 +175,15 @@ Las demás rutas requieren la cabecera `Authorization: Bearer <token>`. El token
 | GET    | /api/clientes     | Admin, Empleado  |
 | GET    | /api/clientes/:id | Admin, Empleado  |
 | PUT    | /api/clientes/:id | Admin, Empleado  |
-| DELETE | /api/clientes/:id | Solo Admin       |
 
-Reglas: la cédula es obligatoria, solo numérica (6 a 15 dígitos) y única (409 si ya existe).
+Reglas: la cédula es obligatoria, solo numérica (6 a 15 dígitos) y única (409 si ya existe). Los clientes no se eliminan (RN-001): no existe ruta `DELETE`.
 
 ## Otros endpoints
 
 | Método            | Ruta                             | Roles permitidos |
 | ----------------- | -------------------------------- | ---------------- |
 | POST              | /api/auth/login                  | Público          |
-| POST, GET, DELETE | /api/usuarios, /api/usuarios/:id | Solo Admin       |
+| POST, GET, DELETE | /api/usuarios, /api/usuarios/:id | Solo Admin (no borra la propia cuenta ni al último admin: 409) |
 | GET               | /api/roles                       | Solo Admin       |
 | POST, GET         | /api/membresias                  | Admin, Empleado  |
 | GET               | /api/membresias/:id              | Admin, Empleado  |
@@ -511,7 +527,7 @@ Solo el **Admin** ve esta sección (el menú la oculta al Empleado y la pantalla
 | Confirmar  | Debe ser igual a la contraseña                                                                  |
 | Rol        | Obligatorio: Administrador (1) o Empleado (2)                                                   |
 
-Salvaguardas del frontend: no se puede eliminar la propia cuenta ni al último administrador.
+Salvaguardas: no se puede eliminar la propia cuenta ni al último administrador. El frontend deshabilita el botón y el backend también lo impide (409).
 
 ## Registro financiero
 

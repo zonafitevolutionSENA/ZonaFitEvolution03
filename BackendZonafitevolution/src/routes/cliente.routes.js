@@ -10,6 +10,5 @@ router.post('/', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), val
 router.get('/', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), clienteController.listar);
 router.get('/:id', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), clienteController.obtenerPorId);
 router.put('/:id', verificarToken, permitirRoles(ROLES.ADMIN, ROLES.EMPLEADO), validarBodyNoVacio, clienteController.actualizar);
-router.delete('/:id', verificarToken, permitirRoles(ROLES.ADMIN), clienteController.eliminar); // solo Admin elimina
 
 module.exports = router;
