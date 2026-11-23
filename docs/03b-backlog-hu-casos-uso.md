@@ -29,6 +29,7 @@
 | 1.3 | 22/11/2026 | TT-001 y TT-002 terminadas; alcance real de CR-008 | Juan Diego Mejía Llano |  |
 | 1.4 | 22/11/2026 | TT-008 terminada (integración continua) y TT-007 con las pruebas del backend listas | Juan Diego Mejía Llano |  |
 | 1.5 | 23/11/2026 | CR-008 implementado en todos los planes y CR-009 (RNF-007 en Chrome) | Juan Diego Mejía Llano |  |
+| 1.6 | 23/11/2026 | Lista de verificación final diligenciada | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -264,7 +265,7 @@ Se mantienen en [`analisis/historias-de-usuario.md`](analisis/historias-de-usuar
 | ------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------- |
 | 1       | Código implementado y revisado.                    | Sí / No        | Pull Request revisado por otro integrante.                                   |
 | 2       | Criterios de aceptación cumplidos.                 | Sí / No        | Demostración en la sprint review.                                            |
-| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 45 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
+| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 46 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
 | 4       | Lint, compilación y pipeline sin errores críticos. | Sí / No        | npm run lint y npm run build sin errores; pipeline de GitHub Actions en cada pull request (TT-008). |
 | 5       | Seguridad y permisos revisados.                    | Sí / No / N.A. | Rutas protegidas con permitirRoles en el backend.                            |
 | 6       | Migraciones o cambios de datos incluidos.          | Sí / No / N.A. | Cambios en database/init.sql documentados en el README.                      |
@@ -446,21 +447,21 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 
 | **N.°** | **Verificación**                                                            | **Cumple**     | **Observaciones** |
 | ------- | --------------------------------------------------------------------------- | -------------- | ----------------- |
-| 1       | El backlog está ordenado y actualizado.                                     | Sí / No / N.A. |                   |
-| 2       | Las épicas y funcionalidades se relacionan con objetivos y requisitos.      | Sí / No / N.A. |                   |
-| 3       | Cada historia expresa actor, capacidad y beneficio.                         | Sí / No / N.A. |                   |
-| 4       | Las historias cumplen criterios INVEST o tienen justificación.              | Sí / No / N.A. |                   |
-| 5       | Los criterios de aceptación son verificables.                               | Sí / No / N.A. |                   |
-| 6       | Se cubren flujos de éxito, error, permisos y límites relevantes.            | Sí / No / N.A. |                   |
-| 7       | Definition of Ready y Definition of Done están aprobadas.                   | Sí / No / N.A. |                   |
-| 8       | Los casos de uso se elaboraron solo donde aportan detalle.                  | Sí / No / N.A. |                   |
-| 9       | Los flujos alternativos y excepciones están referenciados correctamente.    | Sí / No / N.A. |                   |
-| 10      | Los diagramas coinciden con los casos documentados.                         | Sí / No / N.A. |                   |
-| 11      | Las estimaciones y prioridades tienen criterio explícito.                   | Sí / No / N.A. |                   |
-| 12      | Los cambios conservan historial e impacto.                                  | Sí / No / N.A. |                   |
-| 13      | La trazabilidad llega a diseño y pruebas.                                   | Sí / No / N.A. |                   |
-| 14      | Las historias terminadas tienen evidencia y aceptación.                     | Sí / No / N.A. |                   |
-| 15      | El documento coincide con la herramienta de gestión y la versión entregada. | Sí / No / N.A. |                   |
+| 1       | El backlog está ordenado y actualizado.                                     | Sí | Backlog ordenado por prioridad; versión 1.6 |
+| 2       | Las épicas y funcionalidades se relacionan con objetivos y requisitos.      | Sí | EP-001 a EP-005 relacionadas con RF y objetivos |
+| 3       | Cada historia expresa actor, capacidad y beneficio.                         | Sí | HU con formato «Como… quiero… para…» |
+| 4       | Las historias cumplen criterios INVEST o tienen justificación.              | Sí | Revisión INVEST en el refinamiento |
+| 5       | Los criterios de aceptación son verificables.                               | Sí | Criterios Dado/Cuando/Entonces |
+| 6       | Se cubren flujos de éxito, error, permisos y límites relevantes.            | Sí | Escenarios de error, permisos y límites en los criterios |
+| 7       | Definition of Ready y Definition of Done están aprobadas.                   | Sí | DoR y DoD (sección 9) |
+| 8       | Los casos de uso se elaboraron solo donde aportan detalle.                  | Sí | Casos de uso solo para los flujos críticos |
+| 9       | Los flujos alternativos y excepciones están referenciados correctamente.    | Sí | Flujos alternativos referenciados en cada CU |
+| 10      | Los diagramas coinciden con los casos documentados.                         | Sí | docs/analisis/casos-uso y docs/diagramas |
+| 11      | Las estimaciones y prioridades tienen criterio explícito.                   | Sí | Prioridad MoSCoW y puntos de historia |
+| 12      | Los cambios conservan historial e impacto.                                  | Sí | CR-001 a CR-009 con impacto |
+| 13      | La trazabilidad llega a diseño y pruebas.                                   | Sí | Matriz de trazabilidad hasta pruebas |
+| 14      | Las historias terminadas tienen evidencia y aceptación.                     | Sí | CIC-01, CIC-02 y aceptación del Product Owner |
+| 15      | El documento coincide con la herramienta de gestión y la versión entregada. | Sí | Jira y versión v1.0.0 |
 
 ## Anexo A. Plantilla rápida de historia de usuario
 

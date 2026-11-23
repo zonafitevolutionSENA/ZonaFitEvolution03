@@ -33,6 +33,7 @@
 | 2.2 | 22/11/2026 | Integración continua en GitHub Actions (DT-008 cerrada), logs con fecha, nivel, módulo y contexto, y 39 pruebas unitarias | Juan Diego Mejía Llano |  |
 | 2.3 | 23/11/2026 | Usuario de MySQL con mínimo privilegio (SEG-08), respaldo y restauración probados (DAT-06), un ingreso por día y latido del agente | Juan Diego Mejía Llano |  |
 | 2.4 | 23/11/2026 | Variables de la base en Railway con el usuario zonafit_app | Juan Diego Mejía Llano |  |
+| 2.5 | 23/11/2026 | Lista de verificación diligenciada | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -783,7 +784,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | **Control**            | **Herramienta**       | **Ejecución** | **Criterio de aceptación**   | **Evidencia** |
 | ---------------------- | --------------------- | ------------- | ---------------------------- | ------------- |
 | Lint                   | ESLint (npm run lint) | GitHub Actions en cada pull request | Sin errores críticos         | Sin errores (22/11/2026) |
-| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 45 pruebas unitarias y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
+| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 46 pruebas unitarias y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
 | Build                  | Vite (npm run build)  | GitHub Actions en cada pull request | Construcción reproducible    | Construcción exitosa (22/11/2026) |
 | Auditoría dependencias | npm audit             | GitHub Actions en cada pull request | Sin críticas sin tratamiento | npm audit: 0 vulnerabilidades en backend, frontend y agente (22/11/2026) |
 | Análisis estático      |                       |               |                              |               |
@@ -896,20 +897,20 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 
 | **N.°** | **Criterio**                                                    | **Cumple**     | **Evidencia / observación** |
 | ------- | --------------------------------------------------------------- | -------------- | --------------------------- |
-| 1       | Los drivers arquitectónicos están identificados y priorizados.  | Sí / No        |                             |
-| 2       | La alternativa seleccionada está justificada.                   | Sí / No        |                             |
-| 3       | Los diagramas coinciden con la implementación.                  | Sí / No        |                             |
-| 4       | Los componentes tienen responsabilidades claras.                | Sí / No        |                             |
-| 5       | El modelo de datos representa el dominio y mantiene integridad. | Sí / No        |                             |
-| 6       | Las migraciones son reproducibles.                              | Sí / No        |                             |
-| 7       | La API o integraciones tienen contrato documentado.             | Sí / No / N.A. |                             |
-| 8       | La seguridad se verifica en servidor y por mínimo privilegio.   | Sí / No        |                             |
-| 9       | No existen secretos en el repositorio.                          | Sí / No        |                             |
-| 10      | Errores, logs y observabilidad están definidos.                 | Sí / No        |                             |
-| 11      | Los ambientes y despliegue son reproducibles.                   | Sí / No        |                             |
-| 12      | Las decisiones relevantes tienen ADR.                           | Sí / No        |                             |
-| 13      | Los riesgos técnicos tienen tratamiento.                        | Sí / No        |                             |
-| 14      | Existe trazabilidad con requisitos y pruebas.                   | Sí / No        |                             |
+| 1       | Los drivers arquitectónicos están identificados y priorizados.  | Sí | Drivers DRV-001 y siguientes |
+| 2       | La alternativa seleccionada está justificada.                   | Sí | Tabla de alternativas y ADR |
+| 3       | Los diagramas coinciden con la implementación.                  | Sí | docs/diagramas v2.0 revisados contra main |
+| 4       | Los componentes tienen responsabilidades claras.                | Sí | Componentes CMP-01 a CMP-09 |
+| 5       | El modelo de datos representa el dominio y mantiene integridad. | Sí | Modelo relacional con claves foráneas y restricciones |
+| 6       | Las migraciones son reproducibles.                              | Sí | init.sql ejecutado en cada PR (GitHub Actions) |
+| 7       | La API o integraciones tienen contrato documentado.             | Sí | Endpoints documentados en el README y en la sección de API |
+| 8       | La seguridad se verifica en servidor y por mínimo privilegio.   | Sí | Reglas en servidor y usuario zonafit\_app (SEG-08) |
+| 9       | No existen secretos en el repositorio.                          | Sí | .env fuera de Git; npm audit |
+| 10      | Errores, logs y observabilidad están definidos.                 | Sí | Logs estructurados y /api/salud |
+| 11      | Los ambientes y despliegue son reproducibles.                   | Sí | Vercel y Railway desde main; Manual técnico |
+| 12      | Las decisiones relevantes tienen ADR.                           | Sí | ADR-001 a ADR-009 |
+| 13      | Los riesgos técnicos tienen tratamiento.                        | Sí | Deuda técnica DT-001 a DT-008 |
+| 14      | Existe trazabilidad con requisitos y pruebas.                   | Sí | Matriz de trazabilidad |
 
 ### 16.3 Registro de observaciones
 

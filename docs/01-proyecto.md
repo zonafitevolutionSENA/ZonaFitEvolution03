@@ -25,6 +25,7 @@
 | 1.1         | 10/11/2026 | Sensor AS608 integrado y simulador eliminado; supuestos y dependencias actualizados            | Juan Diego Mejía Llano |            |            |
 | 1.2 | 22/11/2026 | Hosting definido y en uso: frontend en Vercel, API y MySQL en Railway; viabilidad económica, dependencias y pendientes actualizados | Juan Diego Mejía Llano |  |  |
 | 1.3 | 22/11/2026 | Introducciones propias en contexto, justificación, beneficios, alcance y MVP en lugar de las instrucciones de la plantilla | Juan Diego Mejía Llano |  |  |
+| 1.4 | 23/11/2026 | Lista de verificación de calidad diligenciada | Juan Diego Mejía Llano |  |  |
 
 ### Aprobaciones
 
@@ -730,26 +731,26 @@ La aprobación no implica aceptación automática de cambios futuros ni compromi
 
 | **N.°** | **Verificación**                                                 | **Cumple** | **N. A.** | **Observación / acción** |
 | ------- | ---------------------------------------------------------------- | ---------- | --------- | ------------------------ |
-| 1       | El contexto explica cómo funciona actualmente el proceso.        |            |           |                          |
-| 2       | El problema no está redactado como ausencia de una solución.     |            |           |                          |
-| 3       | Las causas y efectos están diferenciados.                        |            |           |                          |
-| 4       | Existe evidencia inicial que respalda el problema.               |            |           |                          |
-| 5       | La población afectada está identificada.                         |            |           |                          |
-| 6       | La justificación considera valor y viabilidad.                   |            |           |                          |
-| 7       | El objetivo general se relaciona directamente con el problema.   |            |           |                          |
-| 8       | Los objetivos específicos son verificables.                      |            |           |                          |
-| 9       | Los indicadores tienen meta, unidad y método de medición.        |            |           |                          |
-| 10      | El alcance preliminar distingue inclusiones y exclusiones.       |            |           |                          |
-| 11      | El MVP está claramente identificado.                             |            |           |                          |
-| 12      | Los entregables tienen criterios de aceptación.                  |            |           |                          |
-| 13      | Los hitos son realistas frente al tiempo y recursos.             |            |           |                          |
-| 14      | Los roles, responsables y autoridad del líder están definidos.   |            |           |                          |
-| 15      | La viabilidad preliminar fue evaluada.                           |            |           |                          |
-| 16      | Restricciones, supuestos y dependencias están diferenciados.     |            |           |                          |
-| 17      | Los riesgos críticos tienen responsable y respuesta.             |            |           |                          |
-| 18      | La decisión de autorización está registrada.                     |            |           |                          |
-| 19      | El documento tiene versión, responsables e historial de cambios. |            |           |                          |
-| 20      | La información es consistente con la arquitectura documental.    |            |           |                          |
+| 1       | El contexto explica cómo funciona actualmente el proceso.        | Sí |  | Sección 3 |
+| 2       | El problema no está redactado como ausencia de una solución.     | Sí |  | Sección 4.1 |
+| 3       | Las causas y efectos están diferenciados.                        | Sí |  | Árbol del problema (4.2) |
+| 4       | Existe evidencia inicial que respalda el problema.               | Parcial |  | Sección 3.2. PEN-01: faltan registros o entrevista del gimnasio |
+| 5       | La población afectada está identificada.                         | Sí |  | Sección 3 |
+| 6       | La justificación considera valor y viabilidad.                   | Sí |  | Sección 5 |
+| 7       | El objetivo general se relaciona directamente con el problema.   | Sí |  | Sección 6.1 |
+| 8       | Los objetivos específicos son verificables.                      | Sí |  | Validación SMART (6.3) |
+| 9       | Los indicadores tienen meta, unidad y método de medición.        | Parcial |  | Sección 8. PEN-02: falta la línea base de IND-01 a IND-04 |
+| 10      | El alcance preliminar distingue inclusiones y exclusiones.       | Sí |  | Sección 9 |
+| 11      | El MVP está claramente identificado.                             | Sí |  | MVP v1.0.0 |
+| 12      | Los entregables tienen criterios de aceptación.                  | Sí |  | Entregables con criterios |
+| 13      | Los hitos son realistas frente al tiempo y recursos.             | Sí |  | Hitos HIT-01 a HIT-06 |
+| 14      | Los roles, responsables y autoridad del líder están definidos.   | Sí |  | Roles y responsables |
+| 15      | La viabilidad preliminar fue evaluada.                           | Sí |  | Viabilidad preliminar |
+| 16      | Restricciones, supuestos y dependencias están diferenciados.     | Sí |  | Restricciones, supuestos y dependencias |
+| 17      | Los riesgos críticos tienen responsable y respuesta.             | Sí |  | Riesgos con responsable |
+| 18      | La decisión de autorización está registrada.                     | Parcial |  | Decisión de autorización. PEN-04: firmas de autorización |
+| 19      | El documento tiene versión, responsables e historial de cambios. | Sí |  | Control documental |
+| 20      | La información es consistente con la arquitectura documental.    | Sí |  | Coherente con el índice maestro |
 
 ### 17.1 Resultado de revisión
 

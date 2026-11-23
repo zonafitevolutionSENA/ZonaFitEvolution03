@@ -29,6 +29,7 @@
 | 1.3 | 22/11/2026 | Observaciones OBS-001 y OBS-002 cerradas (RN-001 y RN-012 validadas en el backend) y alcance real de CR-008 | Juan Diego Mejía Llano |  |
 | 1.4 | 22/11/2026 | Observaciones OBS-003 y OBS-005 cerradas (CORS restringido y tarea diaria de membresías) | Juan Diego Mejía Llano |  |
 | 1.5 | 23/11/2026 | CR-008 implementado en todos los planes (RN-015) y CR-009: RNF-007 verificado en Chrome | Juan Diego Mejía Llano |  |
+| 1.6 | 23/11/2026 | Lista de verificación diligenciada | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -1004,18 +1005,18 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 
 | **N.°** | **Verificación**                                                    | **Cumple**     | **Evidencia / observación** |
 | ------- | ------------------------------------------------------------------- | -------------- | --------------------------- |
-| 1       | El alcance distingue producto, proyecto, MVP y exclusiones.         | Sí / No / N.A. |                             |
-| 2       | Cada requisito tiene identificador, prioridad, estado y fuente.     | Sí / No / N.A. |                             |
-| 3       | Los requisitos son claros, atómicos y verificables.                 | Sí / No / N.A. |                             |
-| 4       | Los RNF incluyen métrica, umbral y método.                          | Sí / No / N.A. |                             |
-| 5       | Las reglas de negocio están centralizadas.                          | Sí / No / N.A. |                             |
-| 6       | Los roles y permisos están definidos y serán validados en servidor. | Sí / No / N.A. |                             |
-| 7       | Los datos personales y su finalidad están identificados.            | Sí / No / N.A. |                             |
-| 8       | Las interfaces externas tienen manejo de fallos.                    | Sí / No / N.A. |                             |
-| 9       | Existe priorización y asignación a versiones.                       | Sí / No / N.A. |                             |
-| 10      | Existe procedimiento de cambios.                                    | Sí / No / N.A. |                             |
-| 11      | La trazabilidad llega hasta pruebas y evidencia.                    | Sí / No / N.A. |                             |
-| 12      | El documento fue validado por responsables funcional y técnico.     | Sí / No / N.A. |                             |
+| 1       | El alcance distingue producto, proyecto, MVP y exclusiones.         | Sí | Secciones de alcance, MVP y exclusiones |
+| 2       | Cada requisito tiene identificador, prioridad, estado y fuente.     | Sí | Catálogo de RF, RNF y RN |
+| 3       | Los requisitos son claros, atómicos y verificables.                 | Sí | Fichas RF con criterios de aceptación |
+| 4       | Los RNF incluyen métrica, umbral y método.                          | Sí | Fichas RNF con umbral y método |
+| 5       | Las reglas de negocio están centralizadas.                          | Sí | Catálogo RN-001 a RN-015 |
+| 6       | Los roles y permisos están definidos y serán validados en servidor. | Sí | Matriz de roles; validación en servidor (CP-018 a CP-021) |
+| 7       | Los datos personales y su finalidad están identificados.            | Sí | Datos personales y biométricos; formato de autorización en docs/legal |
+| 8       | Las interfaces externas tienen manejo de fallos.                    | Sí | Sensor y red: reintento del agente y validación por cédula |
+| 9       | Existe priorización y asignación a versiones.                       | Sí | Priorización MoSCoW y versión MVP |
+| 10      | Existe procedimiento de cambios.                                    | Sí | Control de cambios CR-001 a CR-009 |
+| 11      | La trazabilidad llega hasta pruebas y evidencia.                    | Sí | Matriz de trazabilidad (25 de 27) |
+| 12      | El documento fue validado por responsables funcional y técnico.     | Sí | Aceptación del Product Owner (Informe de cierre 11) |
 
 ## Anexos
 

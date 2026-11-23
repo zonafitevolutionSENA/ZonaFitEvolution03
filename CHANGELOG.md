@@ -4,6 +4,10 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 
 ## [Sin publicar]
 
+## [1.0.0] – 23/11/2026
+
+Versión final de la entrega (etiqueta `v1.0.0`).
+
 ### Added
 - Un solo ingreso por día en cualquier plan (CR-008): una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso; después se niega con «Ya ingresó hoy a las …».
 - El historial de accesos se conserva 3 meses: la tarea diaria de las 00:05 borra los intentos más antiguos (DAT-05).
