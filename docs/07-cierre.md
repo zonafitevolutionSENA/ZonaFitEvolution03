@@ -14,6 +14,7 @@
 | 0.5 | 22/11/2026 | Identificación de la entrega (URL, ambiente, licencia, versión), licencia ISC y matriz de trazabilidad con 89 % de cobertura completa | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.6 | 22/11/2026 | Integración continua, logs estructurados, 39 pruebas unitarias y lista de chequeo final diligenciada | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.7 | 23/11/2026 | Aceptación del producto, lecciones aprendidas, contribución individual, CIC-02 con el sensor, mínimo privilegio, accesibilidad y restauración probada | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.8 | 23/11/2026 | Declaración de uso de IA (17.2) y lección aprendida sobre el uso de IA | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -391,7 +392,7 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 | Arquitectura y desarrollo  | Capas (rutas, controladores, servicios, repositorios) y patrones State, Adapter y Facade; el lector físico se agregó sin cambiar el núcleo | El lector simulado ocultó problemas del sensor real (error 0x17, huellas duplicadas) que salieron tarde | Probar con el hardware real desde el primer sprint en que se integra |
 | Pruebas y seguridad        | Pruebas unitarias, ciclos CIC-01 y CIC-02 e integración continua en cada PR; reglas de seguridad en el servidor; usuario de base con mínimo privilegio | Las pruebas automáticas llegaron al final; la conexión con root y un error de contraseña se detectaron en producción | Escribir pruebas desde el inicio y aplicar mínimo privilegio desde el primer despliegue |
 | Despliegue y documentación | Despliegue en Railway y Vercel con agente remoto; documentación en Word, PDF y Markdown sincronizada | Variables con caracteres invisibles y un agente que no se reconectaba tras reinicios del servidor; documentos desactualizados respecto al código | Verificar las variables tras cada cambio, latido en el agente y actualizar la documentación en el mismo PR que el código |
-| Uso de IA y herramientas   |                  |                     |                        |
+| Uso de IA y herramientas   | La IA agilizó el código repetitivo, las pruebas, los diagramas y la documentación; el equipo revisó y probó cada cambio antes de integrarlo | Algunas respuestas tenían errores o no correspondían al sistema real, y la coautoría automática de Claude apareció en commits y PR; hubo que corregirlo | Revisar y probar todo lo generado, desactivar la coautoría automática y declarar el uso de IA desde el inicio del proyecto |
 
 ## 17\. Autoría, contribución y uso de IA
 
@@ -407,8 +408,8 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 
 | **Herramienta** | **Finalidad** | **Partes asistidas** | **Validación realizada** | **Responsable** |
 | --------------- | ------------- | -------------------- | ------------------------ | --------------- |
-|                 |               |                      |                          |                 |
-|                 |               |                      |                          |                 |
+| Claude y Claude Code (Anthropic), en chat y en el editor | Apoyo en programación, pruebas, depuración, despliegue, documentación y diagramas | Backend, frontend, AgenteLector, pruebas automáticas, documentos (Word, PDF y Markdown) y diagramas Mermaid | Revisión del código antes de aceptarlo; pruebas unitarias, ciclos CIC-01 y CIC-02 y pruebas manuales; revisión de los documentos contra el sistema real | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla (cada uno en su parte) |
+| Gemini (Google), en chat | Apoyo en diseño de interfaz y redacción de textos | Propuestas de UX/UI (pantallas, colores, distribución) y redacción de textos de los documentos | Revisión de las propuestas de diseño y de los textos antes de usarlos; ajuste al sistema real | Equipo |
 |                 |               |                      |                          |                 |
 
 <table>
@@ -454,7 +455,7 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 | 16      | La transferencia técnica fue realizada.                        | No |  | Al cierre (sección 15) |
 | 17      | Los activos y accesos fueron entregados.                       | No |  | Al cierre (sección 15.1) |
 | 18      | Las contribuciones individuales son trazables.                 | Sí | docs/evidencias/contribuciones.md |  |
-| 19      | El uso de IA fue declarado.                                    | No |  | Pendiente (sección 17.2) |
+| 19      | El uso de IA fue declarado.                                    | Sí | Sección 17.2 |  |
 | 20      | El informe cuenta con aprobación y firmas.                     | No |  | Al cierre (sección 20) |
 
 ## 20\. Acta de cierre y firmas

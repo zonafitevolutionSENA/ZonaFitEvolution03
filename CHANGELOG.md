@@ -8,6 +8,7 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 - Un solo ingreso por día en cualquier plan (CR-008): una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso; después se niega con «Ya ingresó hoy a las …».
 - El historial de accesos se conserva 3 meses: la tarea diaria de las 00:05 borra los intentos más antiguos (DAT-05).
 - Latido del agente del lector (ping cada 15 s): si el servidor se reinicia sin cerrar la conexión, el agente se reconecta solo.
+- Declaración de uso de IA (Claude y Gemini) en el informe de cierre y la guía del repositorio.
 - Evidencias de la entrega final en `docs/pruebas/` y `docs/evidencias/`: ciclo CIC-02 con el sensor en producción, mínimo privilegio en MySQL, compatibilidad y accesibilidad, prueba de restauración y contribución individual.
 - Integración continua en GitHub Actions: pruebas, lint, build, `npm audit` y ciclo de casos con MySQL en cada pull request.
 - Logs del backend con fecha, nivel, módulo y contexto (`NIVEL_LOG`).
