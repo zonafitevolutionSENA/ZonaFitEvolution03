@@ -6,6 +6,11 @@ const ErrorDominio = require('../utils/errores');
 const { hoyISO, sumarDias } = require('../utils/fechas');
 const { esTiquetera } = require('../estadosAcceso/estadoActivo');
 
+// Minutos en que una nueva lectura del mismo socio cuenta como el mismo ingreso
+const VENTANA_MISMO_INGRESO_MIN = 30;
+// Meses que se conserva el historial de accesos (DAT-05)
+const RETENCION_HISTORIAL_MESES = 3;
+
 async function validarAcceso({ signal } = {}) {
   let cliente;
 
@@ -32,8 +37,26 @@ async function validarAcceso({ signal } = {}) {
   let evaluacion = estado.evaluar(membresia);
   let detalle = {};
 
-  // Tiquetera: un ingreso permitido descuenta UN ingreso por día (en el primero fija además el vencimiento).
-  // Si el cliente vuelve a entrar el mismo día, se permite sin descontar otro ingreso.
+  // Un solo ingreso por día en cualquier plan (CR-008). Si el socio vuelve a poner el dedo dentro de la
+  // ventana de gracia, se toma como el mismo ingreso (lectura repetida): se permite sin registrar otro
+  // ingreso ni descontar nada. Pasada la ventana, se niega.
+  let ingresoDeHoy = null;
+  if (evaluacion.permitido) {
+    ingresoDeHoy = await registroAccesoRepository.obtenerPrimerIngresoDeHoy(cliente.id);
+    if (signal?.aborted) throw new ErrorDominio('Lectura cancelada', 499);
+  }
+  if (ingresoDeHoy && ingresoDeHoy.minutos < VENTANA_MISMO_INGRESO_MIN) {
+    return {
+      cliente: { id: cliente.id, nombre: cliente.nombre, cedula: cliente.cedula },
+      permitido: true,
+      motivo: `Ingreso ya registrado hoy a las ${ingresoDeHoy.hora}`
+    };
+  }
+  if (ingresoDeHoy) {
+    evaluacion = { permitido: false, motivo: `Ya ingresó hoy a las ${ingresoDeHoy.hora}: solo se permite un ingreso por día` };
+  }
+
+  // Tiquetera: el ingreso del día descuenta UN ingreso (en el primero fija además el vencimiento)
   if (evaluacion.permitido && esTiquetera(membresia)) {
     const hoy = hoyISO();
     const ultimo = membresia.fecha_ultimo_ingreso ? String(membresia.fecha_ultimo_ingreso).slice(0, 10) : null;
@@ -90,7 +113,13 @@ async function obtenerHistorialReciente() {
   return registroAccesoRepository.obtenerRecientes();
 }
 
+async function depurarHistorial() {
+  return registroAccesoRepository.eliminarAnterioresA(RETENCION_HISTORIAL_MESES);
+}
+
 module.exports = {
   validarAcceso,
-  obtenerHistorialReciente
+  obtenerHistorialReciente,
+  depurarHistorial,
+  RETENCION_HISTORIAL_MESES
 };

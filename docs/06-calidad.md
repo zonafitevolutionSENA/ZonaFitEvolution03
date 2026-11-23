@@ -27,6 +27,7 @@
 | 0.3 | 22/11/2026 | Ambiente de producción en Vercel y Railway y pruebas de humo del despliegue | Juan Diego Mejía Llano |  |
 | 0.4 | 22/11/2026 | Ciclo CIC-01 ejecutado el 22/11/2026: 24 de 24 casos aprobados (CP-001 a CP-022, RN-001 y RNF-003), ambiente de pruebas, evidencias, métricas y pipeline local | Juan Diego Mejía Llano |  |
 | 0.5 | 22/11/2026 | Pipeline de integración continua en GitHub Actions, 39 pruebas unitarias (53 % de líneas) y logs estructurados | Juan Diego Mejía Llano |  |
+| 0.6 | 23/11/2026 | Ciclo CIC-02 con el sensor en producción (5 de 5), compatibilidad, accesibilidad, restauración probada, aceptación del Product Owner y decisión de liberación | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -462,7 +463,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ------------------------ | -------------------------------- | ---------------------------------------- | ---------------------- |
 | Instalación reproducible | npm install (backend y frontend) | Sin errores                              | npm ci sin errores (22/11/2026) |
 | Lint / formato           | npm run lint                     | Sin errores críticos                     | Sin errores |
-| Pruebas unitarias        | npm test (node --test) | Aprobadas | 39 pruebas aprobadas |
+| Pruebas unitarias        | npm test (node --test) | Aprobadas | 45 pruebas aprobadas |
 | Pruebas integración      | npm run pruebas-cp | Aprobadas | docs/pruebas/CIC-01-resultados.md (24 de 24); también en cada pull request (GitHub Actions (.github/workflows/ci.yml)) |
 | Build                    | npm run build                    | Exitoso                                  | dist/ generado sin errores |
 | Auditoría dependencias   | npm audit                        | Sin vulnerabilidades críticas sin tratar | 0 vulnerabilidades |
@@ -551,9 +552,9 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Escenario**                     | **Fallo simulado** | **Comportamiento esperado**     | **Tiempo recuperación** | **Evidencia** |
 | --------------------------------- | ------------------ | ------------------------------- | ----------------------- | ------------- |
-| Servicio externo no disponible    |                    | Respuesta controlada            |                         |               |
+| Servicio externo no disponible    | Reinicio del backend sin cerrar la conexión del agente | Respuesta controlada            | ≤ 30 s (latido del agente) | docs/pruebas/CIC-02-resultados.md |
 | Base de datos temporalmente caída |                    | Sin pérdida silenciosa          |                         |               |
-| Restauración de backup            |                    | Datos recuperados y verificados |                         |               |
+| Restauración de backup            | Restaurar el respaldo en una base aparte | Datos recuperados y verificados | < 1 minuto | docs/pruebas/DAT-06-respaldo-y-restauracion.md |
 | Rollback de versión               |                    | Servicio operativo              |                         |               |
 
 ## 13\. Pruebas UX, accesibilidad y compatibilidad
@@ -571,21 +572,21 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ------------------------ | ------------------------------- | ---------- | ------------- | ------------- |
 | Navegación por teclado   | Prueba manual                   | Sí / No    |               |               |
 | Foco visible             | Prueba manual                   | Sí / No    |               |               |
-| Etiquetas y mensajes     | Lector de pantalla / inspección | Sí / No    |               |               |
-| Contraste                | Herramienta                     | Sí / No    |               |               |
-| Semántica de encabezados | Auditoría                       | Sí / No    |               |               |
-| Alternativas de imágenes | Auditoría                       | Sí / No    |               |               |
+| Etiquetas y mensajes     | Lector de pantalla / inspección | Sí | Cumple | Lighthouse: 96/100 en el login y 24/24 con sesión |
+| Contraste                | Herramienta                     | Sí | Cumple | Lighthouse: 96/100 en el login y 24/24 con sesión |
+| Semántica de encabezados | Auditoría                       | Sí | Cumple | Lighthouse: 96/100 en el login y 24/24 con sesión |
+| Alternativas de imágenes | Auditoría                       | Sí | Cumple | Lighthouse: 96/100 en el login y 24/24 con sesión |
 | Zoom y reflow            | Prueba visual                   | Sí / No    |               |               |
 
 ### 13.3 Compatibilidad
 
 | **Plataforma**               | **Versión / resolución** | **Flujos probados** | **Resultado** | **Observaciones** |
 | ---------------------------- | ------------------------ | ------------------- | ------------- | ----------------- |
-| Chrome                       | Dos últimas versiones    |                     |               |                   |
-| Firefox                      | Dos últimas versiones    |                     |               |                   |
-| Edge                         | Dos últimas versiones    |                     |               |                   |
+| Chrome                       | Versión actual | Inicio, menú, clientes, membresías e historial | Cumple | Celular 375 px, tablet 768 px y computador |
+| Firefox                      | — |                     | No aplica | Fuera del alcance (CR-009) |
+| Edge                         | — |                     | No aplica | Fuera del alcance (CR-009) |
 | Android / iOS                |                          |                     |               |                   |
-| Escritorio / móvil / tableta | 360 px a 1920 px         |                     |               |                   |
+| Escritorio / móvil / tableta | 360 px a 1920 px         | Mismos flujos | Cumple | Sin desbordamiento horizontal |
 
 ## 14\. Gestión de defectos y regresión
 
@@ -710,8 +711,8 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Ciclo** | **Fecha** | **Versión** | **Planificados** | **Ejecutados** | **Aprobados** | **Fallidos** | **Bloqueados** | **Conclusión** |
 | --------- | --------- | ----------- | ---------------- | -------------- | ------------- | ------------ | -------------- | -------------- |
-| CIC-01    | 22/11/2026 | fix/reglas-seguridad-y-documentacion | 24 | 24 | 24 | 0 | 0 | Aprobado en el ambiente de pruebas local. Falta repetir CP-007 a CP-011 en producción con el sensor físico (CIC-02). |
-| CIC-02    |           |             |                  |                |               |              |                |                |
+| CIC-01    | 22/11/2026 | fix/reglas-seguridad-y-documentacion | 24 | 24 | 24 | 0 | 0 | Aprobado en el ambiente de pruebas local; repetido el 23/11/2026 con la regla de un ingreso por día (24 de 24). |
+| CIC-02    | 23/11/2026 | main (producción) | 5 | 5 | 5 | 0 | 0 | Aprobado con el sensor AS608 en producción (docs/pruebas/CIC-02-resultados.md). |
 
 ## 16\. Pruebas de aceptación y decisión de liberación
 
@@ -721,44 +722,44 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ------------------------ | ------------------------------------------------------------------------ |
 | Representante que acepta | Liliana Sofía Panesso Méndez (Product Owner) en representación de STK-01 |
 | Versión candidata        | v1.0.0                                                                   |
-| Ambiente                 | AMB-UAT                                                                  |
+| Ambiente                 | Producción (Vercel y Railway) con el sensor AS608                                                                  |
 | Alcance                  | Flujos críticos FLU-001 a FLU-005                                        |
 | Datos                    | DATA-001, DATA-002                                                       |
-| Criterios de entrada     |                                                                          |
-| Criterios de aceptación  |                                                                          |
-| Defectos tolerados       |                                                                          |
-| Fecha y duración         |                                                                          |
+| Criterios de entrada     | CIC-01 y CIC-02 aprobados; integración continua en verde |
+| Criterios de aceptación  | Flujos FLU-001 a FLU-005 sin errores bloqueantes |
+| Defectos tolerados       | Ningún defecto crítico o alto abierto |
+| Fecha y duración         | 23/11/2026 |
 
 ### 16.2 Registro de aceptación
 
 | **Criterio / HU**     | **Caso**  | **Resultado**      | **Evidencia** | **Observación** | **Decisión** |
 | --------------------- | --------- | ------------------ | ------------- | --------------- | ------------ |
-| HU-\_\_\_ / CA-\_\_\_ | CP-\_\_\_ | Aprobado / fallido | EV-\_\_\_     |                 |              |
+| FLU-001 a FLU-005 | CIC-01 y CIC-02 | Aprobado | docs/pruebas/CIC-01-resultados.md y CIC-02-resultados.md | Sin observaciones | Aceptado |
 |                       |           |                    |               |                 |              |
 
 ### 16.3 Evaluación Go / No-Go
 
 | **Factor**                 | **Estado**         | **Evidencia** | **Riesgo residual** | **Decisión** |
 | -------------------------- | ------------------ | ------------- | ------------------- | ------------ |
-| Flujos críticos            | Cumple / No cumple |               |                     |              |
-| Seguridad crítica          |                    |               |                     |              |
-| Migraciones y datos        |                    |               |                     |              |
-| Pruebas automatizadas / CI |                    |               |                     |              |
-| Defectos residuales        |                    |               |                     |              |
-| Documentación y despliegue |                    |               |                     |              |
-| Aceptación funcional       |                    |               |                     |              |
+| Flujos críticos            | Cumple | CIC-01 y CIC-02 | Bajo | Go |
+| Seguridad crítica          | Cumple | CP-018, CP-020, CP-021 y SEG-08 | Bajo | Go |
+| Migraciones y datos        | Cumple | init.sql en CI y prueba de restauración | Bajo | Go |
+| Pruebas automatizadas / CI | Cumple | 45 pruebas unitarias y GitHub Actions | Bajo | Go |
+| Defectos residuales        | Cumple | Sin defectos críticos abiertos | Bajo | Go |
+| Documentación y despliegue | Cumple | docs/entregables; Vercel y Railway | Bajo | Go |
+| Aceptación funcional       | Cumple | Product Owner (16.2) | Bajo | Go |
 
 ### 16.4 Acta de decisión
 
 | **Campo**                 | **Contenido**                                  |
 | ------------------------- | ---------------------------------------------- |
-| Decisión                  | Liberar / Liberar con condiciones / No liberar |
-| Versión                   |                                                |
-| Condiciones o pendientes  |                                                |
-| Riesgos aceptados         |                                                |
-| Responsable de aceptación |                                                |
-| Fecha                     |                                                |
-| Firmas / evidencia        |                                                |
+| Decisión                  | Liberar |
+| Versión                   | v1.0.0 |
+| Condiciones o pendientes  | Declaración de uso de IA y etiqueta v1.0.0 al cierre |
+| Riesgos aceptados         | Plan gratuito de Railway (vigilado por el equipo) |
+| Responsable de aceptación | Liliana Sofía Panesso Méndez (Product Owner) |
+| Fecha                     | 23/11/2026 |
+| Firmas / evidencia        | Acta de cierre (Informe de cierre, sección 20) |
 
 ## 17\. Cierre de pruebas y lecciones aprendidas
 

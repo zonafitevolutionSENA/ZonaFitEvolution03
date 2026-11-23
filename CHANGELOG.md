@@ -5,6 +5,10 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 ## [Sin publicar]
 
 ### Added
+- Un solo ingreso por día en cualquier plan (CR-008): una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso; después se niega con «Ya ingresó hoy a las …».
+- El historial de accesos se conserva 3 meses: la tarea diaria de las 00:05 borra los intentos más antiguos (DAT-05).
+- Latido del agente del lector (ping cada 15 s): si el servidor se reinicia sin cerrar la conexión, el agente se reconecta solo.
+- Evidencias de la entrega final en `docs/pruebas/` y `docs/evidencias/`: ciclo CIC-02 con el sensor en producción, mínimo privilegio en MySQL, compatibilidad y accesibilidad, prueba de restauración y contribución individual.
 - Integración continua en GitHub Actions: pruebas, lint, build, `npm audit` y ciclo de casos con MySQL en cada pull request.
 - Logs del backend con fecha, nivel, módulo y contexto (`NIVEL_LOG`).
 - Pruebas unitarias de los estados de acceso y de las reglas de renovación y cambio de estado de membresías.
@@ -13,10 +17,17 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 - Diagramas con un solo estilo en `docs/diagramas/` y `docs/analisis/casos-uso/`, incluido el de estados de la membresía.
 - Procedimientos del Manual de usuario con capturas, `LICENSE` y este `CHANGELOG.md`.
 
+### Changed
+- RNF-007 se verifica en Chrome (computador, tablet y celular) por CR-009.
+- La pantalla de inicio de sesión usa `<main>` como región principal (accesibilidad).
+- Retención de respaldos: uno semanal y uno antes de cada despliegue, conservando los últimos 4.
+
 ### Removed
+- Archivos vacíos `cd` y `npm` creados por error en `BackendZonafitevolution/`.
 - Ruta `DELETE /api/clientes/:id`: los clientes no se eliminan (RN-001, TT-002).
 
 ### Security
+- La API se conecta a MySQL con el usuario `zonafit_app` (solo SELECT, INSERT, UPDATE y DELETE); `root` queda para administrar (SEG-08).
 - El backend impide eliminar la propia cuenta y al último Administrador (RN-012, TT-001).
 
 ## 2026-11-21

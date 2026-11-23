@@ -28,6 +28,7 @@
 | 1.2 | 22/11/2026 | Despliegue en Vercel y Railway (RSD-07, INT-02 y CR-006) y tarea diaria de vencimiento y activación de membresías | Juan Diego Mejía Llano |  |
 | 1.3 | 22/11/2026 | Observaciones OBS-001 y OBS-002 cerradas (RN-001 y RN-012 validadas en el backend) y alcance real de CR-008 | Juan Diego Mejía Llano |  |
 | 1.4 | 22/11/2026 | Observaciones OBS-003 y OBS-005 cerradas (CORS restringido y tarea diaria de membresías) | Juan Diego Mejía Llano |  |
+| 1.5 | 23/11/2026 | CR-008 implementado en todos los planes (RN-015) y CR-009: RNF-007 verificado en Chrome | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -489,7 +490,7 @@ Los criterios pueden expresarse como lista verificable o en formato Given/When/T
 | RNF-004 | Disponibilidad | Disponibilidad del 99,9 % durante el horario de atención del gimnasio.                                                  | Alta          | Medición            | Planificado  |
 | RNF-005 | Mantenibilidad | Código organizado por capas y patrones documentados; ESLint y build sin errores.                                        | Media         | Inspección          | Implementado |
 | RNF-006 | Privacidad     | Solo se recolectan los datos necesarios y nunca se guardan imágenes de huellas (Ley 1581 de 2012).                      | Alta          | Inspección          | Implementado |
-| RNF-007 | Compatibilidad | Funciona en las dos últimas versiones de Chrome, Edge y Firefox, en computador, tablet y celular.                       | Media         | Prueba              | En análisis  |
+| RNF-007 | Compatibilidad | Funciona en la versión actual de Chrome en computador, tablet y celular (CR-009).                       | Media         | Prueba              | Verificado  |
 
 ### 6.2 Ficha detallada de RNF
 
@@ -610,14 +611,14 @@ Los criterios pueden expresarse como lista verificable o en formato Given/When/T
 | Descripción             | La interfaz debe funcionar en los navegadores y dispositivos de la recepción. |
 | Fuente y justificación  | STK-02; la recepción puede usar computador o tablet.                          |
 | Métrica                 | Flujos críticos que funcionan en cada navegador y resolución.                 |
-| Umbral o meta           | 100 % de flujos críticos en Chrome, Edge y Firefox; desde 360 px de ancho.    |
-| Condiciones de medición | Dos últimas versiones de cada navegador.                                      |
+| Umbral o meta           | 100 % de flujos críticos en Chrome; desde 360 px de ancho.    |
+| Condiciones de medición | Versión actual de Chrome en computador, tablet (768 px) y celular (375 px).                                      |
 | Método de verificación  | Prueba multidispositivo.                                                      |
 | Evidencia esperada      | Lista de verificación con capturas.                                           |
 | Responsable             | Maileth Begambre Movilla                                                      |
 | Prioridad               | Media                                                                         |
 | Versión objetivo        | MVP                                                                           |
-| Estado                  | En análisis                                                                   |
+| Estado                  | Verificado (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md)                                                                   |
 
 ### 6.3 Catálogo mínimo por categoría
 
@@ -665,7 +666,7 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | RN-012 | Protección de cuentas       | No se debe eliminar la propia cuenta ni al último administrador.                                                                                                                                                      | STK-04                   | Ninguna                                                                                                          | RF-007                   | Aprobada                               |
 | RN-013 | Tiqueteras                  | Una tiquetera incluye un número de ingresos; su duración cuenta desde el primer ingreso y descuenta como máximo un ingreso por día.                                                                                   | STK-01                   | Ninguna                                                                                                          | RF-002, RF-003           | Aprobada                               |
 | RN-014 | Membresía pendiente         | Una membresía adquirida mientras el cliente tiene otra activa queda «pendiente» y se activa automáticamente en su fecha de inicio. Solo se permite una pendiente y solo se puede cancelar.                            | STK-01                   | Ninguna                                                                                                          | RF-005                   | Aprobada                               |
-| RN-015 | Un ingreso por día          | Todos los planes permiten un solo ingreso por día.                                                                                                                                                                    | STK-01                   | Ninguna                                                                                                          | RF-002, RF-003           | Aprobada (el backend aún no la aplica) |
+| RN-015 | Un ingreso por día          | Todos los planes permiten un solo ingreso por día.                                                                                                                                                                    | STK-01                   | Ninguna                                                                                                          | RF-002, RF-003           | Aprobada e implementada (todos los planes; ventana de 30 minutos para lecturas repetidas) |
 
 ### 7.2 Ficha de regla de negocio
 
@@ -917,7 +918,8 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | CR-005 |                       | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02 | Aprobado                         | Juan Diego Mejía Llano | MVP         |
 | CR-006 |                       | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            | TT-009, INT-02, RSD-07                 | Aprobado e implementado | Juan Diego Mejía Llano | MVP         |
 | CR-007 | 10/11/2026            | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                         | RF-004, INT-01, UI-06                  | Aprobado                         | Juan Diego Mejía Llano | MVP         |
-| CR-008 | 10/11/2026            | Regla de un ingreso por día en todos los planes; el frontend la muestra y el backend la aplica a las tiqueteras.                                | RF-002, RF-003, RN-015                 | Aprobado; el backend la aplica a las tiqueteras (un descuento por día); para los planes por tiempo falta confirmarla con el propietario     | Juan Diego Mejía Llano | MVP         |
+| CR-008 | 10/11/2026            | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso (sin registrar otro ni descontar).                                | RF-002, RF-003, RN-015                 | Aprobado e implementado (23/11/2026): el backend lo aplica en todos los planes     | Juan Diego Mejía Llano | MVP         |
+| CR-009 | 23/11/2026 | RNF-007 se limita a Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance de la verificación. | RNF-007, UX-02 | Aprobado | Juan Diego Mejía Llano | MVP |
 
 ## 13\. Trazabilidad y cobertura
 

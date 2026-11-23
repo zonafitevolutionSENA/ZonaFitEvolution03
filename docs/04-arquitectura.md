@@ -31,6 +31,7 @@
 | 2.0         | 22/11/2026 | Todos los diagramas rehechos con un solo estilo y fuente versionada: contexto, clases, paquetes, entidad-relación, estados de la membresía (nuevo), despliegue y diez secuencias; endpoints de la pantalla de ingreso, salud y fecha de fin; tarea diaria de membresías; puerto del lector automático | Juan Diego Mejía Llano       |                  |
 | 2.1 | 22/11/2026 | Regla del último administrador en el backend y ruta de borrado de clientes retirada (DT-004 y DT-005 cerradas); evidencias del ciclo CIC-01; textos propios en 4.1 y 8.2 a 8.4, volúmenes, alternativas, respaldo y contingencias | Juan Diego Mejía Llano |  |
 | 2.2 | 22/11/2026 | Integración continua en GitHub Actions (DT-008 cerrada), logs con fecha, nivel, módulo y contexto, y 39 pruebas unitarias | Juan Diego Mejía Llano |  |
+| 2.3 | 23/11/2026 | Usuario de MySQL con mínimo privilegio (SEG-08), respaldo y restauración probados (DAT-06), un ingreso por día y latido del agente | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -492,7 +493,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | clientes                | Lógico (no se eliminan, RN-001) | Permanente                      | Conservar el historial                 | —                  | registros\_acceso |
 | planes                  | Lógico (desactivar)             | Permanente                      | Membresías asociadas                   | Reactivar          | —                 |
 | plantillas\_biometricas | Físico (Administrador)          | Mientras el cliente esté activo | Solicitud del titular o nuevo registro | Registrar de nuevo |                   |
-| registros\_acceso       |                                 | Por definir                     |                                        |                    |                   |
+| registros\_acceso       | Físico (tarea diaria de las 00:05) | 3 meses | Historial operativo; evita que la tabla crezca sin límite | Respaldo semanal | Deploy Logs (depuración del historial) |
 
 ### 8.10 Migraciones y datos semilla
 
@@ -510,15 +511,15 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 
 | **Elemento**                  | **Definición**                                                                                                                        |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Frecuencia                    | Diaria (recomendada)                                                                                                                  |
-| Retención                     | Propuesta: los últimos 7 respaldos diarios y uno mensual |
+| Frecuencia                    | Semanal (manual con mysqldump) y antes de cada despliegue                                                                                                                  |
+| Retención                     | Los últimos 4 respaldos semanales |
 | Ubicación                     | Fuera del servidor (almacenamiento externo)                                                                                           |
 | Cifrado                       | El archivo se guarda en una ubicación con acceso restringido y nunca se sube al repositorio |
-| Responsable                   | Liliana Sofía Panesso Méndez                                                                                                          |
-| RPO esperado                  | 24 horas (respaldo diario) |
+| Responsable                   | Juan Diego Mejía Llano                                                                                                          |
+| RPO esperado                  | 7 días (respaldo semanal); 0 en cambios planificados (respaldo previo al despliegue) |
 | RTO esperado                  | Objetivo: 1 hora (restaurar el último respaldo en una base nueva de Railway) |
 | Procedimiento de restauración | mysql -u \<usuario\> -p zonafitevolution \< respaldo\_zonafit\_AAAAMMDD.sql sobre una base vacía; conservar el mismo BIOMETRIA\_SALT. |
-| Evidencia de prueba           |                                                                                                                                       |
+| Evidencia de prueba           | Prueba del 23/11/2026: 7 de 7 tablas restauradas con los mismos registros (docs/pruebas/DAT-06-respaldo-y-restauracion.md) |
 
 ## 9\. API e integraciones
 
@@ -624,6 +625,8 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | Empleado                 | Planes, personal y registro financiero   | Modificar o consultar                   | Denegar     | Sí (403)                | CP-006, CP-015, CP-021 |
 | Administrador / Empleado | Clientes, membresías, biometría y acceso | Registrar, consultar, renovar y validar | Permitir    | Sí                      | CP-001, CP-012, CP-007 |
 | Sin token                | Toda la API salvo /auth/login            | Cualquiera                              | Denegar     | Sí (401)                | CP-020                 |
+| API (usuario zonafit\_app) | Base de datos railway | SELECT, INSERT, UPDATE y DELETE | Permitir | Sí (GRANT de MySQL) | SEG-08 |
+| API (usuario zonafit\_app) | Estructura de la base, otras bases y usuarios | CREATE, ALTER, DROP, GRANT | Denegar | Sí (MySQL) | SHOW GRANTS |
 
 ### 10.4 Gestión de secretos
 
@@ -637,7 +640,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 
   - Evitar registrar secretos en logs o errores.
 
-  - En la nube, los secretos (JWT\_SECRET, BIOMETRIA\_SALT, AGENTE\_TOKEN, PANTALLA\_TOKEN y la contraseña de MySQL) viven solo en las variables de Railway y en AgenteLector/.env; ninguno se sube al repositorio.
+  - En la nube, los secretos (JWT\_SECRET, BIOMETRIA\_SALT, AGENTE\_TOKEN, PANTALLA\_TOKEN y la contraseña del usuario zonafit\_app de MySQL) viven solo en las variables de Railway y en AgenteLector/.env; ninguno se sube al repositorio. La API usa zonafit\_app (solo datos); root se reserva para administrar.
 
   - VITE\_API\_URL se publica como variable de configuración en Vercel: no es un secreto, porque queda incluida en el código del navegador.
 
@@ -779,7 +782,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | **Control**            | **Herramienta**       | **Ejecución** | **Criterio de aceptación**   | **Evidencia** |
 | ---------------------- | --------------------- | ------------- | ---------------------------- | ------------- |
 | Lint                   | ESLint (npm run lint) | GitHub Actions en cada pull request | Sin errores críticos         | Sin errores (22/11/2026) |
-| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 39 pruebas unitarias y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
+| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 45 pruebas unitarias y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
 | Build                  | Vite (npm run build)  | GitHub Actions en cada pull request | Construcción reproducible    | Construcción exitosa (22/11/2026) |
 | Auditoría dependencias | npm audit             | GitHub Actions en cada pull request | Sin críticas sin tratamiento | npm audit: 0 vulnerabilidades en backend, frontend y agente (22/11/2026) |
 | Análisis estático      |                       |               |                              |               |

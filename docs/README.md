@@ -42,7 +42,8 @@ Otros:
 - [`diagramas/`](diagramas/): diagramas de arquitectura y datos (contexto, contenedores, componentes, paquetes, clases, entidad-relación, estados de la membresía y despliegue), cada uno con su fuente Mermaid (`.mmd`) y su PNG.
 - [`analisis/casos-uso/`](analisis/casos-uso/): diagramas de análisis (casos de uso, diez secuencias y nueve actividades), con su fuente y su PNG.
 - Todos los diagramas usan el mismo estilo. Para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i <archivo>.mmd -o <archivo>.png -s 2 -b white` (casos de uso: `dot -Tpng -Gdpi=150 casos-de-uso.dot -o casos-de-uso.png`).
-- [`pruebas/`](pruebas/): resultados de los ciclos de prueba generados con `npm run pruebas-cp` (CIC-01) y registros de inspección.
+- [`pruebas/`](pruebas/): resultados de los ciclos de prueba (CIC-01 con `npm run pruebas-cp` y CIC-02 con el sensor en producción), mínimo privilegio en MySQL, compatibilidad y accesibilidad, prueba de restauración y registros de inspección.
+- [`evidencias/`](evidencias/): capturas de las pruebas de la entrega final y [contribución individual](evidencias/contribuciones.md) de cada integrante.
 - [`legal/`](legal/): formato de autorización para el tratamiento de datos personales y biométricos (Ley 1581 de 2012).
 - [`capturas/`](capturas/): capturas de la aplicación con datos ficticios usadas en el Manual de usuario.
 - Las épicas, historias y sprints se gestionan en **Jira** (tablero SCRUM); aquí se enlazan, no se copian.
@@ -52,14 +53,15 @@ Otros:
 | ID | Cambio |
 | --- | --- |
 | CR-005 | El lector biométrico es un AS608 con conversor USB CP2102 y solo valida el ingreso; no abre la puerta automáticamente. |
-| CR-006 | El hosting deja de ser Render; queda por definir. |
+| CR-006 | Despliegue en la nube (11/11/2026): frontend en Vercel, API y MySQL en Railway, y agente local del lector AS608 por WebSocket (antes registrado aquí como CR-009). |
 | CR-007 | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608. |
-| CR-008 | Un solo ingreso por día en todos los planes. El frontend ya lo muestra; la validación del backend está pendiente. |
-| CR-009 | Despliegue en la nube (11/11/2026): frontend en Vercel, API y MySQL en Railway, y agente local del lector AS608 por WebSocket. Resuelve CR-006. |
+| CR-008 | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso. Implementado en el backend (23/11/2026). |
+| CR-009 | RNF-007 se verifica solo en Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance (23/11/2026). |
 
 ## Pendientes del equipo
 
-- **Backend:** aplicar la regla de un ingreso por día (RN-015, CR-008) en la validación de acceso.
+- **Cierre:** declaración de uso de IA (Informe de cierre 17.2 y Guía del repositorio 13.2), etiqueta `v1.0.0` y firmas del acta de cierre.
+- **Datos personales:** completar los datos del gimnasio en el formato de `legal/` y recoger las firmas antes de registrar huellas de socios reales.
 - **Despliegue:** pasar Railway al plan Hobby antes del 10/12/2026 (la prueba de 30 días vence alrededor del 11/12) y respaldar la base con `mysqldump` antes de la sustentación.
 
 En los formatos quedaron en blanco, marcados explícitamente, los datos que solo el equipo puede aportar: costos, horas de dedicación, línea base de indicadores, enlace de Figma, resultados de pruebas, declaración de uso de IA y firmas. Al completarlos se actualizan el Markdown y el entregable correspondiente.

@@ -13,6 +13,7 @@
 | 0.4 | 22/11/2026 | Estado al 22/11/2026: reglas de seguridad en el backend, ciclo CIC-01 aprobado, resumen ejecutivo, coherencia arquitectónica y condiciones de operación | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.5 | 22/11/2026 | Identificación de la entrega (URL, ambiente, licencia, versión), licencia ISC y matriz de trazabilidad con 89 % de cobertura completa | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.6 | 22/11/2026 | Integración continua, logs estructurados, 39 pruebas unitarias y lista de chequeo final diligenciada | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.7 | 23/11/2026 | Aceptación del producto, lecciones aprendidas, contribución individual, CIC-02 con el sensor, mínimo privilegio, accesibilidad y restauración probada | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -120,6 +121,8 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | CHG-04        | El registro financiero se calcula con las membresías mientras se crea la tabla de pagos.                                                            | Sprint 10 (oct. 2026) | Equipo          | RF-006, HU-008                         | Aprobado (temporal)              |
 | CHG-05        | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. |                       | Equipo          | OBJ-04, RF-003, RF-004, INT-01, INT-02 | Aprobado                         |
 | CHG-06        | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            |                       | Equipo          | TT-009, INT-02, RSD-07                 | Aprobado e implementado |
+| CHG-07 | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso (sin registrar otro ni descontar). | 23/11/2026 | STK-01 | RF-002, RF-003, RN-015 | Aprobado e implementado |
+| CHG-08 | RNF-007 se limita a Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance de la verificación. | 23/11/2026 | STK-01 | RNF-007, UX-02 | Aprobado |
 
 ## 5\. Estado de requisitos y trazabilidad
 
@@ -210,14 +213,14 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Tipo de prueba** | **Planificadas** | **Ejecutadas** | **Aprobadas** | **Fallidas** | **Bloqueadas** | **Cobertura** |
 | ------------------ | ---------------- | -------------- | ------------- | ------------ | -------------- | ------------- |
-| Unitarias          | 39 | 39 | 39 | 0 | 0 | 53 % de líneas |
+| Unitarias          | 45 | 45 | 45 | 0 | 0 | 53 % de líneas |
 | Integración        | 22 | 22 | 22 | 0 | 0 | CP-001 a CP-022 (CIC-01) |
-| End-to-End         |                  |                |               |              |                |               |
+| End-to-End         | 5 | 5 | 5 | 0 | 0 | CIC-02 con el sensor en producción |
 | API                |                  |                |               |              |                |               |
 | Seguridad          | 5 | 5 | 5 | 0 | 0 | CP-018, CP-020, CP-021, RN-001 y npm audit |
-| Accesibilidad      |                  |                |               |              |                |               |
+| Accesibilidad      | 2 | 2 | 2 | 0 | 0 | Lighthouse: 96/100 y 24/24 |
 | Rendimiento        | 1 | 1 | 1 | 0 | 0 | RNF-003 en el servidor (p95 6,4 ms) |
-| Aceptación         |                  |                |               |              |                |               |
+| Aceptación         | 1 | 1 | 1 | 0 | 0 | Product Owner (FLU-001 a FLU-005) |
 
 ### 8.1 Defectos al cierre
 
@@ -235,8 +238,8 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Defectos críticos abiertos         | 0        | 0 | Sí | docs/pruebas/CIC-01-resultados.md |
 | Build / pipeline exitoso           | Sí       | Pruebas, lint, build, audit e integración en GitHub Actions (.github/workflows/ci.yml) | Sí | Pestaña Actions del repositorio |
 | Tiempo de respuesta crítico        | < 2 s (RNF-003) | p95 6,4 ms en el servidor | Sí (falta medir con el sensor) | docs/pruebas/CIC-01-resultados.md |
-| Accesibilidad básica               |          |               |            |            |
-| Vulnerabilidades críticas abiertas | 0        |               |            |            |
+| Accesibilidad básica               | ≥ 90 en Lighthouse | 96/100 en el login; 24/24 con sesión | Sí | docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md |
+| Vulnerabilidades críticas abiertas | 0        | 0 (npm audit en cada pull request) | Sí | GitHub Actions |
 
 ## 9\. Seguridad, privacidad y cumplimiento
 
@@ -250,6 +253,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Datos personales controlados   | Solo hash de la huella; la API no devuelve el hash                     |               |                      |
 | Licencias y atribuciones       | Archivo LICENSE (ISC) en la raíz del repositorio |               | Resuelto    |
 | Declaración de uso de IA       |                                                                        |               |                      |
+| Mínimo privilegio en base de datos | La API usa zonafit\_app (solo SELECT, INSERT, UPDATE y DELETE sobre railway); root solo para administrar | docs/pruebas/SEG-08-minimo-privilegio.md | — |
 
 <table>
 <tbody>
@@ -290,18 +294,18 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Criterio de aceptación**           | **Responsable** | **Resultado** | **Evidencia** | **Observaciones** |
 | ------------------------------------ | --------------- | ------------- | ------------- | ----------------- |
-| Flujos críticos funcionales          |                 |               |               |                   |
-| Alcance acordado entregado           |                 |               |               |                   |
-| Pruebas de aceptación                |                 |               |               |                   |
-| Documentación actualizada            |                 |               |               |                   |
-| Aplicación desplegada o reproducible |                 |               |               |                   |
-| Transferencia realizada              |                 |               |               |                   |
+| Flujos críticos funcionales          | Liliana Sofía Panesso Méndez | Cumple | CIC-01 y CIC-02 |                   |
+| Alcance acordado entregado           | Liliana Sofía Panesso Méndez | Cumple | Sección 4 |                   |
+| Pruebas de aceptación                | Liliana Sofía Panesso Méndez | Cumple | Plan de calidad 16.2 |                   |
+| Documentación actualizada            | Liliana Sofía Panesso Méndez | Cumple | docs/entregables |                   |
+| Aplicación desplegada o reproducible | Liliana Sofía Panesso Méndez | Cumple | https://zona-fit-evolution03.vercel.app |                   |
+| Transferencia realizada              | Liliana Sofía Panesso Méndez | Pendiente | Sección 15 (al cierre) |                   |
 
 ### 11.1 Decisión de aceptación
 
 | **Decisión**               | **Marcar** | **Condición**                                         |
 | -------------------------- | ---------- | ----------------------------------------------------- |
-| Aceptado sin observaciones | ☐          | La entrega cumple los criterios definidos.            |
+| Aceptado sin observaciones | ☒ | La entrega cumple los criterios definidos.            |
 | Aceptado con observaciones | ☐          | Existen pendientes no bloqueantes con plan acordado.  |
 | Requiere correcciones      | ☐          | No se cumplen criterios necesarios para aceptar.      |
 | No aceptado                | ☐          | Existe una falla crítica o incumplimiento sustancial. |
@@ -310,7 +314,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 |                                                                |
 | -------------------------------------------------------------- |
-| *\[Registre condiciones, compromisos, fechas y responsables\]* |
+| *El Product Owner acepta la versión candidata v1.0.0 el 23/11/2026. Quedan para el cierre la declaración de uso de IA, la etiqueta v1.0.0 y las firmas del acta (sección 20).* |
 
 ## 12\. Riesgos residuales y limitaciones conocidas
 
@@ -324,7 +328,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 |                                                                                                       |
 | ----------------------------------------------------------------------------------------------------- |
-| *Navegadores Chrome y Edge actuales en computador; la pantalla de ingreso necesita el portátil de recepción con el sensor AS608 por USB. Capacidad prevista: 400 clientes y unas 200 validaciones por día. No se soportan pagos en línea, apertura automática de la puerta ni varias sedes.* |
+| *Chrome actual en computador, tablet y celular (RNF-007, CR-009); la pantalla de ingreso necesita el portátil de recepción con el sensor AS608 por USB. Capacidad prevista: 400 clientes y unas 200 validaciones por día. No se soportan pagos en línea, apertura automática de la puerta ni varias sedes.* |
 
 ## 13\. Deuda técnica
 
@@ -337,7 +341,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | Revisión del código | —                               |               |              |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               |              |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               |              |                      |
-| DT-08  | Resuelto: 39 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
+| DT-08  | Resuelto: 45 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               |              |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               |              |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | Revisión del código | —                                        |               |              |                      |
@@ -382,11 +386,11 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 
 | **Categoría**              | **Qué funcionó** | **Qué no funcionó** | **Acción recomendada** |
 | -------------------------- | ---------------- | ------------------- | ---------------------- |
-| Análisis y requisitos      |                  |                     |                        |
-| Gestión y colaboración     |                  |                     |                        |
-| Arquitectura y desarrollo  |                  |                     |                        |
-| Pruebas y seguridad        |                  |                     |                        |
-| Despliegue y documentación |                  |                     |                        |
+| Análisis y requisitos      | Historias de usuario con criterios de aceptación y casos de uso; el backlog guió cada sprint | Reglas que cambiaron tarde (tiqueteras, un ingreso por día, membresías pendientes) obligaron a rehacer código y documentos | Validar las reglas de negocio con el propietario antes de cada sprint y registrar cada cambio como CR |
+| Gestión y colaboración     | Flujo feature → develop → main con pull requests y commits convencionales | Contribución desigual en el repositorio; un force-push reescribió ramas y la historia de main | Repartir tareas visibles en Jira, que cada integrante abra sus PR y proteger main y develop contra force-push |
+| Arquitectura y desarrollo  | Capas (rutas, controladores, servicios, repositorios) y patrones State, Adapter y Facade; el lector físico se agregó sin cambiar el núcleo | El lector simulado ocultó problemas del sensor real (error 0x17, huellas duplicadas) que salieron tarde | Probar con el hardware real desde el primer sprint en que se integra |
+| Pruebas y seguridad        | Pruebas unitarias, ciclos CIC-01 y CIC-02 e integración continua en cada PR; reglas de seguridad en el servidor; usuario de base con mínimo privilegio | Las pruebas automáticas llegaron al final; la conexión con root y un error de contraseña se detectaron en producción | Escribir pruebas desde el inicio y aplicar mínimo privilegio desde el primer despliegue |
+| Despliegue y documentación | Despliegue en Railway y Vercel con agente remoto; documentación en Word, PDF y Markdown sincronizada | Variables con caracteres invisibles y un agente que no se reconectaba tras reinicios del servidor; documentos desactualizados respecto al código | Verificar las variables tras cada cambio, latido en el agente y actualizar la documentación en el mismo PR que el código |
 | Uso de IA y herramientas   |                  |                     |                        |
 
 ## 17\. Autoría, contribución y uso de IA
@@ -395,9 +399,9 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 
 | **Integrante**               | **Rol**                        | **Contribuciones verificables**             | **Evidencias**        | **Capacidad de sustentación** |
 | ---------------------------- | ------------------------------ | ------------------------------------------- | --------------------- | ----------------------------- |
-| Juan Diego Mejía Llano       | Líder, Scrum Master y frontend | Requisitos, documentación, frontend React   | 57 + 35 commits; Jira |                               |
-| Liliana Sofía Panesso Méndez | Product Owner y backend        | API REST, base de datos, patrones de diseño | 74 commits; Jira      |                               |
-| Maileth Begambre Movilla     | UX/UI y apoyo frontend         | Wireframes, mockups y prototipos            | 7 commits; Figma      |                               |
+| Juan Diego Mejía Llano       | Líder, Scrum Master y frontend | Frontend React, despliegue, agente del lector, CI, pruebas y documentación | 93 commits en main y 78 PR; docs/evidencias/contribuciones.md | Frontend React, despliegue en la nube, agente del lector, integración continua y documentación |
+| Liliana Sofía Panesso Méndez | Product Owner y backend        | API REST, base de datos, autenticación, patrones de diseño y membresías | 56 commits (49 en ramas feature y release, 7 en main); docs/evidencias/contribuciones.md | Modelo de datos, JWT y roles, servicios de clientes, planes y membresías, patrones State, Adapter y Facade, activación diaria |
+| Maileth Begambre Movilla     | UX/UI y apoyo frontend         | Interfaz responsive, manejo de sesión, integración del lector y pantalla de ingreso | 8 commits en main; Figma; docs/evidencias/contribuciones.md | Diseño de la interfaz y responsive, manejo de sesión, integración del lector biométrico y pantalla de ingreso |
 
 ### 17.2 Declaración de uso de IA
 
@@ -432,26 +436,26 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 
 | **N.°** | **Verificación**                                               | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | -------------------------------------------------------------- | -------------- | ------------- | ----------------- |
-| 1       | El producto ejecuta los flujos críticos.                       | Sí / No / N.A. |               |                   |
-| 2       | La versión final está identificada mediante etiqueta o commit. | Sí / No / N.A. |               |                   |
-| 3       | El alcance entregado está comparado con el comprometido.       | Sí / No / N.A. |               |                   |
-| 4       | Los requisitos pendientes están declarados.                    | Sí / No / N.A. |               |                   |
-| 5       | La matriz de trazabilidad está actualizada.                    | Sí / No / N.A. |               |                   |
-| 6       | Los entregables están disponibles y versionados.               | Sí / No / N.A. |               |                   |
-| 7       | Las migraciones y semillas son reproducibles.                  | Sí / No / N.A. |               |                   |
-| 8       | Las pruebas y evidencias están consolidadas.                   | Sí / No / N.A. |               |                   |
-| 9       | No existen defectos críticos abiertos sin decisión formal.     | Sí / No / N.A. |               |                   |
-| 10      | No existen secretos o credenciales expuestas.                  | Sí / No / N.A. |               |                   |
-| 11      | La documentación corresponde con la versión final.             | Sí / No / N.A. |               |                   |
-| 12      | La aplicación está desplegada o puede instalarse.              | Sí / No / N.A. |               |                   |
-| 13      | La aceptación funcional fue registrada.                        | Sí / No / N.A. |               |                   |
-| 14      | Los riesgos residuales tienen responsable.                     | Sí / No / N.A. |               |                   |
-| 15      | La deuda técnica está documentada.                             | Sí / No / N.A. |               |                   |
-| 16      | La transferencia técnica fue realizada.                        | Sí / No / N.A. |               |                   |
-| 17      | Los activos y accesos fueron entregados.                       | Sí / No / N.A. |               |                   |
-| 18      | Las contribuciones individuales son trazables.                 | Sí / No / N.A. |               |                   |
-| 19      | El uso de IA fue declarado.                                    | Sí / No / N.A. |               |                   |
-| 20      | El informe cuenta con aprobación y firmas.                     | Sí / No / N.A. |               |                   |
+| 1       | El producto ejecuta los flujos críticos.                       | Sí | CIC-01 y CIC-02 |  |
+| 2       | La versión final está identificada mediante etiqueta o commit. | No |  | Se crea la etiqueta v1.0.0 al cierre |
+| 3       | El alcance entregado está comparado con el comprometido.       | Sí | Sección 4 |  |
+| 4       | Los requisitos pendientes están declarados.                    | Sí | Sección 5.1 y lista de chequeo |  |
+| 5       | La matriz de trazabilidad está actualizada.                    | Sí | Matriz maestra de trazabilidad |  |
+| 6       | Los entregables están disponibles y versionados.               | Sí | docs/entregables |  |
+| 7       | Las migraciones y semillas son reproducibles.                  | Sí | init.sql en cada PR |  |
+| 8       | Las pruebas y evidencias están consolidadas.                   | Sí | docs/pruebas y docs/evidencias |  |
+| 9       | No existen defectos críticos abiertos sin decisión formal.     | Sí | Sección 8.1 |  |
+| 10      | No existen secretos o credenciales expuestas.                  | Sí | npm audit y .env fuera de Git |  |
+| 11      | La documentación corresponde con la versión final.             | Sí | Versiones del 23/11/2026 |  |
+| 12      | La aplicación está desplegada o puede instalarse.              | Sí | Vercel y Railway |  |
+| 13      | La aceptación funcional fue registrada.                        | Sí | Sección 11 |  |
+| 14      | Los riesgos residuales tienen responsable.                     | Sí | Sección 12 |  |
+| 15      | La deuda técnica está documentada.                             | Sí | Sección 13 |  |
+| 16      | La transferencia técnica fue realizada.                        | No |  | Al cierre (sección 15) |
+| 17      | Los activos y accesos fueron entregados.                       | No |  | Al cierre (sección 15.1) |
+| 18      | Las contribuciones individuales son trazables.                 | Sí | docs/evidencias/contribuciones.md |  |
+| 19      | El uso de IA fue declarado.                                    | No |  | Pendiente (sección 17.2) |
+| 20      | El informe cuenta con aprobación y firmas.                     | No |  | Al cierre (sección 20) |
 
 ## 20\. Acta de cierre y firmas
 
