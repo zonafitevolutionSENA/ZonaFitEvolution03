@@ -10,6 +10,7 @@
 | 0.1         | 03/11/2026 | Estado actual del repositorio y brechas frente a la guía | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.2 | 22/11/2026 | Carpetas AgenteLector/recepcion y docs (diagramas, analisis/casos-uso y entregables) | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.3 | 22/11/2026 | LICENSE y CHANGELOG.md creados, registro de liberaciones al 22/11/2026 y evidencias EV-003 y EV-004 disponibles | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.4 | 23/11/2026 | Declaración de uso de IA (13.2), evidencias de la entrega final en docs/pruebas y docs/evidencias | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -346,12 +347,12 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 
 | **Campo**         | **Contenido**                                      |
 | ----------------- | -------------------------------------------------- |
-| Herramienta       | Nombre y modalidad                                 |
-| Uso realizado     | Código, explicación, pruebas, diseño u otro        |
-| Partes afectadas  | Archivos o componentes                             |
-| Validación humana | Cómo se revisó, probó y adaptó                     |
-| Limitaciones      | Errores detectados y correcciones                  |
-| Responsabilidad   | Integrantes responsables de comprender y sustentar |
+| Herramienta       | Claude y Claude Code (Anthropic), en chat y en el editor; Gemini (Google), en chat                                 |
+| Uso realizado     | Claude: código, pruebas, depuración, despliegue, documentación y diagramas. Gemini: propuestas de diseño UX/UI y redacción de textos        |
+| Partes afectadas  | BackendZonafitevolution, FrontendZonafitevolution, AgenteLector, .github/workflows, docs/ (Markdown, entregables y diagramas)                             |
+| Validación humana | Revisión del código antes de aceptarlo; 46 pruebas unitarias, ciclos CIC-01 y CIC-02 y pruebas manuales; revisión de los documentos contra el sistema real                     |
+| Limitaciones      | Respuestas con errores o que no coincidían con el sistema real, corregidas al revisarlas; coautoría automática de Claude en commits y descripciones de PR, retirada                  |
+| Responsabilidad   | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla (cada uno en su parte) |
 
 <table>
 <tbody>
