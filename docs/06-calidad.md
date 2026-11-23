@@ -28,6 +28,7 @@
 | 0.4 | 22/11/2026 | Ciclo CIC-01 ejecutado el 22/11/2026: 24 de 24 casos aprobados (CP-001 a CP-022, RN-001 y RNF-003), ambiente de pruebas, evidencias, métricas y pipeline local | Juan Diego Mejía Llano |  |
 | 0.5 | 22/11/2026 | Pipeline de integración continua en GitHub Actions, 39 pruebas unitarias (53 % de líneas) y logs estructurados | Juan Diego Mejía Llano |  |
 | 0.6 | 23/11/2026 | Ciclo CIC-02 con el sensor en producción (5 de 5), compatibilidad, accesibilidad, restauración probada, aceptación del Product Owner y decisión de liberación | Juan Diego Mejía Llano |  |
+| 0.7 | 23/11/2026 | Alcance de plataformas ajustado a Chrome (CR-009) en el alcance y el ambiente de pruebas | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -64,7 +65,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | **Elemento**              | **Incluido**                                                                                                            | **Excluido / N.A.**                                           | **Justificación** |
 | ------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ----------------- |
 | Módulos / versiones       | Autenticación, clientes, planes, membresías, biometría, acceso, historial, personal y registro financiero (MVP v1.0.0). | Pagos en línea, facturación electrónica y apertura de puerta. |                   |
-| Plataformas               | Chrome, Edge y Firefox en computador, tablet y celular.                                                                 | Safari / iOS.                                                 |                   |
+| Plataformas               | Chrome en computador, tablet y celular (CR-009).                                                                 | Edge, Firefox y Safari / iOS (CR-009).                                                 |                   |
 | Integraciones             | Sensor AS608 (CP2102) y API REST.                                                                                       | Relé y electroimán (CR-005).                                  |                   |
 | Requisitos no funcionales | RNF-001 a RNF-007.                                                                                                      |                                                               |                   |
 | Datos y migraciones       | init.sql y datos semilla (planes iniciales y administrador).                                                            | Migraciones incrementales (no existen).                       |                   |
@@ -242,7 +243,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | Sistema operativo          | Windows (equipos del equipo y de la recepción)                                               |                                   |                  |
 | Runtime / SDK              | Node.js LTS reciente                                                                         |                                   |                  |
 | Base de datos              | MySQL local (XAMPP) o en la nube                                                             | init.sql + scripts/crear-admin.js |                  |
-| Navegadores / dispositivos | Chrome, Edge y Firefox; computador, tablet y celular                                         |                                   |                  |
+| Navegadores / dispositivos | Chrome; computador, tablet y celular (CR-009)                                         |                                   |                  |
 | Servicios externos / mocks | Sensor AS608 + CP2102 (sin simulador); en CIC-01 un agente de prueba responde por WebSocket igual que AgenteLector | src/hardware                      |                  |
 | Variables de entorno       | .env.example del backend y VITE\_API\_URL del frontend                                       | Repositorio                       |                  |
 | Build / commit             | Rama fix/reglas-seguridad-y-documentacion (CIC-01) | GitHub | docs/pruebas/CIC-01-resultados.md |

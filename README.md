@@ -283,9 +283,10 @@ Detalles de la implementación:
 
 - Una membresía que figura como `activa` pero cuya `fecha_fin` ya pasó se considera vencida:
   se marca como `vencida` y la nueva empieza hoy. Si vence hoy, todavía se considera vigente.
-- Al encadenar, la membresía anterior pasa a `cancelada` para que el cliente tenga una sola
-  membresía activa. El cambio de estado y la creación de la nueva se hacen en una sola
-  transacción, y dos renovaciones simultáneas del mismo cliente no pueden dejar dos activas.
+- Al encadenar, la membresía vigente sigue `activa` y la nueva queda `pendiente` desde el día
+  siguiente a su vencimiento; la tarea diaria de las 00:05 la activa en su fecha. Solo se permite
+  una pendiente por cliente. Una tiquetera sin usar (sin fecha de fin) pasa a `cancelada` y la
+  nueva empieza hoy. Todo se hace en una sola transacción con el cliente bloqueado.
 - Las columnas de fecha (`fecha_inicio`, `fecha_fin`) llegan en la API como texto `AAAA-MM-DD`.
 
 ## Épica 3, Sprint 1 — Registro biométrico (HU05)
@@ -385,7 +386,9 @@ Reglas de decisión:
 - Una membresía que figura `activa` pero cuya `fecha_fin` ya pasó se deniega como vencida.
 - Si `fecha_fin` falta o no es una fecha válida, se deniega.
 - "Hoy" es la fecha local del servidor.
-- Un cliente que renovó con la membresía vigente sigue con acceso: la anterior queda `cancelada` y la nueva `activa` empieza al día siguiente del vencimiento.
+- Un cliente que renovó con la membresía vigente sigue con acceso: la vigente sigue `activa` y la nueva queda `pendiente` hasta el día siguiente del vencimiento.
+- Un solo ingreso por día en cualquier plan (CR-008): si el mismo socio vuelve a poner el dedo dentro de 30 minutos se toma como el mismo ingreso (no se registra otro ni se descuenta); pasado ese tiempo se niega con «Ya ingresó hoy a las …».
+- El historial de accesos se conserva 3 meses: la tarea diaria de las 00:05 borra los registros más antiguos.
 
 ## Endpoints de Control de Acceso
 
@@ -620,8 +623,8 @@ Todos los roles ven el catálogo (con filtro Todos / Activos / Inactivos). Solo 
 
 La columna **Ingresos** del catálogo muestra la regla del gimnasio: **1 ingreso por día** en todos los planes
 (en las tiqueteras, por ejemplo, "6 ingresos (1 por día)"). Los selectores de plan de Membresías muestran lo mismo.
-**Pendiente del backend:** la validación de acceso todavía no bloquea un segundo ingreso el mismo día
-(las tiqueteras solo dejan de descontar el ingreso repetido).
+El backend aplica la regla: un segundo ingreso el mismo día se niega, salvo una lectura repetida dentro de 30 minutos,
+que cuenta como el mismo ingreso.
 
 ## Clientes y estado de la membresía
 
