@@ -14,6 +14,7 @@
 | 1.4 | 22/11/2026 | Procedimientos PRU-02 a PRU-09 redactados con capturas de la aplicación (datos ficticios); inicio, recuperación de acceso y cierre de sesión ajustados a la interfaz real | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.5 | 22/11/2026 | PRU-02 y MSG-04 ajustados a la regla actual: con una membresía activa la nueva queda pendiente; solo se permite una pendiente | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.6 | 23/11/2026 | Un solo ingreso por día en cualquier plan: mensaje MSG-15 y lecturas repetidas dentro de 30 minutos | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.7 | 23/11/2026 | Versión v1.0.0 y lista de verificación diligenciada | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -62,7 +63,7 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 | **Campo**                         | **Información**                                                                                                                                     |
 | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Nombre del sistema                | Zona Fit Evolution                                                                                                                                  |
-| Versión                           | v1.0.0 (candidata)                                                                                                                                  |
+| Versión                           | v1.0.0                                                                                                                                  |
 | URL o medio de acceso             | Producción: https://zona-fit-evolution03.vercel.app. Pantalla de ingreso: la misma dirección con ?pantalla=acceso. En local: http://localhost:5173. |
 | Tipo de aplicación                | Aplicación web (navegador)                                                                                                                          |
 | Organización responsable          | Gimnasio Zona Fit                                                                                                                                   |
@@ -585,26 +586,26 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 
 | **N.°** | **Verificación**                                                  | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | ----------------------------------------------------------------- | -------------- | ------------- | ----------------- |
-| 1       | El manual corresponde a la versión actual del producto.           | Sí / No / N.A. |               |                   |
-| 2       | La portada identifica proyecto y versión.                         | Sí / No / N.A. |               |                   |
-| 3       | La audiencia y los roles están definidos.                         | Sí / No / N.A. |               |                   |
-| 4       | Los requisitos de acceso están explicados.                        | Sí / No / N.A. |               |                   |
-| 5       | El inicio, recuperación y cierre de sesión están documentados.    | Sí / No / N.A. |               |                   |
-| 6       | La navegación general está descrita.                              | Sí / No / N.A. |               |                   |
-| 7       | Los nombres de botones y campos coinciden con la interfaz.        | Sí / No / N.A. |               |                   |
-| 8       | Cada flujo crítico tiene un procedimiento paso a paso.            | Sí / No / N.A. |               |                   |
-| 9       | Los procedimientos indican rol y precondiciones.                  | Sí / No / N.A. |               |                   |
-| 10      | Se documentan estados de éxito, error, vacío y permisos.          | Sí / No / N.A. |               |                   |
-| 11      | Las validaciones de formularios están explicadas.                 | Sí / No / N.A. |               |                   |
-| 12      | Búsquedas, filtros y reportes están documentados.                 | Sí / No / N.A. |               |                   |
-| 13      | Las capturas corresponden a la versión final.                     | Sí / No / N.A. |               |                   |
-| 14      | Las imágenes no exponen datos personales ni secretos.             | Sí / No / N.A. |               |                   |
-| 15      | Los mensajes frecuentes tienen acciones recomendadas.             | Sí / No / N.A. |               |                   |
-| 16      | Se incluyen recomendaciones de seguridad.                         | Sí / No / N.A. |               |                   |
-| 17      | Se documentan funciones de accesibilidad aplicables.              | Sí / No / N.A. |               |                   |
-| 18      | Las preguntas frecuentes responden dudas reales.                  | Sí / No / N.A. |               |                   |
-| 19      | Los canales de soporte están definidos.                           | Sí / No / N.A. |               |                   |
-| 20      | Una persona usuaria pudo seguir el manual sin asistencia técnica. | Sí / No / N.A. |               |                   |
+| 1       | El manual corresponde a la versión actual del producto.           | Sí | Versión 1.7 para v1.0.0 |  |
+| 2       | La portada identifica proyecto y versión.                         | Sí | Portada |  |
+| 3       | La audiencia y los roles están definidos.                         | Sí | Audiencia y roles |  |
+| 4       | Los requisitos de acceso están explicados.                        | Sí | Requisitos de acceso |  |
+| 5       | El inicio, recuperación y cierre de sesión están documentados.    | Sí | Inicio, restablecimiento por el Administrador y cierre de sesión |  |
+| 6       | La navegación general está descrita.                              | Sí | Navegación general |  |
+| 7       | Los nombres de botones y campos coinciden con la interfaz.        | Sí | Procedimientos con la interfaz real |  |
+| 8       | Cada flujo crítico tiene un procedimiento paso a paso.            | Sí | PRU-01 a PRU-09 |  |
+| 9       | Los procedimientos indican rol y precondiciones.                  | Sí | Rol autorizado en cada procedimiento |  |
+| 10      | Se documentan estados de éxito, error, vacío y permisos.          | Sí | Catálogo de mensajes MSG-01 a MSG-15 |  |
+| 11      | Las validaciones de formularios están explicadas.                 | Sí | Validaciones de formularios |  |
+| 12      | Búsquedas, filtros y reportes están documentados.                 | Sí | Historial y registro financiero |  |
+| 13      | Las capturas corresponden a la versión final.                     | Sí | Capturas de la aplicación |  |
+| 14      | Las imágenes no exponen datos personales ni secretos.             | Sí | Datos ficticios |  |
+| 15      | Los mensajes frecuentes tienen acciones recomendadas.             | Sí | Acción recomendada en cada mensaje |  |
+| 16      | Se incluyen recomendaciones de seguridad.                         | Sí | Recomendaciones de seguridad |  |
+| 17      | Se documentan funciones de accesibilidad aplicables.              | Sí | Navegación con teclado y textos legibles (Lighthouse) |  |
+| 18      | Las preguntas frecuentes responden dudas reales.                  | Sí | Preguntas frecuentes |  |
+| 19      | Los canales de soporte están definidos.                           | Sí | Canales de soporte |  |
+| 20      | Una persona usuaria pudo seguir el manual sin asistencia técnica. | Parcial | Revisión del Product Owner | Falta que personal de recepción lo siga sin ayuda |
 
 ### 16.1 Criterios de aprobación
 

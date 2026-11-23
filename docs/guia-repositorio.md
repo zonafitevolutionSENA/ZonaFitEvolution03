@@ -11,6 +11,7 @@
 | 0.2 | 22/11/2026 | Carpetas AgenteLector/recepcion y docs (diagramas, analisis/casos-uso y entregables) | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.3 | 22/11/2026 | LICENSE y CHANGELOG.md creados, registro de liberaciones al 22/11/2026 y evidencias EV-003 y EV-004 disponibles | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.4 | 23/11/2026 | Declaración de uso de IA (13.2), evidencias de la entrega final en docs/pruebas y docs/evidencias | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.5 | 23/11/2026 | Liberación v1.0.0, estructura actualizada (pruebas, CI y evidencias), paquete final y lista de verificación | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -63,7 +64,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 <p>├── BackendZonafitevolution/ (database/init.sql, scripts/crear-admin.js, src/, .env.example, index.js, package.json)</p>
 <p>├── FrontendZonafitevolution/ (src/pages, components, services, utils; index.html; vite.config.js; package.json)</p>
 <p>└── docs/ (Markdown vivos, diagramas/, analisis/casos-uso/ y entregables/)</p>
-<p>Faltan: /tests, /docs/adr, /docs/architecture, /docs/api, /docs/testing, /docs/evidence y /.github/workflows.</p></td>
+<p>También: .github/workflows (integración continua), BackendZonafitevolution/test (pruebas), docs/pruebas y docs/evidencias (evidencias), docs/legal, LICENSE y CHANGELOG.md. No hay carpetas separadas para ADR ni API: los ADR están en la Arquitectura y los endpoints en el README.</p></td>
 </tr>
 </tbody>
 </table>
@@ -73,12 +74,12 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | **Ruta**              | **Responsabilidad**                                                            | **Contenido permitido**             | **Contenido no permitido**             |
 | --------------------- | ------------------------------------------------------------------------------ | ----------------------------------- | -------------------------------------- |
 | /src                  | Backend y frontend (BackendZonafitevolution/src, FrontendZonafitevolution/src) | Módulos, capas, componentes         | Backups, secretos, archivos temporales |
-| /tests                | No existe (TT-007)                                                             | Unitarias, integración, E2E         | Evidencia manual sin contexto          |
+| /tests                | BackendZonafitevolution/test (46 pruebas unitarias) y scripts/pruebas-cp.js (integración)                                                             | Unitarias, integración, E2E         | Evidencia manual sin contexto          |
 | /docs                 | docs/: Markdown vivos, diagramas/, analisis/casos-uso/ y entregables/                                                             | ADR, diagramas, API, guías          | Copias desactualizadas sin versión     |
 | /migrations           | No existe (init.sql)                                                           | Migraciones ordenadas y reversibles | SQL manual sin control                 |
 | /scripts              | BackendZonafitevolution/scripts                                                | Setup, build, seed, backup          | Scripts destructivos sin advertencia   |
 | /infra                | No existe                                                                      | Contenedores, proxy, manifests      | Credenciales reales                    |
-| /.github              | No existe (TT-008)                                                             | Workflows, PR, issues               | Tokens o archivos generados            |
+| /.github              | .github/workflows/ci.yml                                                             | Workflows, PR, issues               | Tokens o archivos generados            |
 | /public o equivalente | FrontendZonafitevolution/public                                                | Imágenes y archivos públicos        | Datos confidenciales                   |
 
 ## 3\. Archivos raíz obligatorios
@@ -144,7 +145,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 
 | **Versión** | **Fecha** | **Commit / etiqueta** | **Ambiente** | **Responsable** | **Notas**                                                      |
 | ----------- | --------- | --------------------- | ------------ | --------------- | -------------------------------------------------------------- |
-|             |           |                       |              |                 | Sin etiqueta todavía; última integración en main el 22/11/2026 (diagramas, entregables, reglas de seguridad y pruebas). La etiqueta v1.0.0 se crea al cierre. |
+| 1.0.0 | 23/11/2026 | v1.0.0 | Producción (Vercel y Railway) | Juan Diego Mejía Llano | Versión final de la entrega: ver CHANGELOG.md |
 
 ## 6\. Gobierno de Git y colaboración
 
@@ -367,18 +368,18 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 
 | **Elemento**                 | **Formato / ubicación**                                                                | **Obligatorio** | **Verificación**           |
 | ---------------------------- | -------------------------------------------------------------------------------------- | --------------- | -------------------------- |
-| Repositorio y etiqueta final | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 (etiqueta v1.0.0 pendiente) | Sí              | Clonable y accesible       |
+| Repositorio y etiqueta final | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 (etiqueta v1.0.0) | Sí              | Clonable y accesible       |
 | Código fuente                | BackendZonafitevolution, FrontendZonafitevolution                                      | Sí              | Sin secretos ni temporales |
-| README y CHANGELOG           | README.md (CHANGELOG no existe)                                                        | Sí              | Actualizados               |
+| README y CHANGELOG           | README.md y CHANGELOG.md | Sí              | Actualizados               |
 | Migraciones y semillas       | database/init.sql, scripts/crear-admin.js                                              | Sí              | Reconstruyen datos         |
-| Pruebas y reportes           | No existen                                                                             | Sí              | Ejecutables                |
+| Pruebas y reportes           | BackendZonafitevolution/test, docs/pruebas y GitHub Actions | Sí              | Ejecutables                |
 | Documentación API            | Tablas de endpoints en el README                                                       | Según proyecto  | Actualizada                |
-| Documentación del proyecto   | documentos\_proyecto                                                                   | Sí              | Versiones finales          |
+| Documentación del proyecto   | docs/entregables (PDF y Excel) y Documentos\_Proyecto (Word) | Sí              | Versiones finales          |
 | Manual técnico               | MAN-01                                                                                 | Sí              | Procedimientos verificados |
 | Manual de usuario            | MAN-02                                                                                 | Sí              | Interfaz final             |
-| Artefactos de despliegue     |                                                                                        | Según proyecto  | Versionados                |
-| Licencia y atribuciones      |                                                                                        | Sí              | Completas                  |
-| Declaración de IA            |                                                                                        | Sí              | Firmada o aprobada         |
+| Artefactos de despliegue     | Vercel y Railway desde main; AgenteLector/recepcion | Según proyecto  | Versionados                |
+| Licencia y atribuciones      | LICENSE (ISC) | Sí              | Completas                  |
+| Declaración de IA            | Sección 13.2 e Informe de cierre 17.2 | Sí              | Firmada o aprobada         |
 
 ### 14.1 Estructura sugerida del paquete
 
@@ -390,26 +391,26 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 
 | **N.°** | **Verificación**                                     | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | ---------------------------------------------------- | -------------- | ------------- | ----------------- |
-| 1       | Existe una etiqueta final identificable.             | Sí / No / N.A. |               |                   |
-| 2       | README permite instalar y ejecutar el sistema.       | Sí / No / N.A. |               |                   |
-| 3       | CHANGELOG refleja la versión entregada.              | Sí / No / N.A. |               |                   |
-| 4       | La licencia y atribuciones están presentes.          | Sí / No / N.A. |               |                   |
-| 5       | No existen secretos ni datos personales.             | Sí / No / N.A. |               |                   |
-| 6       | El lockfile está versionado.                         | Sí / No / N.A. |               |                   |
-| 7       | Las variables están documentadas en .env.example.    | Sí / No / N.A. |               |                   |
-| 8       | Las migraciones reconstruyen el esquema.             | Sí / No / N.A. |               |                   |
-| 9       | Las semillas son seguras y reproducibles.            | Sí / No / N.A. |               |                   |
-| 10      | Las pruebas se ejecutan con comandos documentados.   | Sí / No / N.A. |               |                   |
-| 11      | El pipeline aprueba lint, pruebas y build.           | Sí / No / N.A. |               |                   |
-| 12      | La documentación API coincide con la implementación. | Sí / No / N.A. |               |                   |
-| 13      | Los diagramas fuente están disponibles.              | Sí / No / N.A. |               |                   |
-| 14      | Las decisiones técnicas relevantes tienen ADR.       | Sí / No / N.A. |               |                   |
-| 15      | Las evidencias están trazadas y versionadas.         | Sí / No / N.A. |               |                   |
-| 16      | Los pull requests y commits demuestran el proceso.   | Sí / No / N.A. |               |                   |
-| 17      | La contribución individual es verificable.           | Sí / No / N.A. |               |                   |
-| 18      | El despliegue identifica versión y ambiente.         | Sí / No / N.A. |               |                   |
-| 19      | El paquete final está completo.                      | Sí / No / N.A. |               |                   |
-| 20      | Otra persona pudo reproducir la entrega.             | Sí / No / N.A. |               |                   |
+| 1       | Existe una etiqueta final identificable.             | Sí | v1.0.0 |  |
+| 2       | README permite instalar y ejecutar el sistema.       | Sí | README: puesta en marcha y despliegue |  |
+| 3       | CHANGELOG refleja la versión entregada.              | Sí | CHANGELOG [1.0.0] |  |
+| 4       | La licencia y atribuciones están presentes.          | Sí | LICENSE (ISC) |  |
+| 5       | No existen secretos ni datos personales.             | Sí | .env fuera de Git; capturas con datos difuminados |  |
+| 6       | El lockfile está versionado.                         | Sí | package-lock.json del backend, frontend y agente |  |
+| 7       | Las variables están documentadas en .env.example.    | Sí | .env.example |  |
+| 8       | Las migraciones reconstruyen el esquema.             | Sí | init.sql en cada PR |  |
+| 9       | Las semillas son seguras y reproducibles.            | Sí | Planes iniciales y crear-admin |  |
+| 10      | Las pruebas se ejecutan con comandos documentados.   | Sí | npm test y npm run pruebas-cp |  |
+| 11      | El pipeline aprueba lint, pruebas y build.           | Sí | GitHub Actions en verde |  |
+| 12      | La documentación API coincide con la implementación. | Sí | Tablas de endpoints del README |  |
+| 13      | Los diagramas fuente están disponibles.              | Sí | docs/diagramas (.mmd y .png) |  |
+| 14      | Las decisiones técnicas relevantes tienen ADR.       | Sí | ADR en la Arquitectura |  |
+| 15      | Las evidencias están trazadas y versionadas.         | Sí | docs/pruebas y docs/evidencias |  |
+| 16      | Los pull requests y commits demuestran el proceso.   | Sí | PR #6 a #85 |  |
+| 17      | La contribución individual es verificable.           | Sí | docs/evidencias/contribuciones.md |  |
+| 18      | El despliegue identifica versión y ambiente.         | Sí | /api/salud y despliegue desde main |  |
+| 19      | El paquete final está completo.                      | Sí | Sección 14 |  |
+| 20      | Otra persona pudo reproducir la entrega.             | Parcial | GitHub Actions instala y prueba desde cero | Falta una persona externa |
 
 ## 16\. Cierre de la arquitectura documental
 

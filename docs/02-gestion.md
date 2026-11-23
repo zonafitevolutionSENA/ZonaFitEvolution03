@@ -28,6 +28,7 @@
 | 1.3 | 22/11/2026 | Estado de los sprints 10 a 12 y pendientes PEN-04 y PEN-05 resueltos | Juan Diego Mejía Llano |  |
 | 1.4 | 22/11/2026 | Semáforo de calidad en verde: pruebas automáticas e integración continua | Juan Diego Mejía Llano |  |
 | 1.5 | 23/11/2026 | Cambios CHG-07 (un ingreso por día en todos los planes) y CHG-08 (RNF-007 en Chrome) | Juan Diego Mejía Llano |  |
+| 1.6 | 23/11/2026 | Entregables finales entregados (v1.0.0) y lista de verificación diligenciada | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -650,19 +651,19 @@ También deben registrarse eventos inciertos positivos que puedan mejorar costo,
 
 | **ID**  | **Entregable**                                        | **Criterios de aceptación**                                      | **Responsable**              | **Validador**                                | **Fecha**  | **Estado**     | **Evidencia** |
 | ------- | ----------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------- | -------------------------------------------- | ---------- | -------------- | ------------- |
-| ENTG-01 | INI-01 – Formulación y Constitución del Proyecto      | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | En elaboración |               |
-| ENTG-02 | GES-01 – Gestión de Interesados y del Proyecto        | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | En elaboración |               |
-| ENTG-03 | REQ-01 – Alcance y Especificación de Requisitos       | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | En elaboración |               |
-| ENTG-04 | REQ-02 – Backlog, Historias de Usuario y Casos de Uso | Plantilla diligenciada y coherente con la matriz de trazabilidad | Liliana Sofía Panesso Méndez | Liliana Sofía Panesso Méndez (Product Owner) |            | En elaboración |               |
-| ENTG-05 | TRZ-01 – Matriz Maestra de Trazabilidad               | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | En elaboración |               |
-| ENTG-06 | DSN-01 – Diseño UX/UI y Sistema de Diseño             | Plantilla diligenciada y coherente con la matriz de trazabilidad | Maileth Begambre Movilla     | Liliana Sofía Panesso Méndez (Product Owner) |            | En elaboración |               |
-| ENTG-07 | ARQ-01 – Arquitectura, Datos y Diseño Técnico         | Plantilla diligenciada y coherente con la matriz de trazabilidad | Liliana Sofía Panesso Méndez | Liliana Sofía Panesso Méndez (Product Owner) |            | En elaboración |               |
-| ENTG-08 | CAL-01 – Plan de Calidad, Pruebas y Aceptación        | Plantilla diligenciada y coherente con la matriz de trazabilidad |                              | Liliana Sofía Panesso Méndez (Product Owner) | 09/12/2026 | Pendiente      |               |
-| ENTG-09 | MAN-01 – Manual Técnico y de Operación                | Plantilla diligenciada y coherente con la matriz de trazabilidad | Liliana Sofía Panesso Méndez | Liliana Sofía Panesso Méndez (Product Owner) | 09/12/2026 | Pendiente      |               |
-| ENTG-10 | MAN-02 – Manual de Usuario                            | Plantilla diligenciada y coherente con la matriz de trazabilidad | Maileth Begambre Movilla     | Liliana Sofía Panesso Méndez (Product Owner) | 09/12/2026 | Pendiente      |               |
-| ENTG-11 | CIE-01 – Informe de Cierre y Entrega                  | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) | 12/12/2026 | Pendiente      |               |
-| ENTG-12 | SUS-01 – Guía de Sustentación y Demostración          | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) | 12/12/2026 | Pendiente      |               |
-| ENTG-13 | REP-01 – Repositorio con etiqueta v1.0.0              | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       |                                              | 12/12/2026 | Pendiente      |               |
+| ENTG-01 | INI-01 – Formulación y Constitución del Proyecto      | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | Entregado | docs/entregables (v1.0.0) |
+| ENTG-02 | GES-01 – Gestión de Interesados y del Proyecto        | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | Entregado | docs/entregables (v1.0.0) |
+| ENTG-03 | REQ-01 – Alcance y Especificación de Requisitos       | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | Entregado | docs/entregables (v1.0.0) |
+| ENTG-04 | REQ-02 – Backlog, Historias de Usuario y Casos de Uso | Plantilla diligenciada y coherente con la matriz de trazabilidad | Liliana Sofía Panesso Méndez | Liliana Sofía Panesso Méndez (Product Owner) |            | Entregado | docs/entregables (v1.0.0) |
+| ENTG-05 | TRZ-01 – Matriz Maestra de Trazabilidad               | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) |            | Entregado | docs/entregables (v1.0.0) |
+| ENTG-06 | DSN-01 – Diseño UX/UI y Sistema de Diseño             | Plantilla diligenciada y coherente con la matriz de trazabilidad | Maileth Begambre Movilla     | Liliana Sofía Panesso Méndez (Product Owner) |            | Entregado | docs/entregables (v1.0.0) |
+| ENTG-07 | ARQ-01 – Arquitectura, Datos y Diseño Técnico         | Plantilla diligenciada y coherente con la matriz de trazabilidad | Liliana Sofía Panesso Méndez | Liliana Sofía Panesso Méndez (Product Owner) |            | Entregado | docs/entregables (v1.0.0) |
+| ENTG-08 | CAL-01 – Plan de Calidad, Pruebas y Aceptación        | Plantilla diligenciada y coherente con la matriz de trazabilidad |                              | Liliana Sofía Panesso Méndez (Product Owner) | 09/12/2026 | Entregado | docs/entregables (v1.0.0) |
+| ENTG-09 | MAN-01 – Manual Técnico y de Operación                | Plantilla diligenciada y coherente con la matriz de trazabilidad | Liliana Sofía Panesso Méndez | Liliana Sofía Panesso Méndez (Product Owner) | 09/12/2026 | Entregado | docs/entregables (v1.0.0) |
+| ENTG-10 | MAN-02 – Manual de Usuario                            | Plantilla diligenciada y coherente con la matriz de trazabilidad | Maileth Begambre Movilla     | Liliana Sofía Panesso Méndez (Product Owner) | 09/12/2026 | Entregado | docs/entregables (v1.0.0) |
+| ENTG-11 | CIE-01 – Informe de Cierre y Entrega                  | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) | 12/12/2026 | Entregado | docs/entregables (v1.0.0) |
+| ENTG-12 | SUS-01 – Guía de Sustentación y Demostración          | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       | Liliana Sofía Panesso Méndez (Product Owner) | 12/12/2026 | Entregado | docs/entregables (v1.0.0) |
+| ENTG-13 | REP-01 – Repositorio con etiqueta v1.0.0              | Plantilla diligenciada y coherente con la matriz de trazabilidad | Juan Diego Mejía Llano       |                                              | 12/12/2026 | Entregado | docs/entregables (v1.0.0) |
 
 ### 12.2 Estados permitidos
 
@@ -786,20 +787,20 @@ Los indicadores deben apoyar decisiones. Una métrica sin acción asociada no me
 
 | **N.º** | **Verificación**                                               | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | -------------------------------------------------------------- | -------------- | ------------- | ----------------- |
-| 1       | Los interesados relevantes están identificados y clasificados. | Sí / No / N.A. |               |                   |
-| 2       | Cada entregable tiene responsable y aprobador.                 | Sí / No / N.A. |               |                   |
-| 3       | Existe una metodología definida y justificada.                 | Sí / No / N.A. |               |                   |
-| 4       | El tablero evidencia planificación y seguimiento real.         | Sí / No / N.A. |               |                   |
-| 5       | La matriz RACI no tiene actividades críticas sin responsable.  | Sí / No / N.A. |               |                   |
-| 6       | Los hitos y fechas consideran capacidad y dependencias.        | Sí / No / N.A. |               |                   |
-| 7       | Las decisiones y acuerdos relevantes están registrados.        | Sí / No / N.A. |               |                   |
-| 8       | Los riesgos tienen nivel, respuesta y responsable.             | Sí / No / N.A. |               |                   |
-| 9       | Los cambios relevantes se analizan y aprueban.                 | Sí / No / N.A. |               |                   |
-| 10      | Los entregables poseen criterios de aceptación y evidencia.    | Sí / No / N.A. |               |                   |
-| 11      | La contribución individual es trazable.                        | Sí / No / N.A. |               |                   |
-| 12      | No existen datos sensibles o credenciales expuestos.           | Sí / No / N.A. |               |                   |
-| 13      | El documento está actualizado y coincide con las herramientas. | Sí / No / N.A. |               |                   |
-| 14      | El cierre registra pendientes, riesgos y lecciones.            | Sí / No / N.A. |               |                   |
+| 1       | Los interesados relevantes están identificados y clasificados. | Sí | Registro de interesados (sección 3) |  |
+| 2       | Cada entregable tiene responsable y aprobador.                 | Sí | Entregables con responsable y validador (sección 15) |  |
+| 3       | Existe una metodología definida y justificada.                 | Sí | Scrum (sección 5) |  |
+| 4       | El tablero evidencia planificación y seguimiento real.         | Sí | Tablero de Jira del proyecto SCRUM |  |
+| 5       | La matriz RACI no tiene actividades críticas sin responsable.  | Sí | Matriz RACI |  |
+| 6       | Los hitos y fechas consideran capacidad y dependencias.        | Sí | Cronograma por hitos H-01 a H-05 |  |
+| 7       | Las decisiones y acuerdos relevantes están registrados.        | Sí | Registro de decisiones y control de cambios CHG-01 a CHG-08 |  |
+| 8       | Los riesgos tienen nivel, respuesta y responsable.             | Sí | Registro de riesgos |  |
+| 9       | Los cambios relevantes se analizan y aprueban.                 | Sí | CHG-01 a CHG-08 con análisis y decisión |  |
+| 10      | Los entregables poseen criterios de aceptación y evidencia.    | Sí | Sección 15 y docs/pruebas |  |
+| 11      | La contribución individual es trazable.                        | Sí | docs/evidencias/contribuciones.md |  |
+| 12      | No existen datos sensibles o credenciales expuestos.           | Sí | Capturas con datos difuminados; .env fuera de Git |  |
+| 13      | El documento está actualizado y coincide con las herramientas. | Sí | Versión 1.6 del 23/11/2026 |  |
+| 14      | El cierre registra pendientes, riesgos y lecciones.            | Sí | Informe de cierre 12, 13 y 16 |  |
 
 ### Criterios de aprobación del documento
 

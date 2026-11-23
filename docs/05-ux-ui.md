@@ -29,6 +29,7 @@
 | 2.1         | 10/11/2026 | Control de acceso fuera del menú: huella desde Clientes y pantalla de ingreso aparte con resultado de 2 segundos; simulador eliminado | Juan Diego Mejía Llano       |                  |
 | 2.2 | 22/11/2026 | Pantalla de ingreso: textos de espera, aviso de huella no registrada (4 s) y reconexión automática con el lector | Juan Diego Mejía Llano |  |
 | 2.3 | 23/11/2026 | Pruebas responsive en celular, tablet y computador (Chrome) y revisión de accesibilidad con Lighthouse; login con <main> | Juan Diego Mejía Llano |  |
+| 2.4 | 23/11/2026 | Lista de verificación final diligenciada | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -426,17 +427,17 @@ El diseño debe atender los criterios WCAG AA aplicables al alcance y demostrar 
 | **N.°** | **Criterio**                                                | **Cumple**     | **Evidencia** |
 | ------- | ----------------------------------------------------------- | -------------- | ------------- |
 | 1       | Contraste suficiente entre texto, iconos y fondo.           | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
-| 2       | Foco visible y orden lógico de teclado.                     | Sí / No        |               |
+| 2       | Foco visible y orden lógico de teclado.                     | Sí | Navegación con teclado (Tab y Enter) y Lighthouse 24/24 |
 | 3       | Campos con etiquetas persistentes y mensajes asociados.     | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
 | 4       | Controles con nombre accesible y propósito claro.           | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
-| 5       | La información no depende únicamente del color.             | Sí / No        |               |
-| 6       | Tamaño de texto legible y zoom sin pérdida funcional.       | Sí / No        |               |
+| 5       | La información no depende únicamente del color.             | Sí | Los estados se indican con texto además del color |
+| 6       | Tamaño de texto legible y zoom sin pérdida funcional.       | Sí | Responsive desde 375 px sin pérdida de funciones |
 | 7       | Imágenes informativas con alternativa textual.              | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
 | 8       | Tablas con encabezados y estructura comprensible.           | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
-| 9       | Modales y menús gestionan foco correctamente.               | Sí / No / N.A. |               |
+| 9       | Modales y menús gestionan foco correctamente.               | Sí | El menú ⋮ se cierra con Escape |
 | 10      | Mensajes de error son identificables y corregibles.         | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
-| 11      | Objetivos táctiles tienen tamaño y separación adecuados.    | Sí / No / N.A. |               |
-| 12      | Animaciones respetan reducción de movimiento cuando aplica. | Sí / No / N.A. |               |
+| 11      | Objetivos táctiles tienen tamaño y separación adecuados.    | Sí | Botones de ancho completo en celular |
+| 12      | Animaciones respetan reducción de movimiento cuando aplica. | N.A. | La interfaz no usa animaciones relevantes |
 
 ### 11.2 Registro de hallazgos
 
@@ -708,20 +709,20 @@ El sistema de diseño reúne reglas, tokens, componentes, patrones, documentaci�
 
 | **N.°** | **Verificación**                                                           | **Cumple**     | **Evidencia / observación** |
 | ------- | -------------------------------------------------------------------------- | -------------- | --------------------------- |
-| 1       | Los perfiles y necesidades tienen fuente o validación.                     | Sí / No / N.A. |                             |
-| 2       | La arquitectura de información coincide con el alcance.                    | Sí / No / N.A. |                             |
-| 3       | Los flujos principales, alternativos y de error están documentados.        | Sí / No / N.A. |                             |
-| 4       | Todas las pantallas tienen código y trazabilidad.                          | Sí / No / N.A. |                             |
-| 5       | Los prototipos están versionados y aprobados.                              | Sí / No / N.A. |                             |
-| 6       | Se diseñaron estados de carga, vacío, éxito, error y permisos.             | Sí / No / N.A. |                             |
-| 7       | El comportamiento responsive está especificado.                            | Sí / No / N.A. |                             |
-| 8       | Los criterios básicos de accesibilidad fueron verificados.                 | Sí / No / N.A. |                             |
-| 9       | El sistema de diseño contiene tokens, componentes y estados.               | Sí / No / N.A. |                             |
-| 10      | Los textos y mensajes son consistentes y accionables.                      | Sí / No / N.A. |                             |
-| 11      | Existen resultados de pruebas de usabilidad o justificación de limitación. | Sí / No / N.A. |                             |
-| 12      | El paquete de handoff permite implementar sin ambigüedad.                  | Sí / No / N.A. |                             |
-| 13      | La interfaz implementada corresponde con la versión aprobada.              | Sí / No / N.A. |                             |
-| 14      | Los cambios posteriores están registrados.                                 | Sí / No / N.A. |                             |
+| 1       | Los perfiles y necesidades tienen fuente o validación.                     | Sí | Perfiles de Administrador, Empleado y socio |
+| 2       | La arquitectura de información coincide con el alcance.                    | Sí | Mapa de navegación del MVP |
+| 3       | Los flujos principales, alternativos y de error están documentados.        | Sí | Flujos y estados de error |
+| 4       | Todas las pantallas tienen código y trazabilidad.                          | Sí | Pantallas UI-01 y siguientes con trazabilidad |
+| 5       | Los prototipos están versionados y aprobados.                              | Sí | Prototipo en Figma |
+| 6       | Se diseñaron estados de carga, vacío, éxito, error y permisos.             | Sí | Catálogo de estados |
+| 7       | El comportamiento responsive está especificado.                            | Sí | Pruebas en celular, tablet y computador (UX-02) |
+| 8       | Los criterios básicos de accesibilidad fueron verificados.                 | Sí | Lighthouse 96/100 y 24/24 (UX-06) |
+| 9       | El sistema de diseño contiene tokens, componentes y estados.               | Sí | Tokens y componentes |
+| 10      | Los textos y mensajes son consistentes y accionables.                      | Sí | Catálogo de mensajes del Manual de usuario |
+| 11      | Existen resultados de pruebas de usabilidad o justificación de limitación. | Parcial | Prueba con el Product Owner. Falta cronometrar el registro de un cliente con personal de recepción (RNF-002) |
+| 12      | El paquete de handoff permite implementar sin ambigüedad.                  | Sí | Especificaciones de pantalla y sistema de diseño |
+| 13      | La interfaz implementada corresponde con la versión aprobada.              | Sí | Capturas de producción del 23/11/2026 |
+| 14      | Los cambios posteriores están registrados.                                 | Sí | Historial de versiones y CR |
 
 ### 17.4 Aprobación del documento
 

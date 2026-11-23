@@ -29,6 +29,7 @@
 | 0.5 | 22/11/2026 | Pipeline de integración continua en GitHub Actions, 39 pruebas unitarias (53 % de líneas) y logs estructurados | Juan Diego Mejía Llano |  |
 | 0.6 | 23/11/2026 | Ciclo CIC-02 con el sensor en producción (5 de 5), compatibilidad, accesibilidad, restauración probada, aceptación del Product Owner y decisión de liberación | Juan Diego Mejía Llano |  |
 | 0.7 | 23/11/2026 | Alcance de plataformas ajustado a Chrome (CR-009) en el alcance y el ambiente de pruebas | Juan Diego Mejía Llano |  |
+| 0.8 | 23/11/2026 | Versión liberada v1.0.0 y lista de verificación de aprobación diligenciada | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -464,7 +465,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ------------------------ | -------------------------------- | ---------------------------------------- | ---------------------- |
 | Instalación reproducible | npm install (backend y frontend) | Sin errores                              | npm ci sin errores (22/11/2026) |
 | Lint / formato           | npm run lint                     | Sin errores críticos                     | Sin errores |
-| Pruebas unitarias        | npm test (node --test) | Aprobadas | 45 pruebas aprobadas |
+| Pruebas unitarias        | npm test (node --test) | Aprobadas | 46 pruebas aprobadas |
 | Pruebas integración      | npm run pruebas-cp | Aprobadas | docs/pruebas/CIC-01-resultados.md (24 de 24); también en cada pull request (GitHub Actions (.github/workflows/ci.yml)) |
 | Build                    | npm run build                    | Exitoso                                  | dist/ generado sin errores |
 | Auditoría dependencias   | npm audit                        | Sin vulnerabilidades críticas sin tratar | 0 vulnerabilidades |
@@ -745,7 +746,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | Flujos críticos            | Cumple | CIC-01 y CIC-02 | Bajo | Go |
 | Seguridad crítica          | Cumple | CP-018, CP-020, CP-021 y SEG-08 | Bajo | Go |
 | Migraciones y datos        | Cumple | init.sql en CI y prueba de restauración | Bajo | Go |
-| Pruebas automatizadas / CI | Cumple | 45 pruebas unitarias y GitHub Actions | Bajo | Go |
+| Pruebas automatizadas / CI | Cumple | 46 pruebas unitarias y GitHub Actions | Bajo | Go |
 | Defectos residuales        | Cumple | Sin defectos críticos abiertos | Bajo | Go |
 | Documentación y despliegue | Cumple | docs/entregables; Vercel y Railway | Bajo | Go |
 | Aceptación funcional       | Cumple | Product Owner (16.2) | Bajo | Go |
@@ -756,7 +757,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ------------------------- | ---------------------------------------------- |
 | Decisión                  | Liberar |
 | Versión                   | v1.0.0 |
-| Condiciones o pendientes  | Declaración de uso de IA y etiqueta v1.0.0 al cierre |
+| Condiciones o pendientes  | Firma del acta de cierre |
 | Riesgos aceptados         | Plan gratuito de Railway (vigilado por el equipo) |
 | Responsable de aceptación | Liliana Sofía Panesso Méndez (Product Owner) |
 | Fecha                     | 23/11/2026 |
@@ -808,20 +809,20 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **N.°** | **Verificación**                                             | **Cumple**     | **Evidencia / observación** |
 | ------- | ------------------------------------------------------------ | -------------- | --------------------------- |
-| 1       | El alcance y los riesgos de calidad están definidos.         | Sí / No / N.A. |                             |
-| 2       | Los casos críticos trazan a requisitos, reglas o riesgos.    | Sí / No / N.A. |                             |
-| 3       | Los ambientes y datos son reproducibles y seguros.           | Sí / No / N.A. |                             |
-| 4       | Existen pruebas unitarias e integración para lógica crítica. | Sí / No / N.A. |                             |
-| 5       | Las autorizaciones permitidas y denegadas fueron probadas.   | Sí / No / N.A. |                             |
-| 6       | Los defectos tienen severidad, estado y evidencia.           | Sí / No / N.A. |                             |
-| 7       | La cobertura fue medida y analizada.                         | Sí / No / N.A. |                             |
-| 8       | El pipeline ejecuta verificaciones acordadas.                | Sí / No / N.A. |                             |
-| 9       | Los flujos críticos no presentan defectos bloqueantes.       | Sí / No / N.A. |                             |
-| 10      | La accesibilidad básica fue verificada.                      | Sí / No / N.A. |                             |
-| 11      | Los RNF aplicables tienen método y resultado.                | Sí / No / N.A. |                             |
-| 12      | La aceptación fue realizada por un representante válido.     | Sí / No / N.A. |                             |
-| 13      | La recomendación de liberación está documentada.             | Sí / No / N.A. |                             |
-| 14      | La documentación coincide con la versión evaluada.           | Sí / No / N.A. |                             |
+| 1       | El alcance y los riesgos de calidad están definidos.         | Sí | Secciones 2 y 3 |
+| 2       | Los casos críticos trazan a requisitos, reglas o riesgos.    | Sí | Casos CP-001 a CP-022 trazados |
+| 3       | Los ambientes y datos son reproducibles y seguros.           | Sí | init.sql y datos ficticios; base \_pruebas |
+| 4       | Existen pruebas unitarias e integración para lógica crítica. | Sí | 46 pruebas unitarias y ciclo CIC-01 |
+| 5       | Las autorizaciones permitidas y denegadas fueron probadas.   | Sí | CP-018 a CP-021 |
+| 6       | Los defectos tienen severidad, estado y evidencia.           | Sí | Registro de defectos |
+| 7       | La cobertura fue medida y analizada.                         | Sí | 53 % de líneas (node --test) |
+| 8       | El pipeline ejecuta verificaciones acordadas.                | Sí | GitHub Actions: pruebas, lint, build, audit e integración |
+| 9       | Los flujos críticos no presentan defectos bloqueantes.       | Sí | CIC-01 y CIC-02 sin bloqueantes |
+| 10      | La accesibilidad básica fue verificada.                      | Sí | Lighthouse (UX-06) |
+| 11      | Los RNF aplicables tienen método y resultado.                | Parcial | RNF con método y resultado. RNF-002 (usabilidad) sin medición formal |
+| 12      | La aceptación fue realizada por un representante válido.     | Sí | Product Owner (16.2) |
+| 13      | La recomendación de liberación está documentada.             | Sí | Go / liberar (16.3 y 16.4) |
+| 14      | La documentación coincide con la versión evaluada.           | Sí | Versión v1.0.0 |
 
 ## Anexo B. Plantilla rápida de caso de prueba
 
