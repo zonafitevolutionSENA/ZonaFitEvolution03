@@ -32,6 +32,7 @@
 | 2.1 | 22/11/2026 | Regla del último administrador en el backend y ruta de borrado de clientes retirada (DT-004 y DT-005 cerradas); evidencias del ciclo CIC-01; textos propios en 4.1 y 8.2 a 8.4, volúmenes, alternativas, respaldo y contingencias | Juan Diego Mejía Llano |  |
 | 2.2 | 22/11/2026 | Integración continua en GitHub Actions (DT-008 cerrada), logs con fecha, nivel, módulo y contexto, y 39 pruebas unitarias | Juan Diego Mejía Llano |  |
 | 2.3 | 23/11/2026 | Usuario de MySQL con mínimo privilegio (SEG-08), respaldo y restauración probados (DAT-06), un ingreso por día y latido del agente | Juan Diego Mejía Llano |  |
+| 2.4 | 23/11/2026 | Variables de la base en Railway con el usuario zonafit_app | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -730,7 +731,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 
 | **Variable / grupo**                                 | **Desarrollo**                             | **Pruebas** | **Producción**                                                                   | **Secreto**          | **Propietario**              |
 | ---------------------------------------------------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------- | -------------------- | ---------------------------- |
-| DB\_HOST, DB\_PORT, DB\_USER, DB\_PASSWORD, DB\_NAME | localhost, 3306, root, —, zonafitevolution |             | Referencias ${{MySQL.MYSQL…}} de Railway (base railway)                          | Sí (DB\_PASSWORD)    | Liliana Sofía Panesso Méndez |
+| DB\_HOST, DB\_PORT, DB\_USER, DB\_PASSWORD, DB\_NAME | localhost, 3306, root, —, zonafitevolution |             | Referencias ${{MySQL.MYSQL…}} de Railway para host, puerto y base; DB_USER=zonafit_app y su contraseña propia                          | Sí (DB\_PASSWORD)    | Juan Diego Mejía Llano |
 | JWT\_SECRET, JWT\_EXPIRES\_IN                        | Valor local (mínimo 32 caracteres), 8h     |             | 64 caracteres aleatorios, 8h                                                     | Sí (JWT\_SECRET)     | Liliana Sofía Panesso Méndez |
 | BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, as608 (PUERTO\_LECTOR=auto o un puerto fijo como COM3)   |             | El mismo BIOMETRIA\_SALT de siempre; remoto                                      | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
 | AGENTE\_TOKEN, PANTALLA\_TOKEN                       | Vacíos (modo local)                        |             | 64 caracteres aleatorios cada uno                                                | Sí                   | Juan Diego Mejía Llano       |

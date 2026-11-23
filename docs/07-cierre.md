@@ -15,6 +15,7 @@
 | 0.6 | 22/11/2026 | Integración continua, logs estructurados, 39 pruebas unitarias y lista de chequeo final diligenciada | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.7 | 23/11/2026 | Aceptación del producto, lecciones aprendidas, contribución individual, CIC-02 con el sensor, mínimo privilegio, accesibilidad y restauración probada | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.8 | 23/11/2026 | Declaración de uso de IA (17.2) y lección aprendida sobre el uso de IA | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.9 | 23/11/2026 | Transferencia y continuidad (15) y custodia de activos (15.1) | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -365,23 +366,23 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 
 | **Tema**                 | **Responsable que entrega**  | **Responsable que recibe** | **Fecha** | **Evidencia** | **Resultado** |
 | ------------------------ | ---------------------------- | -------------------------- | --------- | ------------- | ------------- |
-| Repositorio y versiones  | Juan Diego Mejía Llano       |                            |           |               |               |
-| Arquitectura y datos     | Liliana Sofía Panesso Méndez |                            |           |               |               |
-| Instalación y despliegue | Liliana Sofía Panesso Méndez |                            |           |               |               |
-| Operación y monitoreo    | Liliana Sofía Panesso Méndez |                            |           |               |               |
-| Respaldo y recuperación  | Liliana Sofía Panesso Méndez |                            |           |               |               |
-| Soporte y mantenimiento  | Liliana Sofía Panesso Méndez |                            |           |               |               |
+| Repositorio y versiones  | Juan Diego Mejía Llano | Instructor evaluador y Carlos Ramírez (propietario, STK-01) | Programada para el cierre | Repositorio, etiqueta v1.0.0 y CHANGELOG.md | Documentado; pendiente de entrega |
+| Arquitectura y datos     | Liliana Sofía Panesso Méndez | Instructor evaluador | Programada para el cierre | Documento de arquitectura 2.3 y docs/diagramas | Documentado; pendiente de entrega |
+| Instalación y despliegue | Juan Diego Mejía Llano | Carlos Ramírez (propietario, STK-01) | Programada para el cierre | Manual técnico 1.6 (instalación, Vercel y Railway) e instalación de la recepción (AgenteLector/recepcion) | Documentado; pendiente de entrega |
+| Operación y monitoreo    | Juan Diego Mejía Llano | Carlos Ramírez (propietario, STK-01) | Programada para el cierre | Manual técnico (Deploy Logs, /api/salud y «Verificar lector ZonaFit») y Manual de usuario 1.6 | Documentado; pendiente de entrega |
+| Respaldo y recuperación  | Juan Diego Mejía Llano | Carlos Ramírez (propietario, STK-01) | Programada para el cierre | Manual técnico 15 y docs/pruebas/DAT-06-respaldo-y-restauracion.md | Documentado; pendiente de entrega |
+| Soporte y mantenimiento  | Liliana Sofía Panesso Méndez | Carlos Ramírez (propietario, STK-01) | Programada para el cierre | Manual técnico (problemas frecuentes) e Informe de cierre 13 (deuda técnica y trabajo futuro) | Documentado; pendiente de entrega |
 
 ### 15.1 Custodia de activos
 
 | **Activo**      | **Ubicación**                                              | **Propietario / custodio**        | **Acceso transferido** | **Observaciones** |
 | --------------- | ---------------------------------------------------------- | --------------------------------- | ---------------------- | ----------------- |
-| Repositorio     | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 | Organización zonafitevolutionSENA |                        |                   |
-| Dominio / DNS   |                                                            |                                   |                        |                   |
-| Infraestructura | Vercel (frontend) y Railway (API y MySQL)                                        |                                   |                        |                   |
-| Base de datos   | MySQL 8.4 en Railway (red privada)                             |                                   |                        |                   |
-| Figma / diseño  |                                                            | Maileth Begambre Movilla          |                        |                   |
-| Documentación   | documentos\_proyecto                                       | Juan Diego Mejía Llano            |                        |                   |
+| Repositorio     | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 | Organización zonafitevolutionSENA | Al cierre: acceso de lectura al instructor | Público; la organización es del equipo |
+| Dominio / DNS   | zona-fit-evolution03.vercel.app (subdominio de Vercel; sin dominio propio) | Juan Diego Mejía Llano | No aplica | Si el gimnasio compra un dominio, se configura en Vercel |
+| Infraestructura | Vercel (frontend) y Railway (API y MySQL)                                        | Juan Diego Mejía Llano (cuentas de Vercel y Railway) | Al cierre, con Carlos Ramírez (propietario, STK-01) | Railway en plan de prueba; plan Hobby si se mantiene en operación |
+| Base de datos   | MySQL 8.4 en Railway (red privada)                             | Juan Diego Mejía Llano (usuario root; la API usa zonafit\_app) | Al cierre, con Carlos Ramírez (propietario, STK-01) | Respaldo semanal; últimos 4 conservados |
+| Figma / diseño  | Archivo de Figma del equipo (wireframes, mockups y prototipo) | Maileth Begambre Movilla | Al cierre: enlace de solo lectura |  |
+| Documentación   | docs/entregables del repositorio (PDF y Excel) y Documentos\_Proyecto (Word) | Juan Diego Mejía Llano | Al cierre | Versiones del índice maestro |
 
 ## 16\. Lecciones aprendidas
 

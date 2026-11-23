@@ -15,6 +15,7 @@
 | 1.4 | 22/11/2026 | Pruebas automáticas (npm test y npm run pruebas-cp), DT-04 y DT-05 resueltas e incidente al eliminar usuarios | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.5 | 22/11/2026 | Integración continua en GitHub Actions, logs con fecha, nivel, módulo y contexto (NIVEL_LOG) y DT-08 resuelta | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.6 | 23/11/2026 | Usuario de MySQL zonafit_app con mínimo privilegio, respaldo semanal con restauración probada, latido del agente y un ingreso por día | Juan Diego Mejía Llano |  |  | En revisión |
+| 1.7 | 23/11/2026 | Navegador soportado: Chrome (CR-009) | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -144,7 +145,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Almacenamiento           |            |                 |                                                                                                 |
 | Sistema operativo        |            |                 | Windows (comandos del manual en CMD)                                                            |
 | Conectividad             |            |                 | Internet para npm; en producción, internet en el portátil del lector (wifi o datos del celular) |
-| Navegador / cliente      |            |                 | Chrome, Edge o Firefox actualizados                                                             |
+| Navegador / cliente      |            |                 | Chrome actualizado (CR-009)                                                             |
 | Resolución / dispositivo |            |                 | Desde 360 px de ancho                                                                           |
 
 ### 4.2 Dependencias de software
