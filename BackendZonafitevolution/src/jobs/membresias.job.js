@@ -1,4 +1,5 @@
 const membresiaService = require('../services/membresia.service');
+const accesoFisicoService = require('../services/accesoFisico.service');
 const log = require('../utils/logger')('membresias');
 
 const HORA_EJECUCION = 0;
@@ -17,6 +18,12 @@ async function ejecutarActivacionDiaria() {
     log.info('activación diaria', { vencidas, activadas, pendientesEnEspera: omitidas });
   } catch (error) {
     log.error('error en la activación diaria', { error: error.message });
+  }
+  try {
+    const eliminados = await accesoFisicoService.depurarHistorial();
+    log.info('depuración del historial de accesos', { eliminados, retencionMeses: accesoFisicoService.RETENCION_HISTORIAL_MESES });
+  } catch (error) {
+    log.error('error en la depuración del historial', { error: error.message });
   }
 }
 

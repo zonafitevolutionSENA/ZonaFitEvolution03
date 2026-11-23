@@ -14,6 +14,7 @@
 | 1.3 | 22/11/2026 | Puerto del lector automático (PUERTO_LECTOR=auto), instalación de recepción con INSTALAR-RECEPCION.bat, healthcheck /api/salud e incidente de reconexión | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.4 | 22/11/2026 | Pruebas automáticas (npm test y npm run pruebas-cp), DT-04 y DT-05 resueltas e incidente al eliminar usuarios | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.5 | 22/11/2026 | Integración continua en GitHub Actions, logs con fecha, nivel, módulo y contexto (NIVEL_LOG) y DT-08 resuelta | Juan Diego Mejía Llano |  |  | En revisión |
+| 1.6 | 23/11/2026 | Usuario de MySQL zonafit_app con mínimo privilegio, respaldo semanal con restauración probada, latido del agente y un ingreso por día | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -242,7 +243,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Variable**                     | **Descripción**                                                          | **Tipo**       | **Obligatoria**                                   | **Valor de ejemplo**                                                                | **Secreto**          | **Ambientes** |
 | -------------------------------- | ------------------------------------------------------------------------ | -------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------- | ------------- |
 | DB\_HOST, DB\_PORT               | Servidor y puerto de MySQL                                               | Texto / número | Sí                                                | localhost, 3306                                                                     | No                   | Todos         |
-| DB\_USER, DB\_PASSWORD, DB\_NAME | Credenciales y base                                                      | Texto          | Sí                                                | root, —, zonafitevolution                                                           | Sí (DB\_PASSWORD)    | Todos         |
+| DB\_USER, DB\_PASSWORD, DB\_NAME | Credenciales y base                                                      | Texto          | Sí                                                | root en local; zonafit_app en Railway (solo SELECT, INSERT, UPDATE y DELETE), —, zonafitevolution                                                           | Sí (DB\_PASSWORD)    | Todos         |
 | PORT                             | Puerto de la API                                                         | Número         | No                                                | 3000                                                                                | No                   | Todos         |
 | JWT\_SECRET, JWT\_EXPIRES\_IN    | Firma y duración del token                                               | Texto          | Sí                                                | \<valor largo aleatorio\>, 8h                                                       | Sí (JWT\_SECRET)     | Todos         |
 | BIOMETRIA\_SALT, TIPO\_LECTOR    | Sal de plantillas; adaptador del sensor                                  | Texto          | Sí                                                | \<valor aleatorio\>, as608                                                          | Sí (BIOMETRIA\_SALT) | Todos         |
@@ -396,9 +397,9 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 <table>
 <tbody>
 <tr class="odd">
-<td><p>Respaldo diario: mysqldump -u root -p zonafitevolution &gt; respaldo_zonafit_AAAAMMDD.sql (guardar fuera del servidor).</p>
+<td><p>Respaldo semanal y antes de cada despliegue: mysqldump -u root -p zonafitevolution &gt; respaldo_zonafit_AAAAMMDD.sql (guardar fuera del servidor; se conservan los últimos 4).</p>
 <p>No cambiar BIOMETRIA_SALT con huellas registradas.</p>
-<p>Depuración de registros_acceso: retención por definir con el propietario.</p></td>
+<p>Depuración de registros_acceso: la tarea diaria de las 00:05 borra los intentos con más de 3 meses (RETENCION_HISTORIAL_MESES en src/services/accesoFisico.service.js).</p></td>
 </tr>
 </tbody>
 </table>
@@ -486,7 +487,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 3\. Railway, servicio del backend: Root Directory /BackendZonafitevolution, rama main, Watch Paths /BackendZonafitevolution/\*\*, Start Command npm start, Healthcheck Path /api/salud, dominio público generado en el puerto 8080.
 
-4\. Variables del backend (Raw Editor): DB\_HOST=${{MySQL.MYSQLHOST}}, DB\_PORT=${{MySQL.MYSQLPORT}}, DB\_USER=${{MySQL.MYSQLUSER}}, DB\_PASSWORD=${{MySQL.MYSQLPASSWORD}}, DB\_NAME=${{MySQL.MYSQLDATABASE}}, JWT\_SECRET, JWT\_EXPIRES\_IN=8h, BIOMETRIA\_SALT (el mismo de siempre), TZ=America/Bogota, ORIGEN\_FRONTEND, TIPO\_LECTOR=remoto, AGENTE\_TOKEN y PANTALLA\_TOKEN. Los tokens se generan con node -e "console.log(require('crypto').randomBytes(32).toString('hex'))".
+4\. Variables del backend (Raw Editor): DB\_HOST=${{MySQL.MYSQLHOST}}, DB\_PORT=${{MySQL.MYSQLPORT}}, DB\_USER=zonafit\_app, DB\_PASSWORD=<contraseña de zonafit\_app>, DB\_NAME=${{MySQL.MYSQLDATABASE}}, JWT\_SECRET, JWT\_EXPIRES\_IN=8h, BIOMETRIA\_SALT (el mismo de siempre), TZ=America/Bogota, ORIGEN\_FRONTEND, TIPO\_LECTOR=remoto, AGENTE\_TOKEN y PANTALLA\_TOKEN. Los tokens se generan con node -e "console.log(require('crypto').randomBytes(32).toString('hex'))". El usuario zonafit_app se crea una vez como root en MySQL → Database → Data: CREATE USER 'zonafit_app'@'%' IDENTIFIED BY '<clave>' y GRANT SELECT, INSERT, UPDATE, DELETE ON railway.* TO 'zonafit_app'@'%' -- (la consola de Railway agrega LIMIT 100 a las sentencias con SELECT; el -- lo anula). Al pegar la contraseña en la variable, verificar que no queden espacios ni saltos de línea.
 
 5\. Esquema: ejecutar las sentencias de database/init.sql en el editor de consultas del servicio MySQL (Database → Data), una por una.
 
@@ -653,7 +654,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Recurso**        | **Tipo**             | **Frecuencia**  | **Retención** | **Ubicación**            | **Cifrado** | **Responsable**              |
 | ------------------ | -------------------- | --------------- | ------------- | ------------------------ | ----------- | ---------------------------- |
-| Base de datos      | Completo (mysqldump) | Diaria          |               | Almacenamiento externo   |             | Liliana Sofía Panesso Méndez |
+| Base de datos      | Completo (mysqldump) | Semanal y antes de cada despliegue | Últimos 4 | Carpeta privada del responsable técnico | Acceso restringido | Juan Diego Mejía Llano |
 | Archivos / objetos | No aplica            |                 |               |                          |             |                              |
 | Configuración      | .env (fuera de Git)  | Con cada cambio |               | Gestor seguro del equipo |             | Liliana Sofía Panesso Méndez |
 | Artefactos         | Repositorio Git      | Continuo        |               | GitHub                   |             | Juan Diego Mejía Llano       |
@@ -662,7 +663,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Servicio / dato**     | **RPO objetivo** | **RTO objetivo** | **Justificación** | **Evidencia** |
 | ----------------------- | ---------------- | ---------------- | ----------------- | ------------- |
-| Base de datos principal |                  |                  |                   |               |
+| Base de datos principal | 7 días | 1 hora | Volumen pequeño; restaurar toma menos de 1 minuto | docs/pruebas/DAT-06-respaldo-y-restauracion.md |
 | Archivos                |                  |                  |                   |               |
 | Aplicación              |                  |                  |                   |               |
 
@@ -698,7 +699,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Fecha** | **Recurso** | **Respaldo utilizado** | **Tiempo real** | **Resultado** | **Hallazgos** | **Responsable** |
 | --------- | ----------- | ---------------------- | --------------- | ------------- | ------------- | --------------- |
-|           |             |                        |                 |               |               |                 |
+| 23/11/2026 | MySQL de Railway (base railway) | mysqldump del 23/11/2026 (16,6 KB) | < 1 minuto | 7 de 7 tablas con los mismos registros | Sin hallazgos | Juan Diego Mejía Llano |
 |           |             |                        |                 |               |               |                 |
 
 ## 16\. Seguridad operativa
@@ -726,8 +727,8 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | **Rol técnico**          | **Repositorio**                      | **Servidor** | **Base de datos** | **Secretos** | **Logs** | **Producción** |
 | ------------------------ | ------------------------------------ | ------------ | ----------------- | ------------ | -------- | -------------- |
 | Desarrollador            | Lectura / escritura (ramas feature/) |              |                   |              |          |                |
-| Líder técnico            | Administración                       |              |                   |              |          |                |
-| DevOps / infraestructura |                                      |              |                   |              |          |                |
+| Líder técnico            | Administración                       | Railway (administrador) | root (administración y respaldos) | Variables de Railway | Deploy Logs | Despliega por PR a main |
+| DevOps / infraestructura | — | Servicio de la API | zonafit\_app: SELECT, INSERT, UPDATE y DELETE sobre railway | Solo los propios | Escribe | Ejecuta |
 | Soporte                  |                                      |              |                   |              |          |                |
 | Auditor / instructor     | Lectura                              |              |                   |              |          |                |
 
@@ -809,7 +810,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | —                               |            |               | TT-001.                                                                               |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                                                                      |                      |
-| DT-08  | Resuelto: 39 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
+| DT-08  | Resuelto: 45 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                                                                       |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | —                                        |            |               | TT-009.                                                                                        |                      |
