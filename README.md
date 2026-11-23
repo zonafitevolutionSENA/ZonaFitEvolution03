@@ -113,6 +113,7 @@ El cliente no necesita una cuenta: la pantalla espera la huella en el lector y m
 - Railway y Vercel despliegan solos al fusionar en `main`. Railway solo redespliega cuando cambia `BackendZonafitevolution/` (Watch Paths) y comprueba `GET /api/salud` antes de dar por bueno el despliegue.
 - `GET /api/salud` responde `{"estado":"ok","lector":"conectado"|"desconectado"}`: sirve para saber si la API está viva y si el agente del lector está conectado.
 - En Railway el backend usa `TIPO_LECTOR=remoto`: no abre el USB, sino que envía las órdenes `registrar`, `capturar` y `eliminar` al agente por WebSocket (ADR-008).
+- `FrontendZonafitevolution/vercel.json` agrega cabeceras de seguridad al frontend: CSP (scripts solo del propio sitio y conexiones solo a la API de Railway), `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy` y `Permissions-Policy`. Si cambia el dominio de la API, hay que actualizar `connect-src` en ese archivo.
 - Las variables de producción viven en Railway (backend) y en Vercel (`VITE_API_URL`, de tipo **Config**). Los secretos nunca se suben al repositorio.
 - El esquema se cargó una sola vez con `database/init.sql`; si cambia, se recrea la base desde un respaldo (no hay migraciones).
 - Costo: Vercel Hobby es gratis; Railway usa la prueba de 30 días ($5 de crédito) y después el plan Hobby ($5 USD/mes).
