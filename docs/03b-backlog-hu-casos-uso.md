@@ -28,6 +28,7 @@
 | 1.2 | 22/11/2026 | Diagramas de casos de uso, diez secuencias y nueve actividades con un solo estilo (sección 10); despliegue en Vercel y Railway, TT-004, TT-006 y TT-009 terminadas y BLQ-002 cerrado | Juan Diego Mejía Llano |  |
 | 1.3 | 22/11/2026 | TT-001 y TT-002 terminadas; alcance real de CR-008 | Juan Diego Mejía Llano |  |
 | 1.4 | 22/11/2026 | TT-008 terminada (integración continua) y TT-007 con las pruebas del backend listas | Juan Diego Mejía Llano |  |
+| 1.5 | 23/11/2026 | CR-008 implementado en todos los planes y CR-009 (RNF-007 en Chrome) | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -263,7 +264,7 @@ Se mantienen en [`analisis/historias-de-usuario.md`](analisis/historias-de-usuar
 | ------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------- |
 | 1       | Código implementado y revisado.                    | Sí / No        | Pull Request revisado por otro integrante.                                   |
 | 2       | Criterios de aceptación cumplidos.                 | Sí / No        | Demostración en la sprint review.                                            |
-| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 39 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
+| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 45 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
 | 4       | Lint, compilación y pipeline sin errores críticos. | Sí / No        | npm run lint y npm run build sin errores; pipeline de GitHub Actions en cada pull request (TT-008). |
 | 5       | Seguridad y permisos revisados.                    | Sí / No / N.A. | Rutas protegidas con permitirRoles en el backend.                            |
 | 6       | Migraciones o cambios de datos incluidos.          | Sí / No / N.A. | Cambios en database/init.sql documentados en el README.                      |
@@ -349,7 +350,8 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | CR-005        | STK-01 Propietario   | Usar el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02, CU-004 | Alcance          | Aprobado                         | Juan Diego Mejía Llano |            |
 | CR-006        | Equipo de desarrollo | Publicar el backend en un hosting distinto de Render: API y MySQL en Railway, frontend en Vercel.                                                            | TT-009, INT-02                                 | Tiempo y riesgo  | Aprobado e implementado (11/11/2026) | Juan Diego Mejía Llano |            |
 | CR-007        | Equipo de desarrollo | Eliminar la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                | RF-004, INT-01, CU-004                         | Alcance          | Aprobado                         | Juan Diego Mejía Llano | 10/11/2026 |
-| CR-008        | STK-01 Propietario   | Un solo ingreso por día en todos los planes (frontend listo; el backend la aplica a las tiqueteras).                                          | RF-002, RF-003, CU-004                         | Alcance          | Aprobado; el backend la aplica a las tiqueteras (un descuento por día); para los planes por tiempo falta confirmarla con el propietario     | Juan Diego Mejía Llano | 10/11/2026 |
+| CR-008        | STK-01 Propietario   | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso (sin registrar otro ni descontar).                                          | RF-002, RF-003, CU-004                         | Alcance          | Aprobado e implementado (23/11/2026): el backend lo aplica en todos los planes     | Juan Diego Mejía Llano | 10/11/2026 |
+| CR-009 | STK-01 Propietario | RNF-007 se limita a Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance de la verificación. | RNF-007, HU-012 | Alcance | Aprobado | Juan Diego Mejía Llano | 23/11/2026 |
 
 ### 13.2 Reglas de actualización
 

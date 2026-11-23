@@ -59,7 +59,7 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
   }
 
   return (
-    <div className="login-fondo">
+    <main className="login-fondo">
       <form className="login-caja" onSubmit={manejarEnvio} noValidate>
         <h1 className="login-title">Zona Fit Evolution</h1>
         <p className="login-subtitle">Inicia sesión para continuar</p>
@@ -90,7 +90,7 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
           {cargando ? "Ingresando..." : "Iniciar sesión"}
         </button>
       </form>
-    </div>
+    </main>
   );
 }
 

@@ -21,4 +21,27 @@ async function obtenerRecientes(limite = 50) {
   return filas;
 }
 
-module.exports = { crear, obtenerRecientes };
+// Primer ingreso permitido del cliente en el día (hora de Colombia, la de la conexión)
+// y los minutos transcurridos desde entonces; null si hoy no ha entrado
+async function obtenerPrimerIngresoDeHoy(clienteId) {
+  const [filas] = await pool.query(
+    `SELECT DATE_FORMAT(MIN(fecha_hora), '%H:%i') AS hora,
+            TIMESTAMPDIFF(MINUTE, MIN(fecha_hora), NOW()) AS minutos
+     FROM registros_acceso
+     WHERE cliente_id = ? AND resultado = 'permitido' AND DATE(fecha_hora) = CURDATE()`,
+    [clienteId]
+  );
+  const fila = filas[0];
+  return fila && fila.hora ? { hora: fila.hora, minutos: Number(fila.minutos) } : null;
+}
+
+// Borra los intentos de acceso más antiguos que la retención definida (DAT-05)
+async function eliminarAnterioresA(meses) {
+  const [res] = await pool.query(
+    'DELETE FROM registros_acceso WHERE fecha_hora < (NOW() - INTERVAL ? MONTH)',
+    [meses]
+  );
+  return res.affectedRows;
+}
+
+module.exports = { crear, obtenerRecientes, obtenerPrimerIngresoDeHoy, eliminarAnterioresA };

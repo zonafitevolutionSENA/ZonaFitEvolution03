@@ -6,6 +6,9 @@ const As608Lector = require('../BackendZonafitevolution/src/hardware/as608Lector
 
 const ESPERA_INICIAL_MS = 1000;
 const ESPERA_MAXIMA_MS = 30000;
+// Latido: si el servidor no responde un ping a tiempo (por ejemplo, tras reiniciarse sin cerrar la
+// conexión), el agente corta y se vuelve a conectar solo
+const LATIDO_MS = 15000;
 // Respuestas normales del ciclo de lectura que no se imprimen: 408 = nadie puso el dedo en 15 s
 // (la pantalla de ingreso vuelve a pedir otra lectura) y 499 = lectura cancelada
 const ESTADOS_SILENCIOSOS = new Set([408, 499]);
@@ -121,13 +124,26 @@ function conectar() {
     headers: { 'x-agente-token': process.env.AGENTE_TOKEN }
   });
 
+  let vivo = true;
+  let latido = null;
   socket.on('open', () => {
     espera = ESPERA_INICIAL_MS;
     console.log('[agente] conectado al servidor, lector listo');
+    latido = setInterval(() => {
+      if (!vivo) {
+        console.log('[agente] el servidor no responde; se reinicia la conexión');
+        socket.terminate();
+        return;
+      }
+      vivo = false;
+      socket.ping();
+    }, LATIDO_MS);
   });
+  socket.on('pong', () => { vivo = true; });
   socket.on('message', datos => atender(socket, datos));
   socket.on('error', error => console.error(`[agente] error de conexión: ${error.message}`));
   socket.on('close', codigo => {
+    clearInterval(latido);
     for (const controlador of enCurso.values()) controlador.abort();
     enCurso.clear();
     if (codigo === 4001) {

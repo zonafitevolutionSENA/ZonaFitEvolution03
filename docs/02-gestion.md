@@ -27,6 +27,7 @@
 | 1.2 | 22/11/2026 | Despliegue en Vercel y Railway: BLQ-02 cerrado, CHG-06 implementado y semáforo del cronograma actualizado | Juan Diego Mejía Llano |  |
 | 1.3 | 22/11/2026 | Estado de los sprints 10 a 12 y pendientes PEN-04 y PEN-05 resueltos | Juan Diego Mejía Llano |  |
 | 1.4 | 22/11/2026 | Semáforo de calidad en verde: pruebas automáticas e integración continua | Juan Diego Mejía Llano |  |
+| 1.5 | 23/11/2026 | Cambios CHG-07 (un ingreso por día en todos los planes) y CHG-08 (RNF-007 en Chrome) | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -640,6 +641,8 @@ También deben registrarse eventos inciertos positivos que puedan mejorar costo,
 | CHG-04 | El registro financiero se calcula con las membresías mientras se crea la tabla de pagos.                                                            | RF-006, HU-008                         | MVP                  | Juan Diego Mejía Llano | Aprobado (temporal)              | CR-004        |
 | CHG-05 | Se usa el sensor AS608 con conversor CP2102 solo para validar el ingreso; la apertura con relé y electroimán (CR-002) pasa a una versión posterior. | OBJ-04, RF-003, RF-004, INT-01, INT-02 | MVP                  | Juan Diego Mejía Llano | Aprobado                         | CR-005        |
 | CHG-06 | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            | TT-009, INT-02, RSD-07                 | MVP                  | Juan Diego Mejía Llano | Aprobado e implementado | CR-006        |
+| CHG-07 | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso (sin registrar otro ni descontar). | RF-002, RF-003, RN-015 | MVP | Juan Diego Mejía Llano | Aprobado e implementado | CR-008 |
+| CHG-08 | RNF-007 se limita a Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance de la verificación. | RNF-007, UX-02 | MVP | Juan Diego Mejía Llano | Aprobado | CR-009 |
 
 ## 12\. Seguimiento de entregables y calidad
 

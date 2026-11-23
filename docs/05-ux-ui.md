@@ -28,6 +28,7 @@
 | 2.0         | 03/11/2026 | Plantilla institucional con pantallas React implementadas, estados, tokens y mensajes reales                                          | Juan Diego Mejía Llano       |                  |
 | 2.1         | 10/11/2026 | Control de acceso fuera del menú: huella desde Clientes y pantalla de ingreso aparte con resultado de 2 segundos; simulador eliminado | Juan Diego Mejía Llano       |                  |
 | 2.2 | 22/11/2026 | Pantalla de ingreso: textos de espera, aviso de huella no registrada (4 s) y reconexión automática con el lector | Juan Diego Mejía Llano |  |
+| 2.3 | 23/11/2026 | Pruebas responsive en celular, tablet y computador (Chrome) y revisión de accesibilidad con Lighthouse; login con <main> | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -402,18 +403,18 @@ Los wireframes representan estructura, jerarquía y navegación antes de definir
 
 | **Componente / pantalla** | **Móvil** | **Tableta** | **Escritorio** | **Regla** |
 | ------------------------- | --------- | ----------- | -------------- | --------- |
-| Navegación                |           |             |                |           |
-| Tabla de datos            |           |             |                |           |
-| Formulario                |           |             |                |           |
+| Navegación                | Menú ⋮ desplegable | Menú ⋮ desplegable | Menú lateral fijo | Sin desbordamiento horizontal |
+| Tabla de datos            | Desplazamiento horizontal dentro del recuadro | Desplazamiento horizontal dentro del recuadro | Columnas completas | La página nunca se desborda |
+| Formulario                | Una columna | Una columna | Campos en filas | Botones siempre visibles |
 | Modal / panel             |           |             |                |           |
 
 ### 10.3 Compatibilidad
 
 | **Plataforma** | **Versión objetivo**  | **Prioridad** | **Método de prueba**  | **Resultado** |
 | -------------- | --------------------- | ------------- | --------------------- | ------------- |
-| Chrome         | Dos últimas versiones | Alta          | Manual / automatizada |               |
-| Firefox        | Dos últimas versiones | Media         |                       |               |
-| Edge           | Dos últimas versiones | Alta          |                       |               |
+| Chrome         | Versión actual | Alta          | Manual / automatizada | Cumple: celular 375 px, tablet 768 px y computador (23/11/2026) |
+| Firefox        | Dos últimas versiones | — |                       | Fuera del alcance (CR-009) |
+| Edge           | Dos últimas versiones | — |                       | Fuera del alcance (CR-009) |
 | Android / iOS  |                       | Baja          |                       |               |
 
 ## 11\. Accesibilidad
@@ -424,16 +425,16 @@ El diseño debe atender los criterios WCAG AA aplicables al alcance y demostrar 
 
 | **N.°** | **Criterio**                                                | **Cumple**     | **Evidencia** |
 | ------- | ----------------------------------------------------------- | -------------- | ------------- |
-| 1       | Contraste suficiente entre texto, iconos y fondo.           | Sí / No        |               |
+| 1       | Contraste suficiente entre texto, iconos y fondo.           | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
 | 2       | Foco visible y orden lógico de teclado.                     | Sí / No        |               |
-| 3       | Campos con etiquetas persistentes y mensajes asociados.     | Sí / No        |               |
-| 4       | Controles con nombre accesible y propósito claro.           | Sí / No        |               |
+| 3       | Campos con etiquetas persistentes y mensajes asociados.     | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
+| 4       | Controles con nombre accesible y propósito claro.           | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
 | 5       | La información no depende únicamente del color.             | Sí / No        |               |
 | 6       | Tamaño de texto legible y zoom sin pérdida funcional.       | Sí / No        |               |
-| 7       | Imágenes informativas con alternativa textual.              | Sí / No / N.A. |               |
-| 8       | Tablas con encabezados y estructura comprensible.           | Sí / No / N.A. |               |
+| 7       | Imágenes informativas con alternativa textual.              | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
+| 8       | Tablas con encabezados y estructura comprensible.           | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
 | 9       | Modales y menús gestionan foco correctamente.               | Sí / No / N.A. |               |
-| 10      | Mensajes de error son identificables y corregibles.         | Sí / No        |               |
+| 10      | Mensajes de error son identificables y corregibles.         | Sí | Lighthouse 23/11/2026 (docs/pruebas/UX-02-UX-06-compatibilidad-y-accesibilidad.md) |
 | 11      | Objetivos táctiles tienen tamaño y separación adecuados.    | Sí / No / N.A. |               |
 | 12      | Animaciones respetan reducción de movimiento cuando aplica. | Sí / No / N.A. |               |
 
@@ -441,7 +442,7 @@ El diseño debe atender los criterios WCAG AA aplicables al alcance y demostrar 
 
 | **ID**  | **Pantalla / componente** | **Criterio** | **Severidad** | **Hallazgo** | **Acción** | **Estado** |
 | ------- | ------------------------- | ------------ | ------------- | ------------ | ---------- | ---------- |
-| ACC-001 | UI-\_\_\_ / CMP-\_\_\_    |              | Alta          |              |            | Abierto    |
+| ACC-001 | UI-01 Inicio de sesión | Estructura semántica | Baja | Sin región <main> (Lighthouse 96/100) | Contenedor <main> en Login.jsx | Cerrado |
 | ACC-002 |                           |              |               |              |            |            |
 
 <table>

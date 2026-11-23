@@ -13,6 +13,7 @@
 | 1.3 | 22/11/2026 | Pantalla de ingreso: apertura automática en recepción, textos de espera, aviso de huella no registrada y reconexión; mensajes nuevos | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.4 | 22/11/2026 | Procedimientos PRU-02 a PRU-09 redactados con capturas de la aplicación (datos ficticios); inicio, recuperación de acceso y cierre de sesión ajustados a la interfaz real | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.5 | 22/11/2026 | PRU-02 y MSG-04 ajustados a la regla actual: con una membresía activa la nueva queda pendiente; solo se permite una pendiente | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.6 | 23/11/2026 | Un solo ingreso por día en cualquier plan: mensaje MSG-15 y lecturas repetidas dentro de 30 minutos | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -468,6 +469,7 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 | MSG-12 | Tu entrenamiento empieza aquí. Coloca tu dedo en el lector para ingresar | La pantalla de ingreso está lista para leer la huella. | Poner el dedo en el lector. | No |
 | MSG-13 | Acércate a recepción para registrar tu huella | La huella leída no está registrada (se muestra 4 segundos). | Registrar la huella del socio desde Clientes. | No |
 | MSG-14 | Conectando con el lector… | El agente o el servidor aún no responden; la pantalla reintenta sola cada 5 segundos. | Esperar; si no cambia, revisar internet y el cable del lector. | Si persiste |
+| MSG-15 | Ya ingresó hoy a las <hora>: solo se permite un ingreso por día | El socio ya entró hoy hace más de 30 minutos. Si vuelve a poner el dedo antes de 30 minutos, se muestra «Ingreso ya registrado hoy a las <hora>» y se permite. | Explicar la regla al socio. | No |
 
 ### 11.1 Cómo reportar un error
 
