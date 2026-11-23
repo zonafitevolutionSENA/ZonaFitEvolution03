@@ -1,8 +1,11 @@
 # Changelog
 
-Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) con las categorías de la Guía de estructura del repositorio. El proyecto aún no tiene versión etiquetada: la `v1.0.0` se crea al cierre (12/12/2026).
+Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) con las categorías de la Guía de estructura del repositorio. La versión de entrega es la `v1.0.0` (etiqueta y Release en GitHub).
 
 ## [Sin publicar]
+
+### Security
+- Cabeceras de seguridad en el frontend de Vercel (`vercel.json`): Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy y Permissions-Policy.
 
 ## [1.0.0] – 23/11/2026
 
