@@ -60,7 +60,7 @@ Otros:
 
 ## Pendientes del equipo
 
-- **Cierre:** etiqueta `v1.0.0` y firmas del acta de cierre.
+- **Cierre:** firmas del acta de cierre (Informe de cierre, sección 20) y sustentación.
 - **Datos personales:** completar los datos del gimnasio en el formato de `legal/` y recoger las firmas antes de registrar huellas de socios reales.
 - **Despliegue:** pasar Railway al plan Hobby antes del 10/12/2026 (la prueba de 30 días vence alrededor del 11/12) y respaldar la base con `mysqldump` antes de la sustentación.
 

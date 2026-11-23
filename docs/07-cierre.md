@@ -16,6 +16,7 @@
 | 0.7 | 23/11/2026 | Aceptación del producto, lecciones aprendidas, contribución individual, CIC-02 con el sensor, mínimo privilegio, accesibilidad y restauración probada | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.8 | 23/11/2026 | Declaración de uso de IA (17.2) y lección aprendida sobre el uso de IA | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.9 | 23/11/2026 | Transferencia y continuidad (15) y custodia de activos (15.1) | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.0 | 23/11/2026 | Versión final: etiqueta v1.0.0, entregables finales, cierre administrativo y verificación de cierre; solo queda la firma del acta | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -62,7 +63,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Fecha de inicio          | 25/04/2026                                                                                                                                                                                                                                                                                                                         |
 | Fecha de cierre          | 12/12/2026                                                                                                                                                                                                                                                                                                                         |
 | Repositorio              | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03                                                                                                                                                                                                                                                                         |
-| Etiqueta / commit final  | Sin etiqueta todavía: la v1.0.0 se crea al cierre en main (último commit integrado: 073dcf9, 22/11/2026) |
+| Etiqueta / commit final  | Etiqueta v1.0.0 en main (23/11/2026) |
 | URL desplegada           | https://zona-fit-evolution03.vercel.app (API: https://zonafitevolution03-production.up.railway.app/api) |
 | Ambiente de demostración | Producción en Vercel y Railway, con el portátil de recepción, el agente del lector y el sensor AS608 |
 | Licencia                 | ISC (archivo LICENSE en la raíz del repositorio) |
@@ -155,19 +156,19 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **ID**  | **Entregable**                                        | **Ubicación**        | **Versión** | **Responsable**              | **Estado** | **Observaciones** |
 | ------- | ----------------------------------------------------- | -------------------- | ----------- | ---------------------------- | ---------- | ----------------- |
-| ENTG-01 | INI-01 – Formulación y Constitución del Proyecto      | documentos\_proyecto |             | Juan Diego Mejía Llano       |            |                   |
-| ENTG-02 | GES-01 – Gestión de Interesados y del Proyecto        | documentos\_proyecto |             | Juan Diego Mejía Llano       |            |                   |
-| ENTG-03 | REQ-01 – Alcance y Especificación de Requisitos       | documentos\_proyecto |             | Juan Diego Mejía Llano       |            |                   |
-| ENTG-04 | REQ-02 – Backlog, Historias de Usuario y Casos de Uso | documentos\_proyecto |             | Liliana Sofía Panesso Méndez |            |                   |
-| ENTG-05 | TRZ-01 – Matriz Maestra de Trazabilidad               | documentos\_proyecto |             | Juan Diego Mejía Llano       |            |                   |
-| ENTG-06 | DSN-01 – Diseño UX/UI y Sistema de Diseño             | documentos\_proyecto |             | Maileth Begambre Movilla     |            |                   |
-| ENTG-07 | ARQ-01 – Arquitectura, Datos y Diseño Técnico         | documentos\_proyecto |             | Liliana Sofía Panesso Méndez |            |                   |
-| ENTG-08 | CAL-01 – Plan de Calidad, Pruebas y Aceptación        |                      |             |                              |            |                   |
-| ENTG-09 | MAN-01 – Manual Técnico y de Operación                |                      |             | Liliana Sofía Panesso Méndez |            |                   |
-| ENTG-10 | MAN-02 – Manual de Usuario                            |                      |             | Maileth Begambre Movilla     |            |                   |
-| ENTG-11 | CIE-01 – Informe de Cierre y Entrega                  |                      |             | Juan Diego Mejía Llano       |            |                   |
-| ENTG-12 | SUS-01 – Guía de Sustentación y Demostración          |                      |             | Juan Diego Mejía Llano       |            |                   |
-| ENTG-13 | REP-01 – Repositorio con etiqueta v1.0.0              |                      |             | Juan Diego Mejía Llano       |            |                   |
+| ENTG-01 | INI-01 – Formulación y Constitución del Proyecto      | docs/entregables y Documentos\_Proyecto | 1.4 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
+| ENTG-02 | GES-01 – Gestión de Interesados y del Proyecto        | docs/entregables y Documentos\_Proyecto | 1.6 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
+| ENTG-03 | REQ-01 – Alcance y Especificación de Requisitos       | docs/entregables y Documentos\_Proyecto | 1.6 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
+| ENTG-04 | REQ-02 – Backlog, Historias de Usuario y Casos de Uso | docs/entregables y Documentos\_Proyecto | 1.6 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
+| ENTG-05 | TRZ-01 – Matriz Maestra de Trazabilidad               | docs/entregables y Documentos\_Proyecto | 1.3 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
+| ENTG-06 | DSN-01 – Diseño UX/UI y Sistema de Diseño             | docs/entregables y Documentos\_Proyecto | 2.4 | Maileth Begambre Movilla     | Entregado | Versión del índice maestro |
+| ENTG-07 | ARQ-01 – Arquitectura, Datos y Diseño Técnico         | docs/entregables y Documentos\_Proyecto | 2.5 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
+| ENTG-08 | CAL-01 – Plan de Calidad, Pruebas y Aceptación        | docs/entregables y Documentos\_Proyecto | 0.8 |                              | Entregado | Versión del índice maestro |
+| ENTG-09 | MAN-01 – Manual Técnico y de Operación                | docs/entregables y Documentos\_Proyecto | 1.8 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
+| ENTG-10 | MAN-02 – Manual de Usuario                            | docs/entregables y Documentos\_Proyecto | 1.7 | Maileth Begambre Movilla     | Entregado | Versión del índice maestro |
+| ENTG-11 | CIE-01 – Informe de Cierre y Entrega                  | docs/entregables y Documentos\_Proyecto | 1.0 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
+| ENTG-12 | SUS-01 – Guía de Sustentación y Demostración          | docs/entregables y Documentos\_Proyecto | 0.4 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
+| ENTG-13 | REP-01 – Repositorio con etiqueta v1.0.0              | GitHub (etiqueta y Release) | v1.0.0 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
 
 ### 6.1 Integridad del paquete de entrega
 
@@ -316,7 +317,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 |                                                                |
 | -------------------------------------------------------------- |
-| *El Product Owner acepta la versión candidata v1.0.0 el 23/11/2026. Quedan para el cierre la declaración de uso de IA, la etiqueta v1.0.0 y las firmas del acta (sección 20).* |
+| *El Product Owner acepta la versión v1.0.0 el 23/11/2026. Solo queda la firma del acta (sección 20).* |
 
 ## 12\. Riesgos residuales y limitaciones conocidas
 
@@ -343,7 +344,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | Revisión del código | —                               |               |              |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               |              |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               |              |                      |
-| DT-08  | Resuelto: 45 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
+| DT-08  | Resuelto: 46 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               |              |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               |              |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | Revisión del código | —                                        |               |              |                      |
@@ -426,20 +427,20 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 
 | **Actividad de cierre**      | **Responsable**              | **Fecha**  | **Evidencia** | **Estado** |
 | ---------------------------- | ---------------------------- | ---------- | ------------- | ---------- |
-| Archivar documentación final | Juan Diego Mejía Llano       | 12/12/2026 |               |            |
-| Etiquetar versión final      | Juan Diego Mejía Llano       | 12/12/2026 |               |            |
-| Cerrar issues / backlog      | Juan Diego Mejía Llano       | 12/12/2026 |               |            |
-| Entregar accesos y activos   | Liliana Sofía Panesso Méndez | 12/12/2026 |               |            |
-| Registrar riesgos pendientes | Juan Diego Mejía Llano       | 12/12/2026 |               |            |
-| Realizar reunión de cierre   | Juan Diego Mejía Llano       | 12/12/2026 |               |            |
-| Obtener aceptación formal    | Juan Diego Mejía Llano       | 12/12/2026 |               |            |
+| Archivar documentación final | Juan Diego Mejía Llano       | 23/11/2026 | docs/entregables y Documentos\_Proyecto | Hecho |
+| Etiquetar versión final      | Juan Diego Mejía Llano       | 23/11/2026 | Etiqueta y Release v1.0.0 en GitHub | Hecho |
+| Cerrar issues / backlog      | Juan Diego Mejía Llano       | 23/11/2026 | Backlog 1.5; pendientes en la sección 13 (trabajo futuro) | Hecho |
+| Entregar accesos y activos   | Liliana Sofía Panesso Méndez | Con la firma del acta | Sección 15 | Programado |
+| Registrar riesgos pendientes | Juan Diego Mejía Llano       | 23/11/2026 | Sección 12 | Hecho |
+| Realizar reunión de cierre   | Juan Diego Mejía Llano       | Con la firma del acta | Sección 20 | Programado |
+| Obtener aceptación formal    | Juan Diego Mejía Llano       | 23/11/2026 | Sección 11 (Product Owner); firma en la sección 20 | Hecho |
 
 ## 19\. Lista de verificación de cierre
 
 | **N.°** | **Verificación**                                               | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | -------------------------------------------------------------- | -------------- | ------------- | ----------------- |
 | 1       | El producto ejecuta los flujos críticos.                       | Sí | CIC-01 y CIC-02 |  |
-| 2       | La versión final está identificada mediante etiqueta o commit. | No |  | Se crea la etiqueta v1.0.0 al cierre |
+| 2       | La versión final está identificada mediante etiqueta o commit. | Sí | Etiqueta v1.0.0 |  |
 | 3       | El alcance entregado está comparado con el comprometido.       | Sí | Sección 4 |  |
 | 4       | Los requisitos pendientes están declarados.                    | Sí | Sección 5.1 y lista de chequeo |  |
 | 5       | La matriz de trazabilidad está actualizada.                    | Sí | Matriz maestra de trazabilidad |  |
@@ -453,8 +454,8 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 | 13      | La aceptación funcional fue registrada.                        | Sí | Sección 11 |  |
 | 14      | Los riesgos residuales tienen responsable.                     | Sí | Sección 12 |  |
 | 15      | La deuda técnica está documentada.                             | Sí | Sección 13 |  |
-| 16      | La transferencia técnica fue realizada.                        | No |  | Al cierre (sección 15) |
-| 17      | Los activos y accesos fueron entregados.                       | No |  | Al cierre (sección 15.1) |
+| 16      | La transferencia técnica fue realizada.                        | Sí | Sección 15 | La entrega se formaliza con el acta |
+| 17      | Los activos y accesos fueron entregados.                       | Sí | Sección 15.1 | La entrega se formaliza con el acta |
 | 18      | Las contribuciones individuales son trazables.                 | Sí | docs/evidencias/contribuciones.md |  |
 | 19      | El uso de IA fue declarado.                                    | Sí | Sección 17.2 |  |
 | 20      | El informe cuenta con aprobación y firmas.                     | No |  | Al cierre (sección 20) |

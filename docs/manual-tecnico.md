@@ -16,6 +16,7 @@
 | 1.5 | 22/11/2026 | Integración continua en GitHub Actions, logs con fecha, nivel, módulo y contexto (NIVEL_LOG) y DT-08 resuelta | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.6 | 23/11/2026 | Usuario de MySQL zonafit_app con mínimo privilegio, respaldo semanal con restauración probada, latido del agente y un ingreso por día | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.7 | 23/11/2026 | Navegador soportado: Chrome (CR-009) | Juan Diego Mejía Llano |  |  | En revisión |
+| 1.8 | 23/11/2026 | Versión v1.0.0, paquete técnico de entrega, sesión de transferencia y lista de verificación | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -93,7 +94,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Contrato de API                        | No existe (por crear: OpenAPI)           |                   | Operación e integración                         |
 | Migraciones                            | No existe (esquema en database/init.sql) |                   | Creación y evolución de base de datos           |
 | Pipeline CI/CD                         | GitHub Actions (.github/workflows/ci.yml): pruebas, lint, build, npm audit e integración con MySQL                       |                   | Automatización de build y despliegue            |
-| CHANGELOG                              | No existe                                |                   | Historial de versiones y cambios                |
+| CHANGELOG                              | CHANGELOG.md (raíz)                                |                   | Historial de versiones y cambios                |
 | ADR                                    | Documento maestro, sección 5.12; ARQ-01  | 1.0               | Decisiones técnicas relevantes                  |
 
 ## 3\. Identificación técnica del producto
@@ -101,7 +102,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Campo**                  | **Valor**                                                               |
 | -------------------------- | ----------------------------------------------------------------------- |
 | Nombre técnico del sistema | ZonaFitEvolution03 (BackendZonafitevolution + FrontendZonafitevolution) |
-| Versión o etiqueta Git     | Sin etiqueta; v1.0.0 prevista para el 12/12/2026                        |
+| Versión o etiqueta Git     | v1.0.0 (23/11/2026)                        |
 | Repositorio principal      | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03              |
 | Rama de entrega            | main                                                                    |
 | Tipo de solución           | Aplicación web SPA + API REST                                           |
@@ -219,7 +220,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Ruta**                     | **Contenido**                           | **Responsabilidad**          | **Artefactos principales**                              |
 | ---------------------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------------- |
 | /BackendZonafitevolution/src | API en capas                            | Liliana Sofía Panesso Méndez | routes, controllers, services, repositories             |
-| /tests                       | No existe (TT-007)                      |                              |                                                         |
+| /tests                       | BackendZonafitevolution/test (46 pruebas) y scripts/pruebas-cp.js                      |                              |                                                         |
 | /docs                        | Documentos del proyecto                 | Juan Diego Mejía Llano       | analisis/Historias\_de\_Usuario\_y\_Casos\_de\_Uso.docx |
 | /migrations                  | No existe; esquema en database/init.sql | Liliana Sofía Panesso Méndez | init.sql                                                |
 | /scripts                     | Utilidades del backend                  | Liliana Sofía Panesso Méndez | crear-admin.js                                          |
@@ -233,8 +234,8 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | ------------ | -------------------------------------- | -------------------------------------------- | ------------------------------ |
 | README.md    | Inicio rápido                          | Descripción, instalación, comandos y enlaces | Información desactualizada     |
 | .env.example | Variables requeridas                   | Nombres y valores ficticios seguros          | Secretos o credenciales reales |
-| CHANGELOG.md | No existe                              | Cambios, correcciones e incompatibilidades   | Cambios sin versión            |
-| LICENSE      | No existe                              | Licencia y atribuciones                      | Licencias incompatibles        |
+| CHANGELOG.md | Historial de cambios por versión (Keep a Changelog) | Cambios, correcciones e incompatibilidades   | Cambios sin versión            |
+| LICENSE      | Licencia ISC del proyecto | Licencia y atribuciones                      | Licencias incompatibles        |
 | Lockfile     | package-lock.json (backend y frontend) | Versiones resueltas                          | Edición manual injustificada   |
 
 ## 6\. Configuración y gestión de variables
@@ -342,12 +343,12 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 
 | **Verificación**           | **Método**                                                                     | **Resultado esperado**           | **Cumple**     |
 | -------------------------- | ------------------------------------------------------------------------------ | -------------------------------- | -------------- |
-| Compilación / build        | npm run build (frontend)                                                       | Finaliza sin errores             | Sí / No        |
-| Conexión a base de datos   | Iniciar el backend y abrir una pantalla con datos                              | Conexión exitosa                 | Sí / No        |
-| Health check               | GET /api/salud responde { "estado": "ok", "lector": "conectado" } | Estado saludable                 | Sí / No        |
-| Inicio de sesión de prueba | Usuario creado con scripts/crear-admin.js                                      | Acceso según rol                 | Sí / No / N.A. |
-| Flujo crítico              | Registrar cliente, asignar membresía y validar acceso                          | Se completa sin bloqueo          | Sí / No        |
-| Logs                       | Deploy Logs de Railway (formato fecha, nivel, módulo y contexto)                                                            | Sin errores críticos ni secretos | Sí / No        |
+| Compilación / build        | npm run build (frontend)                                                       | Finaliza sin errores             | Sí |
+| Conexión a base de datos   | Iniciar el backend y abrir una pantalla con datos                              | Conexión exitosa                 | Sí |
+| Health check               | GET /api/salud responde { "estado": "ok", "lector": "conectado" } | Estado saludable                 | Sí |
+| Inicio de sesión de prueba | Usuario creado con scripts/crear-admin.js                                      | Acceso según rol                 | Sí |
+| Flujo crítico              | Registrar cliente, asignar membresía y validar acceso                          | Se completa sin bloqueo          | Sí |
+| Logs                       | Deploy Logs de Railway (formato fecha, nivel, módulo y contexto)                                                            | Sin errores críticos ni secretos | Sí |
 
 ## 8\. Base de datos, migraciones y datos semilla
 
@@ -611,11 +612,11 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Fuente**    | **Ubicación**                       | **Formato** | **Nivel**         | **Retención** | **Datos prohibidos**                 |
 | ------------- | ----------------------------------- | ----------- | ----------------- | ------------- | ------------------------------------ |
-| Aplicación    | src/utils/logger.js: una línea por evento en la consola (Deploy Logs de Railway) | Fecha ISO, NIVEL, [módulo], mensaje y contexto en JSON       | info, warn, error |               | Contraseñas, tokens, datos sensibles |
-| Servidor web  |                                     |             |                   |               |                                      |
-| Base de datos | Servidor MySQL                      |             |                   |               |                                      |
-| Pipeline      | No existe                           |             |                   |               |                                      |
-| Auditoría     | Tabla registros\_acceso             | Tabla       |                   |               |                                      |
+| Aplicación    | src/utils/logger.js: una línea por evento en la consola (Deploy Logs de Railway) | Fecha ISO, NIVEL, [módulo], mensaje y contexto en JSON       | info, warn, error | La que conserva Railway en Deploy Logs | Contraseñas, tokens, datos sensibles |
+| Servidor web  | Vercel: registros del proyecto (frontend) | Registros de Vercel | Peticiones y errores | La que conserva Vercel | Datos personales |
+| Base de datos | Servidor MySQL                      | Logs del servicio MySQL en Railway | Errores | La que conserva Railway | Datos personales |
+| Pipeline      | GitHub Actions (pestaña Actions del repositorio) | Log por trabajo | Resultado de cada paso | 90 días (GitHub) | Secretos |
+| Auditoría     | Tabla registros\_acceso             | Tabla       | Permitido o denegado con motivo | 3 meses (tarea diaria) | Plantillas de huella |
 
 ### 14.2 Métricas y umbrales
 
@@ -811,7 +812,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | —                               |            |               | TT-001.                                                                               |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                                                                      |                      |
-| DT-08  | Resuelto: 45 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
+| DT-08  | Resuelto: 46 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                                                                       |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | —                                        |            |               | TT-009.                                                                                        |                      |
@@ -928,58 +929,58 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Elemento**             | **Formato / ubicación**                                    | **Versión** | **Verificado** | **Observaciones**         |
 | ------------------------ | ---------------------------------------------------------- | ----------- | -------------- | ------------------------- |
-| Repositorio y etiqueta   | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 |             |                | Etiqueta v1.0.0 pendiente |
-| README                   | README.md (raíz)                                           |             |                |                           |
-| Manual técnico           | MAN-01                                                     | 1.0         |                |                           |
-| Manual de usuario        | MAN-02                                                     |             |                |                           |
-| Migraciones y semillas   | database/init.sql, scripts/crear-admin.js                  |             |                |                           |
-| API / OpenAPI            | No existe                                                  |             |                |                           |
-| Pipeline                 | No existe                                                  |             |                |                           |
-| Pruebas y cobertura      | No existen                                                 |             |                |                           |
-| Configuración de ejemplo | BackendZonafitevolution/.env.example                       |             |                |                           |
-| Respaldo / restauración  | Sección 10 de este manual                                  |             |                |                           |
-| Licencia y atribuciones  | No existe LICENSE                                          |             |                |                           |
+| Repositorio y etiqueta   | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 | v1.0.0 | Sí |  |
+| README                   | README.md (raíz)                                           | v1.0.0 | Sí | Instalación, ejecución, pruebas, autores y licencia |
+| Manual técnico           | MAN-01                                                     | 1.8 | Sí |  |
+| Manual de usuario        | MAN-02                                                     | 1.7 | Sí |  |
+| Migraciones y semillas   | database/init.sql, scripts/crear-admin.js                  | v1.0.0 | Sí | init.sql se ejecuta en cada PR |
+| API / OpenAPI            | Tablas de endpoints en el README | v1.0.0 | Sí | Sin OpenAPI |
+| Pipeline                 | .github/workflows/ci.yml | v1.0.0 | Sí | Pruebas, lint, build, audit e integración |
+| Pruebas y cobertura      | BackendZonafitevolution/test y docs/pruebas | v1.0.0 | Sí | 46 pruebas; 53 % de líneas |
+| Configuración de ejemplo | BackendZonafitevolution/.env.example                       | v1.0.0 | Sí | Sin secretos |
+| Respaldo / restauración  | Sección 15 de este manual y docs/pruebas/DAT-06-respaldo-y-restauracion.md | 1.8 | Sí | Restauración probada el 23/11/2026 |
+| Licencia y atribuciones  | LICENSE (ISC) | v1.0.0 | Sí |  |
 
 ### 21.2 Sesión de transferencia
 
 | **Tema**                | **Responsable expositor**    | **Participantes** | **Fecha** | **Evidencia** | **Resultado** |
 | ----------------------- | ---------------------------- | ----------------- | --------- | ------------- | ------------- |
-| Arquitectura            | Liliana Sofía Panesso Méndez |                   |           |               |               |
-| Instalación             | Liliana Sofía Panesso Méndez |                   |           |               |               |
-| Despliegue              | Liliana Sofía Panesso Méndez |                   |           |               |               |
-| Operación y monitoreo   | Liliana Sofía Panesso Méndez |                   |           |               |               |
-| Respaldo y recuperación | Liliana Sofía Panesso Méndez |                   |           |               |               |
-| Soporte y mantenimiento | Liliana Sofía Panesso Méndez |                   |           |               |               |
+| Arquitectura            | Liliana Sofía Panesso Méndez | Carlos Ramírez (propietario) e instructor | Con la firma del acta | Este manual | Programada |
+| Instalación             | Liliana Sofía Panesso Méndez | Carlos Ramírez (propietario) e instructor | Con la firma del acta | Este manual | Programada |
+| Despliegue              | Liliana Sofía Panesso Méndez | Carlos Ramírez (propietario) e instructor | Con la firma del acta | Este manual | Programada |
+| Operación y monitoreo   | Liliana Sofía Panesso Méndez | Carlos Ramírez (propietario) e instructor | Con la firma del acta | Este manual | Programada |
+| Respaldo y recuperación | Liliana Sofía Panesso Méndez | Carlos Ramírez (propietario) e instructor | Con la firma del acta | Este manual | Programada |
+| Soporte y mantenimiento | Liliana Sofía Panesso Méndez | Carlos Ramírez (propietario) e instructor | Con la firma del acta | Este manual | Programada |
 
 ## 22\. Lista de verificación del manual técnico
 
 | **N.°** | **Verificación**                                             | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | ------------------------------------------------------------ | -------------- | ------------- | ----------------- |
-| 1       | El manual corresponde a la versión entregada.                | Sí / No / N.A. |               |                   |
-| 2       | Los requisitos de hardware y software están definidos.       | Sí / No / N.A. |               |                   |
-| 3       | Las versiones de dependencias son identificables.            | Sí / No / N.A. |               |                   |
-| 4       | La estructura del repositorio está explicada.                | Sí / No / N.A. |               |                   |
-| 5       | Existe archivo de configuración de ejemplo sin secretos.     | Sí / No / N.A. |               |                   |
-| 6       | Las variables de entorno están documentadas.                 | Sí / No / N.A. |               |                   |
-| 7       | La instalación puede ejecutarse en un ambiente limpio.       | Sí / No / N.A. |               |                   |
-| 8       | Las migraciones crean el esquema completo.                   | Sí / No / N.A. |               |                   |
-| 9       | Los datos semilla no contienen información personal real.    | Sí / No / N.A. |               |                   |
-| 10      | Los comandos de pruebas, lint y build están documentados.    | Sí / No / N.A. |               |                   |
-| 11      | Los artefactos de entrega son reproducibles.                 | Sí / No / N.A. |               |                   |
-| 12      | Los ambientes están claramente separados.                    | Sí / No / N.A. |               |                   |
-| 13      | El procedimiento de despliegue es verificable.               | Sí / No / N.A. |               |                   |
-| 14      | Existe estrategia de rollback cuando aplica.                 | Sí / No / N.A. |               |                   |
-| 15      | Los logs no exponen secretos ni datos sensibles.             | Sí / No / N.A. |               |                   |
-| 16      | Se definen métricas, health checks y alertas.                | Sí / No / N.A. |               |                   |
-| 17      | La política de respaldo incluye frecuencia y retención.      | Sí / No / N.A. |               |                   |
-| 18      | La restauración ha sido probada cuando aplica.               | Sí / No / N.A. |               |                   |
-| 19      | Los accesos técnicos siguen mínimo privilegio.               | Sí / No / N.A. |               |                   |
-| 20      | Existe procedimiento de respuesta a incidentes.              | Sí / No / N.A. |               |                   |
-| 21      | Las tareas de mantenimiento tienen responsable y frecuencia. | Sí / No / N.A. |               |                   |
-| 22      | El catálogo de problemas frecuentes está diligenciado.       | Sí / No / N.A. |               |                   |
-| 23      | Los contactos y niveles de soporte están definidos.          | Sí / No / N.A. |               |                   |
-| 24      | El paquete técnico de entrega está completo.                 | Sí / No / N.A. |               |                   |
-| 25      | Una persona distinta al equipo pudo seguir el manual.        | Sí / No / N.A. |               |                   |
+| 1       | El manual corresponde a la versión entregada.                | Sí | Versión 1.8 para v1.0.0 |  |
+| 2       | Los requisitos de hardware y software están definidos.       | Sí | Requisitos de hardware y software |  |
+| 3       | Las versiones de dependencias son identificables.            | Sí | package.json y lockfiles |  |
+| 4       | La estructura del repositorio está explicada.                | Sí | Estructura del repositorio |  |
+| 5       | Existe archivo de configuración de ejemplo sin secretos.     | Sí | .env.example del backend y del agente |  |
+| 6       | Las variables de entorno están documentadas.                 | Sí | Matriz de variables (6.1) |  |
+| 7       | La instalación puede ejecutarse en un ambiente limpio.       | Sí | GitHub Actions instala desde cero en cada PR |  |
+| 8       | Las migraciones crean el esquema completo.                   | Sí | init.sql (7 tablas) |  |
+| 9       | Los datos semilla no contienen información personal real.    | Sí | Planes iniciales y crear-admin sin datos reales |  |
+| 10      | Los comandos de pruebas, lint y build están documentados.    | Sí | Sección de pruebas y README |  |
+| 11      | Los artefactos de entrega son reproducibles.                 | Sí | Build de Vercel y Railway desde main |  |
+| 12      | Los ambientes están claramente separados.                    | Sí | Local, pruebas (\_pruebas) y producción |  |
+| 13      | El procedimiento de despliegue es verificable.               | Sí | Pasos de despliegue y prueba de humo |  |
+| 14      | Existe estrategia de rollback cuando aplica.                 | Sí | Redeploy de la versión anterior en Railway y Vercel |  |
+| 15      | Los logs no exponen secretos ni datos sensibles.             | Sí | El logger no imprime contraseñas ni tokens |  |
+| 16      | Se definen métricas, health checks y alertas.                | Sí | /api/salud y Deploy Logs | Sin alertas automáticas (plan gratuito) |
+| 17      | La política de respaldo incluye frecuencia y retención.      | Sí | Semanal y antes de cada despliegue; últimos 4 |  |
+| 18      | La restauración ha sido probada cuando aplica.               | Sí | Prueba del 23/11/2026 (DAT-06) |  |
+| 19      | Los accesos técnicos siguen mínimo privilegio.               | Sí | zonafit\_app con SELECT, INSERT, UPDATE y DELETE (SEG-08) |  |
+| 20      | Existe procedimiento de respuesta a incidentes.              | Sí | Procedimiento de incidentes |  |
+| 21      | Las tareas de mantenimiento tienen responsable y frecuencia. | Sí | Tareas de mantenimiento con responsable |  |
+| 22      | El catálogo de problemas frecuentes está diligenciado.       | Sí | Problemas frecuentes |  |
+| 23      | Los contactos y niveles de soporte están definidos.          | Sí | Contactos y niveles de soporte |  |
+| 24      | El paquete técnico de entrega está completo.                 | Sí | Sección 21.1 |  |
+| 25      | Una persona distinta al equipo pudo seguir el manual.        | Parcial | GitHub Actions reproduce la instalación | Falta que una persona externa siga el manual |
 
 ### 22.1 Criterios de aprobación
 
