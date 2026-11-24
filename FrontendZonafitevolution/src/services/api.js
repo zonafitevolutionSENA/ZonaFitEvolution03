@@ -1,13 +1,42 @@
 const API_URL = import.meta.env.VITE_API_URL;
 export const EVENTO_SESION_EXPIRADA = "zonafit:sesion-expirada";
-let tokenSesion = null;
+const CLAVE_SESION = "zonafitSesion";
 
-export function establecerTokenSesion(token) {
-  tokenSesion = token || null;
+function leerSesionGuardada() {
+  try {
+    const sesion = JSON.parse(sessionStorage.getItem(CLAVE_SESION));
+    if (!sesion?.token || !sesion?.usuario) return null;
+    const { exp } = JSON.parse(atob(sesion.token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    if (!exp || exp * 1000 <= Date.now()) return null;
+    return sesion;
+  } catch {
+    return null;
+  }
+}
+
+function guardarSesion(sesion) {
+  try {
+    if (sesion) sessionStorage.setItem(CLAVE_SESION, JSON.stringify(sesion));
+    else sessionStorage.removeItem(CLAVE_SESION);
+  } catch {
+    // Navegación privada o almacenamiento bloqueado: la sesión queda solo en memoria
+  }
+}
+
+let sesionActual = leerSesionGuardada();
+if (!sesionActual) guardarSesion(null);
+
+export function obtenerUsuarioGuardado() {
+  return sesionActual?.usuario ?? null;
+}
+
+export function establecerSesion(token, usuario) {
+  sesionActual = token && usuario ? { token, usuario } : null;
+  guardarSesion(sesionActual);
 }
 
 export function limpiarTokenSesion() {
-  tokenSesion = null;
+  establecerSesion(null, null);
 }
 
 export async function peticion(ruta, opciones = {}) {
@@ -17,7 +46,7 @@ export async function peticion(ruta, opciones = {}) {
       ...opciones,
       headers: {
         "Content-Type": "application/json",
-        ...(tokenSesion && { Authorization: `Bearer ${tokenSesion}` }),
+        ...(sesionActual && { Authorization: `Bearer ${sesionActual.token}` }),
         ...opciones.headers,
       },
     });

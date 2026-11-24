@@ -7,17 +7,12 @@
 -- Codificación del cliente: sin esto, los nombres con tilde (Sesión) pueden guardarse mal según el programa que ejecute el script
 SET NAMES utf8mb4;
 
--- Corrección de roles: ahora son del personal, no de clientes
-DROP TABLE IF EXISTS membresias;
-DROP TABLE IF EXISTS usuarios;
-DROP TABLE IF EXISTS roles;
-
 CREATE TABLE IF NOT EXISTS roles (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
-INSERT INTO roles (nombre) VALUES ('admin'), ('empleado');
+INSERT IGNORE INTO roles (nombre) VALUES ('admin'), ('empleado');
 
 CREATE TABLE IF NOT EXISTS usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
