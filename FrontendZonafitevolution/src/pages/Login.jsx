@@ -2,7 +2,7 @@ import { useState } from "react";
 import { iniciarSesion } from "../services/authService";
 import "../Login.css";
 
-function Login({ onLoginExitoso, errorInicial = "" }) {
+function Login({ onLoginExitoso, errorInicial = "", avisoInicial = "", alOlvidarContrasena }) {
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(errorInicial);
@@ -84,10 +84,14 @@ function Login({ onLoginExitoso, errorInicial = "" }) {
           maxLength={128} // Límite estándar para evitar hashes muy largos o DoS
         />
 
+        {avisoInicial && !error && <p className="login-aviso">{avisoInicial}</p>}
         {error && <p className="mensaje-error">{error}</p>}
 
         <button className="login-submit" type="submit" disabled={cargando || bloqueado}>
           {cargando ? "Ingresando..." : "Iniciar sesión"}
+        </button>
+        <button className="login-enlace" type="button" onClick={alOlvidarContrasena}>
+          ¿Olvidaste tu contraseña?
         </button>
       </form>
     </main>

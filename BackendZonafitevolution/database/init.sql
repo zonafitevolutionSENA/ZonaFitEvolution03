@@ -21,7 +21,33 @@ CREATE TABLE IF NOT EXISTS usuarios (
   contrasena VARCHAR(255) NOT NULL,
   rol_id INT NOT NULL,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  -- Al restablecer la contraseña, los tokens emitidos antes de esta fecha dejan de servir
+  contrasena_cambiada_en DATETIME NULL,
   FOREIGN KEY (rol_id) REFERENCES roles(id)
+);
+
+-- Bases ya creadas: agrega la columna si todavía no existe
+SET @falta_cambio_contrasena := (
+  SELECT COUNT(*) = 0 FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'usuarios' AND COLUMN_NAME = 'contrasena_cambiada_en'
+);
+SET @sql_cambio_contrasena := IF(@falta_cambio_contrasena, 'ALTER TABLE usuarios ADD COLUMN contrasena_cambiada_en DATETIME NULL', 'DO 0');
+PREPARE agregar_cambio_contrasena FROM @sql_cambio_contrasena;
+EXECUTE agregar_cambio_contrasena;
+DEALLOCATE PREPARE agregar_cambio_contrasena;
+
+-- Códigos de verificación para restablecer la contraseña (olvidé mi contraseña).
+-- El código se guarda cifrado, vence a los 10 minutos, es de un solo uso y admite 5 intentos.
+CREATE TABLE IF NOT EXISTS recuperaciones_contrasena (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  codigo_hash VARCHAR(255) NOT NULL,
+  intentos INT NOT NULL DEFAULT 0,
+  expira_en DATETIME NOT NULL,
+  usado_en DATETIME NULL,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  INDEX idx_recuperacion_usuario (usuario_id, usado_en)
 );
 
 CREATE TABLE IF NOT EXISTS clientes (

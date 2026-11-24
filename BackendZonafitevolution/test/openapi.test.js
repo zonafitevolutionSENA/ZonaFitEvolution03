@@ -58,7 +58,10 @@ describe('contrato OpenAPI', () => {
   });
 
   test('las rutas protegidas declaran 401 y las públicas no piden token', () => {
-    const publicas = new Set(['GET /salud', 'POST /auth/login', 'POST /acceso-fisico/pantalla/validar']);
+    const publicas = new Set([
+      'GET /salud', 'POST /auth/login', 'POST /acceso-fisico/pantalla/validar',
+      'POST /auth/recuperar', 'POST /auth/recuperar/verificar', 'POST /auth/recuperar/restablecer'
+    ]);
     for (const [ruta, operaciones] of Object.entries(contrato.paths)) {
       for (const metodo of METODOS) {
         const op = operaciones[metodo];
