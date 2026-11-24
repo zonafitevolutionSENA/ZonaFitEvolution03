@@ -66,12 +66,30 @@ export function validarTelefono(valor) {
   return "";
 }
 
+// Consentimientos (Ley 1581): al registrar, los términos son obligatorios. Los avisos por correo son
+// opcionales, pero solo se pueden activar si el cliente aceptó (o acepta ahora) los términos.
+// `terminosPrevios` indica que el cliente ya los había aceptado antes (al editar).
+export function validarTerminos(acepta, { obligatorio = true, terminosPrevios = false } = {}) {
+  if (terminosPrevios || acepta === true) return "";
+  return obligatorio ? "Debes aceptar los términos y el tratamiento de datos para registrar al cliente." : "";
+}
+
+export function validarAvisos(aceptaAvisos, aceptaTerminos, { terminosPrevios = false } = {}) {
+  if (aceptaAvisos === true && !terminosPrevios && aceptaTerminos !== true) {
+    return "Para recibir avisos por correo primero hay que aceptar los términos.";
+  }
+  return "";
+}
+
 // Valida todos los campos. `cedulasExistentes` evita registrar dos veces la misma cédula antes de llamar al servidor.
-export function validarCliente(valores, { validarCedulaCampo = true, cedulasExistentes = [] } = {}) {
+export function validarCliente(valores, { validarCedulaCampo = true, cedulasExistentes = [], terminosPrevios = false } = {}) {
   const errores = {
     nombre: validarNombre(valores.nombre),
     correo: validarCorreo(valores.correo),
     telefono: validarTelefono(valores.telefono),
+    // Al registrar (validarCedulaCampo) los términos son obligatorios; al editar, opcionales
+    aceptaTerminos: validarTerminos(valores.aceptaTerminos, { obligatorio: validarCedulaCampo, terminosPrevios }),
+    aceptaAvisos: validarAvisos(valores.aceptaAvisos, valores.aceptaTerminos, { terminosPrevios }),
   };
 
   if (validarCedulaCampo) {
@@ -98,5 +116,8 @@ export function prepararCliente(valores) {
     // El correo ya no es opcional, así que se envía tal cual (nunca se convierte en null).
     correo,
     telefono: telefono || null,
+    // Booleanos explícitos: el backend rechaza "true" o 1
+    acepta_terminos: valores.aceptaTerminos === true,
+    acepta_avisos: valores.aceptaAvisos === true,
   };
 }

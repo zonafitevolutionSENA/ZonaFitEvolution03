@@ -58,6 +58,7 @@ Otros:
 | CR-007 | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608. |
 | CR-008 | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso. Implementado en el backend (23/11/2026). |
 | CR-009 | RNF-007 se verifica solo en Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance (23/11/2026). |
+| CR-010 | Aviso por correo 7 días antes del vencimiento (planes de 15 días o más, un solo aviso) y consentimientos del cliente al registrarse: términos y tratamiento de datos (obligatorio) y avisos por correo (opcional). Implementado el 24/11/2026. |
 
 ## Pendientes del equipo
 

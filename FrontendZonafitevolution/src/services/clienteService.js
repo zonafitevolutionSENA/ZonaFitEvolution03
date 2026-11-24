@@ -32,12 +32,12 @@ export async function crearCliente(datos) {
   return exigirCliente(cliente);
 }
 
-// PUT /api/clientes/:id  { nombre, correo, telefono } (la cédula no se modifica)
+// PUT /api/clientes/:id  { nombre, correo, telefono, acepta_terminos, acepta_avisos } (la cédula no se modifica)
 // Los clientes no se eliminan: se gestiona el estado de su membresía (membresiaService)
-export async function actualizarCliente(id, { nombre, correo, telefono }) {
+export async function actualizarCliente(id, { nombre, correo, telefono, acepta_terminos, acepta_avisos }) {
   const cliente = await peticion(`/clientes/${exigirId(id)}`, {
     method: "PUT",
-    body: JSON.stringify({ nombre, correo, telefono }),
+    body: JSON.stringify({ nombre, correo, telefono, acepta_terminos, acepta_avisos }),
   });
   return exigirCliente(cliente);
 }
