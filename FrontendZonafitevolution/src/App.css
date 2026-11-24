@@ -180,6 +180,48 @@
   font-weight: 700;
 }
 
+.app-header-derecha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Botón de regreso (flecha) en la esquina superior derecha */
+.app-back-button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 184, 46, 0.45);
+  background: rgba(245, 184, 46, 0.08);
+  color: var(--amarillo);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.app-back-button:hover:not(:disabled) {
+  background: rgba(245, 184, 46, 0.18);
+  border-color: var(--amarillo);
+  transform: translateX(-2px);
+}
+
+.app-back-button:focus-visible {
+  outline: 3px solid rgba(245, 184, 46, 0.55);
+  outline-offset: 2px;
+}
+
+.app-back-button:disabled {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #6b7079;
+  cursor: not-allowed;
+}
+
 .app-user-line {
   color: #f5f5f5;
   font-size: 1.1rem;
@@ -377,6 +419,16 @@
   .app-notif-button {
     padding: 9px 11px;
     font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .app-header-derecha {
+    gap: 10px;
+  }
+
+  .app-back-button {
+    width: 42px;
+    height: 42px;
   }
 
   .app-notif-panel {

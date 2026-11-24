@@ -28,12 +28,17 @@ const ACCIONES_RAPIDAS = {
   "registrar-huella": "clientes",
 };
 
+// Pantallas recordadas para el botón de regreso (las más antiguas se descartan)
+const MAXIMO_HISTORIAL = 20;
+
 function App() {
   const [usuario, setUsuario] = useState(obtenerUsuarioGuardado);
   const [mensajeSesion, setMensajeSesion] = useState("");
   const [recuperandoContrasena, setRecuperandoContrasena] = useState(false);
   const [avisoLogin, setAvisoLogin] = useState("");
   const [vista, setVista] = useState("inicio");
+  // Pantallas visitadas antes de la actual, para el botón de regreso del encabezado
+  const [historial, setHistorial] = useState([]);
   const [accionInicial, setAccionInicial] = useState(null);
   const [porVencer, setPorVencer] = useState(null);
   const [errorNotificaciones, setErrorNotificaciones] = useState("");
@@ -45,6 +50,7 @@ function App() {
       limpiarSesion();
       setUsuario(null);
       setVista("inicio");
+      setHistorial([]);
       setAccionInicial(null);
       setPorVencer(null);
       setMensajeSesion(mostrarAviso ? "Tu sesión expiró. Inicia sesión nuevamente." : "");
@@ -80,10 +86,19 @@ function App() {
     limpiarSesion();
     setUsuario(null);
     setVista("inicio");
+    setHistorial([]);
     setAccionInicial(null);
     setPorVencer(null);
     setMensajeSesion("");
   }, []);
+
+  // Abre otra sección y recuerda la actual para poder regresar (no se repite si ya está abierta)
+  function cambiarVista(destino) {
+    if (destino !== vista) {
+      setHistorial((anteriores) => [...anteriores, vista].slice(-MAXIMO_HISTORIAL));
+    }
+    setVista(destino);
+  }
 
   // Una vista solo se abre si existe y el rol puede verla (ej. "Personal" es solo del administrador)
   function navegar(destino) {
@@ -91,13 +106,22 @@ function App() {
       const destinoSeccion = ACCIONES_RAPIDAS[destino];
       if (!seccionPermitida(usuario.rol_id, destinoSeccion)) return;
       setAccionInicial(destino);
-      setVista(destinoSeccion);
+      cambiarVista(destinoSeccion);
       return;
     }
     if (!SECCIONES.some((s) => s.id === destino)) return;
     if (!seccionPermitida(usuario.rol_id, destino)) return;
     setAccionInicial(null);
-    setVista(destino);
+    cambiarVista(destino);
+  }
+
+  // Vuelve a la pantalla anterior. La sección se abre en su vista normal (sin reabrir formularios)
+  function regresar() {
+    if (historial.length === 0) return;
+    const anterior = historial[historial.length - 1];
+    setHistorial(historial.slice(0, -1));
+    setAccionInicial(null);
+    setVista(seccionPermitida(usuario.rol_id, anterior) ? anterior : "inicio");
   }
 
   if (!usuario && recuperandoContrasena) {
@@ -167,6 +191,8 @@ function App() {
           porVencer={porVencer}
           errorNotificaciones={errorNotificaciones}
           alReintentar={() => setRecargaNotificaciones((r) => r + 1)}
+          puedeRegresar={historial.length > 0}
+          alRegresar={regresar}
         />
         <main className={`app-main-content${vista === "inicio" ? " app-main-content-inicio" : ""}`}>
           {pantalla()}
