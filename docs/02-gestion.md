@@ -29,6 +29,7 @@
 | 1.4 | 22/11/2026 | Semáforo de calidad en verde: pruebas automáticas e integración continua | Juan Diego Mejía Llano |  |
 | 1.5 | 23/11/2026 | Cambios CHG-07 (un ingreso por día en todos los planes) y CHG-08 (RNF-007 en Chrome) | Juan Diego Mejía Llano |  |
 | 1.6 | 23/11/2026 | Entregables finales entregados (v1.0.0) y lista de verificación diligenciada | Juan Diego Mejía Llano |  |
+| 1.7 | 24/11/2026 | Cambios CHG-09 (aviso de vencimiento y consentimientos, CR-010) y CHG-10 (recuperación de contraseña y envío por Brevo, CR-011); plan Hobby de Railway | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -644,6 +645,8 @@ También deben registrarse eventos inciertos positivos que puedan mejorar costo,
 | CHG-06 | El backend se publicó en un hosting distinto de Render: API y MySQL en Railway; el frontend, en Vercel (11/11/2026).                                                            | TT-009, INT-02, RSD-07                 | MVP                  | Juan Diego Mejía Llano | Aprobado e implementado | CR-006        |
 | CHG-07 | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso (sin registrar otro ni descontar). | RF-002, RF-003, RN-015 | MVP | Juan Diego Mejía Llano | Aprobado e implementado | CR-008 |
 | CHG-08 | RNF-007 se limita a Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance de la verificación. | RNF-007, UX-02 | MVP | Juan Diego Mejía Llano | Aprobado | CR-009 |
+| CHG-09 | Aviso por correo 7 días antes del vencimiento (un solo aviso, planes de 15 días o más) y consentimientos del cliente al registrarse. | RF-010, RF-011, HU-015, HU-016 | MVP | Juan Diego Mejía Llano | Aprobado e implementado (24/11/2026) | CR-010 |
+| CHG-10 | Recuperación de contraseña del personal con código al correo y cierre de sesiones; envío de correos por Brevo porque Railway bloquea el SMTP. | RF-009, HU-014 | MVP | Liliana Sofía Panesso Méndez | Aprobado e implementado (24/11/2026) | CR-011 |
 
 ## 12\. Seguimiento de entregables y calidad
 

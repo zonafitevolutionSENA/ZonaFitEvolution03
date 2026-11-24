@@ -15,6 +15,7 @@
 | 1.5 | 22/11/2026 | PRU-02 y MSG-04 ajustados a la regla actual: con una membresía activa la nueva queda pendiente; solo se permite una pendiente | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.6 | 23/11/2026 | Un solo ingreso por día en cualquier plan: mensaje MSG-15 y lecturas repetidas dentro de 30 minutos | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.7 | 23/11/2026 | Versión v1.0.0 y lista de verificación diligenciada | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.8 | 24/11/2026 | Restablecimiento de la contraseña con un código al correo, sesión que termina al cerrar la pestaña, casillas de términos y avisos al registrar clientes, aviso de vencimiento por correo, botón de regreso y mensajes MSG-16 a MSG-21 | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -134,7 +135,7 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 
 ### 5.1 Inicio de sesión
 
-1.  Abra https://zona-fit-evolution03.vercel.app en Chrome o Edge.
+1.  Abra https://zona-fit-evolution03.vercel.app en Chrome.
 
 2.  Escriba su correo en «Correo».
 
@@ -149,25 +150,26 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 | Usuario / correo | Correo del usuario del personal.                             | Formato de correo válido.                 |
 | Contraseña       | Contraseña asignada.                                         | Obligatoria.                              |
 | Iniciar sesión   | Envía las credenciales.                                      | Se bloquea mientras se valida.            |
-| Recordar sesión  | La sesión se conserva al recargar la página (hasta 8 horas). | No hay casilla; cerrar sesión la termina. |
+| ¿Olvidaste tu contraseña? | Abre la recuperación con un código al correo (5.2). | — |
+| Recordar sesión  | La sesión se conserva al recargar mientras la pestaña siga abierta; al cerrar la pestaña o el navegador hay que volver a iniciar sesión (máximo 8 horas). | No hay casilla; cerrar sesión la termina. |
 
 ### 5.2 Recuperación de acceso
 
-6.  Pida al Administrador que restablezca su acceso: el sistema no tiene recuperación de contraseña por correo.
+6.  En la pantalla de inicio de sesión pulse «¿Olvidaste tu contraseña?», escriba el correo de su cuenta y pulse «Enviar código». El sistema muestra «Si el correo está registrado, te enviamos un código de verificación. Revisa tu bandeja de entrada y la carpeta de spam.»
 
-7.  El Administrador abre «Personal», elimina el usuario y lo crea de nuevo con el mismo correo y una contraseña temporal.
+7.  Abra el correo «Zona Fit Evolution» y copie el código de 6 dígitos. Vence en 10 minutos y sirve una sola vez.
 
-8.  El Administrador le entrega la contraseña temporal por un medio privado.
+8.  En «Verifica tu identidad» escriba el código en «Código de 6 dígitos» y pulse «Verificar código». Si no le llegó, pulse «Reenviar código» cuando termine la cuenta regresiva. Con 5 códigos incorrectos debe pedir uno nuevo.
 
-9.  Inicie sesión con esa contraseña.
+9.  En «Nueva contraseña» escriba una contraseña de 8 caracteres o más, con letras y números y sin espacios, distinta de la anterior; repítala en «Confirmar contraseña» y pulse «Guardar contraseña».
 
-10. Si un Administrador olvida su contraseña, otro Administrador hace el mismo proceso.
+10. El sistema muestra «Contraseña actualizada. Ya puedes iniciar sesión con la nueva contraseña.», cierra las sesiones que tuviera abiertas en otros equipos y le envía un correo avisando del cambio. Inicie sesión con la nueva contraseña.
 
-11. Si no queda ningún Administrador con acceso, el responsable técnico crea uno con npm run crear-admin (Manual técnico).
+11. Si no tiene acceso a su correo, pida al Administrador que lo elimine y lo cree de nuevo desde «Personal». Si no queda ningún Administrador con acceso, el responsable técnico crea uno con npm run crear-admin (Manual técnico).
 
 |                                                                |
 | -------------------------------------------------------------- |
-| *No hay opción «¿Olvidó su contraseña?»: el restablecimiento lo hace un Administrador desde «Personal».* |
+| *Ningún Administrador puede cambiar la contraseña de otra persona: solo la persona dueña del correo, con el código. Si recibe el aviso de cambio sin haberlo pedido, avise de inmediato al Administrador.* |
 
 ### 5.3 Cierre de sesión
 
@@ -184,7 +186,8 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 | **Situación**            | **Mensaje esperado**                                                 | **Acción del usuario**         |
 | ------------------------ | -------------------------------------------------------------------- | ------------------------------ |
 | Sesión expirada          | Tu sesión expiró. Inicia sesión nuevamente.                          | Volver a iniciar sesión.       |
-| Cuenta bloqueada         |                                                                      |                                |
+| Demasiados intentos      | Demasiados intentos de inicio de sesión. Inténtalo de nuevo más tarde. | Esperar 15 minutos o recuperar la contraseña. |
+| Contraseña cambiada      | Tu sesión expiró. Inicia sesión nuevamente.                          | Su contraseña se restableció o su usuario fue eliminado: inicie sesión con la contraseña nueva. |
 | Credenciales incorrectas | Credenciales incorrectas o error en el servidor. Inténtalo de nuevo. | Revisar correo y contraseña.   |
 | Sin permisos             | No tienes permisos para realizar esta acción                         | Ingresar con un Administrador. |
 
@@ -193,7 +196,8 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 | **Elemento**      | **Función**                            | **Ubicación**                                      | **Observaciones** |
 | ----------------- | -------------------------------------- | -------------------------------------------------- | ----------------- |
 | Menú principal    | Opciones según el rol                  | Barra lateral izquierda (botón de menú en celular) |                   |
-| Barra superior    | Usuario autenticado y cierre de sesión | Parte superior                                     |                   |
+| Barra superior    | Usuario autenticado, notificaciones y cierre de sesión | Parte superior                     |                   |
+| Botón de regreso (flecha) | Vuelve a la pantalla anterior: cierra el formulario o la ventana abierta, o regresa a la sección anterior | Esquina superior derecha | Se desactiva cuando no hay a dónde regresar |
 | Breadcrumb / ruta | No aplica                              | —                                                  |                   |
 | Botón principal   | Acción principal de cada formulario    | Debajo del formulario                              |                   |
 | Filtros           | Historial y registro financiero        | Encima de la lista                                 |                   |
@@ -223,9 +227,9 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 | Objetivo                | Inscribir un nuevo socio.                                    |
 | Precondiciones          | Sesión iniciada; la cédula no está registrada.               |
 | Ruta de acceso          | Menú lateral → Clientes → Registrar cliente                  |
-| Datos requeridos        | Nombre, cédula y correo (obligatorios); teléfono (opcional). |
+| Datos requeridos        | Nombre, cédula y correo (obligatorios); teléfono (opcional); casilla de términos y tratamiento de datos (obligatoria) y de avisos por correo (opcional). |
 | Resultado esperado      | Mensaje «Cliente "\<nombre\>" registrado correctamente.»     |
-| Requisitos relacionados | RF-001, HU-001                                               |
+| Requisitos relacionados | RF-001, RF-011, HU-001, HU-016                               |
 
 ### 7.2 Pasos del procedimiento
 
@@ -234,6 +238,7 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 | 1        | Abrir Clientes en el menú.                  | Muestra la lista de clientes.                     |                         |
 | 2        | Pulsar Registrar cliente.                   | Muestra el formulario.                            |                         |
 | 3        | Escribir nombre, cédula, correo y teléfono. | Marca los errores junto a cada campo.             |                         |
+| 3a       | Leer al cliente «Ver términos y tratamiento de datos» y marcar «El cliente acepta los términos y el tratamiento de sus datos personales *». Marcar «Acepta recibir por correo el aviso de vencimiento de su membresía (opcional)» solo si el cliente lo autoriza. | Sin la primera casilla muestra «Debes aceptar los términos y el tratamiento de datos para registrar al cliente.» |                         |
 | 4        | Pulsar Guardar.                             | Valida en el servidor y guarda.                   |                         |
 | 5        | Revisar el mensaje.                         | Muestra la confirmación y el cliente en la lista. |                         |
 
@@ -243,6 +248,8 @@ Esta sección debe repetirse para cada módulo y operación importante. Los nomb
 | ------------------ | ------------------------------------------------- | ------------------------------ |
 | Datos inválidos    | El campo muestra su error y no se envía.          | Corregir el campo.             |
 | Registro duplicado | «Ya existe un cliente registrado con esa cédula». | Buscar al cliente existente.   |
+| Cliente registrado antes de las casillas | Al editarlo aparecen las casillas sin marcar; no recibe avisos hasta que los autorice. | Pedirle la autorización y marcarla al editar. |
+| El cliente ya no quiere avisos | — | Editar el cliente y desmarcar la casilla de avisos. |
 | Sin resultados     | «Aún no hay clientes registrados.»                | Registrar el primer cliente.   |
 | Sin permisos       | «No tienes permisos para realizar esta acción»    | Ingresar con un Administrador. |
 | Error de conexión  | «No se pudo conectar con el servidor»             | Avisar a soporte y reintentar. |
@@ -437,7 +444,8 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 | **Tipo**           | **Cuándo aparece**                                     | **Acción del usuario**       |
 | ------------------ | ------------------------------------------------------ | ---------------------------- |
 | Interna            | Membresías por vencer en los próximos 7 días (Inicio). | Renovar la membresía.        |
-| Correo             | No aplica en esta versión.                             | —                            |
+| Correo al cliente  | Un solo aviso 7 días antes de que venza su membresía, en planes de 15 días o más, si autorizó los avisos y no ha renovado. Sale a las 8:00. | Renovar; si el cliente no quiere más avisos, desmarcar la casilla al editarlo. |
+| Correo al personal | Código de recuperación y aviso de cambio de contraseña. | Usar el código en los 10 minutos siguientes; si no pidió el cambio, avisar al Administrador. |
 | Alerta del sistema | Mensajes de éxito o error en cada pantalla.            | Leer y seguir la indicación. |
 | Recordatorio       | No aplica.                                             | —                            |
 
@@ -457,7 +465,7 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 | **Código** | **Mensaje o situación**                                               | **Significado**                                                         | **Acción recomendada**                                                                 | **Escalar**                            |
 | ---------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | -------------------------------------- |
 | MSG-01     | No se pudo conectar con el servidor                                   | La aplicación no llega a la API.                                        | Revisar internet y reintentar.                                                         | Si persiste                            |
-| MSG-02     | Tu sesión expiró. Inicia sesión nuevamente.                           | Pasaron más de 8 horas.                                                 | Iniciar sesión.                                                                        | No                                     |
+| MSG-02     | Tu sesión expiró. Inicia sesión nuevamente.                           | Pasaron más de 8 horas, se restableció la contraseña o se eliminó el usuario. | Iniciar sesión.                                                                        | No                                     |
 | MSG-03     | No tienes permisos para realizar esta acción                          | El rol no permite la acción.                                            | Ingresar con un Administrador.                                                         | No                                     |
 | MSG-04     | Este cliente ya tiene una membresía pendiente que inicia el <fecha>. | Solo se permite una membresía pendiente por cliente.                                          | Esperar a que se active o cancelar la pendiente.                                                               | No                                     |
 | MSG-05     | La fecha de inicio no puede ser anterior a hoy.                       | Fecha inválida.                                                         | Corregir la fecha.                                                                     | No                                     |
@@ -471,6 +479,12 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 | MSG-13 | Acércate a recepción para registrar tu huella | La huella leída no está registrada (se muestra 4 segundos). | Registrar la huella del socio desde Clientes. | No |
 | MSG-14 | Conectando con el lector… | El agente o el servidor aún no responden; la pantalla reintenta sola cada 5 segundos. | Esperar; si no cambia, revisar internet y el cable del lector. | Si persiste |
 | MSG-15 | Ya ingresó hoy a las <hora>: solo se permite un ingreso por día | El socio ya entró hoy hace más de 30 minutos. Si vuelve a poner el dedo antes de 30 minutos, se muestra «Ingreso ya registrado hoy a las <hora>» y se permite. | Explicar la regla al socio. | No |
+| MSG-16 | Si el correo está registrado, te enviamos un código de verificación. Revisa tu bandeja de entrada y la carpeta de spam. | Se pidió el código de recuperación (el mensaje es igual exista o no el correo). | Revisar el correo y la carpeta de spam. | No |
+| MSG-17 | Código incorrecto. Te quedan N intentos. | El código no coincide. | Revisar el código; con 5 fallos pedir uno nuevo. | No |
+| MSG-18 | El código no es válido o ya venció. Solicita uno nuevo. | Pasaron más de 10 minutos, ya se usó o se agotaron los intentos. | Pulsar «Reenviar código» o empezar de nuevo. | No |
+| MSG-19 | La nueva contraseña debe ser distinta de la anterior | Se escribió la misma contraseña. | Escribir otra. | No |
+| MSG-20 | Contraseña actualizada. Ya puedes iniciar sesión con la nueva contraseña. | El cambio se guardó y se cerraron las sesiones abiertas. | Iniciar sesión. | No |
+| MSG-21 | Debes aceptar los términos y el tratamiento de datos para registrar al cliente. | Falta la casilla obligatoria al registrar. | Leer los términos al cliente y marcar la casilla. | No |
 
 ### 11.1 Cómo reportar un error
 
@@ -508,11 +522,11 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 
 | **Práctica**  | **Recomendación**                                   |
 | ------------- | --------------------------------------------------- |
-| Longitud      | Use la longitud mínima definida por la organización |
+| Longitud      | Mínimo 8 caracteres, con letras y números y sin espacios (lo exige el sistema) |
 | Reutilización | No reutilice contraseñas de otros servicios         |
 | Contenido     | Evite datos personales o palabras predecibles       |
 | Gestión       | Use un gestor de contraseñas cuando esté autorizado |
-| Cambio        | Cambie la contraseña si sospecha compromiso         |
+| Cambio        | Si sospecha que alguien la conoce, restablézcala con «¿Olvidaste tu contraseña?»: se cierran todas las sesiones abiertas |
 
 ## 13\. Accesibilidad y ayuda de uso
 
@@ -540,7 +554,9 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 
 | **Pregunta**                         | **Respuesta**                                                                         |
 | ------------------------------------ | ------------------------------------------------------------------------------------- |
-| ¿Qué hago si olvidé mi contraseña?   | Pedir al Administrador que cree un usuario nuevo (no hay recuperación de contraseña). |
+| ¿Qué hago si olvidé mi contraseña?   | Pulsar «¿Olvidaste tu contraseña?» en el inicio de sesión y seguir los pasos de 5.2 (código de 6 dígitos al correo). |
+| ¿Por qué tengo que iniciar sesión otra vez? | La sesión termina al cerrar la pestaña, a las 8 horas o cuando se restablece la contraseña. |
+| ¿Cómo dejo de enviarle avisos a un cliente? | Editar el cliente y desmarcar «Acepta recibir por correo el aviso de vencimiento». |
 | ¿Por qué no veo una opción?          | Tu rol no tiene permiso; las opciones de Administrador no aparecen para el Empleado.  |
 | ¿Cómo corrijo información guardada?  | Abrir el cliente y editar sus datos (la cédula no se edita).                          |
 | ¿Cómo descargo un reporte?           | No hay descarga de reportes en esta versión.                                          |
@@ -569,7 +585,8 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 
 | **Versión** | **Fecha** | **Cambios visibles para el usuario** | **Impacto** | **Acción requerida** |
 | ----------- | --------- | ------------------------------------ | ----------- | -------------------- |
-| 1.0         |           |                                      |             |                      |
+| 1.0 (v1.0.0) | 23/11/2026 | Versión de la entrega | — | — |
+| 1.1 | 24/11/2026 | «¿Olvidaste tu contraseña?», casillas de términos y avisos en Clientes, aviso de vencimiento por correo, botón de regreso y sesión que termina al cerrar la pestaña | Bajo | Pedir la autorización de avisos a los clientes ya registrados |
 |             |           |                                      |             |                      |
 |             |           |                                      |             |                      |
 
@@ -586,16 +603,16 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 
 | **N.°** | **Verificación**                                                  | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | ----------------------------------------------------------------- | -------------- | ------------- | ----------------- |
-| 1       | El manual corresponde a la versión actual del producto.           | Sí | Versión 1.7 para v1.0.0 |  |
+| 1       | El manual corresponde a la versión actual del producto.           | Sí | Versión 1.8 |  |
 | 2       | La portada identifica proyecto y versión.                         | Sí | Portada |  |
 | 3       | La audiencia y los roles están definidos.                         | Sí | Audiencia y roles |  |
 | 4       | Los requisitos de acceso están explicados.                        | Sí | Requisitos de acceso |  |
-| 5       | El inicio, recuperación y cierre de sesión están documentados.    | Sí | Inicio, restablecimiento por el Administrador y cierre de sesión |  |
+| 5       | El inicio, recuperación y cierre de sesión están documentados.    | Sí | Inicio, recuperación con código al correo y cierre de sesión |  |
 | 6       | La navegación general está descrita.                              | Sí | Navegación general |  |
 | 7       | Los nombres de botones y campos coinciden con la interfaz.        | Sí | Procedimientos con la interfaz real |  |
 | 8       | Cada flujo crítico tiene un procedimiento paso a paso.            | Sí | PRU-01 a PRU-09 |  |
 | 9       | Los procedimientos indican rol y precondiciones.                  | Sí | Rol autorizado en cada procedimiento |  |
-| 10      | Se documentan estados de éxito, error, vacío y permisos.          | Sí | Catálogo de mensajes MSG-01 a MSG-15 |  |
+| 10      | Se documentan estados de éxito, error, vacío y permisos.          | Sí | Catálogo de mensajes MSG-01 a MSG-21 |  |
 | 11      | Las validaciones de formularios están explicadas.                 | Sí | Validaciones de formularios |  |
 | 12      | Búsquedas, filtros y reportes están documentados.                 | Sí | Historial y registro financiero |  |
 | 13      | Las capturas corresponden a la versión final.                     | Sí | Capturas de la aplicación |  |

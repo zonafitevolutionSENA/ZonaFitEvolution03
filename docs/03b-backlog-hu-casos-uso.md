@@ -31,6 +31,7 @@
 | 1.5 | 23/11/2026 | CR-008 implementado en todos los planes y CR-009 (RNF-007 en Chrome) | Juan Diego Mejía Llano |  |
 | 1.6 | 23/11/2026 | Lista de verificación final diligenciada | Juan Diego Mejía Llano |  |
 | 1.7 | 23/11/2026 | 50 pruebas unitarias | Juan Diego Mejía Llano |  |
+| 1.8 | 24/11/2026 | Historias HU-014 (restablecer contraseña), HU-015 (aviso de vencimiento) y HU-016 (consentimientos), casos de uso CU-008 y CU-009 con sus diagramas, funcionalidades FEAT-013 y FEAT-014, cambios CR-010 y CR-011 y 93 pruebas | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -163,6 +164,8 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | FEAT-010 | Comprobante digital de pago                    | EP-004    | Soporte de pago para el cliente.                       | RF-006                             | Baja          | MVP / V1.1  |
 | FEAT-011 | Seguridad, disponibilidad y calidad del código | EP-005    | Protección de datos y operación continua.              | RNF-001, RNF-004, RNF-005, RNF-006 | Alta          | MVP         |
 | FEAT-012 | Interfaz usable y responsive                   | EP-005    | Atención ágil en la recepción.                         | RNF-002, RNF-007                   | Media         | MVP         |
+| FEAT-013 | Recuperación de contraseña                     | EP-001    | El personal recupera su acceso sin depender de otra persona. | RF-009                       | Alta          | MVP         |
+| FEAT-014 | Avisos de vencimiento y consentimientos        | EP-002    | Recordar la renovación a quien lo autorizó.            | RF-010, RF-011                     | Media         | MVP         |
 
 ### 4.3 Criterios para dividir el producto
 
@@ -196,7 +199,7 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | 3         | HU-010 | Historia | Protección de datos                                                   | EP-005             | Alto      | Must          | 8 pts          | HU-002                 | En progreso                                       | MVP         |
 | 4         | HU-011 | Historia | Disponibilidad en horario                                             | EP-005             | Alto      | Must          | 8 pts          | TT-009                 | Terminada                                       | MVP         |
 | 5         | TT-005 | Técnica  | Crear la tabla de pagos con monto y método                            | EP-004             | Alto      | Must          | 5 pts          | HU-008                 | Planificada                                       | MVP         |
-| 6         | TT-007 | Técnica  | Pruebas automatizadas de backend y frontend                           | EP-005             | Alto      | Must          | 8 pts          | —                      | En progreso (backend listo: 39 pruebas; faltan las del frontend)                                       | MVP         |
+| 6         | TT-007 | Técnica  | Pruebas automatizadas de backend y frontend                           | EP-005             | Alto      | Must          | 8 pts          | —                      | En progreso (backend listo: 93 pruebas; faltan las del frontend)                                       | MVP         |
 | 7         | TT-009 | Técnica  | Despliegue: frontend en Vercel, API y MySQL en Railway | EP-005             | Alto      | Must          | 5 pts          | —                      | Planificada                                       | MVP         |
 | 8         | TT-010 | Técnica  | Adaptador del sensor AS608 (CP2102) en la capa hardware               | EP-003             | Alto      | Must          | 8 pts          | INT-01                 | Terminada                                         | MVP         |
 | 9         | TT-004 | Técnica  | Restringir CORS al dominio del frontend                               | EP-005             | Medio     | Should        | 1 pts          | TT-009                 | Terminada                                       | MVP         |
@@ -214,6 +217,9 @@ El documento organiza el trabajo funcional del producto, preserva la relación c
 | 21        | TT-001 | Técnica  | Validar en el backend la regla del último administrador               | EP-005             | Alto      | Must          | 2 pts          | HU-002                 | Terminada | MVP         |
 | 22        | TT-002 | Técnica  | Quitar la ruta de borrado de clientes                                 | EP-001             | Alto      | Must          | 1 pts          | HU-001                 | Terminada | MVP         |
 | 23        | TT-003 | Técnica  | Límite de intentos de inicio de sesión                                | EP-005             | Alto      | Must          | 3 pts          | HU-002                 | Terminada (PR \#41)                               | MVP         |
+| 24        | HU-014 | Historia | Restablecer la contraseña con un código al correo                     | EP-001             | Alto      | Should        | 5 pts          | HU-002, INT-03         | Terminada (CR-011)                                | MVP         |
+| 25        | HU-016 | Historia | Registrar los consentimientos del cliente                             | EP-001             | Alto      | Must          | 2 pts          | HU-001                 | Terminada (CR-010)                                | MVP         |
+| 26        | HU-015 | Historia | Aviso de vencimiento por correo                                       | EP-002             | Medio     | Should        | 3 pts          | HU-016, INT-03         | Terminada (CR-010)                                | MVP         |
 
 ### 5.2 Estados recomendados
 
@@ -266,7 +272,7 @@ Se mantienen en [`analisis/historias-de-usuario.md`](analisis/historias-de-usuar
 | ------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------- |
 | 1       | Código implementado y revisado.                    | Sí / No        | Pull Request revisado por otro integrante.                                   |
 | 2       | Criterios de aceptación cumplidos.                 | Sí / No        | Demostración en la sprint review.                                            |
-| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 50 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
+| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 93 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
 | 4       | Lint, compilación y pipeline sin errores críticos. | Sí / No        | npm run lint y npm run build sin errores; pipeline de GitHub Actions en cada pull request (TT-008). |
 | 5       | Seguridad y permisos revisados.                    | Sí / No / N.A. | Rutas protegidas con permitirRoles en el backend.                            |
 | 6       | Migraciones o cambios de datos incluidos.          | Sí / No / N.A. | Cambios en database/init.sql documentados en el README.                      |
@@ -354,6 +360,8 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | CR-007        | Equipo de desarrollo | Eliminar la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                | RF-004, INT-01, CU-004                         | Alcance          | Aprobado                         | Juan Diego Mejía Llano | 10/11/2026 |
 | CR-008        | STK-01 Propietario   | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso (sin registrar otro ni descontar).                                          | RF-002, RF-003, CU-004                         | Alcance          | Aprobado e implementado (23/11/2026): el backend lo aplica en todos los planes     | Juan Diego Mejía Llano | 10/11/2026 |
 | CR-009 | STK-01 Propietario | RNF-007 se limita a Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance de la verificación. | RNF-007, HU-012 | Alcance | Aprobado | Juan Diego Mejía Llano | 23/11/2026 |
+| CR-010 | STK-01 Propietario | Aviso por correo 7 días antes del vencimiento (un solo aviso, planes de 15 días o más) y consentimientos del cliente al registrarse. | HU-015, HU-016, CU-002, CU-009, RF-010, RF-011 | Alcance | Aprobado | Juan Diego Mejía Llano | 24/11/2026 |
+| CR-011 | Equipo de desarrollo | Recuperación de contraseña por código al correo con cierre de sesiones; envío por Brevo (Railway bloquea el SMTP). | HU-014, CU-008, RF-009 | Alcance y seguridad | Aprobado | Liliana Sofía Panesso Méndez | 24/11/2026 |
 
 ### 13.2 Reglas de actualización
 
@@ -388,6 +396,9 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | HU-011      | RNF-004                | —                              | ACT-01         | —                    | FEAT-011             | Monitoreo RNF-004               | MVP         | Planificada                 |
 | HU-012      | RNF-002, RNF-007       | —                              | ACT-02         | UI-01 a UI-09        | FEAT-012             | Medición RNF-002                | MVP         | En validación               |
 | HU-013      | RNF-005                | —                              | Equipo         | —                    | FEAT-011             | Inspección RNF-005              | MVP         | En validación               |
+| HU-014      | RF-009                 | RN-016, RN-017                 | ACT-01, ACT-02 | UI-10                | FEAT-013             | CP-023 a CP-028                 | MVP         | Terminada                   |
+| HU-015      | RF-010                 | RN-018                         | ACT-05         | Correo               | FEAT-014             | CP-029, CP-030                  | MVP         | Terminada                   |
+| HU-016      | RF-011                 | RN-019                         | ACT-01, ACT-02 | UI-03                | FEAT-014             | CP-031, CP-032                  | MVP         | Terminada                   |
 | CU-001      | RF-007                 | RN-011                         | ACT-01, ACT-02 | UI-01                | —                    | CP-016, CP-017                  | MVP         | Implementado                |
 | CU-002      | RF-001                 | RN-001, RN-007                 | ACT-01, ACT-02 | UI-03                | —                    | CP-001 a CP-003                 | MVP         | Implementado                |
 | CU-003      | RF-002                 | RN-006                         | ACT-01         | UI-04                | —                    | CP-004 a CP-006                 | MVP         | Implementado                |
@@ -395,6 +406,8 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | CU-005      | RF-005, RF-006         | RN-003, RN-004, RN-005, RN-006 | ACT-01, ACT-02 | UI-05                | —                    | CP-012 a CP-014                 | MVP         | Implementado                |
 | CU-006      | RF-007                 | RN-011, RN-012                 | ACT-01         | UI-08                | —                    | CP-018                          | MVP         | Implementado                |
 | CU-007      | RF-006                 | RN-004, RN-011                 | ACT-01         | UI-09                | —                    | CP-014, CP-015                  | MVP         | Implementado parcialmente   |
+| CU-008      | RF-009                 | RN-016, RN-017                 | ACT-01, ACT-02, ACT-06 | UI-10        | API-24 a API-26      | CP-023 a CP-028                 | MVP         | Implementado                |
+| CU-009      | RF-010                 | RN-018                         | ACT-05, ACT-03, ACT-06 | Correo       | Tarea de avisos      | CP-029, CP-030                  | MVP         | Implementado                |
 
 ### 14.2 Cobertura de historias y casos de uso
 
@@ -423,6 +436,9 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | HU-011       | MVP         | Liliana Sofía Panesso Méndez | Aceptada / Devuelta |           |                             |
 | HU-012       | MVP         | Liliana Sofía Panesso Méndez | Aceptada / Devuelta |           |                             |
 | HU-013       | MVP         | Liliana Sofía Panesso Méndez | Aceptada / Devuelta |           |                             |
+| HU-014       | MVP         | Liliana Sofía Panesso Méndez | Aceptada / Devuelta |           |                             |
+| HU-015       | MVP         | Liliana Sofía Panesso Méndez | Aceptada / Devuelta |           |                             |
+| HU-016       | MVP         | Liliana Sofía Panesso Méndez | Aceptada / Devuelta |           |                             |
 | CU-001       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
 | CU-002       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
 | CU-003       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
@@ -430,6 +446,8 @@ Se mantienen en [`analisis/casos-de-uso.md`](analisis/casos-de-uso.md).
 | CU-005       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
 | CU-006       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
 | CU-007       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
+| CU-008       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
+| CU-009       | MVP         | Liliana Sofía Panesso Méndez | Aprobado / Devuelto |           |                             |
 
 ## 15\. Indicadores y lista de verificación
 

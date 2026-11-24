@@ -35,6 +35,7 @@
 | 2.4 | 23/11/2026 | Variables de la base en Railway con el usuario zonafit_app | Juan Diego Mejía Llano |  |
 | 2.5 | 23/11/2026 | Lista de verificación diligenciada | Juan Diego Mejía Llano |  |
 | 2.6 | 23/11/2026 | Contrato OpenAPI de la API y 50 pruebas unitarias | Juan Diego Mejía Llano |  |
+| 2.7 | 24/11/2026 | Recuperación de contraseña (API-24 a API-26), revocación de sesiones, sesión en sessionStorage, envío de correos con Brevo (INT-003), aviso de vencimiento y consentimientos (CR-010), 9 tablas, init.sql sin DROP, retención y anonimización, cabeceras de seguridad y 93 pruebas | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -245,9 +246,10 @@ Zona Fit Evolution es una aplicación web para la recepción del gimnasio. El Ad
 | Frontend        | React 19 + Vite 8, ESLint 10, CSS propio (Poppins)                                                         | SPA del personal                 | Componentes y servicios por recurso                                                                                | HTML servido por el backend                                                         | Navegación sin React Router (DT-09)                                                |
 | Backend         | Node.js (LTS) + Express 5                                                                                  | API REST bajo /api               | Conocido por el equipo                                                                                             | FastAPI                                                                             | —                                                                                  |
 | Base de datos   | MySQL + mysql2 3                                                                                           | Persistencia relacional          | Datos relacionales y consultas parametrizadas                                                                      | ORM Sequelize/Prisma                                                                | Sin migraciones (DT-10)                                                            |
-| Autenticación   | jsonwebtoken 9 + bcrypt 6                                                                                  | JWT de 8 h y hash de contraseñas | API sin estado                                                                                                     | Sesiones en servidor                                                                | Sin revocación (DT-07)                                                             |
-| Pruebas         |                                                                                                            |                                  |                                                                                                                    |                                                                                     | node --test (39 pruebas) e integración continua en GitHub Actions                                                  |
-| Infraestructura | Vercel Hobby (frontend); Railway (API Node.js 20 y MySQL 8.4); agente local AgenteLector (Node.js 20 + ws) | Publicación en la nube           | Railway mantiene la API siempre encendida (tarea diaria, WebSocket del agente) y ofrece MySQL en el mismo proyecto | Render + Aiven; Vercel para la API (descartado: funciones sin servidor persistente) | Prueba de Railway de 30 días (RT-004); internet en el portátil del lector (RT-005) |
+| Autenticación   | jsonwebtoken 9 + bcrypt 6 + express-rate-limit                                                             | JWT de 8 h y hash de contraseñas | API sin estado; la revocación se resuelve consultando al usuario en cada petición                                  | Sesiones en servidor                                                                | DT-07 resuelta en parte (sessionStorage y revocación al cambiar la contraseña)      |
+| Correo          | Brevo (API HTTPS) en producción; nodemailer 10.6.1 (Gmail por SMTP) en local                               | Código de recuperación, aviso de cambio de contraseña y aviso de vencimiento | Railway bloquea el SMTP en los planes Trial y Hobby; Brevo gratis permite 300 correos al día | Gmail por SMTP en producción (bloqueado), Resend | Proveedor externo (INT-003): si falla, la recuperación responde 503 y el aviso se reintenta al día siguiente |
+| Pruebas         | node --test (con cobertura) y GitHub Actions                                                           | Pruebas unitarias y de integración | Sin dependencias extra                                                                                            | Jest                                                                                | node --test (93 pruebas) e integración continua en GitHub Actions                                                  |
+| Infraestructura | Vercel Hobby (frontend); Railway (API Node.js 20 y MySQL 8.4); agente local AgenteLector (Node.js 20 + ws) | Publicación en la nube           | Railway mantiene la API siempre encendida (tarea diaria, WebSocket del agente) y ofrece MySQL en el mismo proyecto | Render + Aiven; Vercel para la API (descartado: funciones sin servidor persistente) | Plan Hobby de Railway (RT-004 cerrado); internet en el portátil del lector (RT-005) |
 
 ## 6\. Vistas y diagramas de arquitectura
 
@@ -264,7 +266,7 @@ Se recomienda usar un conjunto pequeño de diagramas que responda preguntas dist
 | DIA-004    | Secuencia                 | Diez flujos (DIA-SEC-01 a DIA-SEC-10)                                     | [analisis/casos-uso/](analisis/casos-uso/)               | 6.4 (Figura 5 y enlaces)        | 2.0         | Actualizado                  |
 | DIA-PAQ-01 | Paquetes                  | Dependencias entre paquetes del frontend, el backend y el agente          | [paquetes.mmd](diagramas/paquetes.mmd)                   | 7.3 (Figura 6)                  | 2.0         | Actualizado                  |
 | DIA-CLA-01 | Clases (dominio)          | Modelo conceptual de las 7 entidades                                      | [clases-dominio.mmd](diagramas/clases-dominio.mmd)       | 8.2 (Figura 7)                  | 2.0         | Actualizado (tiqueteras)     |
-| DIA-005    | Datos                     | Entidad-relación de las 7 tablas de init.sql                              | [entidad-relacion.mmd](diagramas/entidad-relacion.mmd)   | 8.4 (Figura 8)                  | 2.0         | Actualizado                  |
+| DIA-005    | Datos                     | Entidad-relación de las 9 tablas de init.sql                              | [entidad-relacion.mmd](diagramas/entidad-relacion.mmd)   | 8.4 (Figura 8)                  | 2.1         | Actualizado                  |
 | DIA-EST-01 | Estados                   | Ciclo de vida de la membresía (pendiente, activa, vencida, cancelada)     | [estados-membresia.mmd](diagramas/estados-membresia.mmd) | 8.7 (Figura 9)                  | 2.0         | Nuevo                        |
 | DIA-006    | Despliegue                | Vercel, Railway y agente del lector                                       | [despliegue.mmd](diagramas/despliegue.mmd)               | 12.2 (Figura 10)                | 2.0         | Actualizado                  |
 
@@ -318,11 +320,11 @@ Los diez diagramas de secuencia están en [`analisis/casos-uso/`](analisis/casos
 | CMP-01 | Frontend SPA         | Pantallas del personal, validaciones en el navegador y servicios por recurso.                               | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Juan Diego Mejía Llano       |
 | CMP-02 | Rutas y middlewares  | Endpoints bajo /api; verificarToken, permitirRoles, validarBodyNoVacio y manejo de errores.                 | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
 | CMP-03 | Controladores        | Reciben la petición HTTP, llaman al servicio y responden en JSON.                                           | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-04 | Servicios de negocio | Reglas de clientes, planes, membresías, usuarios y autenticación.                                           | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-04 | Servicios de negocio | Reglas de clientes, planes, membresías, usuarios, autenticación, recuperación de contraseña y avisos por correo (correo.service con Brevo o Gmail); tareas diarias de membresías (00:05) y avisos (8:00).                                      | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
 | CMP-05 | Control de acceso    | Fachada que identifica la huella, evalúa el estado (State) y registra el intento.                           | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
 | CMP-06 | Adaptador del lector | Interfaz LectorBiometrico, fábrica por TIPO\_LECTOR y adaptador del sensor AS608 (el simulador se eliminó). | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
 | CMP-07 | Repositorios         | Consultas SQL parametrizadas.                                                                               | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
-| CMP-08 | Base de datos        | Siete tablas: roles, usuarios, clientes, planes, membresias, plantillas\_biometricas, registros\_acceso.    | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
+| CMP-08 | Base de datos        | Nueve tablas: roles, usuarios, recuperaciones\_contrasena, clientes, planes, membresias, avisos\_membresia, plantillas\_biometricas y registros\_acceso. | Petición HTTP / llamada | Respuesta JSON / datos |                  |                | Liliana Sofía Panesso Méndez |
 
 ### 7.2 Ficha detallada de componente
 
@@ -400,11 +402,11 @@ Siete entidades: roles 1:N usuarios; clientes 1:N membresias; planes 1:N membres
 
 ### 8.4 Modelo físico
 
-El esquema físico se crea con database/init.sql (único script, sin migraciones: DT-010) en MySQL 8.4 con codificación utf8mb4. Usa claves primarias INT autoincrementales, claves foráneas que impiden borrar registros referenciados, índices únicos en clientes.cedula, usuarios.correo, planes.nombre, plantillas_biometricas.cliente_id y template_hash, y ENUM para membresias.estado y registros_acceso.resultado (Figura 8).
+El esquema físico se crea con database/init.sql (único script, sin migraciones: DT-010) en MySQL 8.4. El script no tiene DROP TABLE: usa CREATE TABLE IF NOT EXISTS, agrega con sentencias preparadas las columnas que falten (planes.activo, usuarios.contrasena\_cambiada\_en, clientes.terminos\_aceptados\_en y clientes.avisos\_aceptados\_en) y siembra los planes sin duplicarlos, por lo que se puede volver a ejecutar sobre una base con datos. Trabaja con codificación utf8mb4. Usa claves primarias INT autoincrementales, claves foráneas que impiden borrar registros referenciados, índices únicos en clientes.cedula, usuarios.correo, planes.nombre, plantillas_biometricas.cliente_id y template_hash, y ENUM para membresias.estado y registros_acceso.resultado (Figura 8).
 
-![Figura 8. Modelo entidad-relación de las 7 tablas de init.sql (DIA-005).](diagramas/entidad-relacion.png)
+![Figura 8. Modelo entidad-relación de las 9 tablas de init.sql (DIA-005).](diagramas/entidad-relacion.png)
 
-*Figura 8. Modelo entidad-relación de las 7 tablas de init.sql (DIA-005).*
+*Figura 8. Modelo entidad-relación de las 9 tablas de init.sql (DIA-005).*
 
 ### 8.5 Catálogo de entidades / colecciones
 
@@ -416,7 +418,9 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | DAT-004 | planes                  | Catálogo de planes                   | Entidad  | Liliana Sofía Panesso Méndez | No                  | 8 iniciales            | Permanente (se desactiva)       |
 | DAT-005 | membresias              | Vigencia de cada cliente             | Entidad  | Liliana Sofía Panesso Méndez | No                  | Crece con cada pago    | Permanente                      |
 | DAT-006 | plantillas\_biometricas | Hash de la huella                    | Entidad  | Liliana Sofía Panesso Méndez | Sí (biométrico)     | 1 por cliente          | Mientras el cliente esté activo |
-| DAT-007 | registros\_acceso       | Auditoría de ingresos                | Entidad  | Liliana Sofía Panesso Méndez | Sí (personales)     | Crece con cada ingreso | Por definir (propuesta: 1 año)  |
+| DAT-007 | registros\_acceso       | Auditoría de ingresos                | Entidad  | Liliana Sofía Panesso Méndez | Sí (personales)     | Crece con cada ingreso | 3 meses (depuración diaria)     |
+| DAT-008 | recuperaciones\_contrasena | Códigos para restablecer la contraseña del personal | Entidad | Liliana Sofía Panesso Méndez | Sí (hash del código) | Pocas filas | 10 minutos de vigencia; se borra en cascada con el usuario |
+| DAT-009 | avisos\_membresia       | Constancia de cada aviso de vencimiento enviado | Entidad | Juan Diego Mejía Llano | No | 1 por membresía avisada | Permanente; se borra en cascada con la membresía |
 
 ### 8.6 Diccionario de datos
 
@@ -430,12 +434,22 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | usuarios                | contrasena             | VARCHAR   | 255          | No       |                          | Hash bcrypt                                                                            | Contraseña protegida     | Sí                |
 | usuarios                | rol\_id                | INT       |              | No       | FK → roles.id            |                                                                                        | Rol del usuario          | No                |
 | usuarios                | fecha\_creacion        | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Creación                 | No                |
+| usuarios                | contrasena\_cambiada\_en | DATETIME |             | Sí       |                          | Se fija al restablecer la contraseña                                                   | Revoca los tokens emitidos antes | No             |
+| recuperaciones\_contrasena | id                  | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| recuperaciones\_contrasena | usuario\_id         | INT       |              | No       | FK → usuarios.id (ON DELETE CASCADE) | Índice (usuario\_id, usado\_en)                                         | Usuario que pidió el código | No             |
+| recuperaciones\_contrasena | codigo\_hash        | VARCHAR   | 255          | No       |                          | Hash bcrypt del código de 6 dígitos                                                    | Código protegido         | Sí                |
+| recuperaciones\_contrasena | intentos            | INT       |              | No       |                          | 0 a 5                                                                                  | Intentos fallidos        | No                |
+| recuperaciones\_contrasena | expira\_en          | DATETIME  |              | No       |                          | Creación + 10 minutos                                                                  | Vencimiento del código   | No                |
+| recuperaciones\_contrasena | usado\_en           | DATETIME  |              | Sí       |                          | NULL hasta que se restablece; un solo uso                                              | Uso del código           | No                |
+| recuperaciones\_contrasena | fecha\_creacion     | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Solicitud                | No                |
 | clientes                | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
 | clientes                | nombre                 | VARCHAR   | 100          | No       |                          |                                                                                        | Nombre completo          | Sí                |
 | clientes                | cedula                 | VARCHAR   | 20           | No       | UNIQUE                   | 6 a 15 dígitos (RN-007)                                                                | Documento                | Sí                |
 | clientes                | correo                 | VARCHAR   | 100          | Sí       |                          | Formato de correo; obligatorio en la aplicación                                        | Contacto                 | Sí                |
 | clientes                | telefono               | VARCHAR   | 20           | Sí       |                          | 7 a 15 dígitos                                                                         | Contacto                 | Sí                |
 | clientes                | fecha\_registro        | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Registro                 | No                |
+| clientes                | terminos\_aceptados\_en | DATETIME |             | Sí       |                          | Obligatorio al registrar (CR-010); NULL en clientes anteriores                         | Constancia de la autorización (Ley 1581) | No |
+| clientes                | avisos\_aceptados\_en  | DATETIME  |              | Sí       |                          | Opcional; NULL = no recibe avisos; se puede retirar al editar                          | Autorización de avisos por correo | No     |
 | planes                  | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
 | planes                  | nombre                 | VARCHAR   | 50           | No       | UNIQUE                   | Sesión, Quincena, Mensualidad, Trimestre, tarifas de estudiantes y tiqueteras x6 y x12 | Nombre                   | No                |
 | planes                  | duracion\_dias         | INT       |              | No       |                          | \> 0                                                                                   | Duración                 | No                |
@@ -463,6 +477,10 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | registros\_acceso       | resultado              | ENUM      |              | No       |                          | permitido, denegado                                                                    | Resultado                | No                |
 | registros\_acceso       | motivo                 | VARCHAR   | 100          | No       |                          |                                                                                        | Explicación              | No                |
 | registros\_acceso       | fecha\_hora            | TIMESTAMP |              | No       |                          | Fecha actual                                                                           | Momento                  | No                |
+| avisos\_membresia       | id                     | INT       |              | No       | PK                       | Autoincremental                                                                        | Identificador            | No                |
+| avisos\_membresia       | membresia\_id          | INT       |              | No       | FK → membresias.id (ON DELETE CASCADE) | UNIQUE (membresia\_id, tipo): un solo aviso por membresía          | Membresía avisada        | No                |
+| avisos\_membresia       | tipo                   | VARCHAR   | 30           | No       |                          | vencimiento\_7d                                                                        | Tipo de aviso            | No                |
+| avisos\_membresia       | enviado\_en            | DATETIME  |              | No       |                          | Momento en que el proveedor aceptó el correo                                           | Envío                    | No                |
 
 ### 8.7 Relaciones, integridad y restricciones
 
@@ -473,8 +491,10 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | planes     | membresias              | 1:N              | membresias.plan\_id                 | Restringir (RN-006)  |                            | El plan se desactiva, no se borra. |
 | clientes   | plantillas\_biometricas | 1:1              | plantillas\_biometricas.cliente\_id |                      |                            | Una huella por cliente.            |
 | clientes   | registros\_acceso       | 1:N              | registros\_acceso.cliente\_id       |                      |                            | Auditoría por cliente.             |
+| usuarios   | recuperaciones\_contrasena | 1:N            | recuperaciones\_contrasena.usuario\_id | Cascada            |                            | Los códigos desaparecen con el usuario. |
+| membresias | avisos\_membresia       | 1:N              | avisos\_membresia.membresia\_id      | Cascada              |                            | Evita repetir el aviso.            |
 
-**Ciclo de vida de la membresía.** La columna `membresias.estado` solo admite las transiciones de la Figura 9. La tarea diaria (`src/jobs/membresias.job.js`, 00:05 y al arrancar) vence las activas expiradas y activa las pendientes; solo el Administrador reactiva.
+**Ciclo de vida de la membresía.** La columna `membresias.estado` solo admite las transiciones de la Figura 9. La tarea diaria (`src/jobs/membresias.job.js`, 00:05 y al arrancar) vence las activas expiradas y activa las pendientes; solo el Administrador reactiva. La tarea de avisos (`src/jobs/avisos.job.js`, 8:00 y al arrancar entre las 8:00 y las 20:00) envía un correo 7 días antes del vencimiento a las membresías activas de planes de 15 días o más (tiqueteras incluidas) cuyo cliente autorizó los avisos y no tiene una membresía pendiente; registra cada envío en `avisos_membresia` para no repetirlo, envía como máximo 250 por día y reintenta al día siguiente los que fallen (CR-010).
 
 ![Figura 9. Estados de la membresía (DIA-EST-01).](diagramas/estados-membresia.png)
 
@@ -488,6 +508,8 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | IDX-002 | usuarios                | correo      | Único    | Inicio de sesión                 | Bajo                | init.sql      |
 | IDX-003 | planes                  | nombre      | Único    | Nombre de plan no repetido       | Bajo                | init.sql      |
 | IDX-004 | plantillas\_biometricas | cliente\_id | Único    | Una huella por cliente           | Bajo                | init.sql      |
+| IDX-005 | recuperaciones\_contrasena | usuario\_id, usado\_en | Índice | Código vigente del usuario | Bajo        | init.sql      |
+| IDX-006 | avisos\_membresia       | membresia\_id, tipo | Único | Aviso ya enviado (no se repite) | Bajo              | init.sql      |
 
 ### 8.9 Política de borrado y retención
 
@@ -497,12 +519,19 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | planes                  | Lógico (desactivar)             | Permanente                      | Membresías asociadas                   | Reactivar          | —                 |
 | plantillas\_biometricas | Físico (Administrador)          | Mientras el cliente esté activo | Solicitud del titular o nuevo registro | Registrar de nuevo |                   |
 | registros\_acceso       | Físico (tarea diaria de las 00:05) | 3 meses | Historial operativo; evita que la tabla crezca sin límite | Respaldo semanal | Deploy Logs (depuración del historial) |
+| recuperaciones\_contrasena | Lógico (usado\_en) y físico en cascada | 10 minutos de vigencia; se borra al eliminar el usuario | Dato sensible (hash del código) de un solo uso | Pedir un código nuevo | Deploy Logs |
+| avisos\_membresia       | Físico en cascada con la membresía | Mientras exista la membresía | Constancia de envío y control para no repetir | — | Deploy Logs (avisos de vencimiento) |
+| usuarios                | Físico (Administrador)  | Mientras trabaje en el gimnasio | Retiro del empleado | Crear de nuevo | Sus sesiones abiertas quedan cerradas |
+
+**Anonimización de un cliente.** Los clientes no se eliminan (RN-001). Si un titular pide la supresión de sus datos (Ley 1581, art. 8), el responsable técnico ejecuta en Railway, con el usuario root y después de un respaldo, el procedimiento del Manual técnico (sección «Supresión y anonimización de datos»): elimina la huella del sensor y de la base desde la aplicación, reemplaza nombre, cédula, correo y teléfono por valores sin datos personales y retira las autorizaciones. Las membresías y el historial quedan sin datos que identifiquen a la persona. Automatizarlo desde la aplicación es trabajo futuro.
 
 ### 8.10 Migraciones y datos semilla
 
   - Las migraciones deben estar versionadas y ser reproducibles.
 
   - Una instalación limpia debe crear la estructura completa.
+
+  - En el proyecto, init.sql es el único script: no borra tablas, crea las que faltan y agrega las columnas nuevas, así que se vuelve a ejecutar en Railway (con root) antes de desplegar cada cambio de esquema.
 
   - Los datos semilla no deben contener datos personales reales ni secretos.
 
@@ -522,7 +551,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | RPO esperado                  | 7 días (respaldo semanal); 0 en cambios planificados (respaldo previo al despliegue) |
 | RTO esperado                  | Objetivo: 1 hora (restaurar el último respaldo en una base nueva de Railway) |
 | Procedimiento de restauración | mysql -u \<usuario\> -p zonafitevolution \< respaldo\_zonafit\_AAAAMMDD.sql sobre una base vacía; conservar el mismo BIOMETRIA\_SALT. |
-| Evidencia de prueba           | Prueba del 23/11/2026: 7 de 7 tablas restauradas con los mismos registros (docs/pruebas/DAT-06-respaldo-y-restauracion.md) |
+| Evidencia de prueba           | Prueba del 23/11/2026: 7 de 7 tablas restauradas con los mismos registros (docs/pruebas/DAT-06-respaldo-y-restauracion.md); las tablas recuperaciones\_contrasena y avisos\_membresia se agregaron después y entran en el mismo mysqldump |
 
 ## 9\. API e integraciones
 
@@ -568,6 +597,10 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | API-21 | GET | /api/biometria/registro/estado/:capturaId | Consultar el avance del registro de huella | Sí (JWT) | Admin, Empleado | — | JSON / { "error": "mensaje" } |  |
 | API-22 | POST | /api/acceso-fisico/pantalla/validar | Validar el ingreso desde la pantalla de ingreso | X-Pantalla-Token (PANTALLA\_TOKEN) | Pantalla autorizada | — | JSON / { "error": "mensaje" } |  |
 | API-23 | GET | /api/salud | Estado del servicio y del lector (healthcheck) | No | Público | — | { "estado": "ok", "lector": "conectado" \| "desconectado" } |  |
+| API-24 | POST | /api/auth/recuperar | Pedir el código de recuperación (6 dígitos, 10 minutos) al correo | No | Público (10 por IP y 3 por IP y correo cada 15 min) | JSON { correo } | { "mensaje" } igual exista o no el correo; 503 sin correo configurado |  |
+| API-25 | POST | /api/auth/recuperar/verificar | Verificar el código (5 intentos) | No | Público (20 cada 15 min) | JSON { correo, codigo } | { "tokenRestablecer" } (JWT de 10 min) / 400 con los intentos restantes |  |
+| API-26 | POST | /api/auth/recuperar/restablecer | Guardar la nueva contraseña y cerrar las sesiones abiertas | tokenRestablecer en el cuerpo | Público (10 cada 15 min) | JSON { tokenRestablecer, contrasena } | { "mensaje" } / 400 si incumple las reglas o es igual a la anterior |  |
+| API-27 | GET | /api/docs, /api/openapi.json | Documentación de la API (Swagger UI) y contrato OpenAPI 3 | No | Público | — | HTML / JSON |  |
 
 ### 9.3 Contrato de respuesta y error
 
@@ -585,6 +618,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | **ID**  | **Sistema**                               | **Propósito**                          | **Protocolo**                                                   | **Autenticación**                         | **Timeout**                            | **Reintentos**                                                              | **Fallback**                                                      | **Propietario**     |
 | ------- | ----------------------------------------- | -------------------------------------- | --------------------------------------------------------------- | ----------------------------------------- | -------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------- |
 | INT-001 | Sensor AS608 + CP2102 (vía AgenteLector)  | Capturar, registrar y eliminar huellas | USB-serie (UART) al agente; WebSocket wss://…/agente al backend | AGENTE\_TOKEN (encabezado X-Agente-Token) | 90 s por orden; 15 s esperando el dedo | El agente se reconecta solo (1 a 30 s); el cliente vuelve a poner la huella | Validación manual por cédula; respuesta 503 «Lector desconectado» | Gimnasio            |
+| INT-003 | Brevo (API HTTPS); Gmail por SMTP en local | Enviar el código de recuperación, el aviso de cambio de contraseña y el aviso de vencimiento | HTTPS (api.brevo.com) / SMTP 465 | BREVO\_API\_KEY y remitente verificado CORREO\_REMITENTE; en local CORREO\_USUARIO y contraseña de aplicación | 15 s | El aviso no marcado como enviado se reintenta al día siguiente; el código se vuelve a pedir | Recuperación: 503 «El envío de correos no está configurado»; el Administrador crea una cuenta nueva | Equipo del proyecto |
 | INT-002 | Vercel (frontend) y Railway (API y MySQL) | Publicar el sistema                    | HTTPS; MySQL por la red privada de Railway (TCP 3306)           | Variables de entorno de Railway y Vercel  | Healthcheck /api/salud                 | Railway reinicia el servicio si falla (hasta 10 veces)                      | Ambiente local (TIPO\_LECTOR=as608)                               | Equipo del proyecto |
 
 ### 9.5 Eventos y mensajería
@@ -605,6 +639,9 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | SEC-004 | Rutas de Administrador                      | Escalamiento de privilegios       | Media            | Alta        | permitirRoles en cada ruta; el backend impide borrar la propia cuenta y al último administrador (TT-001) | Liliana Sofía Panesso Méndez | Mitigado    |
 | SEC-005 | Secretos (JWT\_SECRET, BD, BIOMETRIA\_SALT) | Exposición en Git                 | Baja             | Alta        | .env fuera de Git; .env.example                                           | Liliana Sofía Panesso Méndez | Mitigado   |
 | SEC-006 | API pública                                 | Peticiones desde cualquier origen | Media            | Media       | CORS restringido a ORIGEN_FRONTEND con trust proxy (TT-004, PR #59)                                                  | Liliana Sofía Panesso Méndez | Mitigado    |
+| SEC-007 | Recuperación de contraseña | Enumeración de correos, fuerza bruta del código o abuso del envío | Media | Alta | Misma respuesta exista o no el correo; código de 6 dígitos guardado con bcrypt, 10 minutos, un solo uso y 5 intentos; límites por IP y por IP y correo; token de restablecer con propósito propio | Liliana Sofía Panesso Méndez | Mitigado |
+| SEC-008 | Sesiones abiertas | Uso de un token robado o de una cuenta eliminada | Media | Alta | El middleware consulta al usuario en cada petición: rechaza tokens anteriores a contrasena\_cambiada\_en o de usuarios eliminados; sesión en sessionStorage | Liliana Sofía Panesso Méndez | Mitigado |
+| SEC-009 | Correos de los clientes | Envío sin autorización o a terceros | Baja | Media | Avisos solo con avisos\_aceptados\_en; Brevo como encargado del tratamiento; la clave vive solo en Railway | Juan Diego Mejía Llano | Mitigado |
 
 ### 10.2 Autenticación y sesión
 
@@ -614,9 +651,11 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | Almacenamiento de contraseñas | bcrypt                                                  |
 | Duración de sesión / token    | 8 horas (JWT\_EXPIRES\_IN)                              |
 | Renovación                    | No hay; se vuelve a iniciar sesión.                     |
-| Revocación                    | No hay revocación antes de expirar (DT-07).             |
-| Cierre de sesión              | Se borran token y usuario del localStorage.             |
-| Recuperación de acceso        |                                                         |
+| Almacenamiento en el navegador | sessionStorage (clave zonafitSesion): se conserva al recargar mientras la pestaña siga abierta y termina al cerrarla; un token vencido no se restaura. |
+| Revocación                    | Al restablecer la contraseña (usuarios.contrasena\_cambiada\_en) o eliminar el usuario: verificarToken consulta al usuario en cada petición y responde 401 a los tokens anteriores (ADR-003). |
+| Cierre de sesión              | Se borra la sesión de sessionStorage.                   |
+| Recuperación de acceso        | «¿Olvidaste tu contraseña?»: código de 6 dígitos al correo (10 minutos, un solo uso, 5 intentos), token temporal de 10 minutos y nueva contraseña; al guardarla se cierran las sesiones abiertas y llega un aviso al correo. Ningún Administrador cambia la contraseña de otra cuenta (RN-016). |
+| Reglas de contraseña          | 8 caracteres como mínimo y 72 bytes como máximo, letras y números, sin espacios; validadas en el navegador y en el backend (utils/contrasena.js). |
 | Protección contra enumeración | Mensaje genérico ante credenciales inválidas.           |
 | MFA, si aplica                | No aplica en el MVP.                                    |
 
@@ -627,7 +666,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | Administrador            | Planes, personal, roles, eliminaciones   | Crear, editar, desactivar y eliminar    | Permitir    | Sí                      | CP-004, CP-018         |
 | Empleado                 | Planes, personal y registro financiero   | Modificar o consultar                   | Denegar     | Sí (403)                | CP-006, CP-015, CP-021 |
 | Administrador / Empleado | Clientes, membresías, biometría y acceso | Registrar, consultar, renovar y validar | Permitir    | Sí                      | CP-001, CP-012, CP-007 |
-| Sin token                | Toda la API salvo /auth/login            | Cualquiera                              | Denegar     | Sí (401)                | CP-020                 |
+| Sin token                | Toda la API salvo /auth/login, /auth/recuperar (tres pasos), /salud y /docs | Cualquiera                              | Denegar     | Sí (401)                | CP-020                 |
 | API (usuario zonafit\_app) | Base de datos railway | SELECT, INSERT, UPDATE y DELETE | Permitir | Sí (GRANT de MySQL) | SEG-08 |
 | API (usuario zonafit\_app) | Estructura de la base, otras bases y usuarios | CREATE, ALTER, DROP, GRANT | Denegar | Sí (MySQL) | SHOW GRANTS |
 
@@ -651,9 +690,13 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 
 | **Dato**             | **Finalidad**                | **Base / autorización**              | **Acceso**               | **Retención**        | **Eliminación**                  | **Riesgo**            |
 | -------------------- | ---------------------------- | ------------------------------------ | ------------------------ | -------------------- | -------------------------------- | --------------------- |
-| Datos del cliente    | Identificación y contacto    | Autorización del titular             | Administrador y Empleado | Mientras exista      | Anonimización (por implementar)  | Fuga                  |
+| Datos del cliente    | Identificación y contacto    | Autorización del titular (casilla obligatoria al registrar, terminos\_aceptados\_en) | Administrador y Empleado | Mientras exista      | Anonimización manual por SQL (procedimiento del Manual técnico); automatizarla es trabajo futuro | Fuga                  |
+| Correo del cliente para avisos | Aviso de vencimiento 7 días antes (CR-010) | Autorización opcional (avisos\_aceptados\_en), revocable al editar | El sistema; Brevo como encargado | Mientras esté autorizado | Retirar la autorización | Envío no autorizado |
 | Plantilla biométrica | Identificación en el ingreso | Autorización expresa (dato sensible) | Solo el sistema          | Mientras esté activo | Eliminación por el Administrador | Fuga de dato sensible |
-| Registros de acceso  | Auditoría                    | Interés legítimo                     | Administrador y Empleado | Por definir          | Por definir                      | Retención excesiva    |
+| Registros de acceso  | Auditoría                    | Interés legítimo                     | Administrador y Empleado | 3 meses              | Depuración diaria automática (00:05) | Retención excesiva    |
+| Correo y código de recuperación del personal | Restablecer la contraseña | Relación laboral | Solo el sistema | 10 minutos | Un solo uso; cascada al eliminar el usuario | Suplantación |
+
+**Encargados del tratamiento.** Brevo (Sendinblue SAS, Francia) recibe nombre y correo del destinatario solo para entregar los correos; Railway y Vercel alojan la API, la base de datos y el frontend. Se declaran en la Política de tratamiento de la información (`docs/legal/politica-tratamiento-datos.md`), que incluye la transferencia internacional.
 
 ### 10.6 Controles técnicos mínimos
 
@@ -663,9 +706,9 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | Prevención de inyección             | Sí                                 | Consultas parametrizadas con mysql2                 |            | Implementado |
 | Protección XSS                      | Sí                                 | React escapa el contenido por defecto               |            | Implementado |
 | CSRF, si aplica                     | No (token en cabecera, no cookies) | —                                                   |            | No aplica    |
-| Cabeceras de seguridad              | Sí                                 |                                                     |            | Pendiente    |
-| Rate limiting / protección de abuso | Sí                                 | express-rate-limit en POST /api/auth/login (TT-003) |            | Implementado |
-| Auditoría de dependencias           | Sí                                 | npm audit                                           |            | Pendiente    |
+| Cabeceras de seguridad              | Sí                                 | vercel.json: Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy y Permissions-Policy |            | Implementado |
+| Rate limiting / protección de abuso | Sí                                 | express-rate-limit: inicio de sesión (5 fallidos por IP y correo, TT-003); recuperación: solicitud 10 por IP y 3 por IP y correo, verificación 20 y restablecimiento 10, cada 15 minutos | npm test (recuperación) | Implementado |
+| Auditoría de dependencias           | Sí                                 | npm audit en cada pull request (GitHub Actions)     |            | Implementado |
 | Auditoría de acciones sensibles     | Sí                                 | registros\_acceso para accesos                      |            | Parcial      |
 
 ## 11\. Manejo de errores, logging y observabilidad
@@ -734,6 +777,8 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | **Variable / grupo**                                 | **Desarrollo**                             | **Pruebas** | **Producción**                                                                   | **Secreto**          | **Propietario**              |
 | ---------------------------------------------------- | ------------------------------------------ | ----------- | -------------------------------------------------------------------------------- | -------------------- | ---------------------------- |
 | DB\_HOST, DB\_PORT, DB\_USER, DB\_PASSWORD, DB\_NAME | localhost, 3306, root, —, zonafitevolution |             | Referencias ${{MySQL.MYSQL…}} de Railway para host, puerto y base; DB_USER=zonafit_app y su contraseña propia                          | Sí (DB\_PASSWORD)    | Juan Diego Mejía Llano |
+| BREVO\_API\_KEY, CORREO\_REMITENTE                   | Opcional (se puede usar Gmail)             |             | Clave de la API de Brevo y zonafitevolution18@gmail.com (remitente verificado)  | Sí (BREVO\_API\_KEY) | Juan Diego Mejía Llano       |
+| CORREO\_USUARIO, CORREO\_CONTRASENA\_APP              | Cuenta de Gmail y contraseña de aplicación |             | No se usan (Railway bloquea el SMTP)                                             | Sí                   | Juan Diego Mejía Llano       |
 | JWT\_SECRET, JWT\_EXPIRES\_IN                        | Valor local (mínimo 32 caracteres), 8h     |             | 64 caracteres aleatorios, 8h                                                     | Sí (JWT\_SECRET)     | Liliana Sofía Panesso Méndez |
 | BIOMETRIA\_SALT, TIPO\_LECTOR                        | Valor local, as608 (PUERTO\_LECTOR=auto o un puerto fijo como COM3)   |             | El mismo BIOMETRIA\_SALT de siempre; remoto                                      | Sí (BIOMETRIA\_SALT) | Liliana Sofía Panesso Méndez |
 | AGENTE\_TOKEN, PANTALLA\_TOKEN                       | Vacíos (modo local)                        |             | 64 caracteres aleatorios cada uno                                                | Sí                   | Juan Diego Mejía Llano       |
@@ -745,7 +790,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | **Paso** | **Acción**       | **Herramienta**                                                                                          | **Validación**                                | **Rollback**                                                     |
 | -------- | ---------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------- |
 | 1        | Construcción     | Vercel: npm run build (FrontendZonafitevolution); Railway: Railpack con npm ci (BackendZonafitevolution) | Build exitoso                                 | Volver a desplegar el despliegue anterior desde Vercel o Railway |
-| 2        | Esquema de datos | init.sql ejecutado una sola vez en MySQL de Railway (sin migraciones, DT-010)                            | 7 tablas, 2 roles y 8 planes                  | Recrear la base desde el respaldo (mysqldump)                    |
+| 2        | Esquema de datos | init.sql ejecutado de nuevo en MySQL de Railway (root) antes de desplegar cada cambio de esquema; no borra datos (sin migraciones, DT-010) | 9 tablas, 2 roles y 8 planes                  | Recrear la base desde el respaldo (mysqldump)                    |
 | 3        | Despliegue       | Merge en main: Railway (Watch Paths /BackendZonafitevolution/\*\*) y Vercel se redespliegan solos        | Healthcheck /api/salud                        | Railway mantiene la versión anterior si el healthcheck falla     |
 | 4        | Smoke test       | Login, cliente, membresía, registro de huella y pantalla de ingreso                                      | Flujos críticos                               | Revertir el PR en GitHub                                         |
 | 5        | Liberación       | Agente del lector conectado (tarea programada que instala INSTALAR-RECEPCION.bat)                                                  | /api/salud: lector conectado; logs de Railway | Modo local (TIPO\_LECTOR=as608)                                  |
@@ -785,7 +830,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | **Control**            | **Herramienta**       | **Ejecución** | **Criterio de aceptación**   | **Evidencia** |
 | ---------------------- | --------------------- | ------------- | ---------------------------- | ------------- |
 | Lint                   | ESLint (npm run lint) | GitHub Actions en cada pull request | Sin errores críticos         | Sin errores (22/11/2026) |
-| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 50 pruebas unitarias y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
+| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 93 pruebas unitarias (65 % de líneas) y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
 | Build                  | Vite (npm run build)  | GitHub Actions en cada pull request | Construcción reproducible    | Construcción exitosa (22/11/2026) |
 | Auditoría dependencias | npm audit             | GitHub Actions en cada pull request | Sin críticas sin tratamiento | npm audit: 0 vulnerabilidades en backend, frontend y agente (22/11/2026) |
 | Análisis estático      |                       |               |                              |               |
@@ -800,12 +845,12 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | DT-004 | Resuelto: se retiró la ruta DELETE /api/clientes/:id (TT-002); los clientes no se eliminan (RN-001).                                                                           | Revisión del código | —                                       |               | TT-002 terminada.                                                                               |                    | Cerrado    |
 | DT-005 | Resuelto: el backend impide borrar la propia cuenta y al último administrador (409, TT-001).                                                                              | Revisión del código | —                               |               | TT-001 terminada.                                                                               |                    | Cerrado    |
 | DT-006 | Resuelto: límite de intentos de inicio de sesión (limiteLogin) y CORS restringido a ORIGEN\_FRONTEND, con trust proxy para Railway (PR \#59). | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
-| DT-007 | Token JWT en localStorage sin revocación.                                                                                                     | Revisión del código | Exposición ante XSS.                                           |               | Evaluar cookies httpOnly.                                                                      |                    | Abierto    |
+| DT-007 | Resuelta en parte: el token se guarda en sessionStorage (termina al cerrar la pestaña) y se revoca al restablecer la contraseña o eliminar el usuario. Queda expuesto ante XSS mientras la pestaña esté abierta. | Revisión del código | Exposición ante XSS (mitigada con la CSP de vercel.json).      |               | Evaluar cookies httpOnly.                                                                      |                    | Parcial    |
 | DT-008 | Resuelto: GitHub Actions (.github/workflows/ci.yml) ejecuta en cada pull request las pruebas, el lint, el build, npm audit y el ciclo de casos con MySQL.                                                                                | Revisión del código | —                      |               | TT-007 y TT-008.                                                                               |                    | Cerrado    |
 | DT-009 | Navegación por estado, sin React Router.                                                                                                      | Revisión del código | Pantallas sin URL propia.                                      |               | Incorporar React Router.                                                                       |                    | Abierto    |
-| DT-010 | Esquema creado con init.sql, sin migraciones.                                                                                                 | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                    | Aceptado   |
+| DT-010 | Esquema creado con init.sql, sin migraciones.                                                                                                 | Revisión del código | Sin historial de versiones del esquema.                        |               | Decisión del equipo: init.sql es el único script; no borra datos y agrega las columnas y tablas que falten, así que se vuelve a ejecutar en cada cambio de esquema. |                    | Aceptado   |
 | DT-011 | Resuelto: frontend en Vercel, API y MySQL en Railway y agente local del lector (PR \#59 a \#62).                                              | Revisión del código | —                                                              |               | —                                                                                              |                    | Cerrado    |
-| DT-012 | Archivos vacíos cd y npm en la raíz del backend.                                                                                              | Revisión del código | Ruido en el repositorio.                                       |               | Eliminarlos con un commit chore.                                                               |                    | Abierto    |
+| DT-012 | Resuelto: se borraron los archivos vacíos cd y npm del backend (v1.0.0). | Revisión del código | Ruido en el repositorio.                                       |               | Eliminarlos con un commit chore.                                                               |                    | Cerrado |
 
 ### 13.4 Criterios de mantenibilidad
 
@@ -829,7 +874,7 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 | ------- | ------------------------------------------------ | ---------- | ---------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
 | ADR-001 | Monorepo con frontend y backend separados        | Aceptado   |            |                 | Monorepo con BackendZonafitevolution y FrontendZonafitevolution, cada uno con su package.json.                                                                                                                                                 | Un solo historial y flujo de Pull Requests; el frontend necesita VITE\_API\_URL.                                                           | Documento maestro, 5.12      |
 | ADR-002 | API REST con Express y MySQL sin ORM             | Aceptado   |            |                 | Express 5 con mysql2 y consultas parametrizadas en repositorios.                                                                                                                                                                               | SQL explícito; sin migraciones automáticas (init.sql).                                                                                     | Documento maestro, 5.12      |
-| ADR-003 | JWT y autorización por rol en el backend         | Aceptado   |            |                 | JWT de 8 horas, bcrypt y permitirRoles en cada ruta.                                                                                                                                                                                           | El token no se revoca antes de expirar; se guarda en localStorage.                                                                         | Documento maestro, 5.12      |
+| ADR-003 | JWT y autorización por rol en el backend         | Aceptado   |            |                 | JWT de 8 horas, bcrypt y permitirRoles en cada ruta. verificarToken consulta al usuario en cada petición para revocar las sesiones al restablecer la contraseña o eliminar el usuario. | Una consulta por petición (por clave primaria, de bajo costo); el token se guarda en sessionStorage y deja de valer antes de expirar si cambia la contraseña. | Documento maestro, 5.12      |
 | ADR-004 | Lector biométrico detrás de un adaptador         | Aceptado   |            |                 | Interfaz LectorBiometrico, adaptador del sensor AS608 y fábrica por TIPO\_LECTOR; otro sensor se integra como un adaptador nuevo.                                                                                                              | Cambiar de sensor solo exige un adaptador; el AS608 compara en el propio sensor, no por igualdad de hashes.                                | Documento maestro, 5.12      |
 | ADR-005 | Patrón State y fachada para validar el acceso    | Aceptado   |            |                 | Estados activo, pendiente, vencido, cancelado y sin membresía; accesoFisico.service coordina.                                                                                                                                                             | Todo intento queda en registros\_acceso.                                                                                                   | Documento maestro, 5.12      |
 | ADR-006 | Registro financiero calculado con las membresías | Aceptado   |            |                 | Cálculo en el frontend con el precio actual del plan.                                                                                                                                                                                          | Cifras estimadas; pendiente TT-005.                                                                                                        | Documento maestro, 5.12      |
@@ -870,7 +915,7 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 | ------ | -------------------------------------- | --------------------------------------- | ---------------- | ----------- | -------------- | ---------------------------------------------------------------------- | ---------------------------- | ---------------------------------- |
 | RT-001 | Integración del AS608 fuera de tiempo  | Comunicación serie probada con el AS608 | Media            | Alta        | Alta           | Mitigar                                                                | Liliana Sofía Panesso Méndez | Cerrado                            |
 | RT-002 | Despliegue tardío                      | Hosting por definir                     | Media            | Alta        | Alta           | Mitigar                                                                | Liliana Sofía Panesso Méndez | Cerrado (desplegado el 11/11/2026) |
-| RT-004 | Vence la prueba de Railway             | Prueba de 30 días o $5 de crédito       | Alta             | Alta        | Alta           | Mitigar: pasar a Hobby antes del 10/12/2026 y respaldar la base        | Juan Diego Mejía Llano       | Abierto                            |
+| RT-004 | Vence la prueba de Railway             | Prueba de 30 días o $5 de crédito       | Alta             | Alta        | Alta           | Mitigar: pasar a Hobby antes del 10/12/2026 y respaldar la base        | Juan Diego Mejía Llano       | Cerrado (plan Hobby contratado el 24/11/2026) |
 | RT-005 | Sin internet en el portátil del lector | Red de la sala de sustentación          | Media            | Alta        | Alta           | Mitigar: datos del celular como respaldo; validación manual por cédula | Juan Diego Mejía Llano       | Abierto                            |
 | RT-003 | Regresiones sin pruebas automatizadas  | No hay pruebas ni CI                    | Alta             | Media       | Alta           | Mitigar                                                                |                              | Abierto                            |
 
@@ -892,6 +937,8 @@ Las decisiones relevantes deben registrarse como archivos breves y versionados e
 | RF-005                 | CMP-04          | DAT-005          | API-13                | —                | CP-012, CP-013                  | CIC-01: CP-012 y CP-013 aprobados | Implementado |
 | RF-006                 | CMP-01          | DAT-004, DAT-005 | API-08, API-11        | ADR-006          | CP-014, CP-015                  | CIC-01: CP-014 y CP-015 aprobados | Parcial      |
 | RF-007 / DRV-001       | CMP-02, CMP-04  | DAT-001, DAT-002 | API-01 a API-04       | ADR-003          | CP-016 a CP-018, CP-020, CP-021 | CIC-01: CP-016 a CP-018, CP-020 y CP-021 aprobados | Implementado |
+| RF-009                 | CMP-04          | DAT-002, DAT-008 | API-24 a API-26, INT-003 | ADR-003       | CP-023 a CP-028                 | npm test (recuperacionContrasena.test.js)  | Implementado |
+| RF-010, RF-011         | CMP-04          | DAT-003, DAT-005, DAT-009 | API-05, API-06, INT-003 | —        | CP-029 a CP-032                 | npm test (avisos y consentimientos)        | Implementado |
 | RNF-005 / DRV-003      | CMP-02 a CMP-07 | —                | —                     | ADR-001, ADR-002 | Inspección                      |                                            | Implementado |
 
 ### 16.2 Criterios de aprobación técnica

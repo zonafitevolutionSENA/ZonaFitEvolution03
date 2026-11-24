@@ -1,9 +1,9 @@
-// DIA-CU-01 · Diagrama general de casos de uso · v2.0 · 22/11/2026
-// CU-001 a CU-007 · ACT-01 a ACT-04. Mismo estilo que los diagramas Mermaid de docs/diagramas.
+// DIA-CU-01 · Diagrama general de casos de uso · v2.1 · 24/11/2026
+// CU-001 a CU-009 · ACT-01 a ACT-06. Mismo estilo que los diagramas Mermaid de docs/diagramas.
 // Regenerar: dot -Tpng -Gdpi=150 casos-de-uso.dot -o casos-de-uso.png
 digraph CasosDeUso {
   graph [rankdir=LR, fontname="Arial", fontsize=18, fontcolor="#16384F", labelloc=t, nodesep=0.35, ranksep=0.9,
-         label="DIA-CU-01 · Diagrama general de casos de uso · v2.0 · 22/11/2026\n ", bgcolor="white"];
+         label="DIA-CU-01 · Diagrama general de casos de uso · v2.1 · 24/11/2026\n ", bgcolor="white"];
   node  [fontname="Arial", fontsize=13, fontcolor="#16384F", color="#1F4E79", style=filled, fillcolor="#DCE9F5", penwidth=1.2];
   edge  [fontname="Arial", fontsize=11, fontcolor="#16384F", color="#333333", arrowhead=none];
 
@@ -11,6 +11,8 @@ digraph CasosDeUso {
   emp   [label="Empleado /\nrecepcionista\n(ACT-02)", shape=box, style="rounded,filled", fillcolor="#1F4E79", fontcolor="white"];
   cli   [label="Cliente\n(ACT-03)", shape=box, style="rounded,filled", fillcolor="#1F4E79", fontcolor="white"];
   sensor [label="Sensor AS608 +\nagente del lector\n(ACT-04)", shape=box, style="dashed,filled", fillcolor="#F5F9FC"];
+  tarea [label="Tarea programada\n(8:00)\n(ACT-05)", shape=box, style="dashed,filled", fillcolor="#F5F9FC"];
+  brevo [label="Servicio de correo\nBrevo\n(ACT-06)", shape=box, style="dashed,filled", fillcolor="#F5F9FC"];
 
   subgraph cluster_sis {
     label="Sistema Zona Fit Evolution"; fontsize=14; color="#1F4E79"; style=filled; fillcolor="#F5F9FC";
@@ -24,14 +26,20 @@ digraph CasosDeUso {
     hue [label="Registrar huella", shape=ellipse];
     cu4 [label="CU-004\nValidar acceso", shape=ellipse];
     reg [label="Registrar intento\nde acceso", shape=ellipse];
+    cu8 [label="CU-008\nRestablecer\ncontraseña", shape=ellipse];
+    cu9 [label="CU-009\nEnviar aviso\nde vencimiento", shape=ellipse];
+    con [label="Registrar\nconsentimientos", shape=ellipse];
   }
 
   admin -> cu1; admin -> cu6; admin -> cu3; admin -> cu7; admin -> cu5; admin -> cu2;
   emp -> cu1; emp -> cu5; emp -> cu2;
+  admin -> cu8; emp -> cu8;
+  tarea -> cu9; cu9 -> cli [dir=none]; cu8 -> brevo; cu9 -> brevo;
+  cu2 -> con [style=dashed, arrowhead=vee, label="«include»"];
   cu4 -> cli [dir=none];
   hue -> sensor; cu4 -> sensor;
   ren -> cu5 [style=dashed, arrowhead=vee, label="«extend»"];
   hue -> cu2 [style=dashed, arrowhead=vee, label="«extend»"];
   cu4 -> reg [style=dashed, arrowhead=vee, label="«include»"];
-  {rank=same; cli; sensor}
+  {rank=same; cli; sensor; brevo}
 }

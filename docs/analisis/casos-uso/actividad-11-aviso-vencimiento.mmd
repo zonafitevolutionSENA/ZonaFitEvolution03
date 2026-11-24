@@ -1,0 +1,17 @@
+---
+title: "DIA-ACV-11 · Actividad: enviar aviso de vencimiento · v1.0 · 24/11/2026"
+---
+%% EP-002 · CU-009 · HU-015 · RF-010 · CR-010
+flowchart TB
+  i(( )):::ini --> a["Tarea diaria de las 8:00"]
+  a --> c0{"¿Envío de correos<br/>configurado?"}
+  c0 -- No --> e0["Registrar en el log y terminar"] --> f
+  c0 -- Sí --> b["Buscar membresías activas que vencen<br/>en los próximos 7 días"]
+  b --> c1{"¿Plan de 15 días o más,<br/>avisos autorizados, sin pendiente<br/>y sin aviso previo?"}
+  c1 -- No --> s["No se avisa"] --> f
+  c1 -- Sí --> d["Enviar el correo con el plan<br/>y la fecha de fin"]
+  d --> c2{"¿El proveedor aceptó el envío?"}
+  c2 -- Sí --> g["Registrar el aviso<br/>(no se vuelve a enviar)"] --> f((( ))):::fin
+  c2 -- No --> h["Registrar el error;<br/>se reintenta al día siguiente"] --> f
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

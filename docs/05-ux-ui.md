@@ -30,6 +30,7 @@
 | 2.2 | 22/11/2026 | Pantalla de ingreso: textos de espera, aviso de huella no registrada (4 s) y reconexión automática con el lector | Juan Diego Mejía Llano |  |
 | 2.3 | 23/11/2026 | Pruebas responsive en celular, tablet y computador (Chrome) y revisión de accesibilidad con Lighthouse; login con <main> | Juan Diego Mejía Llano |  |
 | 2.4 | 23/11/2026 | Lista de verificación final diligenciada | Juan Diego Mejía Llano |  |
+| 2.5 | 24/11/2026 | Pantalla UI-10 (recuperar contraseña en tres pasos), casillas de consentimiento en el formulario de clientes y botón de regreso en el encabezado | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -257,6 +258,7 @@ Incluya el mapa del sitio o arquitectura de información en una herramienta edit
 | UI-07  | Historial de accesos                                   | Página   | Admin, Empleado                      |              |           | HU-006         | Implementado | 1.0         |
 | UI-08  | Personal                                               | Página   | Admin                                |              |           | HU-002         | Implementado | 1.0         |
 | UI-09  | Registro financiero                                    | Página   | Admin                                |              |           | HU-008         | Implementado | 1.0         |
+| UI-10  | Recuperar contraseña (correo, código y nueva contraseña) | Página | Todos (sin sesión)            |              |           | HU-014         | Implementado | 1.0         |
 
 ### 6.2 Ficha de pantalla
 
