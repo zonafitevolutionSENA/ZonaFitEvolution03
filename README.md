@@ -68,9 +68,9 @@ Desde `BackendZonafitevolution/`:
    mysql -u root -p zonafitevolution < database/init.sql
 ```
 
-Atención: `init.sql` elimina y vuelve a crear `roles`, `usuarios` y `membresias`. No lo ejecutes si ya tienes datos que quieras conservar.
+`init.sql` ya no borra nada: no tiene `DROP TABLE`, todas sus tablas usan `CREATE TABLE IF NOT EXISTS` y los planes se siembran sin duplicarse. Se puede volver a ejecutar sobre una base con datos para aplicar los cambios de esquema.
 
-`init.sql` es el único script SQL del proyecto: no hay migraciones. Todo cambio de esquema se hace directamente en ese archivo. Como sus tablas usan `CREATE TABLE IF NOT EXISTS`, una base creada con una versión anterior no recibe los cambios: hay que recrearla (`DROP DATABASE zonafitevolution;` y volver a ejecutar los dos comandos de arriba).
+`init.sql` es el único script SQL del proyecto: no hay migraciones. Las columnas nuevas de una versión posterior (`planes.activo`, `usuarios.contrasena_cambiada_en`, `clientes.terminos_aceptados_en` y `clientes.avisos_aceptados_en`) se agregan solas al ejecutarlo, y las tablas nuevas (`recuperaciones_contrasena`, `avisos_membresia`) se crean si faltan. En Railway hay que ejecutarlo **antes** de desplegar un cambio de esquema; si no, el backend falla al usar la columna o la tabla nueva.
 
 3. Copiar `.env.example` como `.env` y completar `DB_PASSWORD`, `JWT_SECRET` (al menos 32 caracteres: con menos, el servidor no arranca) y `BIOMETRIA_SALT`. 4. Crear el primer Admin: `node scripts/crear-admin.js "Nombre" correo@ejemplo.com contrasena`
 (se ejecuta dentro de `BackendZonafitevolution/`, porque lee su `.env`). 5. Iniciar el servidor: `npm start` (por defecto en `http://localhost:3000`).
@@ -116,8 +116,8 @@ El cliente no necesita una cuenta: la pantalla espera la huella en el lector y m
 - En Railway el backend usa `TIPO_LECTOR=remoto`: no abre el USB, sino que envía las órdenes `registrar`, `capturar` y `eliminar` al agente por WebSocket (ADR-008).
 - `FrontendZonafitevolution/vercel.json` agrega cabeceras de seguridad al frontend: CSP (scripts solo del propio sitio y conexiones solo a la API de Railway), `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy` y `Permissions-Policy`. Si cambia el dominio de la API, hay que actualizar `connect-src` en ese archivo.
 - Las variables de producción viven en Railway (backend) y en Vercel (`VITE_API_URL`, de tipo **Config**). Los secretos nunca se suben al repositorio.
-- El esquema se cargó una sola vez con `database/init.sql`; si cambia, se recrea la base desde un respaldo (no hay migraciones).
-- Costo: Vercel Hobby es gratis; Railway usa la prueba de 30 días ($5 de crédito) y después el plan Hobby ($5 USD/mes).
+- El esquema se carga con `database/init.sql`, que no borra datos: ante un cambio de esquema se vuelve a ejecutar en MySQL de Railway (con root, en una sola sesión de la consola) **antes** de desplegar el backend. No hay migraciones.
+- Costo: Vercel Hobby es gratis; Railway está en el plan Hobby ($5 USD/mes) desde el 24/11/2026; Brevo es gratis hasta 300 correos al día.
 
 Procedimiento completo, variables y pruebas de humo: [`docs/manual-tecnico.md`](docs/manual-tecnico.md), sección 11.
 
@@ -229,6 +229,7 @@ Reglas: la cédula es obligatoria, solo numérica (6 a 15 dígitos) y única (40
 | Método            | Ruta                             | Roles permitidos |
 | ----------------- | -------------------------------- | ---------------- |
 | POST              | /api/auth/login                  | Público          |
+| POST              | /api/auth/recuperar, /api/auth/recuperar/verificar, /api/auth/recuperar/restablecer | Público (olvidé mi contraseña) |
 | POST, GET, DELETE | /api/usuarios, /api/usuarios/:id | Solo Admin (no borra la propia cuenta ni al último admin: 409) |
 | GET               | /api/roles                       | Solo Admin       |
 | POST, GET         | /api/membresias                  | Admin, Empleado  |
@@ -471,7 +472,10 @@ Es la interfaz oficial del sistema: el backend ya no sirve pantallas HTML, solo 
 | ------------------------------------------------------------------------------ | ------------ |
 | Inicio de sesión con JWT contra `POST /api/auth/login`                         | Implementado |
 | Mensajes de error (credenciales inválidas, servidor sin conexión)              | Implementado |
-| Sesión persistente (sobrevive a recargar la página)                            | Implementado |
+| Sesión persistente al recargar (mientras la pestaña siga abierta)              | Implementado |
+| Olvidé mi contraseña (código de 6 dígitos al correo)                           | Implementado |
+| Aviso de vencimiento por correo y consentimientos del cliente (CR-010)         | Implementado |
+| Botón de regreso a la pantalla anterior                                        | Implementado |
 | Cierre de sesión                                                               | Implementado |
 | Tema visual negro y amarillo, responsive                                       | Implementado |
 | Menú lateral y barra superior                                                  | Implementado |
@@ -684,10 +688,11 @@ Los clientes **no se eliminan**: lo que se gestiona es el estado de su membresí
 ## Autenticación y sesión
 
 1. `Login.jsx` envía `{ correo, contrasena }` a `POST /api/auth/login` mediante `authService.iniciarSesion`.
-2. Si la API responde correctamente, el `token` y el `usuario` se guardan en `localStorage` (claves `token` y `usuario`).
-3. `App.jsx` lee el usuario guardado al iniciar, por lo que la sesión se conserva al recargar.
+2. Si la API responde correctamente, el `token` y el `usuario` se guardan en `sessionStorage` (clave `zonafitSesion`).
+3. `App.jsx` lee la sesión guardada al iniciar: se conserva al recargar mientras la pestaña siga abierta. Al cerrar la pestaña o el navegador hay que volver a iniciar sesión, y un token vencido no se restaura.
 4. `api.js` agrega automáticamente la cabecera `Authorization: Bearer <token>` a cada petición.
-5. Al cerrar sesión se borran ambas claves y se vuelve al formulario de login.
+5. Al cerrar sesión se borra la clave y se vuelve al formulario de login.
+6. El backend revoca las sesiones abiertas de una cuenta cuando se restablece su contraseña o se elimina el usuario: en cada petición, `verificarToken` consulta al usuario y rechaza (401) los tokens emitidos antes de `usuarios.contrasena_cambiada_en`.
 
 El rol llega en `usuario.rol_id`: `1` = Administrador, `2` = Empleado (los mismos valores del backend).
 

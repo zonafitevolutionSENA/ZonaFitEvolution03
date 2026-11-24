@@ -1,0 +1,34 @@
+---
+title: "DIA-SEC-11 · Restablecer contraseña · v1.0 · 24/11/2026"
+---
+%% CU-008 · HU-014 · RF-009 · RN-016, RN-017
+sequenceDiagram
+  participant U as Administrador / Empleado
+  participant F as Frontend
+  participant A as API (auth/recuperar)
+  participant D as Base de datos
+  participant C as Brevo (correo)
+  U->>F: Pulsa «¿Olvidaste tu contraseña?» y escribe su correo
+  F->>A: POST /api/auth/recuperar
+  A->>A: Límite: 10 por IP y 3 por IP y correo en 15 min
+  alt El correo pertenece a un usuario
+    A->>D: Guarda el hash del código de 6 dígitos (vence en 10 min)
+    A->>C: Envía el código al correo
+  end
+  A-->>F: Mismo mensaje exista o no el correo
+  U->>F: Escribe el código recibido
+  F->>A: POST /api/auth/recuperar/verificar
+  A->>D: Busca el código vigente y sin usar
+  alt Código correcto (máx. 5 intentos)
+    A-->>F: tokenRestablecer (JWT de 10 min)
+  else Incorrecto, vencido o usado
+    A-->>F: 400 con los intentos restantes o «Solicita uno nuevo»
+    F-->>U: Muestra el error junto al campo
+  end
+  U->>F: Escribe y confirma la nueva contraseña
+  F->>A: POST /api/auth/recuperar/restablecer
+  A->>A: Reglas: 8 caracteres o más, letras y números,<br/>sin espacios y distinta de la anterior
+  A->>D: Guarda el hash, marca el código como usado<br/>y fija contrasena_cambiada_en
+  A->>C: Envía el aviso de cambio de contraseña
+  A-->>F: «Contraseña actualizada»
+  F-->>U: Vuelve al inicio de sesión (las sesiones abiertas quedan cerradas)

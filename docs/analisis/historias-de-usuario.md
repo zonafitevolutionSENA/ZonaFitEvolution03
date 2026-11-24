@@ -319,6 +319,78 @@
 | Estado                       | En validación                                                                                                                       |
 | Evidencia de aceptación      | Pull Requests en GitHub y demostración en la sprint review                                                                          |
 
+**HU-014 – Restablecer contraseña**
+
+| **Campo**                    | **Contenido** |
+| ---------------------------- | ------------- |
+| ID y título                  | HU-014 – Restablecer contraseña |
+| Épica / funcionalidad | EP-001 / FEAT-013 |
+| Narrativa | Como persona del personal (Administrador o Empleado), quiero restablecer mi contraseña con un código enviado a mi correo para volver a entrar sin depender de otra persona. |
+| Contexto y problema | Antes, si alguien olvidaba la contraseña, el Administrador tenía que eliminar y volver a crear su cuenta. |
+| Valor esperado | Acceso recuperado en minutos y nadie conoce la contraseña de otra persona. |
+| Actor principal | ACT-01 Administrador, ACT-02 Empleado |
+| Requisitos relacionados | RF-009, RNF-001 |
+| Reglas relacionadas | RN-016, RN-017 |
+| Prioridad | Should |
+| Estimación | 5 puntos de historia |
+| Dependencias | HU-002, INT-03 (servicio de correo) |
+| Riesgos | Correo en la carpeta de spam; Railway bloquea el SMTP (resuelto con Brevo). |
+| Prototipo relacionado | UI-10 |
+| Criterios de aceptación | CA-HU-014-01 a CA-HU-014-05 |
+| Casos de prueba | CP-023 a CP-028 |
+| Versión / iteración objetivo | MVP – cierre (CR-011) |
+| Responsable de validación | Liliana Sofía Panesso Méndez (Product Owner) |
+| Estado | Terminada |
+| Evidencia de aceptación | Pull Requests en GitHub, npm test (93 pruebas) y despliegue en producción |
+
+**HU-015 – Aviso de vencimiento por correo**
+
+| **Campo**                    | **Contenido** |
+| ---------------------------- | ------------- |
+| ID y título                  | HU-015 – Aviso de vencimiento por correo |
+| Épica / funcionalidad | EP-002 / FEAT-014 |
+| Narrativa | Como propietario del gimnasio, quiero que el cliente reciba un correo una semana antes de que venza su membresía para que la renueve a tiempo. |
+| Contexto y problema | Muchos clientes se enteran del vencimiento cuando el lector les niega el ingreso. |
+| Valor esperado | Más renovaciones a tiempo, sin insistir: un solo aviso y solo a quien lo autorizó. |
+| Actor principal | ACT-05 Tarea programada (beneficiario: ACT-03 Cliente) |
+| Requisitos relacionados | RF-010 |
+| Reglas relacionadas | RN-018, RN-019 |
+| Prioridad | Should |
+| Estimación | 3 puntos de historia |
+| Dependencias | HU-016, INT-03 |
+| Riesgos | Límite diario del proveedor (300 correos); correos marcados como spam. |
+| Prototipo relacionado | Correo del aviso |
+| Criterios de aceptación | CA-HU-015-01 a CA-HU-015-03 |
+| Casos de prueba | CP-029, CP-030 |
+| Versión / iteración objetivo | MVP – cierre (CR-010) |
+| Responsable de validación | Liliana Sofía Panesso Méndez (Product Owner) |
+| Estado | Terminada |
+| Evidencia de aceptación | Pull Requests en GitHub, npm test (93 pruebas) y despliegue en producción |
+
+**HU-016 – Registrar los consentimientos del cliente**
+
+| **Campo**                    | **Contenido** |
+| ---------------------------- | ------------- |
+| ID y título                  | HU-016 – Registrar los consentimientos del cliente |
+| Épica / funcionalidad | EP-001 / FEAT-014 |
+| Narrativa | Como recepcionista, quiero registrar que el cliente acepta los términos y el tratamiento de sus datos, y si autoriza los avisos por correo, para cumplir la Ley 1581 y poder probarlo. |
+| Contexto y problema | La autorización de datos se tomaba solo en papel y no quedaba en el sistema. |
+| Valor esperado | Constancia con fecha de cada autorización y avisos solo a quien los aceptó. |
+| Actor principal | ACT-02 Empleado (también ACT-01) |
+| Requisitos relacionados | RF-011, RNF-006 |
+| Reglas relacionadas | RN-019 |
+| Prioridad | Must |
+| Estimación | 2 puntos de historia |
+| Dependencias | HU-001 |
+| Riesgos | Clientes registrados antes de las casillas (deben aceptar al editar). |
+| Prototipo relacionado | UI-03 |
+| Criterios de aceptación | CA-HU-016-01 a CA-HU-016-03 |
+| Casos de prueba | CP-031, CP-032 |
+| Versión / iteración objetivo | MVP – cierre (CR-010) |
+| Responsable de validación | Liliana Sofía Panesso Méndez (Product Owner) |
+| Estado | Terminada |
+| Evidencia de aceptación | Pull Requests en GitHub, npm test (93 pruebas) y despliegue en producción |
+
 ### 6.2 Redacción efectiva
 
 | **Problema frecuente**                  | **Corrección recomendada**                                                                   |
@@ -368,6 +440,17 @@
 | CA-HU-008-02 | HU-008       | El Empleado no ve ni consulta el registro financiero.                               | Permiso  | Alta          | CP-015               |
 | CA-HU-010-01 | HU-010       | Sin token válido la API responde 401.                                               | Permiso  | Alta          | CP-020               |
 | CA-HU-012-01 | HU-012       | Cada formulario muestra el error junto al campo y bloquea el botón mientras guarda. | Éxito    | Media         | Prueba de usabilidad |
+| CA-HU-014-01 | HU-014       | Con el código correcto se guarda la nueva contraseña y llega un aviso del cambio al correo. | Éxito | Alta | CP-024, CP-027 |
+| CA-HU-014-02 | HU-014       | Un correo no registrado recibe el mismo mensaje y no se envía nada.                  | Seguridad | Alta | CP-023 |
+| CA-HU-014-03 | HU-014       | Un código incorrecto informa los intentos restantes; después de 5 fallos deja de servir. | Error | Alta | CP-025 |
+| CA-HU-014-04 | HU-014       | Un código vencido (más de 10 minutos) o ya usado se rechaza.                         | Límite   | Alta          | CP-026               |
+| CA-HU-014-05 | HU-014       | Al guardar la nueva contraseña se cierran las sesiones abiertas de la cuenta.         | Seguridad | Alta | CP-028 |
+| CA-HU-015-01 | HU-015       | Un cliente con plan de 15 días o más y avisos autorizados recibe un solo correo 7 días antes. | Éxito | Media | CP-029 |
+| CA-HU-015-02 | HU-015       | No se avisa a planes cortos, a quien no autorizó ni a quien ya renovó.                | Límite   | Media         | CP-029               |
+| CA-HU-015-03 | HU-015       | Si el envío falla, el aviso se reintenta al día siguiente.                            | Error    | Media         | CP-030               |
+| CA-HU-016-01 | HU-016       | Sin aceptar los términos el cliente no se registra.                                   | Error    | Alta          | CP-031               |
+| CA-HU-016-02 | HU-016       | Las fechas de aceptación de términos y avisos quedan guardadas.                       | Éxito    | Alta          | CP-031               |
+| CA-HU-016-03 | HU-016       | Los avisos se pueden autorizar o retirar al editar; un cliente anterior debe aceptar los términos primero. | Éxito | Media | CP-032 |
 
 ### 7.2 Formato Given / When / Then
 
@@ -382,6 +465,10 @@
 | ESC-HU-006-02    | Acceso denegado    | un cliente con membresía vencida ayer              | pone su huella                            | el acceso se niega con el motivo «Membresía vencida»         | RN-002             |
 | ESC-HU-006-03    | Huella desconocida | una huella sin cliente asociado                    | se presenta en el lector                  | el acceso se niega y queda en el historial                   | RN-010             |
 | ESC-HU-008-01    | Resumen de pagos   | un cliente con dos membresías                      | el Administrador abre su detalle          | aparecen los dos pagos con plan, monto y fecha               | RN-004             |
+| ESC-HU-014-01    | Restablecer        | un Empleado que olvidó su contraseña               | verifica el código y guarda una nueva válida | la contraseña cambia y su sesión abierta en otro equipo se cierra | RN-016, RN-017 |
+| ESC-HU-014-02    | Código vencido     | un código pedido hace 11 minutos                   | lo escribe                                | se muestra «El código no es válido o ya venció. Solicita uno nuevo.» | RN-016 |
+| ESC-HU-015-01    | Aviso enviado      | un cliente con Mensualidad que vence en 7 días y avisos autorizados | corre la tarea de las 8:00 | recibe un correo y no vuelve a recibirlo por esa membresía | RN-018 |
+| ESC-HU-016-01    | Sin términos       | un Empleado registrando a un cliente               | guarda sin marcar la casilla de términos  | se muestra el error de la casilla y no se registra           | RN-019             |
 
 ### 7.3 Cobertura mínima de criterios
 

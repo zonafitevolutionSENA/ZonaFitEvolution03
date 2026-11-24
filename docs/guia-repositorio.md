@@ -13,6 +13,7 @@
 | 0.4 | 23/11/2026 | Declaración de uso de IA (13.2), evidencias de la entrega final en docs/pruebas y docs/evidencias | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.5 | 23/11/2026 | Liberación v1.0.0, estructura actualizada (pruebas, CI y evidencias), paquete final y lista de verificación | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.6 | 23/11/2026 | Documentación de la API con OpenAPI y Swagger UI; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.7 | 24/11/2026 | Carpeta docs/legal con la Política de tratamiento y los términos; diagramas de los casos de uso CU-008 y CU-009; 93 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -75,7 +76,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | **Ruta**              | **Responsabilidad**                                                            | **Contenido permitido**             | **Contenido no permitido**             |
 | --------------------- | ------------------------------------------------------------------------------ | ----------------------------------- | -------------------------------------- |
 | /src                  | Backend y frontend (BackendZonafitevolution/src, FrontendZonafitevolution/src) | Módulos, capas, componentes         | Backups, secretos, archivos temporales |
-| /tests                | BackendZonafitevolution/test (50 pruebas unitarias) y scripts/pruebas-cp.js (integración)                                                             | Unitarias, integración, E2E         | Evidencia manual sin contexto          |
+| /tests                | BackendZonafitevolution/test (93 pruebas unitarias) y scripts/pruebas-cp.js (integración)                                                             | Unitarias, integración, E2E         | Evidencia manual sin contexto          |
 | /docs                 | docs/: Markdown vivos, diagramas/, analisis/casos-uso/ y entregables/                                                             | ADR, diagramas, API, guías          | Copias desactualizadas sin versión     |
 | /migrations           | No existe (init.sql)                                                           | Migraciones ordenadas y reversibles | SQL manual sin control                 |
 | /scripts              | BackendZonafitevolution/scripts                                                | Setup, build, seed, backup          | Scripts destructivos sin advertencia   |
@@ -352,7 +353,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | Herramienta       | Claude y Claude Code (Anthropic), en chat y en el editor; Gemini (Google), en chat                                 |
 | Uso realizado     | Claude: código, pruebas, depuración, despliegue, documentación y diagramas. Gemini: propuestas de diseño UX/UI y redacción de textos        |
 | Partes afectadas  | BackendZonafitevolution, FrontendZonafitevolution, AgenteLector, .github/workflows, docs/ (Markdown, entregables y diagramas)                             |
-| Validación humana | Revisión del código antes de aceptarlo; 50 pruebas unitarias, ciclos CIC-01 y CIC-02 y pruebas manuales; revisión de los documentos contra el sistema real                     |
+| Validación humana | Revisión del código antes de aceptarlo; 93 pruebas unitarias, ciclos CIC-01 y CIC-02 y pruebas manuales; revisión de los documentos contra el sistema real                     |
 | Limitaciones      | Respuestas con errores o que no coincidían con el sistema real, corregidas al revisarlas; coautoría automática de Claude en commits y descripciones de PR, retirada                  |
 | Responsabilidad   | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla (cada uno en su parte) |
 

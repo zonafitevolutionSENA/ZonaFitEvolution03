@@ -18,6 +18,7 @@
 | 1.7 | 23/11/2026 | Navegador soportado: Chrome (CR-009) | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.8 | 23/11/2026 | Versión v1.0.0, paquete técnico de entrega, sesión de transferencia y lista de verificación | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.9 | 23/11/2026 | Contrato OpenAPI de la API (openapi.yaml) y Swagger UI en /api/docs; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | En revisión |
+| 2.0 | 24/11/2026 | Envío de correos (Brevo y Gmail), recuperación de contraseña, aviso de vencimiento, init.sql sin DROP y su ejecución en Railway, supresión y anonimización de datos, dependencias críticas, DT-07 y 93 pruebas | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -160,6 +161,8 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Motor de base de datos   | MySQL o MariaDB (p. ej., XAMPP); MySQL 8.4 en Railway           | Sí                             | XAMPP en local; Railway en producción | mysql --version             |
 | Docker / equivalente     | No aplica                                                       | No                             | —                                     | —                           |
 | Herramientas adicionales | Controlador del CP2102; Node.js 20 o superior para AgenteLector | Solo en el portátil del lector | Fabricante del conversor; nodejs.org  | Puerto COM visible; node -v |
+| Paquetes del backend     | express 5, mysql2 3, jsonwebtoken 9, bcrypt 6, express-rate-limit, ws, nodemailer 10.6.1 (Gmail por SMTP), swagger-ui-express | Sí | npm install (package-lock.json) | npm ls --depth=0 |
+| Servicio de correo       | Cuenta de Brevo con remitente verificado (producción) o cuenta de Gmail con contraseña de aplicación (local) | Sí para recuperar contraseñas y enviar avisos | brevo.com; myaccount.google.com/apppasswords | GET /api/salud y un código de prueba |
 
 ### 4.3 Puertos, protocolos y conectividad
 
@@ -221,7 +224,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Ruta**                     | **Contenido**                           | **Responsabilidad**          | **Artefactos principales**                              |
 | ---------------------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------------- |
 | /BackendZonafitevolution/src | API en capas                            | Liliana Sofía Panesso Méndez | routes, controllers, services, repositories             |
-| /tests                       | BackendZonafitevolution/test (50 pruebas) y scripts/pruebas-cp.js                      |                              |                                                         |
+| /tests                       | BackendZonafitevolution/test (93 pruebas) y scripts/pruebas-cp.js                      |                              |                                                         |
 | /docs                        | Documentos del proyecto                 | Juan Diego Mejía Llano       | analisis/Historias\_de\_Usuario\_y\_Casos\_de\_Uso.docx |
 | /migrations                  | No existe; esquema en database/init.sql | Liliana Sofía Panesso Méndez | init.sql                                                |
 | /scripts                     | Utilidades del backend                  | Liliana Sofía Panesso Méndez | crear-admin.js                                          |
@@ -257,6 +260,8 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | ORIGEN\_FRONTEND                 | Orígenes permitidos por CORS, separados por comas                        | URL            | Sí en producción                                  | https://zona-fit-evolution03.vercel.app                                             | No                   | Todos         |
 | TZ                               | Zona horaria del servidor                                                | Texto          | Sí en producción                                  | America/Bogota                                                                      | No                   | Todos         |
 | API\_WS\_URL (AgenteLector)      | Dirección WebSocket del backend                                          | URL            | Sí                                                | wss://zonafitevolution03-production.up.railway.app/agente                           | No                   | Producción    |
+| BREVO\_API\_KEY, CORREO\_REMITENTE | Envío por la API HTTPS de Brevo (producción). El remitente debe estar verificado en Brevo → Senders | Texto | Sí en producción (una de las dos opciones de correo) | \<clave de Brevo\>, zonafitevolution18@gmail.com |
+| CORREO\_USUARIO, CORREO\_CONTRASENA\_APP | Alternativa local: Gmail por SMTP con contraseña de aplicación (Railway bloquea el SMTP) | Texto | No | cuenta@gmail.com, \<16 caracteres\> |
 | VITE\_API\_URL                   | URL base de la API (frontend); en Vercel es de tipo Config               | URL            | Sí                                                | http://localhost:3000/api; https://zonafitevolution03-production.up.railway.app/api | No                   | Todos         |
 
 <table>
@@ -336,7 +341,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Seleccionar versión    | git checkout main                                                                                                               | Rama de entrega                  | git branch                                            |
 | Instalar dependencias  | cd BackendZonafitevolution && npm install; cd ..\\FrontendZonafitevolution && npm install                                       | node\_modules creados            | Sin errores de npm                                    |
 | Crear configuración    | copy .env.example .env (backend); echo VITE\_API\_URL=http://localhost:3000/api\> .env (frontend)                               | .env completos                   | DB\_PASSWORD, JWT\_SECRET y BIOMETRIA\_SALT definidos |
-| Preparar base de datos | mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS zonafitevolution;" y mysql -u root -p zonafitevolution \< database\\init.sql | 7 tablas creadas                 | SHOW TABLES                                           |
+| Preparar base de datos | mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS zonafitevolution;" y mysql -u root -p zonafitevolution \< database\\init.sql | 9 tablas creadas                 | SHOW TABLES                                           |
 | Ejecutar pruebas       | npm test (unitarias); con una base vacía llamada zonafitevolution_pruebas: npm run pruebas-cp -- ../docs/pruebas/CIC-01-resultados.md                                                                                           | Todas aprobadas y reporte del ciclo generado |                                                       |
 | Iniciar aplicación     | npm start (backend); npm run dev (frontend)                                                                                     | API en :3000 y frontend en :5173 | Abrir http://localhost:5173                           |
 
@@ -361,8 +366,8 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 <td><p>cd BackendZonafitevolution</p>
 <p>mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS zonafitevolution;"</p>
 <p>mysql -u root -p zonafitevolution &lt; database\init.sql</p>
-<p>Atención: init.sql borra y vuelve a crear roles, usuarios y membresias; no ejecutarlo sobre una base con datos. Crea los 8 planes de 2026 (Sesión, Quincena, Mensualidad, Trimestre, tarifas de estudiantes y tiqueteras x6 y x12). Es el único script SQL: ante un cambio de esquema se recrea la base.</p>
-<p>Usuario técnico con permisos mínimos: por definir para producción.</p></td>
+<p>init.sql no borra datos: no tiene DROP TABLE, crea las tablas que falten (9 en total), agrega las columnas nuevas (planes.activo, usuarios.contrasena_cambiada_en, clientes.terminos_aceptados_en y clientes.avisos_aceptados_en) y no duplica los planes, así que se puede volver a ejecutar sobre una base con datos. Crea los 8 planes de 2026 (Sesión, Quincena, Mensualidad, Trimestre, tarifas de estudiantes y tiqueteras x6 y x12). Es el único script SQL: ante un cambio de esquema se vuelve a ejecutar con root.</p>
+<p>Usuario técnico con permisos mínimos: en producción la API usa zonafit_app (SELECT, INSERT, UPDATE y DELETE); init.sql se ejecuta con root (SEG-08).</p></td>
 </tr>
 </tbody>
 </table>
@@ -372,8 +377,8 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Operación**         | **Comando / procedimiento**                                                                         | **Precondición** | **Resultado esperado** | **Rollback** |
 | --------------------- | --------------------------------------------------------------------------------------------------- | ---------------- | ---------------------- | ------------ |
 | Consultar estado      | mysql -u root -p -e "USE zonafitevolution; SHOW TABLES;"                                            |                  |                        |              |
-| Aplicar migraciones   | No hay migraciones: database\\init.sql es el único script (recrear la base ante cambios de esquema) |                  |                        |              |
-| Crear nueva migración | Editar database\\init.sql y recrear la base                                                         |                  |                        |              |
+| Aplicar migraciones   | No hay migraciones: volver a ejecutar database\\init.sql con root; agrega lo que falte sin borrar datos |                  |                        |              |
+| Crear nueva migración | Editar database\\init.sql: CREATE TABLE IF NOT EXISTS para tablas nuevas y una sentencia preparada que agregue la columna solo si falta (ver contrasena\_cambiada\_en) |                  |                        |              |
 | Revertir migración    | Restaurar respaldo                                                                                  |                  |                        |              |
 | Validar esquema       | SHOW TABLES y DESCRIBE \<tabla\>                                                                    |                  |                        |              |
 
@@ -406,6 +411,33 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 </tr>
 </tbody>
 </table>
+
+### 8.5 Supresión y anonimización de datos de un cliente
+
+Los clientes no se eliminan (RN-001) porque sus membresías e ingresos forman el historial. Cuando un titular pide la supresión de sus datos (Ley 1581, art. 8; Política de tratamiento, `docs/legal/politica-tratamiento-datos.md`), el responsable técnico aplica este procedimiento manual. Automatizarlo desde la aplicación queda como trabajo futuro.
+
+1.  Registrar la solicitud (fecha, titular, canal) y responderla dentro de los 15 días hábiles que fija la ley.
+
+2.  Tomar un respaldo (sección 15).
+
+3.  Desde la aplicación, en «Clientes», eliminar la huella del cliente: se borra del sensor y de plantillas\_biometricas.
+
+4.  En Railway → MySQL → Console, abrir la sesión como root (export MYSQL\_PWD="$MYSQL\_ROOT\_PASSWORD"; mysql -uroot railway) y ejecutar, con el id del cliente:
+
+<table>
+<tbody>
+<tr class="odd">
+<td><p>START TRANSACTION;</p>
+<p>UPDATE clientes SET nombre = CONCAT('Cliente anonimizado ', id), cedula = CONCAT('ANON', id), correo = NULL, telefono = NULL, terminos_aceptados_en = NULL, avisos_aceptados_en = NULL WHERE id = &lt;id_del_cliente&gt;;</p>
+<p>SELECT id, nombre, cedula, correo, telefono FROM clientes WHERE id = &lt;id_del_cliente&gt;;</p>
+<p>COMMIT;</p></td>
+</tr>
+</tbody>
+</table>
+
+5.  Verificar en la aplicación que el cliente aparece como «Cliente anonimizado N» sin correo ni teléfono. Sus membresías y su historial quedan sin datos que lo identifiquen; el historial de más de 3 meses se borra solo.
+
+6.  Informar al titular que la supresión se hizo. El cliente anonimizado no se vuelve a editar (el formulario exige correo) y no recibe avisos.
 
 ## 9\. Compilación, pruebas y verificación técnica
 
@@ -490,9 +522,9 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 3\. Railway, servicio del backend: Root Directory /BackendZonafitevolution, rama main, Watch Paths /BackendZonafitevolution/\*\*, Start Command npm start, Healthcheck Path /api/salud, dominio público generado en el puerto 8080.
 
-4\. Variables del backend (Raw Editor): DB\_HOST=${{MySQL.MYSQLHOST}}, DB\_PORT=${{MySQL.MYSQLPORT}}, DB\_USER=zonafit\_app, DB\_PASSWORD=<contraseña de zonafit\_app>, DB\_NAME=${{MySQL.MYSQLDATABASE}}, JWT\_SECRET, JWT\_EXPIRES\_IN=8h, BIOMETRIA\_SALT (el mismo de siempre), TZ=America/Bogota, ORIGEN\_FRONTEND, TIPO\_LECTOR=remoto, AGENTE\_TOKEN y PANTALLA\_TOKEN. Los tokens se generan con node -e "console.log(require('crypto').randomBytes(32).toString('hex'))". El usuario zonafit_app se crea una vez como root en MySQL → Database → Data: CREATE USER 'zonafit_app'@'%' IDENTIFIED BY '<clave>' y GRANT SELECT, INSERT, UPDATE, DELETE ON railway.* TO 'zonafit_app'@'%' -- (la consola de Railway agrega LIMIT 100 a las sentencias con SELECT; el -- lo anula). Al pegar la contraseña en la variable, verificar que no queden espacios ni saltos de línea.
+4\. Variables del backend (Raw Editor): BREVO\_API\_KEY (Brevo → SMTP & API → API Keys; la pega el responsable, nunca se comparte) y CORREO\_REMITENTE=zonafitevolution18@gmail.com (verificado en Brevo → Senders), DB\_HOST=${{MySQL.MYSQLHOST}}, DB\_PORT=${{MySQL.MYSQLPORT}}, DB\_USER=zonafit\_app, DB\_PASSWORD=<contraseña de zonafit\_app>, DB\_NAME=${{MySQL.MYSQLDATABASE}}, JWT\_SECRET, JWT\_EXPIRES\_IN=8h, BIOMETRIA\_SALT (el mismo de siempre), TZ=America/Bogota, ORIGEN\_FRONTEND, TIPO\_LECTOR=remoto, AGENTE\_TOKEN y PANTALLA\_TOKEN. Los tokens se generan con node -e "console.log(require('crypto').randomBytes(32).toString('hex'))". El usuario zonafit_app se crea una vez como root en MySQL → Database → Data: CREATE USER 'zonafit_app'@'%' IDENTIFIED BY '<clave>' y GRANT SELECT, INSERT, UPDATE, DELETE ON railway.* TO 'zonafit_app'@'%' -- (la consola de Railway agrega LIMIT 100 a las sentencias con SELECT; el -- lo anula). Al pegar la contraseña en la variable, verificar que no queden espacios ni saltos de línea.
 
-5\. Esquema: ejecutar las sentencias de database/init.sql en el editor de consultas del servicio MySQL (Database → Data), una por una.
+5\. Esquema: en Railway → MySQL → Console abrir mysql como root (export MYSQL\_PWD="$MYSQL\_ROOT\_PASSWORD"; mysql -uroot railway) y pegar el contenido completo de database/init.sql. Debe hacerse en una sola sesión, porque las sentencias preparadas que agregan columnas usan variables de sesión; el editor Database → Data ejecuta cada consulta por separado.
 
 6\. Administrador: en la consola del backend (Console) cargar el entorno del contenedor y ejecutar npm run crear-admin -- "Nombre" correo contraseña. La consola no trae el PATH de Node; se carga con: set -a; . \<(tr '\\0' '\\n' \< /proc/1/environ | grep -E '^(PATH|DB\_\[A-Z\]+|TZ)=' | sed "s/=/='/; s/$/'/"); set +a. Al terminar, borrar el historial con history -c.
 
@@ -510,7 +542,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 3\. Comprobar /api/salud y las pruebas de humo de la sección 11.4.
 
-4\. Si un cambio toca init.sql, recrear la base desde un respaldo (DT-010): no hay migraciones.
+4\. Si un cambio toca init.sql (tablas o columnas nuevas), tomar un respaldo y ejecutar init.sql en Railway (paso 5 del primer despliegue) **antes** de unir el PR a main; si no, la API nueva falla al usar la columna o la tabla que falta. init.sql no borra datos.
 
 5\. Registrar el despliegue en la sección 11.3.
 
@@ -520,6 +552,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | ---------------- | ------------ | -------------------------------------- | ---------------------- | ------------------------------------------------------------------ | ------------- | ------------------------------------------------------------------- |
 | 11/11/2026 18:48 | Producción   | main · PR \#60 (despliegue en la nube) | Juan Diego Mejía Llano | init.sql cargado en MySQL de Railway (7 tablas, 2 roles, 8 planes) | Exitoso       | /api/salud responde; healthcheck de Railway en verde                |
 | 11/11/2026 19:05 | Producción   | Vercel con VITE\_API\_URL de Railway   | Juan Diego Mejía Llano | —                                                                  | Exitoso       | Login, cliente, membresía, huella e ingreso permitido desde la nube |
+| 24/11/2026 | Producción   | main · feature/recuperar-contrasena y fix/correcciones-generales (Liliana) y PR \#92 a \#103 (Brevo, avisos de vencimiento, consentimientos y botón de regreso) | Juan Diego Mejía Llano | init.sql ejecutado de nuevo en MySQL de Railway antes del despliegue: 9 tablas, sin pérdida de datos | Exitoso | /api/salud y correo de prueba |
 |                  |              |                                        |                        |                                                                    |               |                                                                     |
 
 ### 11.4 Pruebas de humo posteriores
@@ -598,7 +631,8 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | Auditoría de dependencias       |                           |                 | npm audit                                          |               |
 | Renovación de certificados      |                           |                 | Lo gestiona el hosting                             |               |
 | Revisión de usuarios y permisos |                           |                 | Revisar usuarios en Personal                       |               |
-| Mantenimiento de base de datos  |                           |                 | mysqldump diario                                   |               |
+| Mantenimiento de base de datos  | Semanal y antes de cada despliegue | Juan Diego Mejía Llano | mysqldump (sección 15); el historial de más de 3 meses se borra solo a las 00:05 | Deploy Logs |
+| Avisos de vencimiento           | Diaria (8:00, automática) | Juan Diego Mejía Llano | Revisar en Deploy Logs «avisos de vencimiento» (pendientes, enviados, fallidos) y el uso diario en Brevo (máx. 300) | Deploy Logs |
 
 ### 13.3 Ventanas de mantenimiento
 
@@ -808,16 +842,16 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | ------ | -------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------- | ------------- | ---------------------------------------------------------------------------------------------- | -------------------- |
 | DT-01  | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Histórico financiero inexacto; no se guarda el método de pago. |            |               | Crear la tabla pagos (TT-005).                                                                 |                      |
 | DT-02  | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | —                                                              |            |               | —                                                                                              |                      |
-| DT-03  | Vencimiento marcado desde el frontend, no con tarea programada.                        | Estado guardado desactualizado.                                |            |               | Tarea programada en el backend (TT-006).                                                       |                      |
+| DT-03  | Resuelto: tarea diaria en el backend (00:05 y al arrancar) que vence las activas y activa las pendientes. | — |            |               | Tarea programada en el backend (TT-006).                                                       |                      |
 | DT-04  | Resuelto: se retiró la ruta DELETE /api/clientes/:id (TT-002).                    | —                                       |            |               | TT-002.                                                                               |                      |
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | —                               |            |               | TT-001.                                                                               |                      |
-| DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
-| DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                                                                      |                      |
-| DT-08  | Resuelto: 50 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
+| DT-06  | Resuelto: límite de intentos de inicio de sesión y de recuperación de contraseña; CORS restringido a ORIGEN_FRONTEND. | — |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
+| DT-07  | Resuelta en parte: token en sessionStorage (termina al cerrar la pestaña) y revocación al restablecer la contraseña o eliminar el usuario. | Exposición ante XSS mientras la pestaña esté abierta (mitigada con la CSP). |            |               | Evaluar cookies httpOnly.                                                                      |                      |
+| DT-08  | Resuelto: 93 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                                                                       |                      |
-| DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                      |
+| DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Sin historial de versiones del esquema; init.sql agrega las columnas y tablas que falten sin borrar datos. |            |               | Decisión del equipo: init.sql es el único script; no borra datos y se vuelve a ejecutar ante cada cambio de esquema. |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | —                                        |            |               | TT-009.                                                                                        |                      |
-| DT-12  | Archivos vacíos cd y npm en la raíz del backend.                                       | Ruido en el repositorio.                                       |            |               | Eliminarlos con un commit chore.                                                               |                      |
+| DT-12  | Resuelto: se borraron los archivos vacíos cd y npm del backend (v1.0.0). | Ruido en el repositorio.                                       |            |               | Eliminarlos con un commit chore.                                                               |                      |
 
 ## 18\. Diagnóstico y solución de problemas
 
@@ -907,10 +941,10 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Escenario**              | **Impacto** | **Prevención** | **Respuesta** | **Recuperación** |
 | -------------------------- | ----------- | -------------- | ------------- | ---------------- |
-| Fallo del servidor         |             |                |               |                  |
-| Pérdida de base de datos   |             |                |               |                  |
-| Compromiso de credenciales |             |                |               |                  |
-| Caída de proveedor externo |             |                |               |                  |
+| Fallo del servidor         | Alto: sin API ni ingreso por huella | Healthcheck /api/salud; Railway reinicia hasta 10 veces | Revisar Deploy Logs y redesplegar la versión anterior | Validación manual por cédula mientras tanto |
+| Pérdida de base de datos   | Crítico | Respaldo semanal y antes de cada despliegue | Crear una base nueva en Railway | Restaurar el último respaldo (sección 15), mismo BIOMETRIA\_SALT |
+| Compromiso de credenciales | Alto | Secretos solo en Railway, Vercel y AgenteLector/.env | Rotar JWT\_SECRET (cierra todas las sesiones), AGENTE\_TOKEN, PANTALLA\_TOKEN, BREVO\_API\_KEY o la clave de zonafit\_app | El personal restablece su contraseña con el código al correo |
+| Caída de proveedor externo | Medio (Brevo) / Alto (Railway, Vercel) | Estado de los proveedores | Brevo: la recuperación responde 503 y los avisos se reintentan al día siguiente; Railway/Vercel: esperar o redesplegar en otro proveedor | Cambiar a Gmail por SMTP en local o a otra cuenta de Brevo |
 | Pérdida del repositorio    |             |                |               |                  |
 | Error humano               |             |                |               |                  |
 
@@ -918,9 +952,9 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 
 | **Dependencia**         | **Criticidad** | **Alternativa** | **Tiempo tolerable** | **Responsable** |
 | ----------------------- | -------------- | --------------- | -------------------- | --------------- |
-| Base de datos           | Crítica        |                 |                      |                 |
-| Proveedor de identidad  |                |                 |                      |                 |
-| Correo / notificaciones |                |                 |                      |                 |
+| Base de datos           | Crítica        | Restaurar el respaldo en una base nueva | 1 hora (RTO) | Juan Diego Mejía Llano |
+| Proveedor de identidad  | No aplica (JWT propio) | — | — | — |
+| Correo / notificaciones (Brevo, API HTTPS) | Media: sin él no se recupera la contraseña ni salen los avisos | Gmail por SMTP en local (Railway bloquea el SMTP en Trial y Hobby, por eso producción usa Brevo); el Administrador puede crear una cuenta nueva | 1 día (los avisos se reintentan; 300 correos al día en el plan gratuito) | Juan Diego Mejía Llano |
 | Almacenamiento          |                |                 |                      |                 |
 | Dominio / DNS           |                |                 |                      |                 |
 
@@ -937,7 +971,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | Migraciones y semillas   | database/init.sql, scripts/crear-admin.js                  | v1.0.0 | Sí | init.sql se ejecuta en cada PR |
 | API / OpenAPI            | BackendZonafitevolution/openapi.yaml y Swagger UI en /api/docs | v1.0.0 | Sí | test/openapi.test.js compara el contrato con las rutas de Express |
 | Pipeline                 | .github/workflows/ci.yml | v1.0.0 | Sí | Pruebas, lint, build, audit e integración |
-| Pruebas y cobertura      | BackendZonafitevolution/test y docs/pruebas | v1.0.0 | Sí | 50 pruebas; 57 % de líneas |
+| Pruebas y cobertura      | BackendZonafitevolution/test y docs/pruebas | v1.0.0 | Sí | 93 pruebas; 65 % de líneas |
 | Configuración de ejemplo | BackendZonafitevolution/.env.example                       | v1.0.0 | Sí | Sin secretos |
 | Respaldo / restauración  | Sección 15 de este manual y docs/pruebas/DAT-06-respaldo-y-restauracion.md | 1.8 | Sí | Restauración probada el 23/11/2026 |
 | Licencia y atribuciones  | LICENSE (ISC) | v1.0.0 | Sí |  |
@@ -964,7 +998,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | 5       | Existe archivo de configuración de ejemplo sin secretos.     | Sí | .env.example del backend y del agente |  |
 | 6       | Las variables de entorno están documentadas.                 | Sí | Matriz de variables (6.1) |  |
 | 7       | La instalación puede ejecutarse en un ambiente limpio.       | Sí | GitHub Actions instala desde cero en cada PR |  |
-| 8       | Las migraciones crean el esquema completo.                   | Sí | init.sql (7 tablas) |  |
+| 8       | Las migraciones crean el esquema completo.                   | Sí | init.sql (9 tablas, se puede volver a ejecutar) |  |
 | 9       | Los datos semilla no contienen información personal real.    | Sí | Planes iniciales y crear-admin sin datos reales |  |
 | 10      | Los comandos de pruebas, lint y build están documentados.    | Sí | Sección de pruebas y README |  |
 | 11      | Los artefactos de entrega son reproducibles.                 | Sí | Build de Vercel y Railway desde main |  |

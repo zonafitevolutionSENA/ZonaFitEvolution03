@@ -1,5 +1,5 @@
 ---
-title: "DIA-005 · Modelo entidad-relación (7 tablas) · v2.0 · 22/11/2026"
+title: "DIA-005 · Modelo entidad-relación (9 tablas) · v2.1 · 24/11/2026"
 ---
 %% Fuente del diagrama de docs/04-arquitectura.md (sección 8.4). Esquema: BackendZonafitevolution/database/init.sql
 erDiagram
@@ -8,6 +8,8 @@ erDiagram
   planes ||--o{ membresias : "plan_id"
   clientes ||--o| plantillas_biometricas : "cliente_id"
   clientes |o--o{ registros_acceso : "cliente_id"
+  usuarios ||--o{ recuperaciones_contrasena : "usuario_id"
+  membresias ||--o{ avisos_membresia : "membresia_id"
   roles {
     INT id PK
     VARCHAR nombre UK
@@ -19,6 +21,16 @@ erDiagram
     VARCHAR contrasena "bcrypt"
     INT rol_id FK
     TIMESTAMP fecha_creacion
+    DATETIME contrasena_cambiada_en "revoca sesiones"
+  }
+  recuperaciones_contrasena {
+    INT id PK
+    INT usuario_id FK "ON DELETE CASCADE"
+    VARCHAR codigo_hash "bcrypt"
+    INT intentos "máx. 5"
+    DATETIME expira_en "10 min"
+    DATETIME usado_en "un solo uso"
+    TIMESTAMP fecha_creacion
   }
   clientes {
     INT id PK
@@ -27,6 +39,8 @@ erDiagram
     VARCHAR correo
     VARCHAR telefono
     TIMESTAMP fecha_registro
+    DATETIME terminos_aceptados_en "obligatorio"
+    DATETIME avisos_aceptados_en "opcional"
   }
   planes {
     INT id PK
@@ -49,6 +63,12 @@ erDiagram
     DATE fecha_primer_uso
     DATE fecha_ultimo_ingreso
     TIMESTAMP fecha_creacion
+  }
+  avisos_membresia {
+    INT id PK
+    INT membresia_id FK "UK con tipo"
+    VARCHAR tipo "vencimiento_7d"
+    DATETIME enviado_en
   }
   plantillas_biometricas {
     INT id PK

@@ -18,6 +18,7 @@
 | 0.9 | 23/11/2026 | Transferencia y continuidad (15) y custodia de activos (15.1) | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.0 | 23/11/2026 | Versión final: etiqueta v1.0.0, entregables finales, cierre administrativo y verificación de cierre; solo queda la firma del acta | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.1 | 23/11/2026 | Contrato OpenAPI y Swagger UI publicados; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.2 | 24/11/2026 | Funcionalidades posteriores a la v1.0.0: recuperación de contraseña, envío de correos con Brevo, aviso de vencimiento y consentimientos (CR-010, CR-011); 9 tablas, DT-07 resuelta en parte, 93 pruebas | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -189,11 +190,11 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Componente**               | **Tecnología / versión**        | **Estado**                  | **Resultado relevante**                  | **Evidencia** |
 | ---------------------------- | ------------------------------- | --------------------------- | ---------------------------------------- | ------------- |
-| Frontend                     | React 19 + Vite                 | Implementado                | 9 pantallas (UI-01 a UI-09)              |               |
+| Frontend                     | React 19 + Vite                 | Implementado                | 10 pantallas (UI-01 a UI-10) y botón de regreso |               |
 | Backend / API                | Node.js + Express 5             | Implementado                | 19 grupos de endpoints bajo /api         |               |
-| Base de datos                | MySQL (mysql2)                  | Implementado                | 7 tablas (init.sql)                      |               |
+| Base de datos                | MySQL (mysql2)                  | Implementado                | 9 tablas (init.sql, sin DROP)            |               |
 | Autenticación / autorización | JWT 8 h + bcrypt; permitirRoles | Implementado | TT-001 y TT-003 terminadas; CP-016 a CP-021 aprobados               |               |
-| Integraciones                | Sensor AS608 + CP2102           | Integrado                   | Registro y validación con el lector real |               |
+| Integraciones                | Sensor AS608 + CP2102; Brevo (correo) | Integrado             | Registro y validación con el lector real; código de recuperación y aviso de vencimiento por correo |               |
 | Infraestructura / despliegue | Vercel (frontend); Railway (API Node.js 20 y MySQL 8.4); agente local del lector             | Implementado                   |                                          |               |
 | Observabilidad               | Consola + registros\_acceso     | Parcial                     | GET /api/salud con el estado del lector; métricas y logs de Railway                 |               |
 
@@ -217,7 +218,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Tipo de prueba** | **Planificadas** | **Ejecutadas** | **Aprobadas** | **Fallidas** | **Bloqueadas** | **Cobertura** |
 | ------------------ | ---------------- | -------------- | ------------- | ------------ | -------------- | ------------- |
-| Unitarias          | 45 | 45 | 45 | 0 | 0 | 57 % de líneas |
+| Unitarias          | 93 | 93 | 93 | 0 | 0 | 65 % de líneas |
 | Integración        | 22 | 22 | 22 | 0 | 0 | CP-001 a CP-022 (CIC-01) |
 | End-to-End         | 5 | 5 | 5 | 0 | 0 | CIC-02 con el sensor en producción |
 | API                |                  |                |               |              |                |               |
@@ -238,7 +239,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Indicador**                      | **Meta** | **Resultado** | **Cumple** | **Fuente** |
 | ---------------------------------- | -------- | ------------- | ---------- | ---------- |
-| Cobertura de pruebas               | RF críticos con caso aprobado | 100 % de RF-001 a RF-008; 57 % de líneas | Sí | docs/pruebas/CIC-01-resultados.md |
+| Cobertura de pruebas               | RF críticos con caso aprobado | 100 % de RF-001 a RF-011 (RF-009 a RF-011 con pruebas automáticas); 65 % de líneas | Sí | docs/pruebas/CIC-01-resultados.md |
 | Defectos críticos abiertos         | 0        | 0 | Sí | docs/pruebas/CIC-01-resultados.md |
 | Build / pipeline exitoso           | Sí       | Pruebas, lint, build, audit e integración en GitHub Actions (.github/workflows/ci.yml) | Sí | Pestaña Actions del repositorio |
 | Tiempo de respuesta crítico        | < 2 s (RNF-003) | p95 6,4 ms en el servidor | Sí (falta medir con el sensor) | docs/pruebas/CIC-01-resultados.md |
@@ -340,16 +341,16 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | ------ | -------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------- | ------------- | ------------ | -------------------- |
 | DT-01  | No existe tabla de pagos: el registro financiero estima con el precio actual del plan. | Revisión del código | Histórico financiero inexacto; no se guarda el método de pago. |               |              |                      |
 | DT-02  | Resuelto: el sensor AS608 está integrado y el simulador se eliminó (PR \#53).          | Revisión del código | —                                                              |               |              |                      |
-| DT-03  | Vencimiento marcado desde el frontend, no con tarea programada.                        | Revisión del código | Estado guardado desactualizado.                                |               |              |                      |
+| DT-03  | Resuelto: tarea diaria en el backend (00:05 y al arrancar) que vence las activas y activa las pendientes. | Revisión del código | Estado guardado desactualizado.                                |               |              |                      |
 | DT-04  | Resuelto: se retiró la ruta DELETE /api/clientes/:id (TT-002).                    | Revisión del código | —                                       |               |              |                      |
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | Revisión del código | —                               |               |              |                      |
-| DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               |              |                      |
-| DT-07  | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               |              |                      |
-| DT-08  | Resuelto: 50 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
+| DT-06  | Resuelto: límite de intentos de inicio de sesión y de recuperación de contraseña; CORS restringido a ORIGEN_FRONTEND. | Revisión del código | Fuerza bruta y exposición en producción.                       |               |              |                      |
+| DT-07  | Resuelta en parte: token en sessionStorage (termina al cerrar la pestaña) y revocación al restablecer la contraseña o eliminar el usuario; sigue expuesto ante XSS mientras la pestaña esté abierta (mitigado con la CSP). | Revisión del código | Exposición ante XSS.                                           |               |              |                      |
+| DT-08  | Resuelto: 93 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml). | Revisión del código | —                      |               |              |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               |              |                      |
-| DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               |              |                      |
+| DT-10  | Esquema creado con init.sql, sin migraciones; no borra datos y se vuelve a ejecutar en cada cambio de esquema. | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               |              |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | Revisión del código | —                                        |               |              |                      |
-| DT-12  | Archivos vacíos cd y npm en la raíz del backend.                                       | Revisión del código | Ruido en el repositorio.                                       |               |              |                      |
+| DT-12  | Resuelto: se borraron los archivos vacíos cd y npm del backend (v1.0.0). | Revisión del código | Ruido en el repositorio.                                       |               |              |                      |
 
 ### 13.1 Criterio de aceptación de deuda
 

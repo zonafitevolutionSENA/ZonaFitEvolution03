@@ -11,6 +11,7 @@
 | 0.2         | 10/11/2026 | Demostración con el sensor AS608 y prueba de huella duplicada; sin simulador                         | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.3         | 11/11/2026 | Demostración desde la nube (Vercel y Railway) con el agente del lector; lista previa y contingencias | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.4 | 22/11/2026 | Portátil de recepción con arranque automático del agente y la pantalla; verificación con «Verificar lector ZonaFit» | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.5 | 24/11/2026 | Demostraciones DEM-06 (restablecer contraseña) y DEM-07 (consentimientos y aviso de vencimiento); modelo de 9 tablas y cambios hasta CR-011 | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -105,8 +106,8 @@ La sustentación es una evaluación técnica y funcional de la solución entrega
 | **Bloque**          | **Mensaje principal**                                                    | **Evidencia que se mostrará**      | **Duración** | **Responsable**                                                                 |
 | ------------------- | ------------------------------------------------------------------------ | ---------------------------------- | ------------ | ------------------------------------------------------------------------------- |
 | Problema y valor    | Ingresos con membresía vencida y filas en la recepción                   | Formulación (INI-01)               |              | Juan Diego Mejía Llano                                                          |
-| Alcance             | MVP, exclusiones y cambios (CR-001 a CR-006)                             | Alcance (REQ-01) y backlog en Jira |              | Juan Diego Mejía Llano                                                          |
-| Arquitectura        | Capas, patrones (State, Adapter, Facade, Singleton) y modelo de 7 tablas | ARQ-01 y código                    |              | Liliana Sofía Panesso Méndez                                                    |
+| Alcance             | MVP, exclusiones y cambios (CR-001 a CR-011)                             | Alcance (REQ-01) y backlog en Jira |              | Juan Diego Mejía Llano                                                          |
+| Arquitectura        | Capas, patrones (State, Adapter, Facade, Singleton) y modelo de 9 tablas | ARQ-01 y código                    |              | Liliana Sofía Panesso Méndez                                                    |
 | Demostración        | Flujos DEM-01 a DEM-05                                                   | Aplicación en vivo                 |              | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla |
 | Pruebas y seguridad | Casos críticos, JWT, bcrypt, hash de huellas y permisos en servidor      | CAL-01 y evidencias                |              | Liliana Sofía Panesso Méndez                                                    |
 | Cierre              | Resultados, limitaciones (DT-01 a DT-12) y siguientes pasos              | Informe de cierre                  |              | Juan Diego Mejía Llano                                                          |
@@ -141,6 +142,8 @@ La demostración debe contar una historia de uso coherente. No debe consistir en
 | DEM-03 | Registrar huella y validar acceso     | Empleado / socio         | RF-003, RF-004 / HU-005, HU-006 | Cliente con membresía activa y otro vencido     | Permitido y denegado con motivo; ambos en el historial |            |
 | DEM-04 | Renovar por cédula                    | Empleado                 | RF-005 / HU-004                 | Cliente con membresía vigente                   | La nueva empieza al día siguiente del vencimiento      |            |
 | DEM-05 | Registro financiero                   | Administrador            | RF-006 / HU-008                 | Clientes con pagos                              | Resumen y detalle de pagos por cliente                 |            |
+| DEM-06 | Restablecer contraseña                | Empleado                 | RF-009 / HU-014                 | Usuario de prueba con un correo al que se tenga acceso | Llega el código, se cambia la contraseña y la sesión abierta en otro equipo se cierra |            |
+| DEM-07 | Consentimientos y aviso de vencimiento | Empleado / sistema      | RF-010, RF-011 / HU-015, HU-016 | Cliente de prueba con correo propio y plan Mensualidad que vence en 7 días | Sin la casilla de términos no se registra; el aviso llega a las 8:00 (o mostrar un correo ya recibido) |            |
 
 ### 5.2 Secuencia recomendada
 

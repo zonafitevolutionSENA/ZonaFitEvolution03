@@ -45,7 +45,7 @@ Otros:
 - [`api/`](api/): contrato OpenAPI de la API ([`openapi.yaml`](../BackendZonafitevolution/openapi.yaml)) y cómo usar Swagger UI en `/api/docs`.
 - [`pruebas/`](pruebas/): resultados de los ciclos de prueba (CIC-01 con `npm run pruebas-cp` y CIC-02 con el sensor en producción), mínimo privilegio en MySQL, compatibilidad y accesibilidad, prueba de restauración y registros de inspección.
 - [`evidencias/`](evidencias/): capturas de las pruebas de la entrega final y [contribución individual](evidencias/contribuciones.md) de cada integrante.
-- [`legal/`](legal/): formato de autorización para el tratamiento de datos personales y biométricos (Ley 1581 de 2012).
+- [`legal/`](legal/): Política de tratamiento de la información (Decreto 1377 de 2013), términos y condiciones y formato de autorización para el tratamiento de datos personales y biométricos (Ley 1581 de 2012).
 - [`capturas/`](capturas/): capturas de la aplicación con datos ficticios usadas en el Manual de usuario.
 - Las épicas, historias y sprints se gestionan en **Jira** (tablero SCRUM); aquí se enlazan, no se copian.
 
@@ -59,11 +59,12 @@ Otros:
 | CR-008 | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso. Implementado en el backend (23/11/2026). |
 | CR-009 | RNF-007 se verifica solo en Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance (23/11/2026). |
 | CR-010 | Aviso por correo 7 días antes del vencimiento (planes de 15 días o más, un solo aviso) y consentimientos del cliente al registrarse: términos y tratamiento de datos (obligatorio) y avisos por correo (opcional). Implementado el 24/11/2026. |
+| CR-011 | Recuperación de contraseña del personal con un código de 6 dígitos al correo y cierre de las sesiones abiertas; el envío de correos pasa a Brevo porque Railway bloquea el SMTP. Implementado el 24/11/2026. |
 
 ## Pendientes del equipo
 
 - **Cierre:** firmas del acta de cierre (Informe de cierre, sección 20) y sustentación.
-- **Datos personales:** completar los datos del gimnasio en el formato de `legal/` y recoger las firmas antes de registrar huellas de socios reales.
+- **Datos personales:** completar los datos del gimnasio (NIT, dirección, correo, responsable de las solicitudes y fecha de vigencia) en los tres documentos de `legal/`, publicar la Política en la recepción y recoger las firmas antes de registrar huellas de socios reales.
 - **Despliegue:** pasar Railway al plan Hobby antes del 10/12/2026 (la prueba de 30 días vence alrededor del 11/12) y respaldar la base con `mysqldump` antes de la sustentación.
 
 En los formatos quedaron en blanco, marcados explícitamente, los datos que solo el equipo puede aportar: costos, horas de dedicación, línea base de indicadores, enlace de Figma, resultados de pruebas, declaración de uso de IA y firmas. Al completarlos se actualizan el Markdown y el entregable correspondiente.
