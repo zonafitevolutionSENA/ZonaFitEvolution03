@@ -8,6 +8,7 @@ import {
   listarPlanes,
 } from "../services/planService";
 import { ROL_ADMIN } from "../utils/permisos";
+import { useRegreso } from "../utils/regreso";
 import "../PantallasGestion.css";
 
 const FILTROS = [
@@ -39,6 +40,8 @@ function Planes({ usuario }) {
   const [recarga, setRecarga] = useState(0);
   // null = solo lista · "nuevo" = formulario de creación · objeto = plan que se edita
   const [formulario, setFormulario] = useState(null);
+  // Flecha de regreso: cierra el formulario del plan y vuelve a la lista de planes
+  useRegreso(formulario !== null, () => setFormulario(null));
   const [cambiandoId, setCambiandoId] = useState(null);
 
   const esAdmin = usuario.rol_id === ROL_ADMIN;

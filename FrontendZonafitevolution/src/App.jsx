@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import BarraLateral from "./components/BarraLateral";
 import Encabezado from "./components/Encabezado";
 import Clientes from "./pages/Clientes";
@@ -13,6 +13,7 @@ import RecuperarContrasena from "./pages/RecuperarContrasena";
 import { obtenerPorVencer } from "./services/dashboardService";
 import { EVENTO_SESION_EXPIRADA, limpiarTokenSesion, obtenerUsuarioGuardado } from "./services/api";
 import { ROL_ADMIN, SECCIONES, seccionPermitida } from "./utils/permisos";
+import { RegresoContext } from "./utils/regreso";
 import "./App.css";
 
 function limpiarSesion() {
@@ -39,6 +40,14 @@ function App() {
   const [vista, setVista] = useState("inicio");
   // Pantallas visitadas antes de la actual, para el botón de regreso del encabezado
   const [historial, setHistorial] = useState([]);
+  // Ventanas internas abiertas en la pantalla actual (formularios, registro de huella…): la flecha cierra la última
+  const [ventanasAbiertas, setVentanasAbiertas] = useState([]);
+
+  const registrarVentana = useCallback((cerrar) => {
+    setVentanasAbiertas((abiertas) => [...abiertas, cerrar]);
+    return () => setVentanasAbiertas((abiertas) => abiertas.filter((c) => c !== cerrar));
+  }, []);
+  const contextoRegreso = useMemo(() => ({ registrar: registrarVentana }), [registrarVentana]);
   const [accionInicial, setAccionInicial] = useState(null);
   const [porVencer, setPorVencer] = useState(null);
   const [errorNotificaciones, setErrorNotificaciones] = useState("");
@@ -115,8 +124,13 @@ function App() {
     cambiarVista(destino);
   }
 
-  // Vuelve a la pantalla anterior. La sección se abre en su vista normal (sin reabrir formularios)
+  // Vuelve a la pantalla anterior: primero cierra la ventana interna abierta (formulario, huella…);
+  // si no hay ninguna, vuelve a la sección visitada antes, en su vista normal (sin reabrir formularios)
   function regresar() {
+    if (ventanasAbiertas.length > 0) {
+      ventanasAbiertas[ventanasAbiertas.length - 1]();
+      return;
+    }
     if (historial.length === 0) return;
     const anterior = historial[historial.length - 1];
     setHistorial(historial.slice(0, -1));
@@ -191,11 +205,11 @@ function App() {
           porVencer={porVencer}
           errorNotificaciones={errorNotificaciones}
           alReintentar={() => setRecargaNotificaciones((r) => r + 1)}
-          puedeRegresar={historial.length > 0}
+          puedeRegresar={ventanasAbiertas.length > 0 || historial.length > 0}
           alRegresar={regresar}
         />
         <main className={`app-main-content${vista === "inicio" ? " app-main-content-inicio" : ""}`}>
-          {pantalla()}
+          <RegresoContext.Provider value={contextoRegreso}>{pantalla()}</RegresoContext.Provider>
         </main>
       </div>
     </div>
