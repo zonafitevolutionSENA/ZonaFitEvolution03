@@ -1,10 +1,12 @@
 const pool = require('../config/database');
 const Cliente = require('../models/cliente.model');
 
-async function crear({ nombre, cedula, correo, telefono }) {
+// Al registrar, los términos siempre quedan aceptados (el servicio lo exige) y los avisos solo si los acepta
+async function crear({ nombre, cedula, correo, telefono, aceptaAvisos = false }) {
   const [resultado] = await pool.query(
-    'INSERT INTO clientes (nombre, cedula, correo, telefono) VALUES (?, ?, ?, ?)',
-    [nombre, cedula, correo, telefono]
+    `INSERT INTO clientes (nombre, cedula, correo, telefono, terminos_aceptados_en, avisos_aceptados_en)
+     VALUES (?, ?, ?, ?, NOW(), IF(?, NOW(), NULL))`,
+    [nombre, cedula, correo, telefono, Boolean(aceptaAvisos)]
   );
   return resultado.insertId;
 }
@@ -34,10 +36,18 @@ async function obtenerPorCedula(cedula) {
   return new Cliente(filas[0]);
 }
 
-async function actualizar(id, { nombre, correo, telefono }) {
+// aceptaTerminos: true la registra (si aún no estaba); nunca la borra.
+// aceptaAvisos: true la registra (conserva la fecha original), false la retira, undefined no la cambia.
+async function actualizar(id, { nombre, correo, telefono, aceptaTerminos, aceptaAvisos }) {
+  const avisos = aceptaAvisos === undefined ? null : Boolean(aceptaAvisos);
   const [resultado] = await pool.query(
-    'UPDATE clientes SET nombre = ?, correo = ?, telefono = ? WHERE id = ?',
-    [nombre, correo, telefono, id]
+    `UPDATE clientes SET nombre = ?, correo = ?, telefono = ?,
+       terminos_aceptados_en = IF(?, COALESCE(terminos_aceptados_en, NOW()), terminos_aceptados_en),
+       avisos_aceptados_en = CASE WHEN ? IS NULL THEN avisos_aceptados_en
+                                  WHEN ? THEN COALESCE(avisos_aceptados_en, NOW())
+                                  ELSE NULL END
+     WHERE id = ?`,
+    [nombre, correo, telefono, Boolean(aceptaTerminos), avisos, avisos, id]
   );
   return resultado.affectedRows > 0;
 }

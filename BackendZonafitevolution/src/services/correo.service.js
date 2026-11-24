@@ -120,4 +120,25 @@ async function enviarAvisoCambio({ para, nombre }) {
   });
 }
 
-module.exports = { estaConfigurado, enviarCodigoRecuperacion, enviarAvisoCambio };
+// Aviso al cliente de que su membresía está por vencer (solo si aceptó recibir avisos por correo)
+async function enviarAvisoVencimiento({ para, nombre, plan, fechaFin, diasRestantes, ingresosRestantes = null }) {
+  const cuando = diasRestantes === 1 ? 'mañana' : `en ${diasRestantes} días`;
+  const tiquetera = ingresosRestantes === null
+    ? ''
+    : ` Te ${ingresosRestantes === 1 ? 'queda 1 ingreso' : `quedan ${ingresosRestantes} ingresos`}.`;
+  await enviar({
+    para,
+    asunto: `Tu membresía ${plan} vence ${cuando}`,
+    texto: `Hola ${nombre}:\n\nTu membresía ${plan} de Zona Fit Evolution vence ${cuando}, el ${fechaFin}.${tiquetera}\n\n` +
+      'Renuévala en la recepción del gimnasio para seguir entrenando sin interrupciones.\n\n' +
+      'Recibes este aviso porque lo autorizaste al registrarte. Si ya no quieres recibirlo, pídelo en la recepción.',
+    html: plantilla('Tu membresía está por vencer', [
+      `Hola ${escaparHtml(nombre)}:`,
+      `Tu membresía <strong>${escaparHtml(plan)}</strong> vence ${cuando}, el <strong>${escaparHtml(fechaFin)}</strong>.${escaparHtml(tiquetera)}`,
+      'Renuévala en la recepción del gimnasio para seguir entrenando sin interrupciones.',
+      '<span style="font-size:12px;color:#9a9a9a">Recibes este aviso porque lo autorizaste al registrarte. Si ya no quieres recibirlo, pídelo en la recepción.</span>'
+    ])
+  });
+}
+
+module.exports = { estaConfigurado, enviarCodigoRecuperacion, enviarAvisoCambio, enviarAvisoVencimiento };

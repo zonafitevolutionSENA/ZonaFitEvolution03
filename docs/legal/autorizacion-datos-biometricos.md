@@ -23,6 +23,7 @@ Declaro que me informaron que:
 | --- | --- |
 | Autorizo el tratamiento de mis datos de identificación y contacto | ☐ Sí ☐ No |
 | Autorizo el tratamiento de mi huella dactilar para el control de acceso | ☐ Sí ☐ No |
+| Autorizo recibir por correo el aviso de vencimiento de mi membresía (7 días antes) | ☐ Sí ☐ No |
 
 Firma: ______________________________ Fecha: ____ / ____ / ________
 

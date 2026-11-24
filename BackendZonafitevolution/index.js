@@ -1,5 +1,6 @@
 const app = require('./src/app');
 const { programarActivacionDiaria } = require('./src/jobs/membresias.job');
+const { programarAvisos } = require('./src/jobs/avisos.job');
 const { iniciarCanalAgente } = require('./src/hardware/canalAgente');
 const log = require('./src/utils/logger')('servidor');
 
@@ -19,6 +20,8 @@ const servidor = app.listen(PUERTO, () => {
   log.info('Servidor escuchando en el puerto ' + PUERTO, { puerto: Number(PUERTO), lector: process.env.TIPO_LECTOR || 'as608' });
   // Al arrancar se ejecuta la activación/vencimiento de membresías y se programa cada día
   programarActivacionDiaria();
+  // Avisos por correo de membresías por vencer (7 días antes), cada día a las 8:00
+  programarAvisos();
 });
 
 // Canal WebSocket para el agente del lector (solo se usa con TIPO_LECTOR=remoto)

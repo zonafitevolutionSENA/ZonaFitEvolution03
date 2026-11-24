@@ -56,8 +56,22 @@ CREATE TABLE IF NOT EXISTS clientes (
   cedula VARCHAR(20) NOT NULL UNIQUE,
   correo VARCHAR(100),
   telefono VARCHAR(20),
-  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  -- Consentimientos (Ley 1581): fecha en que aceptó los términos y el tratamiento de datos (obligatorio al
+  -- registrar) y fecha en que aceptó recibir avisos por correo (opcional; NULL = no recibe avisos)
+  terminos_aceptados_en DATETIME NULL,
+  avisos_aceptados_en DATETIME NULL
 );
+
+-- Bases ya creadas: agrega las columnas de consentimiento si todavía no existen
+SET @falta_terminos := (
+  SELECT COUNT(*) = 0 FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'clientes' AND COLUMN_NAME = 'terminos_aceptados_en'
+);
+SET @sql_terminos := IF(@falta_terminos, 'ALTER TABLE clientes ADD COLUMN terminos_aceptados_en DATETIME NULL, ADD COLUMN avisos_aceptados_en DATETIME NULL', 'DO 0');
+PREPARE agregar_consentimientos FROM @sql_terminos;
+EXECUTE agregar_consentimientos;
+DEALLOCATE PREPARE agregar_consentimientos;
 
 -- Catálogo de planes
 CREATE TABLE IF NOT EXISTS planes (
@@ -103,6 +117,17 @@ CREATE TABLE IF NOT EXISTS membresias (
   CONSTRAINT fk_membresia_plan FOREIGN KEY (plan_id) REFERENCES planes(id),
   -- Acelera la consulta diaria de pendientes por fecha de inicio
   INDEX idx_membresias_estado_inicio (estado, fecha_inicio)
+);
+
+-- Avisos por correo ya enviados: cada membresía recibe un solo aviso de cada tipo
+-- (hoy solo 'vencimiento_7d': 7 días antes de que venza, en planes de 15 días o más)
+CREATE TABLE IF NOT EXISTS avisos_membresia (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  membresia_id INT NOT NULL,
+  tipo VARCHAR(30) NOT NULL,
+  enviado_en DATETIME NOT NULL,
+  UNIQUE KEY uk_aviso_membresia_tipo (membresia_id, tipo),
+  FOREIGN KEY (membresia_id) REFERENCES membresias(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS plantillas_biometricas (
