@@ -42,6 +42,7 @@ Otros:
 - [`diagramas/`](diagramas/): diagramas de arquitectura y datos (contexto, contenedores, componentes, paquetes, clases, entidad-relación, estados de la membresía y despliegue), cada uno con su fuente Mermaid (`.mmd`) y su PNG.
 - [`analisis/casos-uso/`](analisis/casos-uso/): diagramas de análisis (casos de uso, diez secuencias y nueve actividades), con su fuente y su PNG.
 - Todos los diagramas usan el mismo estilo. Para regenerar una imagen: `npx @mermaid-js/mermaid-cli -i <archivo>.mmd -o <archivo>.png -s 2 -b white` (casos de uso: `dot -Tpng -Gdpi=150 casos-de-uso.dot -o casos-de-uso.png`).
+- [`api/`](api/): contrato OpenAPI de la API ([`openapi.yaml`](../BackendZonafitevolution/openapi.yaml)) y cómo usar Swagger UI en `/api/docs`.
 - [`pruebas/`](pruebas/): resultados de los ciclos de prueba (CIC-01 con `npm run pruebas-cp` y CIC-02 con el sensor en producción), mínimo privilegio en MySQL, compatibilidad y accesibilidad, prueba de restauración y registros de inspección.
 - [`evidencias/`](evidencias/): capturas de las pruebas de la entrega final y [contribución individual](evidencias/contribuciones.md) de cada integrante.
 - [`legal/`](legal/): formato de autorización para el tratamiento de datos personales y biométricos (Ley 1581 de 2012).

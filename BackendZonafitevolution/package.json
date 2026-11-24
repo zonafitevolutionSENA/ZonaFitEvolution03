@@ -24,6 +24,8 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.24.4",
     "serialport": "^13.0.0",
-    "ws": "^8.22.2"
+    "swagger-ui-express": "^5.0.1",
+    "ws": "^8.22.2",
+    "yaml": "^2.9.1"
   }
 }
