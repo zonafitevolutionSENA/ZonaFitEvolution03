@@ -16,6 +16,7 @@
 | 1.6 | 23/11/2026 | Un solo ingreso por día en cualquier plan: mensaje MSG-15 y lecturas repetidas dentro de 30 minutos | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.7 | 23/11/2026 | Versión v1.0.0 y lista de verificación diligenciada | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.8 | 24/11/2026 | Restablecimiento de la contraseña con un código al correo, sesión que termina al cerrar la pestaña, casillas de términos y avisos al registrar clientes, aviso de vencimiento por correo, botón de regreso y mensajes MSG-16 a MSG-21 | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.9 | 24/11/2026 | Versión v1.1.0 del sistema | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -64,7 +65,7 @@ Este manual explica cómo utilizar el sistema de acuerdo con los roles y funcion
 | **Campo**                         | **Información**                                                                                                                                     |
 | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Nombre del sistema                | Zona Fit Evolution                                                                                                                                  |
-| Versión                           | v1.0.0                                                                                                                                  |
+| Versión                           | v1.1.0                                                                                                                                  |
 | URL o medio de acceso             | Producción: https://zona-fit-evolution03.vercel.app. Pantalla de ingreso: la misma dirección con ?pantalla=acceso. En local: http://localhost:5173. |
 | Tipo de aplicación                | Aplicación web (navegador)                                                                                                                          |
 | Organización responsable          | Gimnasio Zona Fit                                                                                                                                   |
@@ -586,7 +587,7 @@ Las capturas se tomaron de la aplicación con datos ficticios; los nombres de bo
 | **Versión** | **Fecha** | **Cambios visibles para el usuario** | **Impacto** | **Acción requerida** |
 | ----------- | --------- | ------------------------------------ | ----------- | -------------------- |
 | 1.0 (v1.0.0) | 23/11/2026 | Versión de la entrega | — | — |
-| 1.1 | 24/11/2026 | «¿Olvidaste tu contraseña?», casillas de términos y avisos en Clientes, aviso de vencimiento por correo, botón de regreso y sesión que termina al cerrar la pestaña | Bajo | Pedir la autorización de avisos a los clientes ya registrados |
+| 1.1 (v1.1.0) | 24/11/2026 | «¿Olvidaste tu contraseña?», casillas de términos y avisos en Clientes, aviso de vencimiento por correo, botón de regreso y sesión que termina al cerrar la pestaña | Bajo | Pedir la autorización de avisos a los clientes ya registrados |
 |             |           |                                      |             |                      |
 |             |           |                                      |             |                      |
 

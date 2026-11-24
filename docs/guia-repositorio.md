@@ -14,6 +14,7 @@
 | 0.5 | 23/11/2026 | Liberación v1.0.0, estructura actualizada (pruebas, CI y evidencias), paquete final y lista de verificación | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.6 | 23/11/2026 | Documentación de la API con OpenAPI y Swagger UI; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.7 | 24/11/2026 | Carpeta docs/legal con la Política de tratamiento y los términos; diagramas de los casos de uso CU-008 y CU-009; 93 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.8 | 24/11/2026 | Liberación v1.1.0 en el registro de liberaciones y etiqueta vigente | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -148,6 +149,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | **Versión** | **Fecha** | **Commit / etiqueta** | **Ambiente** | **Responsable** | **Notas**                                                      |
 | ----------- | --------- | --------------------- | ------------ | --------------- | -------------------------------------------------------------- |
 | 1.0.0 | 23/11/2026 | v1.0.0 | Producción (Vercel y Railway) | Juan Diego Mejía Llano | Versión final de la entrega: ver CHANGELOG.md |
+| 1.1.0 | 24/11/2026 | v1.1.0 | Producción (Vercel y Railway) | Juan Diego Mejía Llano | Recuperación de contraseña, correos por Brevo, avisos de vencimiento y consentimientos (CR-010 y CR-011): ver CHANGELOG.md |
 
 ## 6\. Gobierno de Git y colaboración
 
@@ -370,7 +372,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 
 | **Elemento**                 | **Formato / ubicación**                                                                | **Obligatorio** | **Verificación**           |
 | ---------------------------- | -------------------------------------------------------------------------------------- | --------------- | -------------------------- |
-| Repositorio y etiqueta final | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 (etiqueta v1.0.0) | Sí              | Clonable y accesible       |
+| Repositorio y etiqueta final | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03 (etiqueta v1.1.0; v1.0.0 conserva la entrega del 23/11/2026) | Sí              | Clonable y accesible       |
 | Código fuente                | BackendZonafitevolution, FrontendZonafitevolution                                      | Sí              | Sin secretos ni temporales |
 | README y CHANGELOG           | README.md y CHANGELOG.md | Sí              | Actualizados               |
 | Migraciones y semillas       | database/init.sql, scripts/crear-admin.js                                              | Sí              | Reconstruyen datos         |
@@ -393,7 +395,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 
 | **N.°** | **Verificación**                                     | **Cumple**     | **Evidencia** | **Observaciones** |
 | ------- | ---------------------------------------------------- | -------------- | ------------- | ----------------- |
-| 1       | Existe una etiqueta final identificable.             | Sí | v1.0.0 |  |
+| 1       | Existe una etiqueta final identificable.             | Sí | v1.1.0 (y v1.0.0 de la entrega) |  |
 | 2       | README permite instalar y ejecutar el sistema.       | Sí | README: puesta en marcha y despliegue |  |
 | 3       | CHANGELOG refleja la versión entregada.              | Sí | CHANGELOG [1.0.0] |  |
 | 4       | La licencia y atribuciones están presentes.          | Sí | LICENSE (ISC) |  |
