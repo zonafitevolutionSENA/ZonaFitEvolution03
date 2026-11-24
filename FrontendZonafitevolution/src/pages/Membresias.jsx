@@ -11,6 +11,7 @@ import {
 import { listarPlanes } from "../services/planService";
 import { ETIQUETAS_ESTADO, ESTADOS, diaDe, esTiquetera } from "../utils/estadoMembresia";
 import { normalizarTexto } from "../utils/validacionesCliente";
+import { useRegreso } from "../utils/regreso";
 import "../PantallasGestion.css";
 
 const MAX_BUSQUEDA = 50;
@@ -37,6 +38,8 @@ function Membresias({ iniciarEnRenovar = false }) {
   const [recarga, setRecarga] = useState(0);
   // null = solo lista · "asignar" · "renovar"
   const [modo, setModo] = useState(iniciarEnRenovar ? "renovar" : null);
+  // Flecha de regreso: cierra «Asignar» o «Renovar» y vuelve a la lista de membresías
+  useRegreso(modo !== null, () => setModo(null));
 
   const aplicar = useCallback((resultado) => {
     setDatos({ clientes: resultado.clientes, planes: resultado.planes, membresias: resultado.membresias });

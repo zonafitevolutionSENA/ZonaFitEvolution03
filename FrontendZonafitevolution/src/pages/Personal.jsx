@@ -3,6 +3,7 @@ import FormularioUsuario from "../components/FormularioUsuario";
 import { crearUsuario, eliminarUsuario, listarUsuarios } from "../services/usuarioService";
 import { ROL_ADMIN, etiquetaRol } from "../utils/permisos";
 import { motivoNoEliminable } from "../utils/validacionesUsuario";
+import { useRegreso } from "../utils/regreso";
 import "../PantallasGestion.css";
 
 const formatoFecha = new Intl.DateTimeFormat("es-CO", { day: "2-digit", month: "short", year: "numeric" });
@@ -21,6 +22,8 @@ function Personal({ usuario }) {
   const [aviso, setAviso] = useState("");
   const [recarga, setRecarga] = useState(0);
   const [creando, setCreando] = useState(false);
+  // Flecha de regreso: cierra el formulario de nuevo usuario y vuelve a la lista del personal
+  useRegreso(creando, () => setCreando(false));
   const [eliminandoId, setEliminandoId] = useState(null);
 
   const cargar = useCallback(() => {

@@ -693,7 +693,12 @@ El rol llega en `usuario.rol_id`: `1` = Administrador, `2` = Empleado (los mismo
 
 ## Botón de regreso
 
-En la esquina superior derecha, junto al nombre del usuario, la flecha **Volver a la pantalla anterior** regresa a la sección visitada antes (se recuerdan hasta 20). La sección se abre en su vista normal, sin reabrir formularios, y si el rol ya no puede verla se vuelve al Inicio. Al abrir la aplicación o cerrar sesión no hay pantallas anteriores y la flecha queda desactivada.
+En la esquina superior derecha, junto al nombre del usuario, la flecha **Volver a la pantalla anterior** regresa a la ventana anterior:
+
+1. Si hay una ventana abierta dentro de la sección (Registrar o editar cliente, Registrar huella, Asignar o Renovar membresía, Crear o editar plan, Nuevo usuario), la cierra y deja la lista de esa sección, igual que su botón Cancelar.
+2. Si no, vuelve a la sección visitada antes (se recuerdan hasta 20), en su vista normal; si el rol ya no puede verla, vuelve al Inicio.
+
+Al abrir la aplicación o cerrar sesión no hay pantallas anteriores y la flecha queda desactivada. Se puede pulsar varias veces seguidas: no tiene el bloqueo anti doble clic de los demás botones porque no llama a la API. Cada pantalla registra sus ventanas con `useRegreso` (`src/utils/regreso.js`).
 
 ## Selección de clientes (buscador)
 

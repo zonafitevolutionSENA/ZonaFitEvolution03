@@ -1,5 +1,6 @@
 // Evita el spam de peticiones: cuando se presiona un botón, los clics siguientes sobre ese mismo botón
-// se ignoran durante unos segundos. Se registra una sola vez para todos los botones de la aplicación.
+// se ignoran durante unos segundos. Se registra una sola vez para todos los botones de la aplicación,
+// salvo los marcados con data-sin-bloqueo (por ejemplo, la flecha de regreso, que no hace peticiones).
 export const SEGUNDOS_BLOQUEO = 2;
 
 const SELECTOR_BOTON = 'button, input[type="button"], input[type="submit"]';
@@ -17,7 +18,8 @@ export function activarBloqueoDeBotones(segundos = SEGUNDOS_BLOQUEO) {
     "click",
     (evento) => {
       const boton = evento.target instanceof Element ? evento.target.closest(SELECTOR_BOTON) : null;
-      if (!boton || boton.disabled) return;
+      // Los botones de navegación que no llaman a la API (data-sin-bloqueo) se pueden pulsar seguido
+      if (!boton || boton.disabled || boton.hasAttribute("data-sin-bloqueo")) return;
 
       if (bloqueados.has(boton)) {
         evento.preventDefault();
