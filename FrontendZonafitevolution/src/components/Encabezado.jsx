@@ -46,6 +46,8 @@ function Encabezado({ usuario, porVencer, errorNotificaciones, alReintentar, pue
         <button
           className="app-back-button"
           type="button"
+          // Sin el bloqueo anti doble clic: no hace peticiones y se puede pulsar varias veces seguidas
+          data-sin-bloqueo=""
           onClick={alRegresar}
           disabled={!puedeRegresar}
           aria-label="Volver a la pantalla anterior"

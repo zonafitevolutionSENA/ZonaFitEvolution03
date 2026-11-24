@@ -11,6 +11,7 @@ import {
   textoMembresia,
 } from "../utils/estadoMembresia";
 import { normalizarTexto } from "../utils/validacionesCliente";
+import { useRegreso } from "../utils/regreso";
 import "../PantallasGestion.css";
 
 const MAX_BUSQUEDA = 50;
@@ -62,6 +63,9 @@ function Clientes({ iniciarEnRegistro = false, puedeReactivar = false }) {
   const [formulario, setFormulario] = useState(iniciarEnRegistro ? "nuevo" : null);
   const [cambiandoId, setCambiandoId] = useState(null);
   const [clienteHuella, setClienteHuella] = useState(null);
+  // Flecha de regreso: cierra el formulario o el registro de huella y vuelve a la lista de clientes
+  useRegreso(formulario !== null, () => setFormulario(null));
+  useRegreso(clienteHuella !== null, () => volverSinHuella());
 
   const aplicar = useCallback((datos) => {
     setClientes(datos.clientes);
