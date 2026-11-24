@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Membresias from "./pages/Membresias";
 import Personal from "./pages/Personal";
 import Planes from "./pages/Planes";
+import RecuperarContrasena from "./pages/RecuperarContrasena";
 import { obtenerPorVencer } from "./services/dashboardService";
 import { EVENTO_SESION_EXPIRADA, limpiarTokenSesion, obtenerUsuarioGuardado } from "./services/api";
 import { ROL_ADMIN, SECCIONES, seccionPermitida } from "./utils/permisos";
@@ -30,6 +31,8 @@ const ACCIONES_RAPIDAS = {
 function App() {
   const [usuario, setUsuario] = useState(obtenerUsuarioGuardado);
   const [mensajeSesion, setMensajeSesion] = useState("");
+  const [recuperandoContrasena, setRecuperandoContrasena] = useState(false);
+  const [avisoLogin, setAvisoLogin] = useState("");
   const [vista, setVista] = useState("inicio");
   const [accionInicial, setAccionInicial] = useState(null);
   const [porVencer, setPorVencer] = useState(null);
@@ -97,14 +100,33 @@ function App() {
     setVista(destino);
   }
 
+  if (!usuario && recuperandoContrasena) {
+    return (
+      <RecuperarContrasena
+        alVolver={() => setRecuperandoContrasena(false)}
+        alTerminar={(mensaje) => {
+          setMensajeSesion("");
+          setAvisoLogin(mensaje);
+          setRecuperandoContrasena(false);
+        }}
+      />
+    );
+  }
+
   if (!usuario) {
     return (
       <Login
         onLoginExitoso={(usuarioActual) => {
           setMensajeSesion("");
+          setAvisoLogin("");
           setUsuario(usuarioActual);
         }}
         errorInicial={mensajeSesion}
+        avisoInicial={avisoLogin}
+        alOlvidarContrasena={() => {
+          setAvisoLogin("");
+          setRecuperandoContrasena(true);
+        }}
       />
     );
   }
