@@ -1154,7 +1154,7 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | 8       | Las interfaces externas tienen manejo de fallos.                    | Sí | Sensor y red: reintento del agente y validación por cédula |
 | 9       | Existe priorización y asignación a versiones.                       | Sí | Priorización MoSCoW y versión MVP |
 | 10      | Existe procedimiento de cambios.                                    | Sí | Control de cambios CR-001 a CR-009 |
-| 11      | La trazabilidad llega hasta pruebas y evidencia.                    | Sí | Matriz de trazabilidad (25 de 27) |
+| 11      | La trazabilidad llega hasta pruebas y evidencia.                    | Sí | Matriz de trazabilidad (32 de 34 filas con cobertura completa) |
 | 12      | El documento fue validado por responsables funcional y técnico.     | Sí | Aceptación del Product Owner (Informe de cierre 11) |
 
 ## Anexos
