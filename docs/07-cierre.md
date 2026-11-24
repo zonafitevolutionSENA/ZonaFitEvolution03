@@ -17,6 +17,7 @@
 | 0.8 | 23/11/2026 | Declaración de uso de IA (17.2) y lección aprendida sobre el uso de IA | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.9 | 23/11/2026 | Transferencia y continuidad (15) y custodia de activos (15.1) | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.0 | 23/11/2026 | Versión final: etiqueta v1.0.0, entregables finales, cierre administrativo y verificación de cierre; solo queda la firma del acta | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.1 | 23/11/2026 | Contrato OpenAPI y Swagger UI publicados; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -159,14 +160,14 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | ENTG-01 | INI-01 – Formulación y Constitución del Proyecto      | docs/entregables y Documentos\_Proyecto | 1.4 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
 | ENTG-02 | GES-01 – Gestión de Interesados y del Proyecto        | docs/entregables y Documentos\_Proyecto | 1.6 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
 | ENTG-03 | REQ-01 – Alcance y Especificación de Requisitos       | docs/entregables y Documentos\_Proyecto | 1.6 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
-| ENTG-04 | REQ-02 – Backlog, Historias de Usuario y Casos de Uso | docs/entregables y Documentos\_Proyecto | 1.6 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
+| ENTG-04 | REQ-02 – Backlog, Historias de Usuario y Casos de Uso | docs/entregables y Documentos\_Proyecto | 1.7 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
 | ENTG-05 | TRZ-01 – Matriz Maestra de Trazabilidad               | docs/entregables y Documentos\_Proyecto | 1.3 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
 | ENTG-06 | DSN-01 – Diseño UX/UI y Sistema de Diseño             | docs/entregables y Documentos\_Proyecto | 2.4 | Maileth Begambre Movilla     | Entregado | Versión del índice maestro |
-| ENTG-07 | ARQ-01 – Arquitectura, Datos y Diseño Técnico         | docs/entregables y Documentos\_Proyecto | 2.5 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
-| ENTG-08 | CAL-01 – Plan de Calidad, Pruebas y Aceptación        | docs/entregables y Documentos\_Proyecto | 0.8 |                              | Entregado | Versión del índice maestro |
-| ENTG-09 | MAN-01 – Manual Técnico y de Operación                | docs/entregables y Documentos\_Proyecto | 1.8 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
+| ENTG-07 | ARQ-01 – Arquitectura, Datos y Diseño Técnico         | docs/entregables y Documentos\_Proyecto | 2.6 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
+| ENTG-08 | CAL-01 – Plan de Calidad, Pruebas y Aceptación        | docs/entregables y Documentos\_Proyecto | 0.9 |                              | Entregado | Versión del índice maestro |
+| ENTG-09 | MAN-01 – Manual Técnico y de Operación                | docs/entregables y Documentos\_Proyecto | 1.9 | Liliana Sofía Panesso Méndez | Entregado | Versión del índice maestro |
 | ENTG-10 | MAN-02 – Manual de Usuario                            | docs/entregables y Documentos\_Proyecto | 1.7 | Maileth Begambre Movilla     | Entregado | Versión del índice maestro |
-| ENTG-11 | CIE-01 – Informe de Cierre y Entrega                  | docs/entregables y Documentos\_Proyecto | 1.0 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
+| ENTG-11 | CIE-01 – Informe de Cierre y Entrega                  | docs/entregables y Documentos\_Proyecto | 1.1 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
 | ENTG-12 | SUS-01 – Guía de Sustentación y Demostración          | docs/entregables y Documentos\_Proyecto | 0.4 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
 | ENTG-13 | REP-01 – Repositorio con etiqueta v1.0.0              | GitHub (etiqueta y Release) | v1.0.0 | Juan Diego Mejía Llano       | Entregado | Versión del índice maestro |
 
@@ -216,7 +217,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Tipo de prueba** | **Planificadas** | **Ejecutadas** | **Aprobadas** | **Fallidas** | **Bloqueadas** | **Cobertura** |
 | ------------------ | ---------------- | -------------- | ------------- | ------------ | -------------- | ------------- |
-| Unitarias          | 45 | 45 | 45 | 0 | 0 | 53 % de líneas |
+| Unitarias          | 45 | 45 | 45 | 0 | 0 | 57 % de líneas |
 | Integración        | 22 | 22 | 22 | 0 | 0 | CP-001 a CP-022 (CIC-01) |
 | End-to-End         | 5 | 5 | 5 | 0 | 0 | CIC-02 con el sensor en producción |
 | API                |                  |                |               |              |                |               |
@@ -237,7 +238,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 
 | **Indicador**                      | **Meta** | **Resultado** | **Cumple** | **Fuente** |
 | ---------------------------------- | -------- | ------------- | ---------- | ---------- |
-| Cobertura de pruebas               | RF críticos con caso aprobado | 100 % de RF-001 a RF-008; 53 % de líneas | Sí | docs/pruebas/CIC-01-resultados.md |
+| Cobertura de pruebas               | RF críticos con caso aprobado | 100 % de RF-001 a RF-008; 57 % de líneas | Sí | docs/pruebas/CIC-01-resultados.md |
 | Defectos críticos abiertos         | 0        | 0 | Sí | docs/pruebas/CIC-01-resultados.md |
 | Build / pipeline exitoso           | Sí       | Pruebas, lint, build, audit e integración en GitHub Actions (.github/workflows/ci.yml) | Sí | Pestaña Actions del repositorio |
 | Tiempo de respuesta crítico        | < 2 s (RNF-003) | p95 6,4 ms en el servidor | Sí (falta medir con el sensor) | docs/pruebas/CIC-01-resultados.md |
@@ -344,7 +345,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | Revisión del código | —                               |               |              |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Revisión del código | Fuerza bruta y exposición en producción.                       |               |              |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Revisión del código | Exposición ante XSS.                                           |               |              |                      |
-| DT-08  | Resuelto: 46 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
+| DT-08  | Resuelto: 50 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | Revisión del código | —                      |               |              |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Revisión del código | Pantallas sin URL propia.                                      |               |              |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Revisión del código | Actualizar una base con datos exige scripts manuales.          |               |              |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | Revisión del código | —                                        |               |              |                      |

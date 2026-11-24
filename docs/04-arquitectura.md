@@ -34,6 +34,7 @@
 | 2.3 | 23/11/2026 | Usuario de MySQL con mínimo privilegio (SEG-08), respaldo y restauración probados (DAT-06), un ingreso por día y latido del agente | Juan Diego Mejía Llano |  |
 | 2.4 | 23/11/2026 | Variables de la base en Railway con el usuario zonafit_app | Juan Diego Mejía Llano |  |
 | 2.5 | 23/11/2026 | Lista de verificación diligenciada | Juan Diego Mejía Llano |  |
+| 2.6 | 23/11/2026 | Contrato OpenAPI de la API y 50 pruebas unitarias | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -784,7 +785,7 @@ El esquema físico se crea con database/init.sql (único script, sin migraciones
 | **Control**            | **Herramienta**       | **Ejecución** | **Criterio de aceptación**   | **Evidencia** |
 | ---------------------- | --------------------- | ------------- | ---------------------------- | ------------- |
 | Lint                   | ESLint (npm run lint) | GitHub Actions en cada pull request | Sin errores críticos         | Sin errores (22/11/2026) |
-| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 46 pruebas unitarias y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
+| Pruebas                | node --test (npm test) y npm run pruebas-cp | GitHub Actions en cada pull request | Suite aprobada | 50 pruebas unitarias y 24 de 24 casos del ciclo CIC-01 (docs/pruebas/CIC-01-resultados.md) |
 | Build                  | Vite (npm run build)  | GitHub Actions en cada pull request | Construcción reproducible    | Construcción exitosa (22/11/2026) |
 | Auditoría dependencias | npm audit             | GitHub Actions en cada pull request | Sin críticas sin tratamiento | npm audit: 0 vulnerabilidades en backend, frontend y agente (22/11/2026) |
 | Análisis estático      |                       |               |                              |               |

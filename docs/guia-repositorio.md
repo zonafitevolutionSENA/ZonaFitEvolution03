@@ -12,6 +12,7 @@
 | 0.3 | 22/11/2026 | LICENSE y CHANGELOG.md creados, registro de liberaciones al 22/11/2026 y evidencias EV-003 y EV-004 disponibles | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.4 | 23/11/2026 | Declaración de uso de IA (13.2), evidencias de la entrega final en docs/pruebas y docs/evidencias | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.5 | 23/11/2026 | Liberación v1.0.0, estructura actualizada (pruebas, CI y evidencias), paquete final y lista de verificación | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.6 | 23/11/2026 | Documentación de la API con OpenAPI y Swagger UI; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -74,7 +75,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | **Ruta**              | **Responsabilidad**                                                            | **Contenido permitido**             | **Contenido no permitido**             |
 | --------------------- | ------------------------------------------------------------------------------ | ----------------------------------- | -------------------------------------- |
 | /src                  | Backend y frontend (BackendZonafitevolution/src, FrontendZonafitevolution/src) | Módulos, capas, componentes         | Backups, secretos, archivos temporales |
-| /tests                | BackendZonafitevolution/test (46 pruebas unitarias) y scripts/pruebas-cp.js (integración)                                                             | Unitarias, integración, E2E         | Evidencia manual sin contexto          |
+| /tests                | BackendZonafitevolution/test (50 pruebas unitarias) y scripts/pruebas-cp.js (integración)                                                             | Unitarias, integración, E2E         | Evidencia manual sin contexto          |
 | /docs                 | docs/: Markdown vivos, diagramas/, analisis/casos-uso/ y entregables/                                                             | ADR, diagramas, API, guías          | Copias desactualizadas sin versión     |
 | /migrations           | No existe (init.sql)                                                           | Migraciones ordenadas y reversibles | SQL manual sin control                 |
 | /scripts              | BackendZonafitevolution/scripts                                                | Setup, build, seed, backup          | Scripts destructivos sin advertencia   |
@@ -351,7 +352,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | Herramienta       | Claude y Claude Code (Anthropic), en chat y en el editor; Gemini (Google), en chat                                 |
 | Uso realizado     | Claude: código, pruebas, depuración, despliegue, documentación y diagramas. Gemini: propuestas de diseño UX/UI y redacción de textos        |
 | Partes afectadas  | BackendZonafitevolution, FrontendZonafitevolution, AgenteLector, .github/workflows, docs/ (Markdown, entregables y diagramas)                             |
-| Validación humana | Revisión del código antes de aceptarlo; 46 pruebas unitarias, ciclos CIC-01 y CIC-02 y pruebas manuales; revisión de los documentos contra el sistema real                     |
+| Validación humana | Revisión del código antes de aceptarlo; 50 pruebas unitarias, ciclos CIC-01 y CIC-02 y pruebas manuales; revisión de los documentos contra el sistema real                     |
 | Limitaciones      | Respuestas con errores o que no coincidían con el sistema real, corregidas al revisarlas; coautoría automática de Claude en commits y descripciones de PR, retirada                  |
 | Responsabilidad   | Juan Diego Mejía Llano, Liliana Sofía Panesso Méndez y Maileth Begambre Movilla (cada uno en su parte) |
 
@@ -373,7 +374,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | README y CHANGELOG           | README.md y CHANGELOG.md | Sí              | Actualizados               |
 | Migraciones y semillas       | database/init.sql, scripts/crear-admin.js                                              | Sí              | Reconstruyen datos         |
 | Pruebas y reportes           | BackendZonafitevolution/test, docs/pruebas y GitHub Actions | Sí              | Ejecutables                |
-| Documentación API            | Tablas de endpoints en el README                                                       | Según proyecto  | Actualizada                |
+| Documentación API            | BackendZonafitevolution/openapi.yaml, Swagger UI en /api/docs y docs/api/README.md                                                       | Según proyecto  | Actualizada                |
 | Documentación del proyecto   | docs/entregables (PDF y Excel) y Documentos\_Proyecto (Word) | Sí              | Versiones finales          |
 | Manual técnico               | MAN-01                                                                                 | Sí              | Procedimientos verificados |
 | Manual de usuario            | MAN-02                                                                                 | Sí              | Interfaz final             |
@@ -402,7 +403,7 @@ Esta guía define qué debe contener el repositorio, cómo debe organizarse, qu�
 | 9       | Las semillas son seguras y reproducibles.            | Sí | Planes iniciales y crear-admin |  |
 | 10      | Las pruebas se ejecutan con comandos documentados.   | Sí | npm test y npm run pruebas-cp |  |
 | 11      | El pipeline aprueba lint, pruebas y build.           | Sí | GitHub Actions en verde |  |
-| 12      | La documentación API coincide con la implementación. | Sí | Tablas de endpoints del README |  |
+| 12      | La documentación API coincide con la implementación. | Sí | Contrato OpenAPI validado por test/openapi.test.js en cada PR |  |
 | 13      | Los diagramas fuente están disponibles.              | Sí | docs/diagramas (.mmd y .png) |  |
 | 14      | Las decisiones técnicas relevantes tienen ADR.       | Sí | ADR en la Arquitectura |  |
 | 15      | Las evidencias están trazadas y versionadas.         | Sí | docs/pruebas y docs/evidencias |  |

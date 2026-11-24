@@ -30,6 +30,7 @@
 | 1.4 | 22/11/2026 | TT-008 terminada (integración continua) y TT-007 con las pruebas del backend listas | Juan Diego Mejía Llano |  |
 | 1.5 | 23/11/2026 | CR-008 implementado en todos los planes y CR-009 (RNF-007 en Chrome) | Juan Diego Mejía Llano |  |
 | 1.6 | 23/11/2026 | Lista de verificación final diligenciada | Juan Diego Mejía Llano |  |
+| 1.7 | 23/11/2026 | 50 pruebas unitarias | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -265,7 +266,7 @@ Se mantienen en [`analisis/historias-de-usuario.md`](analisis/historias-de-usuar
 | ------- | -------------------------------------------------- | -------------- | ---------------------------------------------------------------------------- |
 | 1       | Código implementado y revisado.                    | Sí / No        | Pull Request revisado por otro integrante.                                   |
 | 2       | Criterios de aceptación cumplidos.                 | Sí / No        | Demostración en la sprint review.                                            |
-| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 46 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
+| 3       | Pruebas creadas y aprobadas.                       | Sí / No        | 50 pruebas unitarias del backend y ciclo de integración CIC-01 (24 de 24); faltan pruebas del frontend (TT-007).                |
 | 4       | Lint, compilación y pipeline sin errores críticos. | Sí / No        | npm run lint y npm run build sin errores; pipeline de GitHub Actions en cada pull request (TT-008). |
 | 5       | Seguridad y permisos revisados.                    | Sí / No / N.A. | Rutas protegidas con permitirRoles en el backend.                            |
 | 6       | Migraciones o cambios de datos incluidos.          | Sí / No / N.A. | Cambios en database/init.sql documentados en el README.                      |

@@ -17,6 +17,7 @@
 | 1.6 | 23/11/2026 | Usuario de MySQL zonafit_app con mínimo privilegio, respaldo semanal con restauración probada, latido del agente y un ingreso por día | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.7 | 23/11/2026 | Navegador soportado: Chrome (CR-009) | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.8 | 23/11/2026 | Versión v1.0.0, paquete técnico de entrega, sesión de transferencia y lista de verificación | Juan Diego Mejía Llano |  |  | En revisión |
+| 1.9 | 23/11/2026 | Contrato OpenAPI de la API (openapi.yaml) y Swagger UI en /api/docs; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -91,7 +92,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Plan de Calidad, Pruebas y Aceptación  | CAL-01                                   | 1.0               | Comandos, ambientes y criterios de verificación |
 | Alcance y Especificación de Requisitos | REQ-01                                   | 1.0               | Restricciones técnicas y operativas             |
 | README                                 | README.md (raíz del monorepo)            | main (26/10/2026) | Inicio rápido y comandos principales            |
-| Contrato de API                        | No existe (por crear: OpenAPI)           |                   | Operación e integración                         |
+| Contrato de API                        | BackendZonafitevolution/openapi.yaml (OpenAPI 3; Swagger UI en /api/docs)           |                   | Operación e integración                         |
 | Migraciones                            | No existe (esquema en database/init.sql) |                   | Creación y evolución de base de datos           |
 | Pipeline CI/CD                         | GitHub Actions (.github/workflows/ci.yml): pruebas, lint, build, npm audit e integración con MySQL                       |                   | Automatización de build y despliegue            |
 | CHANGELOG                              | CHANGELOG.md (raíz)                                |                   | Historial de versiones y cambios                |
@@ -220,7 +221,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Ruta**                     | **Contenido**                           | **Responsabilidad**          | **Artefactos principales**                              |
 | ---------------------------- | --------------------------------------- | ---------------------------- | ------------------------------------------------------- |
 | /BackendZonafitevolution/src | API en capas                            | Liliana Sofía Panesso Méndez | routes, controllers, services, repositories             |
-| /tests                       | BackendZonafitevolution/test (46 pruebas) y scripts/pruebas-cp.js                      |                              |                                                         |
+| /tests                       | BackendZonafitevolution/test (50 pruebas) y scripts/pruebas-cp.js                      |                              |                                                         |
 | /docs                        | Documentos del proyecto                 | Juan Diego Mejía Llano       | analisis/Historias\_de\_Usuario\_y\_Casos\_de\_Uso.docx |
 | /migrations                  | No existe; esquema en database/init.sql | Liliana Sofía Panesso Méndez | init.sql                                                |
 | /scripts                     | Utilidades del backend                  | Liliana Sofía Panesso Méndez | crear-admin.js                                          |
@@ -441,7 +442,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | Backend empaquetado  | BackendZonafitevolution       | npm install --omit=dev | Código fuente y dependencias | Railway    |
 | Imagen de contenedor | No aplica                     |                        |                              |                                    |
 | Migraciones          | database/init.sql             |                        | Esquema completo             | Base vacía                         |
-| Documentación API    | README (tablas de endpoints)  |                        |                              |                                    |
+| Documentación API    | BackendZonafitevolution/openapi.yaml (Swagger UI en /api/docs)  |                        |                              |                                    |
 | Reporte de pruebas   |                               |                        |                              |                                    |
 
 ### 10.1 Versionamiento
@@ -812,7 +813,7 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | DT-05  | Resuelto: el backend impide borrar la propia cuenta y al último administrador (TT-001).                       | —                               |            |               | TT-001.                                                                               |                      |
 | DT-06  | Sin límite de intentos de inicio de sesión; CORS abierto.                              | Fuerza bruta y exposición en producción.                       |            |               | Integrar TT-003 y TT-004.                                                                      |                      |
 | DT-07  | Token JWT en localStorage sin revocación.                                              | Exposición ante XSS.                                           |            |               | Evaluar cookies httpOnly.                                                                      |                      |
-| DT-08  | Resuelto: 46 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
+| DT-08  | Resuelto: 50 pruebas unitarias, ciclo de integración y GitHub Actions (.github/workflows/ci.yml).                         | —                      |            |               | TT-007 y TT-008.                                                                               |                      |
 | DT-09  | Navegación por estado, sin React Router.                                               | Pantallas sin URL propia.                                      |            |               | Incorporar React Router.                                                                       |                      |
 | DT-10  | Esquema creado con init.sql, sin migraciones.                                          | Actualizar una base con datos exige scripts manuales.          |            |               | Decisión del equipo: init.sql es el único script; ante un cambio de esquema se recrea la base. |                      |
 | DT-11  | Resuelto: desplegado en Vercel y Railway (PR #59 a #62).                                  | —                                        |            |               | TT-009.                                                                                        |                      |
@@ -934,9 +935,9 @@ El despliegue de producción se hizo el 11/11/2026. Los cambios posteriores se p
 | Manual técnico           | MAN-01                                                     | 1.8 | Sí |  |
 | Manual de usuario        | MAN-02                                                     | 1.7 | Sí |  |
 | Migraciones y semillas   | database/init.sql, scripts/crear-admin.js                  | v1.0.0 | Sí | init.sql se ejecuta en cada PR |
-| API / OpenAPI            | Tablas de endpoints en el README | v1.0.0 | Sí | Sin OpenAPI |
+| API / OpenAPI            | BackendZonafitevolution/openapi.yaml y Swagger UI en /api/docs | v1.0.0 | Sí | test/openapi.test.js compara el contrato con las rutas de Express |
 | Pipeline                 | .github/workflows/ci.yml | v1.0.0 | Sí | Pruebas, lint, build, audit e integración |
-| Pruebas y cobertura      | BackendZonafitevolution/test y docs/pruebas | v1.0.0 | Sí | 46 pruebas; 53 % de líneas |
+| Pruebas y cobertura      | BackendZonafitevolution/test y docs/pruebas | v1.0.0 | Sí | 50 pruebas; 57 % de líneas |
 | Configuración de ejemplo | BackendZonafitevolution/.env.example                       | v1.0.0 | Sí | Sin secretos |
 | Respaldo / restauración  | Sección 15 de este manual y docs/pruebas/DAT-06-respaldo-y-restauracion.md | 1.8 | Sí | Restauración probada el 23/11/2026 |
 | Licencia y atribuciones  | LICENSE (ISC) | v1.0.0 | Sí |  |
