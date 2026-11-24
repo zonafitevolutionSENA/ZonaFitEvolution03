@@ -30,7 +30,7 @@ function exigirSecreto() {
 }
 
 // Paso 1. La respuesta es la misma exista o no el correo, para no revelar qué cuentas hay.
-// El correo se envía sin esperar la respuesta de Gmail: así tampoco se nota por el tiempo.
+// El correo se envía sin esperar la respuesta del proveedor: así tampoco se nota por el tiempo.
 async function solicitarCodigo({ correo } = {}) {
   const correoLimpio = normalizarCorreo(correo);
   if (!correoService.estaConfigurado()) {

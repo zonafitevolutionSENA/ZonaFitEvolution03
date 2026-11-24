@@ -5,6 +5,8 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 ## [Sin publicar]
 
 ### Added
+- Recuperación de contraseña del personal en tres pasos (código de 6 dígitos al correo, 10 minutos, un solo uso, 5 intentos). Al cambiarla se cierran las sesiones abiertas y llega un aviso al correo. Base de datos: tabla `recuperaciones_contrasena` y columna `usuarios.contrasena_cambiada_en`.
+- Envío de correos por la API HTTPS de Brevo (`BREVO_API_KEY`, `CORREO_REMITENTE`), porque Railway bloquea el SMTP en Trial y Hobby. Gmail por SMTP queda como alternativa en local.
 - Contrato OpenAPI 3 de la API (`BackendZonafitevolution/openapi.yaml`) con las 32 operaciones, sus cuerpos, respuestas, errores y seguridad.
 - Swagger UI en `/api/docs` y el contrato en JSON en `/api/openapi.json`.
 - Prueba `test/openapi.test.js`: compara el contrato con las rutas de Express (50 pruebas en total).
