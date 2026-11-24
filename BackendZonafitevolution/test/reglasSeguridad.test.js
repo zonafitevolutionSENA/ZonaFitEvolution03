@@ -11,6 +11,7 @@ const ROLES = require('../src/utils/roles');
 const token = (id, rol_id) => 'Bearer ' + jwt.sign({ id, rol_id }, process.env.JWT_SECRET);
 
 test('reglas de seguridad de la API', async (contexto) => {
+  contexto.mock.method(usuarioRepository, 'obtenerSesion', async (id) => ({ id, contrasena_cambiada_en: null }));
   const servidor = app.listen(0, '127.0.0.1');
   await once(servidor, 'listening');
   contexto.after(() => new Promise(resolve => servidor.close(resolve)));

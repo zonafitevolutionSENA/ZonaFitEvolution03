@@ -26,6 +26,12 @@ async function obtenerPorCorreo(correo) {
   return new Usuario(filas[0]);
 }
 
+// Datos mínimos para validar un token en cada petición
+async function obtenerSesion(id) {
+  const [filas] = await pool.query('SELECT id, contrasena_cambiada_en FROM usuarios WHERE id = ?', [id]);
+  return filas[0] || null;
+}
+
 async function eliminar(id) {
   const [resultado] = await pool.query('DELETE FROM usuarios WHERE id = ?', [id]);
   return resultado.affectedRows > 0;
@@ -41,6 +47,7 @@ module.exports = {
   obtenerTodos,
   obtenerPorId,
   obtenerPorCorreo,
+  obtenerSesion,
   eliminar,
   contarPorRol
 };
