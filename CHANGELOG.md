@@ -14,6 +14,7 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 - Prueba `test/openapi.test.js`: compara el contrato con las rutas de Express (50 pruebas en total).
 
 ### Fixed
+- La página estaba declarada en inglés (`lang="en"`): Chrome la traducía al español y cambiaba palabras (por ejemplo, «Registrar» por «Registrador»). Ahora se declara en español, sin traducción automática, y el título de la pestaña es «Zona Fit Evolution».
 - Guía del repositorio: el historial de versiones 0.4 y 0.5 había quedado en la tabla de liberaciones.
 
 ### Security
