@@ -569,3 +569,68 @@
 .gestion-page form details p {
   margin: 0 0 8px;
 }
+
+/* Casillas de aceptación: más grandes y con el estilo de la aplicación */
+.gestion-page form fieldset .gestion-check {
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.gestion-page form fieldset .gestion-check:hover {
+  border-color: rgba(245, 184, 46, 0.45);
+}
+
+.gestion-page form fieldset .gestion-check:has(input:checked) {
+  border-color: rgba(245, 184, 46, 0.6);
+  background: rgba(245, 184, 46, 0.07);
+}
+
+.gestion-page form fieldset .gestion-check input[type="checkbox"] {
+  appearance: none;
+  flex: none;
+  width: 26px;
+  min-height: 26px;
+  height: 26px;
+  margin: 0;
+  border: 2px solid #8a909b;
+  border-radius: 7px;
+  background: #15161a center / 16px 16px no-repeat;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.gestion-page form fieldset .gestion-check input[type="checkbox"]:hover {
+  border-color: #f5b82e;
+}
+
+.gestion-page form fieldset .gestion-check input[type="checkbox"]:checked {
+  border-color: #f5b82e;
+  background-color: #f5b82e;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23111214' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E");
+}
+
+.gestion-page form fieldset .gestion-check input[type="checkbox"]:focus-visible {
+  outline: 3px solid rgba(245, 184, 46, 0.55);
+  outline-offset: 2px;
+}
+
+.gestion-page form fieldset .gestion-check input[type="checkbox"][aria-invalid="true"] {
+  border-color: #f87171;
+}
+
+.gestion-page form fieldset .gestion-check input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.gestion-page form fieldset .gestion-check label {
+  padding-top: 2px;
+  font-size: 0.98rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
