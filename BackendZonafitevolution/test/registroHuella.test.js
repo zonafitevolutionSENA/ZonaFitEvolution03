@@ -4,6 +4,7 @@ const { once } = require('node:events');
 const jwt = require('jsonwebtoken');
 const app = require('../src/app');
 const biometriaService = require('../src/services/biometria.service');
+const usuarioRepository = require('../src/repositories/usuario.repository');
 const As608Lector = require('../src/hardware/as608Lector.adapter');
 
 test('el lector informa las etapas de registro en orden', async (prueba) => {
@@ -28,6 +29,7 @@ test('el estado de registro está protegido y aislado por usuario', async (prueb
   process.env.JWT_SECRET ||= 'secreto-de-prueba';
   const token = jwt.sign({ id: 7001, rol_id: 2 }, process.env.JWT_SECRET);
   const otroToken = jwt.sign({ id: 7002, rol_id: 2 }, process.env.JWT_SECRET);
+  prueba.mock.method(usuarioRepository, 'obtenerSesion', async (id) => ({ id, contrasena_cambiada_en: null }));
   const capturaId = '12345678-1234-1234-1234-123456789abc';
   let iniciar;
   let terminar;
