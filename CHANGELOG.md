@@ -4,6 +4,14 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 
 ## [Sin publicar]
 
+### Added
+- Contrato OpenAPI 3 de la API (`BackendZonafitevolution/openapi.yaml`) con las 32 operaciones, sus cuerpos, respuestas, errores y seguridad.
+- Swagger UI en `/api/docs` y el contrato en JSON en `/api/openapi.json`.
+- Prueba `test/openapi.test.js`: compara el contrato con las rutas de Express (50 pruebas en total).
+
+### Fixed
+- Guía del repositorio: el historial de versiones 0.4 y 0.5 había quedado en la tabla de liberaciones.
+
 ### Security
 - Cabeceras de seguridad en el frontend de Vercel (`vercel.json`): Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy y Permissions-Policy.
 

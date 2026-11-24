@@ -1,0 +1,921 @@
+openapi: 3.0.3
+info:
+  title: Zona Fit Evolution API
+  version: 1.0.0
+  description: |
+    API REST del sistema de gestión del gimnasio Zona Fit Evolution (Node.js 20 + Express 5 + MySQL 8).
+
+    **Autenticación:** `POST /auth/login` devuelve un token JWT que dura 8 horas (`JWT_EXPIRES_IN`).
+    Las demás rutas lo piden en la cabecera `Authorization: Bearer <token>`.
+
+    **Roles:** 1 = Administrador, 2 = Empleado. Cada operación indica qué roles la pueden usar.
+
+    **Errores:** todas las respuestas de error tienen la forma `{ "error": "mensaje" }`.
+    Los errores 500 nunca muestran detalles internos al cliente (la traza va solo al log del servidor).
+
+    **Lector de huella:** las rutas de biometría y de acceso físico usan el sensor AS608, que en la nube
+    se controla a través del agente del lector (WebSocket `/agente`, ADR-008). Si el agente no está
+    conectado, responden 503.
+
+    Contrato mantenido a mano en `BackendZonafitevolution/openapi.yaml` y publicado con Swagger UI en
+    `/api/docs`. La prueba `test/openapi.test.js` comprueba que cada ruta de Express esté documentada aquí
+    y que no sobre ninguna.
+  license:
+    name: MIT
+    url: https://github.com/zonafitevolutionSENA/ZonaFitEvolution03/blob/main/LICENSE
+servers:
+  - url: https://zonafitevolution03-production.up.railway.app/api
+    description: Producción (Railway)
+  - url: http://localhost:3000/api
+    description: Desarrollo local
+tags:
+  - name: Autenticación
+  - name: Usuarios
+    description: Cuentas del personal (solo Administrador)
+  - name: Roles
+  - name: Clientes
+    description: Socios del gimnasio
+  - name: Planes
+    description: Planes por tiempo y tiqueteras
+  - name: Membresías
+  - name: Biometría
+    description: Registro e identificación por huella (AS608)
+  - name: Acceso físico
+    description: Validación de ingreso en recepción y pantalla de ingreso
+  - name: Salud
+security:
+  - bearerAuth: []
+
+paths:
+  /salud:
+    get:
+      tags: [Salud]
+      summary: Estado de la API y del lector
+      security: []
+      responses:
+        '200':
+          description: La API responde
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  estado: { type: string, example: ok }
+                  lector: { type: string, enum: [conectado, desconectado] }
+
+  /auth/login:
+    post:
+      tags: [Autenticación]
+      summary: Iniciar sesión
+      description: |
+        Límite: 5 intentos fallidos por IP y correo cada 15 minutos (los correctos no cuentan).
+        Si el correo no existe, la respuesta tarda lo mismo que con una contraseña incorrecta.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [correo, contrasena]
+              properties:
+                correo: { type: string, format: email, example: admin@zonafit.com }
+                contrasena: { type: string, format: password }
+      responses:
+        '200':
+          description: Credenciales correctas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string, description: JWT con id y rol_id }
+                  usuario: { $ref: '#/components/schemas/Usuario' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: Credenciales inválidas }
+        '429':
+          description: Demasiados intentos fallidos
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: Demasiados intentos de inicio de sesión. Inténtalo de nuevo más tarde. }
+
+  /usuarios:
+    get:
+      tags: [Usuarios]
+      summary: Listar usuarios
+      description: 'Roles: Administrador.'
+      responses:
+        '200':
+          description: Lista de usuarios (sin contraseña)
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Usuario' } }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+    post:
+      tags: [Usuarios]
+      summary: Crear usuario
+      description: 'Roles: Administrador. La contraseña se guarda con bcrypt.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre, correo, contrasena, rol_id]
+              properties:
+                nombre: { type: string }
+                correo: { type: string, format: email }
+                contrasena: { type: string, format: password, minLength: 8 }
+                rol_id: { type: integer, enum: [1, 2], description: '1 = Administrador, 2 = Empleado' }
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '409':
+          description: Ya existe un usuario con ese correo
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /usuarios/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Usuarios]
+      summary: Obtener un usuario
+      description: 'Roles: Administrador.'
+      responses:
+        '200':
+          description: Usuario
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Usuario' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+    delete:
+      tags: [Usuarios]
+      summary: Eliminar un usuario
+      description: 'Roles: Administrador. No se puede eliminar la propia cuenta ni el último administrador.'
+      responses:
+        '200': { $ref: '#/components/responses/Mensaje' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409':
+          description: Es la propia cuenta o el último administrador
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /roles:
+    get:
+      tags: [Roles]
+      summary: Listar roles
+      description: 'Roles: Administrador.'
+      responses:
+        '200':
+          description: Roles disponibles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer, example: 1 }
+                    nombre: { type: string, example: admin }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+
+  /clientes:
+    get:
+      tags: [Clientes]
+      summary: Listar clientes
+      description: 'Roles: Administrador y Empleado.'
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Cliente' } }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+    post:
+      tags: [Clientes]
+      summary: Registrar cliente
+      description: 'Roles: Administrador y Empleado. Los clientes no se eliminan (RN-001).'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre, cedula, correo]
+              properties:
+                nombre: { type: string }
+                cedula: { type: string, pattern: '^[0-9]{6,15}$' }
+                correo: { type: string, format: email, maxLength: 100 }
+                telefono: { type: string, nullable: true }
+      responses:
+        '201':
+          description: Cliente registrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Cliente' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '409':
+          description: Ya existe un cliente con esa cédula
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /clientes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Clientes]
+      summary: Obtener un cliente
+      description: 'Roles: Administrador y Empleado.'
+      responses:
+        '200':
+          description: Cliente
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Cliente' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+    put:
+      tags: [Clientes]
+      summary: Actualizar un cliente
+      description: 'Roles: Administrador y Empleado. La cédula no se modifica.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nombre, correo]
+              properties:
+                nombre: { type: string }
+                correo: { type: string, format: email, maxLength: 100 }
+                telefono: { type: string, nullable: true }
+      responses:
+        '200':
+          description: Cliente actualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Cliente' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+
+  /planes:
+    get:
+      tags: [Planes]
+      summary: Listar planes
+      description: 'Roles: Administrador y Empleado.'
+      parameters:
+        - name: activos
+          in: query
+          description: Con `true` devuelve solo los planes activos
+          schema: { type: string, enum: ['true'] }
+      responses:
+        '200':
+          description: Lista de planes
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Plan' } }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+    post:
+      tags: [Planes]
+      summary: Crear plan
+      description: 'Roles: Administrador. Con `max_ingresos` el plan es una tiquetera.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PlanEntrada' }
+      responses:
+        '201':
+          description: Plan creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Plan' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '409':
+          description: Ya existe un plan con ese nombre
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /planes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Planes]
+      summary: Obtener un plan
+      description: 'Roles: Administrador y Empleado.'
+      responses:
+        '200':
+          description: Plan
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Plan' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+    put:
+      tags: [Planes]
+      summary: Actualizar un plan
+      description: 'Roles: Administrador. Todos los campos son opcionales.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/PlanEntrada'
+              properties:
+                activo: { type: boolean }
+      responses:
+        '200':
+          description: Plan actualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Plan' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409':
+          description: Ya existe un plan con ese nombre
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Planes]
+      summary: Eliminar un plan
+      description: 'Roles: Administrador. No se puede eliminar un plan con membresías asociadas; en ese caso se desactiva.'
+      responses:
+        '200': { $ref: '#/components/responses/Mensaje' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409':
+          description: El plan tiene membresías asociadas
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /planes/{id}/desactivar:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    patch:
+      tags: [Planes]
+      summary: Desactivar un plan
+      description: 'Roles: Administrador. El plan deja de ofrecerse; las membresías existentes no cambian.'
+      responses:
+        '200': { $ref: '#/components/responses/Mensaje' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+
+  /membresias:
+    get:
+      tags: [Membresías]
+      summary: Listar membresías
+      description: 'Roles: Administrador y Empleado.'
+      responses:
+        '200':
+          description: Lista de membresías
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Membresia' } }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+    post:
+      tags: [Membresías]
+      summary: Crear membresía
+      description: |
+        Roles: Administrador y Empleado. Si el cliente tiene una membresía vigente, la nueva queda
+        `pendiente` y se activa sola cuando termine la actual (RN-013).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plan_id, fecha_inicio, cliente_id]
+              properties:
+                plan_id: { type: integer }
+                cliente_id: { type: integer }
+                fecha_inicio: { type: string, format: date, example: '2026-11-23' }
+      responses:
+        '201':
+          description: Membresía creada, con datos del cliente y del plan
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MembresiaDetalle' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflicto' }
+  /membresias/buscar/{cedula}:
+    parameters:
+      - name: cedula
+        in: path
+        required: true
+        schema: { type: string, pattern: '^[0-9]{6,15}$' }
+    get:
+      tags: [Membresías]
+      summary: Buscar cliente por cédula para renovar
+      description: 'Roles: Administrador y Empleado. Devuelve el cliente con su membresía actual (la activa primero).'
+      responses:
+        '200':
+          description: Cliente con su membresía actual (campos de membresía nulos si no tiene)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Cliente'
+                properties:
+                  membresia_id: { type: integer, nullable: true }
+                  estado: { $ref: '#/components/schemas/EstadoMembresia' }
+                  fecha_fin: { type: string, format: date, nullable: true }
+                  ingresos_totales: { type: integer, nullable: true }
+                  ingresos_usados: { type: integer, nullable: true }
+                  nombre_plan: { type: string, nullable: true }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+  /membresias/renovar:
+    post:
+      tags: [Membresías]
+      summary: Renovar membresía por cédula
+      description: |
+        Roles: Administrador y Empleado. Si la membresía actual sigue vigente, la renovación queda `pendiente`
+        y empieza al día siguiente de su fin; si no, queda `activa` desde hoy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cedula, plan_id]
+              properties:
+                cedula: { type: string, pattern: '^[0-9]{6,15}$' }
+                plan_id: { type: integer }
+      responses:
+        '201':
+          description: Membresía creada por la renovación
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/MembresiaDetalle' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflicto' }
+  /membresias/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Membresías]
+      summary: Obtener una membresía
+      description: 'Roles: Administrador y Empleado.'
+      responses:
+        '200':
+          description: Membresía
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Membresia' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+    delete:
+      tags: [Membresías]
+      summary: Eliminar una membresía
+      description: 'Roles: Administrador.'
+      responses:
+        '200': { $ref: '#/components/responses/Mensaje' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+  /membresias/{id}/estado:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    patch:
+      tags: [Membresías]
+      summary: Cambiar el estado de una membresía
+      description: |
+        Roles: Administrador y Empleado. Solo el Administrador puede reactivar (`activa`).
+        Una membresía pendiente solo se puede cancelar.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [estado]
+              properties:
+                estado: { type: string, enum: [activa, vencida, cancelada] }
+      responses:
+        '200':
+          description: Membresía actualizada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Membresia' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflicto' }
+  /membresias/{id}/fecha-fin:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    patch:
+      tags: [Membresías]
+      summary: Cambiar la fecha de fin
+      description: |
+        Roles: Administrador. Solo membresías activas o pendientes. Si el cliente tiene una pendiente,
+        se reprograma para empezar al día siguiente del nuevo fin.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fecha_fin]
+              properties:
+                fecha_fin: { type: string, format: date, example: '2026-12-31' }
+      responses:
+        '200':
+          description: Membresía actualizada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Membresia' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflicto' }
+
+  /biometria/registrar:
+    post:
+      tags: [Biometría]
+      summary: Registrar la huella de un cliente
+      description: |
+        Roles: Administrador y Empleado. El lector pide poner el dedo dos veces. Se guarda solo un hash
+        irreversible de la plantilla (nunca la imagen). Con `captura_id` el frontend puede consultar la
+        etapa en `GET /biometria/registro/estado/{capturaId}`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cliente_id]
+              properties:
+                cliente_id: { type: integer }
+                captura_id: { type: string, format: uuid, description: Identificador elegido por el frontend }
+      responses:
+        '201':
+          description: Huella registrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer }
+                  cliente_id: { type: integer }
+                  mensaje: { type: string, example: Huella registrada correctamente }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '409':
+          description: El cliente ya tiene huella o la huella pertenece a otro cliente
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '503': { $ref: '#/components/responses/LectorDesconectado' }
+  /biometria/registro/estado/{capturaId}:
+    parameters:
+      - name: capturaId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Biometría]
+      summary: Etapa de un registro de huella en curso
+      description: 'Roles: Administrador y Empleado. Solo ve los registros iniciados por el mismo usuario.'
+      responses:
+        '200':
+          description: Etapa actual
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  etapa: { type: string, enum: [preparando, conectando, primera, retirar, segunda, procesando] }
+        '400':
+          description: Identificador de captura inválido
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+  /biometria/identificar:
+    post:
+      tags: [Biometría]
+      summary: Identificar un cliente por huella
+      description: 'Roles: Administrador y Empleado.'
+      responses:
+        '200':
+          description: Cliente identificado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Cliente' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404':
+          description: Ningún cliente tiene esa huella
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '503': { $ref: '#/components/responses/LectorDesconectado' }
+  /biometria/{cliente_id}:
+    parameters:
+      - name: cliente_id
+        in: path
+        required: true
+        schema: { type: integer, minimum: 1 }
+    delete:
+      tags: [Biometría]
+      summary: Eliminar la huella de un cliente
+      description: 'Roles: Administrador. Borra la plantilla en la base y en el sensor.'
+      responses:
+        '200': { $ref: '#/components/responses/Mensaje' }
+        '400': { $ref: '#/components/responses/Validacion' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404': { $ref: '#/components/responses/NoEncontrado' }
+        '503': { $ref: '#/components/responses/LectorDesconectado' }
+
+  /acceso-fisico/validar:
+    post:
+      tags: [Acceso físico]
+      summary: Validar el ingreso de un socio (recepción)
+      description: |
+        Roles: Administrador y Empleado. Lee la huella, identifica al cliente y evalúa su membresía
+        (patrón State: activa, pendiente, vencida, cancelada, sin membresía). Un solo ingreso por día en
+        cualquier plan (CR-008): una lectura repetida dentro de 30 minutos cuenta como el mismo ingreso.
+        Cada intento queda en el historial.
+      responses:
+        '200':
+          description: Resultado de la validación (permitido o denegado)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ResultadoAcceso' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+        '404':
+          description: Huella no reconocida (queda registrada como intento denegado)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              example: { error: Huella no reconocida }
+        '503': { $ref: '#/components/responses/LectorDesconectado' }
+  /acceso-fisico/pantalla/validar:
+    post:
+      tags: [Acceso físico]
+      summary: Validar el ingreso desde la pantalla de ingreso
+      description: |
+        Usada por la pantalla de autoservicio (`?pantalla=acceso`). No usa JWT: en la nube exige la cabecera
+        `x-pantalla-token` (variable `PANTALLA_TOKEN`); en local sin token, solo acepta el mismo equipo.
+        Límite: 30 lecturas por minuto por IP. Solo devuelve el nombre del socio, nunca la cédula.
+      security:
+        - pantallaToken: []
+      responses:
+        '200':
+          description: Resultado de la validación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cliente:
+                    type: object
+                    nullable: true
+                    properties:
+                      nombre: { type: string }
+                  permitido: { type: boolean }
+                  motivo: { type: string }
+                  ingresos_restantes: { type: integer, description: Solo tiqueteras }
+                  vence: { type: string, format: date, description: Solo tiqueteras }
+        '403':
+          description: Pantalla de ingreso no autorizada
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: Huella no reconocida
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '409':
+          description: El lector está ocupado con otra lectura
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '429':
+          description: Demasiadas lecturas en un minuto
+        '503': { $ref: '#/components/responses/LectorDesconectado' }
+  /acceso-fisico/historial:
+    get:
+      tags: [Acceso físico]
+      summary: Historial reciente de accesos
+      description: 'Roles: Administrador y Empleado. Últimos 50 intentos. El historial se conserva 3 meses (DAT-05).'
+      responses:
+        '200':
+          description: Intentos de acceso, del más reciente al más antiguo
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/RegistroAcceso' }
+        '401': { $ref: '#/components/responses/NoAutenticado' }
+        '403': { $ref: '#/components/responses/SinPermiso' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token obtenido en POST /auth/login
+    pantallaToken:
+      type: apiKey
+      in: header
+      name: x-pantalla-token
+      description: Token de la pantalla de ingreso (PANTALLA_TOKEN)
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+  schemas:
+    Error:
+      type: object
+      properties:
+        error: { type: string }
+    Usuario:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        correo: { type: string, format: email }
+        rol_id: { type: integer, enum: [1, 2] }
+        fecha_creacion: { type: string, format: date-time }
+    Cliente:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        cedula: { type: string }
+        correo: { type: string, format: email }
+        telefono: { type: string, nullable: true }
+        fecha_registro: { type: string, format: date-time }
+        tiene_huella: { type: boolean }
+    PlanEntrada:
+      type: object
+      required: [nombre, duracion_dias, precio]
+      properties:
+        nombre: { type: string, maxLength: 100 }
+        duracion_dias: { type: integer, minimum: 1 }
+        precio: { type: number, exclusiveMinimum: true, minimum: 0 }
+        max_ingresos:
+          type: integer
+          nullable: true
+          minimum: 1
+          description: Nulo = plan por tiempo; con valor = tiquetera con ese número de ingresos
+    Plan:
+      type: object
+      properties:
+        id: { type: integer }
+        nombre: { type: string }
+        duracion_dias: { type: integer }
+        precio: { type: number }
+        max_ingresos: { type: integer, nullable: true }
+        activo: { type: boolean }
+        fecha_creacion: { type: string, format: date-time }
+    EstadoMembresia:
+      type: string
+      nullable: true
+      enum: [activa, pendiente, vencida, cancelada]
+    Membresia:
+      type: object
+      properties:
+        id: { type: integer }
+        plan_id: { type: integer }
+        cliente_id: { type: integer }
+        fecha_inicio: { type: string, format: date }
+        fecha_fin: { type: string, format: date, nullable: true, description: 'En una tiquetera se fija en el primer ingreso' }
+        estado: { $ref: '#/components/schemas/EstadoMembresia' }
+        fecha_creacion: { type: string, format: date-time }
+        ingresos_totales: { type: integer, nullable: true }
+        ingresos_usados: { type: integer }
+        fecha_primer_uso: { type: string, format: date, nullable: true }
+        fecha_ultimo_ingreso: { type: string, format: date, nullable: true }
+    MembresiaDetalle:
+      allOf:
+        - $ref: '#/components/schemas/Membresia'
+      properties:
+        nombre_cliente: { type: string }
+        cedula: { type: string }
+        correo_cliente: { type: string }
+        nombre_plan: { type: string }
+        precio_plan: { type: number }
+    ResultadoAcceso:
+      type: object
+      properties:
+        cliente:
+          type: object
+          properties:
+            id: { type: integer }
+            nombre: { type: string }
+            cedula: { type: string }
+        permitido: { type: boolean }
+        motivo: { type: string, example: 'Membresía vencida' }
+        ingresos_restantes: { type: integer, description: Solo tiqueteras }
+        vence: { type: string, format: date, description: Solo tiqueteras }
+    RegistroAcceso:
+      type: object
+      properties:
+        id: { type: integer }
+        cliente_id: { type: integer, nullable: true }
+        nombre_cliente: { type: string, nullable: true }
+        fecha_hora: { type: string, format: date-time }
+        resultado: { type: string, enum: [permitido, denegado] }
+        motivo: { type: string }
+  responses:
+    Validacion:
+      description: Datos faltantes o inválidos
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: El cuerpo de la petición no puede estar vacío }
+    NoAutenticado:
+      description: Falta el token o es inválido o expiró
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: Token de autenticación requerido }
+    SinPermiso:
+      description: El rol del usuario no puede hacer esta operación
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: No tienes permisos para realizar esta acción }
+    NoEncontrado:
+      description: El recurso no existe
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflicto:
+      description: Regla de negocio que impide la operación (membresía pendiente, otra activa, cambios simultáneos…)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    LectorDesconectado:
+      description: El agente del lector no está conectado
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: 'Lector desconectado: inicia el agente en el portátil del lector' }
+    Mensaje:
+      description: Operación realizada
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              mensaje: { type: string }

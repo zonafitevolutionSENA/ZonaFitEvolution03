@@ -1,10 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const YAML = require('yaml');
+const swaggerUi = require('swagger-ui-express');
 const routes = require('./routes');
 const manejarErrores = require('./middlewares/error.middleware');
 
 const app = express();
+const contratoApi = YAML.parse(fs.readFileSync(path.join(__dirname, '..', 'openapi.yaml'), 'utf8'));
 
 // Orígenes del frontend autorizados (en la nube, la URL de Vercel). Varios se separan con comas
 const origenesPermitidos = (process.env.ORIGEN_FRONTEND || 'http://localhost:5173,http://127.0.0.1:5173')
@@ -17,6 +22,12 @@ app.set('trust proxy', 1);
 app.disable('x-powered-by');
 app.use(cors({ origin: origenesPermitidos }));
 app.use(express.json({ limit: '100kb' }));
+// Documentación de la API (contrato OpenAPI en openapi.yaml, publicado con Swagger UI)
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(contratoApi, {
+  customSiteTitle: 'Zona Fit Evolution API',
+  swaggerOptions: { persistAuthorization: false }
+}));
+app.get('/api/openapi.json', (req, res) => res.json(contratoApi));
 app.use('/api', routes);
 app.use((req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 app.use(manejarErrores);

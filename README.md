@@ -29,6 +29,7 @@ zonafitproyectocompleto/
 │   ├── scripts/         crear-admin.js y pruebas-cp.js
 │   ├── test/            pruebas automáticas (node --test)
 │   ├── src/             API: rutas, controladores, servicios, repositorios, modelos
+│   ├── openapi.yaml     contrato OpenAPI de la API (Swagger UI en /api/docs)
 │   ├── .env.example
 │   ├── index.js
 │   └── package.json
@@ -185,6 +186,15 @@ Los roles disponibles son solo `admin` (1) y `empleado` (2). Las membresías per
 
 `POST /api/auth/login` con `{ "correo": "...", "contrasena": "..." }` devuelve `{ token, usuario }`, donde `usuario` incluye `id`, `nombre`, `correo`, `rol_id` y `fecha_creacion` (nunca la contraseña).
 Las demás rutas requieren la cabecera `Authorization: Bearer <token>`. El token dura 8 horas por defecto (`JWT_EXPIRES_IN`).
+
+## Documentación de la API (Swagger)
+
+La API está documentada con OpenAPI 3 en [`BackendZonafitevolution/openapi.yaml`](BackendZonafitevolution/openapi.yaml) y se puede consultar y probar con Swagger UI:
+
+- Producción: https://zonafitevolution03-production.up.railway.app/api/docs
+- Local: http://localhost:3000/api/docs (el contrato en JSON está en `/api/openapi.json`)
+
+Para probar rutas protegidas: ejecuta `POST /auth/login`, copia el `token`, pulsa **Authorize** y pégalo. La prueba `test/openapi.test.js` compara el contrato con las rutas de Express, así que la integración continua falla si se agrega o cambia una ruta sin documentarla. Las tablas siguientes son un resumen.
 
 ## Endpoints de Cliente
 
