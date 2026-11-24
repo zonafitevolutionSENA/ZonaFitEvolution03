@@ -1,11 +1,25 @@
 const nodemailer = require('nodemailer');
 
-// Envío de correos con Gmail. CORREO_CONTRASENA_APP es una contraseña de aplicación de Google
-// (requiere la verificación en dos pasos activa en esa cuenta), no la contraseña normal.
+// Envío de correos. Hay dos formas, y se usa la primera que esté configurada:
+// 1. Brevo por HTTPS (BREVO_API_KEY + CORREO_REMITENTE): la de producción. Railway bloquea el SMTP en
+//    los planes Trial y Hobby, pero deja salir HTTPS, que es lo que recomienda para enviar correos.
+// 2. Gmail por SMTP (CORREO_USUARIO + CORREO_CONTRASENA_APP): sirve en local. CORREO_CONTRASENA_APP es una
+//    contraseña de aplicación de Google (requiere la verificación en dos pasos), no la contraseña normal.
+const URL_BREVO = 'https://api.brevo.com/v3/smtp/email';
+const ESPERA_MAXIMA_MS = 10000;
+const NOMBRE_REMITENTE = 'Zona Fit Evolution';
 let transporte = null;
 
-function estaConfigurado() {
+function usaBrevo() {
+  return Boolean(process.env.BREVO_API_KEY && process.env.CORREO_REMITENTE);
+}
+
+function usaGmail() {
   return Boolean(process.env.CORREO_USUARIO && process.env.CORREO_CONTRASENA_APP);
+}
+
+function estaConfigurado() {
+  return usaBrevo() || usaGmail();
 }
 
 function obtenerTransporte() {
@@ -36,14 +50,43 @@ function plantilla(titulo, parrafos) {
 </div>`;
 }
 
-async function enviar({ para, asunto, texto, html }) {
+async function enviarConBrevo({ para, asunto, texto, html }) {
+  const respuesta = await fetch(URL_BREVO, {
+    method: 'POST',
+    headers: {
+      'api-key': process.env.BREVO_API_KEY.trim(),
+      'content-type': 'application/json',
+      accept: 'application/json'
+    },
+    body: JSON.stringify({
+      sender: { name: NOMBRE_REMITENTE, email: process.env.CORREO_REMITENTE.trim() },
+      to: [{ email: para }],
+      subject: asunto,
+      textContent: texto,
+      htmlContent: html
+    }),
+    signal: AbortSignal.timeout(ESPERA_MAXIMA_MS)
+  });
+  if (!respuesta.ok) {
+    // Brevo explica el motivo en el cuerpo (clave inválida, remitente sin verificar…); nunca incluye la clave
+    const detalle = (await respuesta.text().catch(() => '')).slice(0, 300);
+    throw new Error(`Brevo respondió ${respuesta.status}: ${detalle}`);
+  }
+}
+
+async function enviarConGmail({ para, asunto, texto, html }) {
   await obtenerTransporte().sendMail({
-    from: `"Zona Fit Evolution" <${process.env.CORREO_USUARIO}>`,
+    from: `"${NOMBRE_REMITENTE}" <${process.env.CORREO_USUARIO}>`,
     to: para,
     subject: asunto,
     text: texto,
     html
   });
+}
+
+async function enviar(mensaje) {
+  if (usaBrevo()) return enviarConBrevo(mensaje);
+  return enviarConGmail(mensaje);
 }
 
 async function enviarCodigoRecuperacion({ para, nombre, codigo, minutos }) {

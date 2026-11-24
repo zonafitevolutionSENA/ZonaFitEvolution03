@@ -187,6 +187,23 @@ Los roles disponibles son solo `admin` (1) y `empleado` (2). Las membresías per
 `POST /api/auth/login` con `{ "correo": "...", "contrasena": "..." }` devuelve `{ token, usuario }`, donde `usuario` incluye `id`, `nombre`, `correo`, `rol_id` y `fecha_creacion` (nunca la contraseña).
 Las demás rutas requieren la cabecera `Authorization: Bearer <token>`. El token dura 8 horas por defecto (`JWT_EXPIRES_IN`).
 
+### Olvidé mi contraseña
+
+En el login, **¿Olvidaste tu contraseña?** recupera la cuenta del personal en tres pasos (`POST /api/auth/recuperar`, `/recuperar/verificar` y `/recuperar/restablecer`):
+
+1. Se escribe el correo y se envía un código de 6 dígitos. La respuesta es la misma aunque el correo no exista, para no revelar qué cuentas hay.
+2. El código vence a los 10 minutos, es de un solo uso, admite 5 intentos y se guarda cifrado (tabla `recuperaciones_contrasena`).
+3. Al poner la contraseña nueva se cierran las sesiones abiertas de esa cuenta (`usuarios.contrasena_cambiada_en`) y llega un aviso al correo.
+
+**Envío de los correos.** Se usa la primera opción configurada:
+
+| Opción | Variables | Dónde |
+| --- | --- | --- |
+| Brevo por HTTPS | `BREVO_API_KEY`, `CORREO_REMITENTE` | Producción en Railway: Railway bloquea el SMTP en los planes Trial y Hobby y recomienda enviar por una API HTTPS |
+| Gmail por SMTP | `CORREO_USUARIO`, `CORREO_CONTRASENA_APP` | Local. La contraseña es una contraseña de aplicación de Google (requiere verificación en dos pasos) |
+
+Sin ninguna de las dos, la API responde 503 «La recuperación de contraseña no está disponible». En Brevo, `CORREO_REMITENTE` debe ser un remitente verificado (Brevo → Senders, domains & dedicated IPs). Sin dominio propio, algunos correos pueden llegar a Spam.
+
 ## Documentación de la API (Swagger)
 
 La API está documentada con OpenAPI 3 en [`BackendZonafitevolution/openapi.yaml`](BackendZonafitevolution/openapi.yaml) y se puede consultar y probar con Swagger UI:
@@ -438,6 +455,8 @@ Archivo `BackendZonafitevolution/.env` (no se sube a Git; la plantilla es `.env.
 | `ORIGEN_FRONTEND`                                         | Orígenes permitidos por CORS, separados por comas (en la nube, la URL de Vercel)       |
 | `TZ`                                                      | Zona horaria del servidor (`America/Bogota`; obligatoria en la nube)                   |
 | `NIVEL_LOG`                                               | Nivel mínimo de los logs: `debug`, `info` (por defecto), `warn` o `error`. Cada línea lleva fecha, nivel, módulo y contexto |
+| `BREVO_API_KEY`, `CORREO_REMITENTE`                      | Envío de los códigos de recuperación por la API de Brevo (producción). El remitente debe estar verificado en Brevo |
+| `CORREO_USUARIO`, `CORREO_CONTRASENA_APP`                 | Alternativa local: Gmail por SMTP con una contraseña de aplicación                     |
 
 ---
 
