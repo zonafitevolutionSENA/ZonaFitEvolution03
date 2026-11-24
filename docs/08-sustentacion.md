@@ -12,6 +12,7 @@
 | 0.3         | 11/11/2026 | Demostración desde la nube (Vercel y Railway) con el agente del lector; lista previa y contingencias | Juan Diego Mejía Llano |            |            | Borrador   |
 | 0.4 | 22/11/2026 | Portátil de recepción con arranque automático del agente y la pantalla; verificación con «Verificar lector ZonaFit» | Juan Diego Mejía Llano |  |  | Borrador |
 | 0.5 | 24/11/2026 | Demostraciones DEM-06 (restablecer contraseña) y DEM-07 (consentimientos y aviso de vencimiento); modelo de 9 tablas y cambios hasta CR-011 | Juan Diego Mejía Llano |  |  | Borrador |
+| 0.6 | 24/11/2026 | Versión evaluada v1.1.0 | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -349,7 +350,7 @@ La demostración debe contar una historia de uso coherente. No debe consistir en
 | **Campo**          | **Información**                                     |
 | ------------------ | --------------------------------------------------- |
 | Proyecto           | Sistema de gestión para gimnasio Zona Fit Evolution |
-| Versión evaluada   | v1.0.0                                              |
+| Versión evaluada   | v1.1.0                                              |
 | Fecha y hora       | 12/12/2026                                          |
 | Lugar / medio      |                                                     |
 | Duración           |                                                     |

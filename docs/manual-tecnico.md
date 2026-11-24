@@ -19,6 +19,7 @@
 | 1.8 | 23/11/2026 | Versión v1.0.0, paquete técnico de entrega, sesión de transferencia y lista de verificación | Juan Diego Mejía Llano |  |  | En revisión |
 | 1.9 | 23/11/2026 | Contrato OpenAPI de la API (openapi.yaml) y Swagger UI en /api/docs; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | En revisión |
 | 2.0 | 24/11/2026 | Envío de correos (Brevo y Gmail), recuperación de contraseña, aviso de vencimiento, init.sql sin DROP y su ejecución en Railway, supresión y anonimización de datos, dependencias críticas, DT-07 y 93 pruebas | Juan Diego Mejía Llano |  |  | En revisión |
+| 2.1 | 24/11/2026 | Versión v1.1.0 del sistema | Juan Diego Mejía Llano |  |  | En revisión |
 
 ### Aprobaciones
 
@@ -104,7 +105,7 @@ Este manual documenta los procedimientos técnicos y operativos necesarios para 
 | **Campo**                  | **Valor**                                                               |
 | -------------------------- | ----------------------------------------------------------------------- |
 | Nombre técnico del sistema | ZonaFitEvolution03 (BackendZonafitevolution + FrontendZonafitevolution) |
-| Versión o etiqueta Git     | v1.0.0 (23/11/2026)                        |
+| Versión o etiqueta Git     | v1.1.0 (24/11/2026); v1.0.0 (23/11/2026) es la versión de la entrega |
 | Repositorio principal      | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03              |
 | Rama de entrega            | main                                                                    |
 | Tipo de solución           | Aplicación web SPA + API REST                                           |

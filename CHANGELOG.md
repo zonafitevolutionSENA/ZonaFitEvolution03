@@ -1,8 +1,12 @@
 # Changelog
 
-Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) con las categorías de la Guía de estructura del repositorio. La versión de entrega es la `v1.0.0` (etiqueta y Release en GitHub).
+Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) con las categorías de la Guía de estructura del repositorio. La versión de entrega es la `v1.0.0` (23/11/2026); la `v1.1.0` (24/11/2026) agrega la recuperación de contraseña, los correos y los avisos de vencimiento. Cada una tiene su etiqueta y su Release en GitHub.
 
 ## [Sin publicar]
+
+## [1.1.0] – 24/11/2026
+
+Recuperación de contraseña, envío de correos por Brevo, aviso de vencimiento y consentimientos del cliente (CR-010 y CR-011), con la documentación actualizada (etiqueta `v1.1.0`).
 
 ### Added
 - Botón de regreso (flecha) en la esquina superior derecha: vuelve a la pantalla anterior; se desactiva cuando no hay a dónde regresar.

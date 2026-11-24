@@ -19,6 +19,7 @@
 | 1.0 | 23/11/2026 | Versión final: etiqueta v1.0.0, entregables finales, cierre administrativo y verificación de cierre; solo queda la firma del acta | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.1 | 23/11/2026 | Contrato OpenAPI y Swagger UI publicados; 50 pruebas unitarias | Juan Diego Mejía Llano |  |  | Borrador |
 | 1.2 | 24/11/2026 | Funcionalidades posteriores a la v1.0.0: recuperación de contraseña, envío de correos con Brevo, aviso de vencimiento y consentimientos (CR-010, CR-011); 9 tablas, DT-07 resuelta en parte, 93 pruebas | Juan Diego Mejía Llano |  |  | Borrador |
+| 1.3 | 24/11/2026 | Etiqueta y Release v1.1.0 con las funciones posteriores a la entrega | Juan Diego Mejía Llano |  |  | Borrador |
 
 ### Aprobaciones
 
@@ -65,7 +66,7 @@ Este informe formaliza el cierre del proyecto, registra la versión entregada y 
 | Fecha de inicio          | 25/04/2026                                                                                                                                                                                                                                                                                                                         |
 | Fecha de cierre          | 12/12/2026                                                                                                                                                                                                                                                                                                                         |
 | Repositorio              | https://github.com/zonafitevolutionSENA/ZonaFitEvolution03                                                                                                                                                                                                                                                                         |
-| Etiqueta / commit final  | Etiqueta v1.0.0 en main (23/11/2026) |
+| Etiqueta / commit final  | Etiqueta v1.1.0 en main (24/11/2026); v1.0.0 (23/11/2026) conserva la versión de la entrega |
 | URL desplegada           | https://zona-fit-evolution03.vercel.app (API: https://zonafitevolution03-production.up.railway.app/api) |
 | Ambiente de demostración | Producción en Vercel y Railway, con el portátil de recepción, el agente del lector y el sensor AS608 |
 | Licencia                 | ISC (archivo LICENSE en la raíz del repositorio) |
@@ -431,6 +432,7 @@ La deuda técnica puede permanecer al cierre únicamente cuando está identifica
 | ---------------------------- | ---------------------------- | ---------- | ------------- | ---------- |
 | Archivar documentación final | Juan Diego Mejía Llano       | 23/11/2026 | docs/entregables y Documentos\_Proyecto | Hecho |
 | Etiquetar versión final      | Juan Diego Mejía Llano       | 23/11/2026 | Etiqueta y Release v1.0.0 en GitHub | Hecho |
+| Etiquetar versión v1.1.0     | Juan Diego Mejía Llano       | 24/11/2026 | Etiqueta y Release v1.1.0 en GitHub | Hecho |
 | Cerrar issues / backlog      | Juan Diego Mejía Llano       | 23/11/2026 | Backlog 1.5; pendientes en la sección 13 (trabajo futuro) | Hecho |
 | Entregar accesos y activos   | Liliana Sofía Panesso Méndez | Con la firma del acta | Sección 15 | Programado |
 | Registrar riesgos pendientes | Juan Diego Mejía Llano       | 23/11/2026 | Sección 12 | Hecho |
