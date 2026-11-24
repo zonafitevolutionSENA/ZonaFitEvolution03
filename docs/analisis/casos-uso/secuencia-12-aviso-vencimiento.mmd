@@ -1,0 +1,27 @@
+---
+title: "DIA-SEC-12 · Enviar aviso de vencimiento · v1.0 · 24/11/2026"
+---
+%% CU-009 · HU-015 · RF-010 · RN-018 · CR-010
+sequenceDiagram
+  participant T as Tarea diaria (8:00)
+  participant S as Servicio de avisos
+  participant D as Base de datos
+  participant C as Brevo (correo)
+  participant K as Cliente
+  T->>S: enviarAvisosDeVencimiento()
+  alt Correo sin configurar
+    S-->>T: Omitido (queda en el log)
+  else Correo configurado
+    S->>D: Membresías activas que vencen en 1 a 7 días, plan de 15 días o más,<br/>cliente con avisos autorizados, sin pendiente y sin aviso previo (máx. 250)
+    D-->>S: Lista por avisar
+    loop Cada membresía
+      S->>C: Correo con el plan, la fecha de fin y los ingresos de la tiquetera
+      alt Brevo acepta el envío
+        C-->>K: Aviso de vencimiento
+        S->>D: INSERT en avisos_membresia (no se repite)
+      else Falla el envío
+        S->>S: Registra el error, se reintenta mañana
+      end
+    end
+    S-->>T: Pendientes, enviados y fallidos
+  end

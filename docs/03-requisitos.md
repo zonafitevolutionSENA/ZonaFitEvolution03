@@ -30,6 +30,7 @@
 | 1.4 | 22/11/2026 | Observaciones OBS-003 y OBS-005 cerradas (CORS restringido y tarea diaria de membresías) | Juan Diego Mejía Llano |  |
 | 1.5 | 23/11/2026 | CR-008 implementado en todos los planes (RN-015) y CR-009: RNF-007 verificado en Chrome | Juan Diego Mejía Llano |  |
 | 1.6 | 23/11/2026 | Lista de verificación diligenciada | Juan Diego Mejía Llano |  |
+| 1.7 | 24/11/2026 | RF-009 (restablecer contraseña), RF-010 (aviso de vencimiento por correo) y RF-011 (consentimientos), reglas RN-016 a RN-019, actores ACT-05 y ACT-06, integración INT-03 (Brevo), retención de 3 meses del historial, anonimización y CR-010 y CR-011 | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -159,7 +160,7 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 
 | **ID** | **Módulo / capacidad**       | **Descripción**                                                                                                                                    | **Actores**                         | **Versión** | **Criterio de inclusión**              |
 | ------ | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ----------- | -------------------------------------- |
-| ALC-01 | Autenticación y roles        | Inicio de sesión con JWT y permisos por rol (Administrador y Empleado).                                                                            | ACT-01, ACT-02                      | MVP         | Ningún usuario opera sin autenticarse. |
+| ALC-01 | Autenticación y roles        | Inicio de sesión con JWT y permisos por rol (Administrador y Empleado); recuperación de la contraseña con un código al correo. | ACT-01, ACT-02                      | MVP         | Ningún usuario opera sin autenticarse. |
 | ALC-02 | Gestión del personal         | Crear, consultar y eliminar usuarios del personal.                                                                                                 | ACT-01                              | MVP         | Necesario para separar funciones.      |
 | ALC-03 | Gestión de clientes          | Registrar, buscar, consultar y editar clientes; ver el estado de su membresía.                                                                     | ACT-01, ACT-02                      | MVP         | Base de todos los procesos.            |
 | ALC-04 | Catálogo de planes           | Planes por tiempo (Sesión, Quincena, Mensualidad, Trimestre y tarifas de estudiantes) y tiqueteras de 6 y 12 ingresos; crear, editar y desactivar. | ACT-01 (gestión), ACT-02 (consulta) | MVP         | Define duración y precio.              |
@@ -169,6 +170,7 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | ALC-08 | Registro financiero          | Resumen de pagos por cliente, solo para el Administrador.                                                                                          | ACT-01                              | MVP         | Control de ingresos.                   |
 | ALC-09 | Comprobante digital de pago  | Soporte del pago para el cliente.                                                                                                                  | ACT-03                              | Posterior   | Prioridad Could (HU-009).              |
 | ALC-10 | Inicio (dashboard)           | Acciones rápidas, actividad reciente y membresías por vencer.                                                                                      | ACT-01, ACT-02                      | MVP         | Agiliza el trabajo diario.             |
+| ALC-11 | Avisos por correo y consentimientos | Autorización del cliente al registrarse (términos y tratamiento de datos, avisos opcionales) y aviso de vencimiento 7 días antes (CR-010). | ACT-01, ACT-02, ACT-05 | MVP | Retención de clientes y cumplimiento de la Ley 1581 |
 
 ### 4.3 Alcance del proyecto
 
@@ -244,6 +246,9 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | RF-006 | Registrar pagos            | Finanzas             | ACT-01                              | Alta          | Implementado parcialmente        | MVP         |
 | RF-007 | Gestionar roles y personal | Seguridad y personal | ACT-01                              | Alta          | Implementado                     | MVP         |
 | RF-008 | Historial de accesos       | Control de acceso    | ACT-01, ACT-02                      | Media         | Implementado                     | MVP         |
+| RF-009 | Restablecer contraseña     | Seguridad y personal | ACT-01, ACT-02                      | Alta          | Implementado                     | MVP         |
+| RF-010 | Avisar el vencimiento por correo | Membresías     | ACT-05 (sistema)                    | Media         | Implementado                     | MVP         |
+| RF-011 | Registrar consentimientos del cliente | Clientes  | ACT-01, ACT-02                      | Alta          | Implementado                     | MVP         |
 
 ### 5.2 Ficha detallada de requisito funcional
 
@@ -447,6 +452,81 @@ El documento define qué debe hacer el producto, bajo qué restricciones debe op
 | Responsable de validación      | Liliana Sofía Panesso Méndez (Product Owner)                                                                                       |
 | Estado                         | Implementado                                                                                                                       |
 
+**RF-009 – Restablecer contraseña**
+
+| **Campo**                      | **Contenido** |
+| ------------------------------ | ------------- |
+| ID y nombre                    | RF-009 – Restablecer contraseña |
+| Descripción                    | El sistema debe permitir que una persona del personal que olvidó su contraseña la restablezca por sí misma con una verificación en dos pasos: un código de 6 dígitos enviado a su correo y una contraseña nueva. |
+| Fuente                         | Equipo de desarrollo / OBJ-03 |
+| Justificación                  | Sin recuperación, el Administrador debía eliminar y volver a crear la cuenta, y nadie debe conocer la contraseña de otra persona. |
+| Actor principal                | ACT-01 Administrador, ACT-02 Empleado (sin sesión) |
+| Precondiciones                 | El usuario existe y el envío de correos está configurado (Brevo o Gmail). |
+| Disparador                     | La persona pulsa «¿Olvidaste tu contraseña?» en el inicio de sesión. |
+| Entradas                       | Correo; código de 6 dígitos; nueva contraseña y su confirmación. |
+| Procesamiento / comportamiento | Genera un código aleatorio, guarda solo su hash (bcrypt) con vigencia de 10 minutos y lo envía; responde lo mismo exista o no el correo. Verifica el código (5 intentos) y entrega un token temporal de 10 minutos. Valida la contraseña nueva, la guarda cifrada, gasta el código, fija usuarios.contrasena_cambiada_en y envía un aviso del cambio. |
+| Salidas                        | Mensajes de cada paso y correo con el código y con el aviso de cambio. |
+| Postcondiciones                | La contraseña anterior deja de servir y todas las sesiones abiertas de la cuenta quedan cerradas. |
+| Excepciones                    | Código incorrecto (400 con los intentos restantes); código vencido o usado (400); contraseña que incumple las reglas o igual a la anterior (400); demasiadas solicitudes (429); correo sin configurar (503). |
+| Reglas de negocio asociadas    | RN-016, RN-017 |
+| Dependencias                   | RF-007, INT-03 |
+| Prioridad                      | Should / Alta |
+| Versión objetivo               | MVP |
+| Criterios de aceptación        | Un código correcto permite guardar la nueva contraseña; un código incorrecto informa los intentos restantes; un código vencido o ya usado se rechaza; un correo no registrado recibe el mismo mensaje; al guardar, las sesiones abiertas se cierran. |
+| Método de verificación         | Prueba (CP-023 a CP-028) |
+| Responsable de validación      | Liliana Sofía Panesso Méndez (Product Owner) |
+| Estado                         | Implementado |
+
+**RF-010 – Avisar el vencimiento por correo**
+
+| **Campo**                      | **Contenido** |
+| ------------------------------ | ------------- |
+| ID y nombre                    | RF-010 – Avisar el vencimiento por correo |
+| Descripción                    | El sistema debe enviar un solo correo al cliente 7 días antes de que venza su membresía, en planes de 15 días o más (tiqueteras incluidas), si el cliente autorizó los avisos y no ha renovado. |
+| Fuente                         | STK-01 Propietario (CR-010) / OBJ-01, OBJ-02 |
+| Justificación                  | Recordar la renovación a tiempo reduce las membresías que vencen sin renovar. |
+| Actor principal                | Sistema (tarea programada, ACT-05) |
+| Precondiciones                 | Cliente con correo y avisos autorizados; envío de correos configurado. |
+| Disparador                     | Tarea diaria de las 8:00 (y al arrancar entre las 8:00 y las 20:00). |
+| Entradas                       | Membresías activas, planes, clientes y avisos ya enviados. |
+| Procesamiento / comportamiento | Selecciona las membresías activas que vencen en los próximos 7 días y cumplen RN-018, envía el correo con el plan, la fecha de fin y los ingresos restantes de la tiquetera, y registra el envío para no repetirlo; como máximo 250 por día. |
+| Salidas                        | Correo de aviso y registro en avisos_membresia. |
+| Postcondiciones                | Cada membresía recibe como máximo un aviso. |
+| Excepciones                    | Si el proveedor rechaza el envío no se registra y se reintenta al día siguiente; sin correo configurado no se envía nada. |
+| Reglas de negocio asociadas    | RN-018, RN-019 |
+| Dependencias                   | RF-001, RF-005, RF-011, INT-03 |
+| Prioridad                      | Should / Media |
+| Versión objetivo               | MVP |
+| Criterios de aceptación        | Solo se avisa a membresías de 15 días o más, con avisos autorizados y sin membresía pendiente; el aviso no se repite; un envío fallido se reintenta. |
+| Método de verificación         | Prueba (CP-029, CP-030) |
+| Responsable de validación      | Liliana Sofía Panesso Méndez (Product Owner) |
+| Estado                         | Implementado |
+
+**RF-011 – Registrar los consentimientos del cliente**
+
+| **Campo**                      | **Contenido** |
+| ------------------------------ | ------------- |
+| ID y nombre                    | RF-011 – Registrar los consentimientos del cliente |
+| Descripción                    | El sistema debe exigir al registrar un cliente la aceptación de los términos y el tratamiento de datos personales, y permitir autorizar o retirar los avisos por correo, guardando la fecha de cada aceptación. |
+| Fuente                         | STK-01 Propietario (CR-010) / Ley 1581 de 2012 y Decreto 1377 de 2013 |
+| Justificación                  | La autorización previa, expresa e informada del titular debe poder probarse. |
+| Actor principal                | ACT-01 Administrador, ACT-02 Empleado |
+| Precondiciones                 | Usuario autenticado; el cliente leyó la Política de tratamiento y los términos. |
+| Disparador                     | Registro o edición de un cliente. |
+| Entradas                       | Casilla obligatoria de términos y tratamiento de datos; casilla opcional de avisos por correo. |
+| Procesamiento / comportamiento | Rechaza el registro sin la aceptación de términos; guarda terminos_aceptados_en y, si autoriza, avisos_aceptados_en. Al editar, un cliente anterior puede aceptar ambos; los avisos se pueden retirar. |
+| Salidas                        | Cliente con sus autorizaciones y fechas. |
+| Postcondiciones                | Solo los clientes con avisos autorizados reciben correos (RF-010). |
+| Excepciones                    | Registro sin aceptar los términos (400); activar avisos sin términos aceptados (400); consentimiento que no es verdadero o falso (400). |
+| Reglas de negocio asociadas    | RN-019 |
+| Dependencias                   | RF-001 |
+| Prioridad                      | Must / Alta |
+| Versión objetivo               | MVP |
+| Criterios de aceptación        | Sin aceptar los términos no se registra; con los términos aceptados se registra y los avisos quedan desactivados si no se autorizan; los avisos se pueden retirar al editar. |
+| Método de verificación         | Prueba (CP-031, CP-032) |
+| Responsable de validación      | Liliana Sofía Panesso Méndez (Product Owner) |
+| Estado                         | Implementado |
+
 ### 5.3 Patrones de redacción
 
 | **Evitar**                            | **Preferir**                                                                                                                    |
@@ -478,6 +558,12 @@ Los criterios pueden expresarse como lista verificable o en formato Given/When/T
 | RF-007           | Datos inválidos      | un usuario                                         | ingresa una contraseña incorrecta                       | el sistema rechaza el acceso con un mensaje genérico        |
 | RF-007           | Permiso denegado     | un Empleado autenticado                            | llama una ruta de Administrador                         | la API responde 403                                         |
 | RF-008           | Flujo exitoso        | existen intentos de acceso registrados             | se filtra por resultado «denegado» y un rango de fechas | solo aparecen los intentos que cumplen el filtro            |
+| RF-009           | Flujo exitoso        | una persona del personal que olvidó su contraseña  | verifica el código recibido y escribe una nueva válida  | la contraseña cambia, las sesiones abiertas se cierran y llega un aviso al correo |
+| RF-009           | Código incorrecto    | un código vigente                                  | escribe otro código                                     | se informa cuántos intentos quedan; con 5 fallos el código deja de servir |
+| RF-009           | Correo no registrado | un correo que no pertenece a ninguna cuenta        | pide el código                                          | recibe el mismo mensaje y no se envía nada |
+| RF-010           | Flujo exitoso        | un cliente con plan mensual que vence en 7 días y avisos autorizados | corre la tarea de las 8:00              | recibe un solo correo con la fecha de fin |
+| RF-010           | Ya renovó            | un cliente con una membresía pendiente             | corre la tarea                                          | no recibe aviso |
+| RF-011           | Sin términos         | un Empleado registrando un cliente                 | no marca la casilla de términos                         | el registro se rechaza con el mensaje de la casilla |
 
 ## 6\. Requisitos no funcionales
 
@@ -668,6 +754,10 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | RN-013 | Tiqueteras                  | Una tiquetera incluye un número de ingresos; su duración cuenta desde el primer ingreso y descuenta como máximo un ingreso por día.                                                                                   | STK-01                   | Ninguna                                                                                                          | RF-002, RF-003           | Aprobada                               |
 | RN-014 | Membresía pendiente         | Una membresía adquirida mientras el cliente tiene otra activa queda «pendiente» y se activa automáticamente en su fecha de inicio. Solo se permite una pendiente y solo se puede cancelar.                            | STK-01                   | Ninguna                                                                                                          | RF-005                   | Aprobada                               |
 | RN-015 | Un ingreso por día          | Todos los planes permiten un solo ingreso por día.                                                                                                                                                                    | STK-01                   | Ninguna                                                                                                          | RF-002, RF-003           | Aprobada e implementada (todos los planes; ventana de 30 minutos para lecturas repetidas) |
+| RN-016 | Contraseña propia           | Solo la persona dueña de la cuenta cambia su contraseña, con el código enviado a su correo; ningún Administrador cambia la contraseña de otra cuenta. | Sistema | RF-007, RF-009 |
+| RN-017 | Reglas de contraseña        | Una contraseña tiene al menos 8 caracteres y como máximo 72 bytes, letras y números y ningún espacio; al restablecerla debe ser distinta de la anterior. Se valida en el navegador y en el servidor. | Sistema | RF-007, RF-009 |
+| RN-018 | Aviso de vencimiento        | Un solo aviso por membresía, 7 días antes del vencimiento, en planes de 15 días o más (tiqueteras incluidas), si el cliente lo autorizó y no ha renovado. | Sistema | RF-010 |
+| RN-019 | Consentimiento del titular  | No se registra un cliente sin su aceptación de los términos y del tratamiento de datos; los avisos por correo son opcionales y revocables, y cada aceptación guarda su fecha. | Recepción | RF-011 |
 
 ### 7.2 Ficha de regla de negocio
 
@@ -686,6 +776,38 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | Requisitos relacionados      | RF-003, RF-005                                                                                         |
 | Casos de prueba relacionados | CP-008                                                                                                 |
 | Estado y versión             | Aprobada – MVP                                                                                         |
+
+**RN-016 – Cada persona cambia su propia contraseña**
+
+| **Campo**                    | **Contenido** |
+| ---------------------------- | ------------- |
+| ID y nombre                  | RN-016 – Cada persona cambia su propia contraseña |
+| Descripción formal           | La contraseña de una cuenta solo cambia con el código enviado a su correo; ningún Administrador puede cambiar ni conocer la contraseña de otra cuenta. |
+| Motivo o política            | Responsabilidad individual y protección de las credenciales. |
+| Fuente autorizada            | Equipo de desarrollo, aprobado por el Product Owner |
+| Condición de aplicación      | Recuperación de contraseña; la API de usuarios no tiene ruta para cambiar contraseñas. |
+| Excepciones                  | Al crear una cuenta, el Administrador asigna la contraseña inicial. |
+| Datos involucrados           | usuarios.contrasena, recuperaciones\_contrasena |
+| Actor responsable            | Sistema |
+| Requisitos relacionados      | RF-007, RF-009 |
+| Casos de prueba relacionados | CP-023 a CP-027 |
+| Estado y versión             | Aprobada – MVP |
+
+**RN-018 – Aviso de vencimiento**
+
+| **Campo**                    | **Contenido** |
+| ---------------------------- | ------------- |
+| ID y nombre                  | RN-018 – Aviso de vencimiento |
+| Descripción formal           | Se envía un solo aviso por membresía cuando está activa, su fecha de fin llega en 7 días o menos, el plan dura 15 días o más, el cliente autorizó los avisos y no tiene una membresía pendiente. |
+| Motivo o política            | Recordar la renovación sin insistir ni escribir a quien no lo autorizó (CR-010). |
+| Fuente autorizada            | STK-01 Propietario |
+| Condición de aplicación      | Tarea diaria de las 8:00. |
+| Excepciones                  | Planes de menos de 15 días; tiqueteras sin primer ingreso (aún sin fecha de fin). |
+| Datos involucrados           | membresias, planes.duracion\_dias, clientes.avisos\_aceptados\_en, avisos\_membresia |
+| Actor responsable            | Sistema |
+| Requisitos relacionados      | RF-010 |
+| Casos de prueba relacionados | CP-029, CP-030 |
+| Estado y versión             | Aprobada – MVP |
 
 **RN-005 – Renovación encadenada**
 
@@ -755,6 +877,8 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | ACT-01 | Administrador                                 | Humano                        | Gestionar personal, planes, membresías, acceso y finanzas.            | RF-001 a RF-008                        |
 | ACT-02 | Empleado / recepcionista                      | Humano                        | Registrar clientes, renovar membresías y validar accesos.             | RF-001, RF-003, RF-004, RF-005, RF-008 |
 | ACT-03 | Cliente (socio)                               | Humano                        | Ingresar al gimnasio con su huella.                                   | RF-003, RF-004                         |
+| ACT-05 | Tarea programada del sistema                  | Sistema (reloj del servidor)  | Vencer y activar membresías (00:05) y enviar los avisos de vencimiento (8:00). | — | — |
+| ACT-06 | Servicio de correo Brevo                      | Sistema externo               | Entregar los correos de recuperación de contraseña y de aviso de vencimiento. | — | — |
 | ACT-04 | Sensor de huella AS608 (con conversor CP2102) | Sistema externo (dispositivo) | Capturar la huella del cliente para registrarla y validar su ingreso. | RF-003, RF-004                         |
 
 ### 8.2 Matriz de roles y permisos
@@ -772,6 +896,8 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | Historial de accesos: consultar               | Sí                | Sí           | No                      | RN-010                                       |
 | Personal y roles: crear, consultar y eliminar | Sí                | No           | No                      | RN-011, RN-012                               |
 | Registro financiero: consultar                | Sí                | No           | No                      | RN-011                                       |
+| Restablecer su propia contraseña con el código | Sí               | Sí           | No                      | RN-016, RN-017; nadie cambia la de otra cuenta |
+| Autorizar o retirar los avisos por correo de un cliente | Sí      | Sí           | Sí (lo decide al registrarse) | RN-019                               |
 
 ### 8.3 Principios de autorización
 
@@ -796,7 +922,9 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | DAT-03 | Plan                 | Definir duración y precio                 | Administrador             | Interno                                           | Permanente; se desactiva en lugar de borrar                         | RF-002                   |
 | DAT-04 | Membresía            | Vigencia del cliente y base del pago      | Sistema                   | Interno                                           | Permanente (historial)                                              | RF-003, RF-005, RF-006   |
 | DAT-05 | Plantilla biométrica | Identificar al cliente en el lector       | Lector de huella          | Sensible (solo hash)                              | Mientras el cliente esté activo; se elimina a solicitud del titular | RF-004                   |
-| DAT-06 | Registro de acceso   | Auditoría de ingresos                     | Sistema                   | Personal                                          | Por definir con el propietario (propuesta: 1 año)                   | RF-008                   |
+| DAT-06 | Registro de acceso   | Auditoría de ingresos                     | Sistema                   | Personal                                          | 3 meses; la tarea diaria de las 00:05 borra los más antiguos        | RF-008                   |
+| DAT-08 | Código de recuperación | Verificar la identidad al restablecer la contraseña | Sistema       | Sensible (solo hash bcrypt)                       | 10 minutos y un solo uso; se borra con el usuario                   | RF-009                   |
+| DAT-09 | Consentimientos y avisos | Probar la autorización del titular y no repetir avisos | Recepción / sistema | Personal (fechas de aceptación)        | Mientras el cliente exista; el aviso, mientras exista la membresía  | RF-010, RF-011           |
 | DAT-07 | Pago                 | Registrar monto y método de cada pago     | Administrador / recepción | Interno                                           | Permanente (planeado, TT-005)                                       | RF-006                   |
 
 ### 9.2 Reglas de calidad de datos
@@ -814,10 +942,12 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 
 | **Dato**                                             | **Finalidad**                       | **Base o autorización**                               | **Acceso permitido**                           | **Retención**                   | **Eliminación / anonimización**                         |
 | ---------------------------------------------------- | ----------------------------------- | ----------------------------------------------------- | ---------------------------------------------- | ------------------------------- | ------------------------------------------------------- |
-| Datos del cliente (nombre, cédula, correo, teléfono) | Identificación y contacto del socio | Autorización del titular (Ley 1581 de 2012)           | Administrador y Empleado                       | Mientras el cliente exista      | Anonimización a solicitud del titular (por implementar) |
+| Datos del cliente (nombre, cédula, correo, teléfono) | Identificación y contacto del socio | Autorización previa y expresa del titular: casilla obligatoria al registrar (Ley 1581 de 2012, Decreto 1377 de 2013) | Administrador y Empleado                       | Mientras el cliente exista      | Anonimización manual por SQL a solicitud del titular (procedimiento del Manual técnico); automatizarla es trabajo futuro |
+| Correo del cliente para avisos | Aviso de vencimiento 7 días antes (CR-010) | Autorización opcional y revocable (casilla de avisos) | El sistema y Brevo como encargado del tratamiento | Mientras la autorización esté vigente | Retirar la autorización al editar el cliente |
+| Código de recuperación del personal | Verificar la identidad al restablecer la contraseña | Relación laboral con el gimnasio | Solo el sistema (hash bcrypt) | 10 minutos, un solo uso | Se borra en cascada con el usuario |
 | Plantilla biométrica                                 | Identificación en el lector         | Autorización expresa del titular para datos sensibles | Solo el sistema; la API nunca devuelve el hash | Mientras el cliente esté activo | Eliminación por el Administrador                        |
 | Credenciales del personal                            | Autenticación                       | Relación laboral con el gimnasio                      | Solo el sistema (hash bcrypt)                  | Mientras el usuario exista      | Eliminación del usuario por el Administrador            |
-| Registros de acceso                                  | Auditoría de ingresos               | Interés legítimo de seguridad del establecimiento     | Administrador y Empleado                       | Por definir (propuesta: 1 año)  | Depuración periódica (por definir)                      |
+| Registros de acceso                                  | Auditoría de ingresos               | Interés legítimo de seguridad del establecimiento     | Administrador y Empleado                       | 3 meses | Depuración diaria automática (00:05) |
 
 ## 10\. Interfaces e integraciones externas
 
@@ -826,6 +956,7 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | **ID** | **Sistema / interfaz**                             | **Tipo**                                    | **Propósito**                                            | **Datos intercambiados**          | **Disponibilidad esperada** | **Responsable**              |
 | ------ | -------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------- | --------------------------------- | --------------------------- | ---------------------------- |
 | INT-01 | Sensor de huella AS608 con conversor USB CP2102    | Dispositivo                                 | Capturar la huella para registrarla y validar el ingreso | Plantilla biométrica (hash)       | Horario de atención         | Liliana Sofía Panesso Méndez |
+| INT-03 | Brevo (API HTTPS); Gmail por SMTP en local | Servicio de correo | Enviar el código de recuperación, el aviso de cambio de contraseña y el aviso de vencimiento | Nombre y correo del destinatario y el contenido del mensaje | 300 correos al día (plan gratuito) | Juan Diego Mejía Llano |
 | INT-02 | Railway (API y MySQL) y Vercel (frontend) | Servicios en la nube Railway y Vercel | Publicar la API y la base de datos                       | Peticiones HTTPS y conexión MySQL | Permanente                  | Liliana Sofía Panesso Méndez |
 
 ### 10.2 Ficha de integración
@@ -869,12 +1000,15 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | RF-006 | A         | A            | M          | M            | RF-002, RF-005   | Must                | MVP         |
 | RF-007 | A         | A            | A          | M            | —                | Must                | MVP         |
 | RF-008 | M         | M            | M          | B            | RF-003           | Should              | MVP         |
+| RF-009 | A         | A            | M          | M            | RF-007, INT-03   | Should              | MVP         |
+| RF-010 | M         | M            | B          | M            | RF-011, INT-03   | Should              | MVP         |
+| RF-011 | A         | A            | B          | B            | RF-001           | Must                | MVP         |
 
 ### 11.3 Roadmap de requisitos
 
 | **Versión / hito**        | **Objetivo**                                                      | **RF incluidos**                                                   | **RNF críticos**                   | **Criterio de salida**                                                       |
 | ------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------- | ---------------------------------------------------------------------------- |
-| MVP (v1.0.0 – 12/12/2026) | Sistema web funcional para controlar membresías, accesos y pagos. | RF-001 a RF-008                                                    | RNF-001, RNF-003, RNF-004, RNF-006 | Flujos críticos demostrados en la sustentación y pruebas críticas aprobadas. |
+| MVP (v1.0.0 – 12/12/2026) | Sistema web funcional para controlar membresías, accesos y pagos. | RF-001 a RF-011 | RNF-001, RNF-003, RNF-004, RNF-006 | Flujos críticos demostrados en la sustentación y pruebas críticas aprobadas. |
 | V1.1                      | Apertura automática de la puerta y soporte de pago.               | Apertura con relé y electroimán (por definir), comprobante digital | RNF-003, RNF-004                   | Apertura de puerta integrada y probada en el gimnasio.                       |
 | V2.0                      | Por definir con el propietario.                                   | Por definir                                                        | Por definir                        | Por definir                                                                  |
 
@@ -921,6 +1055,8 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | CR-007 | 10/11/2026            | Se elimina la simulación de huellas: el registro y la validación usan solo el sensor AS608.                                                         | RF-004, INT-01, UI-06                  | Aprobado                         | Juan Diego Mejía Llano | MVP         |
 | CR-008 | 10/11/2026            | Un solo ingreso por día en cualquier plan; una nueva lectura del mismo socio dentro de 30 minutos cuenta como el mismo ingreso (sin registrar otro ni descontar).                                | RF-002, RF-003, RN-015                 | Aprobado e implementado (23/11/2026): el backend lo aplica en todos los planes     | Juan Diego Mejía Llano | MVP         |
 | CR-009 | 23/11/2026 | RNF-007 se limita a Chrome (computador, tablet y celular); Edge y Firefox quedan fuera del alcance de la verificación. | RNF-007, UX-02 | Aprobado | Juan Diego Mejía Llano | MVP |
+| CR-010 | 24/11/2026 | Aviso por correo 7 días antes del vencimiento (un solo aviso, planes de 15 días o más, tiqueteras incluidas) y consentimientos del cliente al registrarse: términos y tratamiento de datos (obligatorio) y avisos por correo (opcional). Los clientes ya registrados no reciben avisos hasta autorizarlos. | RF-010, RF-011, RN-018, RN-019, INT-03 | Aprobado e implementado | Juan Diego Mejía Llano | MVP |
+| CR-011 | 24/11/2026 | Recuperación de contraseña del personal por código al correo (dos pasos) con cierre de las sesiones abiertas; el envío pasa a Brevo porque Railway bloquea el SMTP. | RF-009, RN-016, RN-017, INT-03 | Aprobado e implementado | Liliana Sofía Panesso Méndez | MVP |
 
 ## 13\. Trazabilidad y cobertura
 
@@ -947,6 +1083,9 @@ Las reglas de negocio se centralizan aquí para evitar que aparezcan con version
 | RF-006     | OBJ-02, OBJ-05 / STK-01 | RN-004, RN-011         | HU-008 / CU-005, CU-007 | UI-05, UI-09 | finanzasService.js                        | CP-014, CP-015         | Pendiente                                  | Parcial      |
 | RF-007     | OBJ-03 / STK-01         | RN-011, RN-012         | HU-002 / CU-001, CU-006 | UI-01, UI-08 | auth y rol middleware, usuario.service.js | CP-016 a CP-018        | Pendiente                                  | Implementado |
 | RF-008     | OBJ-04 / STK-01         | RN-010                 | HU-006 / CU-004         | UI-07        | registroAcceso.repository.js              | CP-019                 | Pendiente                                  | Implementado |
+| RF-009     | OBJ-03 / STK-01         | RN-016, RN-017         | HU-014 / CU-008         | UI-10        | recuperacion.service.js, correo.service.js | CP-023 a CP-028       | npm test (24/11/2026)                      | Implementado |
+| RF-010     | OBJ-01 / STK-01         | RN-018                 | HU-015 / CU-009         | Correo       | avisoMembresia.service.js, avisos.job.js  | CP-029, CP-030         | npm test (24/11/2026)                      | Implementado |
+| RF-011     | OBJ-01 / STK-01         | RN-019                 | HU-016 / CU-002         | UI-03        | cliente.service.js                        | CP-031, CP-032         | npm test (24/11/2026)                      | Implementado |
 | RNF-001    | STK-01, STK-04          | RN-008, RN-011         | HU-010                  | —            | auth.middleware.js, rol.middleware.js     | CP-020, CP-021         | Pendiente                                  | Implementado |
 
 ### 13.3 Reglas de cobertura

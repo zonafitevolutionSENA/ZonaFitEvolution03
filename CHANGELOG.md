@@ -12,7 +12,13 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 - Envío de correos por la API HTTPS de Brevo (`BREVO_API_KEY`, `CORREO_REMITENTE`), porque Railway bloquea el SMTP en Trial y Hobby. Gmail por SMTP queda como alternativa en local.
 - Contrato OpenAPI 3 de la API (`BackendZonafitevolution/openapi.yaml`) con las 32 operaciones, sus cuerpos, respuestas, errores y seguridad.
 - Swagger UI en `/api/docs` y el contrato en JSON en `/api/openapi.json`.
-- Prueba `test/openapi.test.js`: compara el contrato con las rutas de Express (50 pruebas en total).
+- Prueba `test/openapi.test.js`: compara el contrato con las rutas de Express (93 pruebas en total con las de recuperación de contraseña, avisos y consentimientos).
+
+### Changed
+- La sesión del frontend se guarda en `sessionStorage` (clave `zonafitSesion`) en lugar de `localStorage`: se conserva al recargar mientras la pestaña siga abierta y termina al cerrarla; un token vencido no se restaura.
+- `init.sql` ya no tiene `DROP TABLE`: se puede volver a ejecutar sobre una base con datos y agrega solo las columnas y tablas que falten. En Railway se ejecuta antes de desplegar cada cambio de esquema.
+- La base de datos pasa de 7 a 9 tablas (`recuperaciones_contrasena` y `avisos_membresia`).
+- Documentación actualizada con la recuperación de contraseña, el envío de correos (Brevo), los avisos de vencimiento, los consentimientos, la Política de tratamiento de datos y los términos y condiciones (`docs/legal`).
 
 ### Fixed
 - Botón de regreso: ahora vuelve a la ventana anterior (cierra el formulario o la ventana abierta antes de cambiar de sección) y se puede pulsar varias veces seguidas; antes el bloqueo anti doble clic ignoraba el segundo clic durante 2 segundos.
@@ -20,6 +26,10 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 - Guía del repositorio: el historial de versiones 0.4 y 0.5 había quedado en la tabla de liberaciones.
 
 ### Security
+- Las reglas de contraseña (8 caracteres como mínimo, 72 bytes como máximo, letras y números y sin espacios) se validan también en el backend (`utils/contrasena.js`), no solo en el formulario.
+- Revocación de sesiones: el middleware de autenticación consulta al usuario en cada petición y rechaza los tokens emitidos antes del último cambio de contraseña o de un usuario eliminado.
+- Límites de intentos en la recuperación: 10 solicitudes por IP y 3 por IP y correo cada 15 minutos, 20 verificaciones y 10 restablecimientos; la respuesta es la misma exista o no el correo.
+- Ningún Administrador puede cambiar la contraseña de otra cuenta: solo la persona dueña del correo, con el código.
 - Cabeceras de seguridad en el frontend de Vercel (`vercel.json`): Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy y Permissions-Policy.
 
 ## [1.0.0] – 23/11/2026

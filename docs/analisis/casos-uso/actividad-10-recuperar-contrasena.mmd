@@ -1,0 +1,24 @@
+---
+title: "DIA-ACV-10 · Actividad: restablecer contraseña · v1.0 · 24/11/2026"
+---
+%% EP-001 · CU-008 · HU-014 · RF-009
+flowchart TB
+  i(( )):::ini --> a["Escribir el correo de la cuenta"]
+  a --> c0{"¿Superó el límite<br/>de solicitudes?"}
+  c0 -- Sí --> e0["Mostrar: demasiadas solicitudes,<br/>inténtalo más tarde"] --> f
+  c0 -- No --> b["Mostrar el mismo mensaje;<br/>si el correo existe, enviar el código"]
+  b --> c["Escribir el código de 6 dígitos"]
+  c --> c1{"¿Código vigente<br/>y sin usar?"}
+  c1 -- No --> e1["Mostrar: el código no es válido<br/>o ya venció"] --> a
+  c1 -- Sí --> c2{"¿Código correcto?"}
+  c2 -- No --> c3{"¿Quedan intentos?"}
+  c3 -- Sí --> e2["Mostrar los intentos restantes"] --> c
+  c3 -- No --> e1
+  c2 -- Sí --> d["Escribir y confirmar la nueva contraseña"]
+  d --> c4{"¿Cumple las reglas y es<br/>distinta de la anterior?"}
+  c4 -- No --> e3["Mostrar el error junto al campo"] --> d
+  c4 -- Sí --> g["Guardar la contraseña, gastar el código<br/>y cerrar las sesiones abiertas"]
+  g --> h["Enviar el aviso de cambio al correo"]
+  h --> m["Volver al inicio de sesión"] --> f((( ))):::fin
+  classDef ini fill:#16384F,stroke:#16384F,color:#16384F
+  classDef fin fill:#FFFFFF,stroke:#16384F,stroke-width:4px,color:#FFFFFF

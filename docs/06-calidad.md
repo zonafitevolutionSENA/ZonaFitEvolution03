@@ -31,6 +31,7 @@
 | 0.7 | 23/11/2026 | Alcance de plataformas ajustado a Chrome (CR-009) en el alcance y el ambiente de pruebas | Juan Diego Mejía Llano |  |
 | 0.8 | 23/11/2026 | Versión liberada v1.0.0 y lista de verificación de aprobación diligenciada | Juan Diego Mejía Llano |  |
 | 0.9 | 23/11/2026 | 50 pruebas unitarias (incluida la prueba del contrato OpenAPI) | Juan Diego Mejía Llano |  |
+| 1.0 | 24/11/2026 | Casos CP-023 a CP-032 (recuperación de contraseña, cierre de sesiones, avisos de vencimiento y consentimientos), 93 pruebas unitarias con 65 % de líneas | Juan Diego Mejía Llano |  |
 
 ### Registro de aprobaciones
 
@@ -330,6 +331,16 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | CP-020 | Petición sin token                                          | RNF-001 / HU-010        | P0            | Seguridad   | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm test y pruebas-cp) |                 |
 | CP-021 | Empleado en ruta de Administrador                           | RNF-001 / HU-010        | P0            | Seguridad   | Ejecutado en CIC-01 (22/11/2026): aprobado | Sí (npm test y pruebas-cp) |                 |
 | CP-022 | Eliminar huella (se borra del sensor y de la base de datos) | RF-004 / HU-005         | P1            | Integración | Ejecutado con el sensor (10/11/2026) y en CIC-01 (22/11/2026): aprobado | Sí (agente de prueba en pruebas-cp) |                 |
+| CP-023 | Solicitar código: correo registrado recibe el código; uno no registrado, el mismo mensaje | RF-009 / HU-014 / CU-008 | P0 | Seguridad | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-024 | Código correcto entrega el token de restablecer | RF-009 / HU-014 / CU-008 | P0 | Unitaria | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-025 | Código incorrecto: intentos restantes y bloqueo a los 5 fallos | RF-009 / HU-014 / CU-008 | P1 | Seguridad | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-026 | Código vencido o ya usado se rechaza | RF-009 / HU-014 / CU-008 | P0 | Seguridad | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-027 | Nueva contraseña: reglas, distinta de la anterior y aviso por correo | RF-009 / HU-014 / RN-017 | P1 | Unitaria | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-028 | Cierre de sesiones al restablecer la contraseña o eliminar el usuario | RF-009 / RNF-001 / ADR-003 | P0 | Seguridad | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-029 | Selección del aviso de vencimiento (7 días, plan de 15 días o más, autorizado, sin pendiente, sin repetir) | RF-010 / HU-015 / CU-009 | P1 | Unitaria | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-030 | Aviso fallido no se marca y se reintenta; sin correo configurado no se envía | RF-010 / HU-015 / CU-009 | P2 | Unitaria | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-031 | Registro de cliente sin aceptar términos se rechaza; con términos se guardan las fechas | RF-011 / HU-016 / CU-002 | P1 | Unitaria | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
+| CP-032 | Autorizar o retirar avisos al editar; cliente anterior acepta términos primero | RF-011 / HU-016 | P2 | Unitaria | Ejecutado el 24/11/2026: aprobado | Sí (npm test) |  |
 
 ### 8.2 Ficha detallada de caso de prueba
 
@@ -445,9 +456,9 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Dimensión**                | **Meta**                     | **Método**             | **Exclusiones justificadas** | **Resultado** |
 | ---------------------------- | ---------------------------- | ---------------------- | ---------------------------- | ------------- |
-| Requisitos críticos          | 100 % con prueba y evidencia | Matriz de trazabilidad |                              | RF-001 a RF-008 con al menos un caso aprobado en CIC-01 |
+| Requisitos críticos          | 100 % con prueba y evidencia | Matriz de trazabilidad |                              | RF-001 a RF-008 con al menos un caso aprobado en CIC-01; RF-009 a RF-011 con pruebas automáticas (CP-023 a CP-032) |
 | Reglas de negocio críticas   | 100 % (RN-002 a RN-012)      | Casos / unitarias      |                              | RN-001, RN-002, RN-003, RN-005, RN-008 a RN-012 cubiertas en CIC-01 |
-| Cobertura de código          |                              | Herramienta            |                              | 57 % de líneas (pruebas unitarias del backend) |
+| Cobertura de código          |                              | Herramienta            |                              | 65 % de líneas (93 pruebas unitarias del backend, 24/11/2026) |
 | Ramas / condiciones críticas |                              |                        |                              |               |
 | Flujos E2E críticos          | 100 % (FLU-001 a FLU-005)    |                        |                              |               |
 
@@ -466,11 +477,11 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | ------------------------ | -------------------------------- | ---------------------------------------- | ---------------------- |
 | Instalación reproducible | npm install (backend y frontend) | Sin errores                              | npm ci sin errores (22/11/2026) |
 | Lint / formato           | npm run lint                     | Sin errores críticos                     | Sin errores |
-| Pruebas unitarias        | npm test (node --test) | Aprobadas | 50 pruebas aprobadas |
+| Pruebas unitarias        | npm test (node --test) | Aprobadas | 93 pruebas aprobadas |
 | Pruebas integración      | npm run pruebas-cp | Aprobadas | docs/pruebas/CIC-01-resultados.md (24 de 24); también en cada pull request (GitHub Actions (.github/workflows/ci.yml)) |
 | Build                    | npm run build                    | Exitoso                                  | dist/ generado sin errores |
 | Auditoría dependencias   | npm audit                        | Sin vulnerabilidades críticas sin tratar | 0 vulnerabilidades |
-| Reporte cobertura        | node --test --experimental-test-coverage | Meta evaluada | 57 % de líneas con las pruebas unitarias |
+| Reporte cobertura        | node --test --experimental-test-coverage | Meta evaluada | 65 % de líneas con las pruebas unitarias (24/11/2026) |
 
 ## 10\. Pruebas funcionales y de integración
 
@@ -479,6 +490,8 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | **Módulo**         | **Flujo crítico**                     | **RF / HU**                     | **Reglas**              | **Casos**                       | **Resultado** | **Evidencia** |
 | ------------------ | ------------------------------------- | ------------------------------- | ----------------------- | ------------------------------- | ------------- | ------------- |
 | Autenticación      | Iniciar sesión y acceder según el rol | RF-007 / HU-002                 | RN-011, RN-012          | CP-016 a CP-018, CP-020, CP-021 | Aprobado (CIC-01) | docs/pruebas/CIC-01-resultados.md |
+| Recuperación de contraseña | Pedir el código, verificarlo y restablecer | RF-009 / HU-014 | RN-016, RN-017 | CP-023 a CP-028 | Aprobado (npm test) | BackendZonafitevolution/test/recuperacionContrasena.test.js |
+| Avisos y consentimientos | Aviso de vencimiento y casillas del cliente | RF-010, RF-011 / HU-015, HU-016 | RN-018, RN-019 | CP-029 a CP-032 | Aprobado (npm test) | test/avisosVencimiento.test.js, test/consentimientoCliente.test.js, test/correoServicio.test.js |
 | Control de acceso  | Validar ingreso por huella            | RF-003, RF-004 / HU-005, HU-006 | RN-002, RN-008 a RN-010 | CP-007 a CP-011, CP-019         | Aprobado (CIC-01) | docs/pruebas/CIC-01-resultados.md |
 | Membresías y pagos | Asignar, renovar y consultar pagos    | RF-005, RF-006 / HU-004, HU-008 | RN-003 a RN-005, RN-011 | CP-012 a CP-015                 | Aprobado (CIC-01) | docs/pruebas/CIC-01-resultados.md |
 
@@ -499,7 +512,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 
 | **Prueba**           | **Objetivo**               | **Resultado esperado**   | **Evidencia** |
 | -------------------- | -------------------------- | ------------------------ | ------------- |
-| Migración desde cero | Crear estructura completa  | Instalación reproducible |               |
+| Migración desde cero | Crear estructura completa  | Instalación reproducible | init.sql crea las 9 tablas desde cero en el ciclo CIC-01 (GitHub Actions) y se vuelve a ejecutar sin borrar datos |
 | Restricciones        | Rechazar estados inválidos | Integridad en BD         |               |
 | Transacción          | Evitar estados parciales   | Rollback correcto        |               |
 | Borrado              | Aplicar política definida  | Trazabilidad preservada  |               |
@@ -513,7 +526,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | --------------------- | ---------- | ------------------------------------- | ----------------------------------------- | ------------- |
 | Autenticación         | Sí         | CP-016, CP-017                        | No revela información sensible            | CIC-01: CP-016 y CP-017 aprobados |
 | Autorización servidor | Sí         | CP-018, CP-021                        | No se eluden permisos modificando cliente | CIC-01: CP-018 y CP-021 aprobados |
-| Sesión / tokens       | Sí         | CP-020 (token vencido o ausente)      | Expiración y revocación definidas         | CIC-01: CP-020 aprobado |
+| Sesión / tokens       | Sí         | CP-020, CP-028 | Expiración y revocación definidas         | CIC-01: CP-020 aprobado; CP-028 aprobado (npm test): tokens anteriores al cambio de contraseña o de usuarios eliminados responden 401 |
 | Inyección             | Sí         | Revisión de repositorios              | Entradas tratadas correctamente           |               |
 | XSS / CSRF            | Sí         | Revisión de salidas en React          | Control acorde a tecnología               |               |
 | Secretos              | Sí         | Revisión de .gitignore y .env.example | Sin credenciales reales                   |               |
@@ -526,6 +539,7 @@ Este documento establece la estrategia para prevenir defectos, verificar el prod
 | -------- | ------------------------------ | -------------------- | ------------------------ | ----------------- | ----------------- |
 | Empleado | Planes                         | Consultar            | Crear, editar y eliminar | CP-004            | CP-006            |
 | Empleado | Registro financiero / personal | —                    | Consultar y modificar    | CP-014            | CP-015, CP-021    |
+| Administrador | Contraseña de otra cuenta | —                 | Cambiarla (solo la persona con el código, RN-016) | CP-027 | Sin ruta en la API |
 
 ### 11.3 Registro de hallazgos de seguridad
 
