@@ -5,6 +5,8 @@ Cambios relevantes de Zona Fit Evolution. Formato basado en [Keep a Changelog](h
 ## [Sin publicar]
 
 ### Added
+- Aviso por correo 7 días antes del vencimiento de la membresía (CR-010): un solo aviso, planes de 15 días o más (tiqueteras incluidas), solo a clientes que lo autorizaron y que no han renovado. Tarea diaria a las 8:00; tabla `avisos_membresia`.
+- Consentimientos del cliente (Ley 1581): casilla obligatoria de términos y tratamiento de datos al registrar y casilla opcional de avisos por correo, con la fecha de cada aceptación (`clientes.terminos_aceptados_en`, `clientes.avisos_aceptados_en`). Los clientes ya registrados no reciben avisos hasta que los autoricen al editar.
 - Recuperación de contraseña del personal en tres pasos (código de 6 dígitos al correo, 10 minutos, un solo uso, 5 intentos). Al cambiarla se cierran las sesiones abiertas y llega un aviso al correo. Base de datos: tabla `recuperaciones_contrasena` y columna `usuarios.contrasena_cambiada_en`.
 - Envío de correos por la API HTTPS de Brevo (`BREVO_API_KEY`, `CORREO_REMITENTE`), porque Railway bloquea el SMTP en Trial y Hobby. Gmail por SMTP queda como alternativa en local.
 - Contrato OpenAPI 3 de la API (`BackendZonafitevolution/openapi.yaml`) con las 32 operaciones, sus cuerpos, respuestas, errores y seguridad.

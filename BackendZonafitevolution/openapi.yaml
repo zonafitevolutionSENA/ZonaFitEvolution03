@@ -329,12 +329,20 @@ paths:
           application/json:
             schema:
               type: object
-              required: [nombre, cedula, correo]
+              required: [nombre, cedula, correo, acepta_terminos]
               properties:
                 nombre: { type: string }
                 cedula: { type: string, pattern: '^[0-9]{6,15}$' }
                 correo: { type: string, format: email, maxLength: 100 }
                 telefono: { type: string, nullable: true }
+                acepta_terminos:
+                  type: boolean
+                  enum: [true]
+                  description: Debe ser true. Acepta los términos y el tratamiento de datos personales (Ley 1581)
+                acepta_avisos:
+                  type: boolean
+                  default: false
+                  description: Opcional. Autoriza el aviso por correo 7 días antes de que venza la membresía
       responses:
         '201':
           description: Cliente registrado
@@ -380,6 +388,12 @@ paths:
                 nombre: { type: string }
                 correo: { type: string, format: email, maxLength: 100 }
                 telefono: { type: string, nullable: true }
+                acepta_terminos:
+                  type: boolean
+                  description: true registra la aceptación si el cliente aún no la tenía (clientes antiguos). No se retira desde aquí
+                acepta_avisos:
+                  type: boolean
+                  description: true autoriza los avisos por correo y false los retira; si no se envía, no cambia. Requiere los términos aceptados
       responses:
         '200':
           description: Cliente actualizado
@@ -912,6 +926,10 @@ components:
         telefono: { type: string, nullable: true }
         fecha_registro: { type: string, format: date-time }
         tiene_huella: { type: boolean }
+        acepta_terminos: { type: boolean }
+        acepta_avisos: { type: boolean }
+        terminos_aceptados_en: { type: string, format: date-time, nullable: true, description: Constancia de cuándo aceptó los términos }
+        avisos_aceptados_en: { type: string, format: date-time, nullable: true, description: Constancia de cuándo autorizó los avisos por correo }
     PlanEntrada:
       type: object
       required: [nombre, duracion_dias, precio]

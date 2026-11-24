@@ -527,3 +527,45 @@
 .gestion-page section > .gestion-button-quiet {
   margin-top: 14px;
 }
+
+/* Consentimientos del cliente (términos, tratamiento de datos y avisos por correo) */
+.gestion-page form fieldset {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 6px;
+  padding: 14px 16px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+}
+
+.gestion-page form legend {
+  padding: 0 6px;
+  color: #e8e9ec;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.gestion-page form fieldset > p {
+  margin: 0;
+  color: #aeb4bf;
+  font-size: 0.9rem;
+}
+
+.gestion-page form details {
+  color: #aeb4bf;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.gestion-page form details summary {
+  width: fit-content;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: #f5b82e;
+  cursor: pointer;
+}
+
+.gestion-page form details p {
+  margin: 0 0 8px;
+}

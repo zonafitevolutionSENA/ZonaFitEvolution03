@@ -562,10 +562,22 @@ Se validan en el navegador antes de llamar a la API (el backend sigue siendo la 
 | -------- | -------------------------------------------------------------------------- |
 | Nombre   | Obligatorio, de 3 a 100 caracteres; solo letras, espacios, `'`, `.` y `-`  |
 | Cédula   | Obligatoria, solo dígitos (6 a 15) y no repetida; no se puede editar       |
-| Correo   | Opcional; si se escribe, debe tener formato válido (máximo 100 caracteres) |
+| Correo   | Obligatorio, con formato válido (máximo 100 caracteres)                    |
 | Teléfono | Opcional; si se escribe, de 7 a 15 dígitos, puede empezar con `+`          |
+| Términos y tratamiento de datos | Casilla obligatoria al registrar (Ley 1581). Al editar, un cliente antiguo puede aceptarlos; una vez aceptados no se retiran desde el formulario |
+| Avisos por correo | Casilla opcional, aparte de los términos. Requiere los términos aceptados; se puede activar o retirar al editar |
 
-Los botones se bloquean mientras se guarda.
+Los botones se bloquean mientras se guarda. En el bloque **Tratamiento de datos**, «Ver términos y tratamiento de datos» muestra el resumen que acepta el cliente (el mismo contenido del formato de `docs/legal/`). La API guarda la fecha de cada aceptación (`terminos_aceptados_en`, `avisos_aceptados_en`) como constancia.
+
+## Aviso de vencimiento por correo
+
+Cada día a las 8:00 (hora Colombia) el backend envía **un solo correo por membresía, 7 días antes de que venza** (CR-010), a los clientes que:
+
+- autorizaron los avisos por correo,
+- tienen una membresía activa de un plan de **15 días o más** (Quincena, Mensualidades, Trimestres y tiqueteras ya en uso; la Sesión no),
+- y no han renovado (sin membresía pendiente).
+
+Si el servidor no corrió algún día, se pone al día con las membresías que vencen en los próximos 7 días. Cada envío queda en la tabla `avisos_membresia`, así que nadie recibe el mismo aviso dos veces; si el envío falla, no se marca y se reintenta al día siguiente. Máximo 250 correos por día (el plan gratis de Brevo permite 300). Al arrancar fuera de 8:00 a 20:00 no se envía nada hasta la siguiente ejecución. Usa la misma configuración de correo que «Olvidé mi contraseña».
 
 ## Personal
 

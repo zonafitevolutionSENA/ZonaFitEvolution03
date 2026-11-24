@@ -147,22 +147,22 @@ async function principal() {
     tokenEmpleado = (await api('POST', '/auth/login', { cuerpo: { correo: empleado.correo, contrasena: empleado.contrasena } })).datos.token;
 
     await caso('CP-001', 'Registro de cliente válido', '201 con el cliente creado', async () => {
-      const r = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Cliente A Pruebas', cedula: '10' + sufijo, correo: `a${sufijo}@pruebas.local`, telefono: '3001234567' } });
+      const r = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Cliente A Pruebas', cedula: '10' + sufijo, correo: `a${sufijo}@pruebas.local`, telefono: '3001234567', acepta_terminos: true } });
       exigir(r.status === 201 && r.datos.id, resumen(r));
       cliA = r.datos;
       return `201, cliente id ${r.datos.id}`;
     });
-    cliB = (await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Cliente B Pruebas', cedula: '20' + sufijo, correo: `b${sufijo}@pruebas.local`, telefono: '3001234568' } })).datos;
-    cliC = (await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Cliente C Pruebas', cedula: '30' + sufijo, correo: `c${sufijo}@pruebas.local`, telefono: '3001234569' } })).datos;
+    cliB = (await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Cliente B Pruebas', cedula: '20' + sufijo, correo: `b${sufijo}@pruebas.local`, telefono: '3001234568', acepta_terminos: true } })).datos;
+    cliC = (await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Cliente C Pruebas', cedula: '30' + sufijo, correo: `c${sufijo}@pruebas.local`, telefono: '3001234569', acepta_terminos: true } })).datos;
 
     await caso('CP-002', 'Cédula duplicada', '409 «Ya existe un cliente registrado con esa cédula»', async () => {
-      const r = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Otro', cedula: cliA.cedula, correo: `x${sufijo}@pruebas.local` } });
+      const r = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Otro', cedula: cliA.cedula, correo: `x${sufijo}@pruebas.local`, acepta_terminos: true } });
       exigir(r.status === 409, resumen(r));
       return `409 «${r.datos.error}»`;
     });
     await caso('CP-003', 'Campos inválidos', '400 con el mensaje del campo', async () => {
-      const r1 = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Letras', cedula: '12ab34', correo: `l${sufijo}@pruebas.local` } });
-      const r2 = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Sin correo', cedula: '40' + sufijo } });
+      const r1 = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Letras', cedula: '12ab34', correo: `l${sufijo}@pruebas.local`, acepta_terminos: true } });
+      const r2 = await api('POST', '/clientes', { token: tokenEmpleado, cuerpo: { nombre: 'Sin correo', cedula: '40' + sufijo, acepta_terminos: true } });
       exigir(r1.status === 400 && r2.status === 400, `${resumen(r1)} / ${resumen(r2)}`);
       return `400 «${r1.datos.error}»; 400 «${r2.datos.error}»`;
     });
