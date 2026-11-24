@@ -691,6 +691,10 @@ Los clientes **no se eliminan**: lo que se gestiona es el estado de su membresí
 
 El rol llega en `usuario.rol_id`: `1` = Administrador, `2` = Empleado (los mismos valores del backend).
 
+## Botón de regreso
+
+En la esquina superior derecha, junto al nombre del usuario, la flecha **Volver a la pantalla anterior** regresa a la sección visitada antes (se recuerdan hasta 20). La sección se abre en su vista normal, sin reabrir formularios, y si el rol ya no puede verla se vuelve al Inicio. Al abrir la aplicación o cerrar sesión no hay pantallas anteriores y la flecha queda desactivada.
+
 ## Selección de clientes (buscador)
 
 Con cientos de clientes una lista desplegable es incómoda, así que los formularios que piden un cliente (**Asignar membresía** y **Registrar huella**) usan el componente `BuscadorCliente`:

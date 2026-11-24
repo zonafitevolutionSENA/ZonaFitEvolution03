@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { etiquetaRol } from "../utils/permisos";
 
-// Barra superior: campana con membresías por vencer y datos del usuario
-function Encabezado({ usuario, porVencer, errorNotificaciones, alReintentar }) {
+// Barra superior: campana con membresías por vencer, datos del usuario y botón para regresar
+function Encabezado({ usuario, porVencer, errorNotificaciones, alReintentar, puedeRegresar = false, alRegresar }) {
   const [abierto, setAbierto] = useState(false);
   const cantidad = porVencer ? porVencer.length : 0;
 
@@ -39,9 +39,24 @@ function Encabezado({ usuario, porVencer, errorNotificaciones, alReintentar }) {
           </div>
         )}
       </div>
-      <p className="app-user-line">
-        <strong>{usuario.nombre}</strong> · {etiquetaRol(usuario.rol_id)}
-      </p>
+      <div className="app-header-derecha">
+        <p className="app-user-line">
+          <strong>{usuario.nombre}</strong> · {etiquetaRol(usuario.rol_id)}
+        </p>
+        <button
+          className="app-back-button"
+          type="button"
+          onClick={alRegresar}
+          disabled={!puedeRegresar}
+          aria-label="Volver a la pantalla anterior"
+          title={puedeRegresar ? "Volver a la pantalla anterior" : "No hay una pantalla anterior"}
+        >
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
+        </button>
+      </div>
     </header>
   );
 }
