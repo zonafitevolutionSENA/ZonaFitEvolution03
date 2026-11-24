@@ -16,8 +16,20 @@ async function crearUsuario({ nombre, correo, contrasena, rol_id }) {
     throw new ErrorDominio('El correo no tiene un formato válido');
   }
 
+  if (typeof contrasena !== 'string') {
+    throw new ErrorDominio('La contraseña no es válida');
+  }
   if (contrasena.length < 8) {
     throw new ErrorDominio('La contraseña debe tener al menos 8 caracteres');
+  }
+  if (Buffer.byteLength(contrasena, 'utf8') > 72) {
+    throw new ErrorDominio('La contraseña no puede superar 72 bytes');
+  }
+  if (/\s/.test(contrasena)) {
+    throw new ErrorDominio('La contraseña no puede tener espacios');
+  }
+  if (!/\p{L}/u.test(contrasena) || !/\d/.test(contrasena)) {
+    throw new ErrorDominio('La contraseña debe combinar letras y números');
   }
 
   if (!Object.values(ROLES).includes(Number(rol_id))) {
