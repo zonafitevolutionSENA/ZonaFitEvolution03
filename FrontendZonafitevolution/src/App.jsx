@@ -10,7 +10,7 @@ import Membresias from "./pages/Membresias";
 import Personal from "./pages/Personal";
 import Planes from "./pages/Planes";
 import { obtenerPorVencer } from "./services/dashboardService";
-import { EVENTO_SESION_EXPIRADA, limpiarTokenSesion } from "./services/api";
+import { EVENTO_SESION_EXPIRADA, limpiarTokenSesion, obtenerUsuarioGuardado } from "./services/api";
 import { ROL_ADMIN, SECCIONES, seccionPermitida } from "./utils/permisos";
 import "./App.css";
 
@@ -28,7 +28,7 @@ const ACCIONES_RAPIDAS = {
 };
 
 function App() {
-  const [usuario, setUsuario] = useState(null);
+  const [usuario, setUsuario] = useState(obtenerUsuarioGuardado);
   const [mensajeSesion, setMensajeSesion] = useState("");
   const [vista, setVista] = useState("inicio");
   const [accionInicial, setAccionInicial] = useState(null);
@@ -52,7 +52,8 @@ function App() {
   }, [usuario]);
 
   useEffect(() => {
-    limpiarSesion();
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
   }, []);
 
   // Notificaciones (campana): se cargan una vez iniciada la sesión
