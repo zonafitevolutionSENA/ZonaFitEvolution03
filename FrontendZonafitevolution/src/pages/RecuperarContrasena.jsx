@@ -5,6 +5,7 @@ import {
   verificarCodigoRecuperacion,
 } from "../services/authService";
 import { validarConfirmacion, validarContrasena } from "../utils/validacionesUsuario";
+import CampoContrasena from "../components/CampoContrasena";
 import "../Login.css";
 
 const SEGUNDOS_REENVIO = 60;
@@ -146,6 +147,9 @@ function RecuperarContrasena({ alVolver, alTerminar }) {
           <button className="login-enlace" type="button" onClick={() => { setError(""); setPaso("correo"); }}>
             Usar otro correo
           </button>
+          <button className="login-enlace" type="button" onClick={alVolver}>
+            Volver al inicio de sesión
+          </button>
         </form>
       )}
 
@@ -155,10 +159,8 @@ function RecuperarContrasena({ alVolver, alTerminar }) {
           <p className="login-subtitle">Al guardarla se cerrarán todas tus sesiones abiertas.</p>
 
           <label className="login-label" htmlFor="recuperar-contrasena">Nueva contraseña</label>
-          <input
-            className="login-input"
+          <CampoContrasena
             id="recuperar-contrasena"
-            type="password"
             autoComplete="new-password"
             value={contrasena}
             onChange={(e) => setContrasena(e.target.value)}
@@ -168,10 +170,8 @@ function RecuperarContrasena({ alVolver, alTerminar }) {
           <p className="login-ayuda">Mínimo 8 caracteres, con letras y números y sin espacios.</p>
 
           <label className="login-label" htmlFor="recuperar-confirmacion">Confirmar contraseña</label>
-          <input
-            className="login-input"
+          <CampoContrasena
             id="recuperar-confirmacion"
-            type="password"
             autoComplete="new-password"
             value={confirmacion}
             onChange={(e) => setConfirmacion(e.target.value)}
@@ -184,7 +184,7 @@ function RecuperarContrasena({ alVolver, alTerminar }) {
             {cargando ? "Guardando..." : "Guardar contraseña"}
           </button>
           <button className="login-enlace" type="button" onClick={alVolver}>
-            Cancelar
+            Volver al inicio de sesión
           </button>
         </form>
       )}
