@@ -59,6 +59,39 @@
   box-shadow: 0 0 0 4px rgba(245, 208, 0, 0.12);
 }
 
+.login-contrasena {
+  position: relative;
+}
+
+.login-contrasena .login-input {
+  padding-right: 54px;
+}
+
+.login-contrasena-boton {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--gris-texto);
+  cursor: pointer;
+}
+
+.login-contrasena-boton:hover,
+.login-contrasena-boton:focus-visible {
+  color: var(--amarillo);
+}
+
+.login-contrasena-boton:hover:not(:disabled) {
+  transform: translateY(-50%);
+}
+
 .login-submit {
   width: 100%;
   margin-top: 24px;

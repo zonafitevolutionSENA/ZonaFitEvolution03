@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { iniciarSesion } from "../services/authService";
+import CampoContrasena from "../components/CampoContrasena";
 import "../Login.css";
 
 function Login({ onLoginExitoso, errorInicial = "", avisoInicial = "", alOlvidarContrasena }) {
@@ -75,10 +76,9 @@ function Login({ onLoginExitoso, errorInicial = "", avisoInicial = "", alOlvidar
         />
 
         <label className="login-label" htmlFor="contrasena">Contraseña</label>
-        <input
-          className="login-input"
+        <CampoContrasena
           id="contrasena"
-          type="password"
+          autoComplete="current-password"
           value={contrasena}
           onChange={(e) => setContrasena(e.target.value)}
           maxLength={128} // Límite estándar para evitar hashes muy largos o DoS
